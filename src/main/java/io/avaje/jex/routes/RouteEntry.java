@@ -38,4 +38,8 @@ public class RouteEntry {
   public String rawPath() {
     return pathParser.raw();
   }
+
+  public int getSegmentCount() {
+    return pathParser.getSegmentCount();
+  }
 }

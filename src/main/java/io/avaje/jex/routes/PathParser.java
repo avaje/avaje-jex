@@ -11,21 +11,21 @@ import java.util.regex.Pattern;
 
 class PathParser {
 
-  private static final PathSegment.Wildcard wildcard = new PathSegment.Wildcard();
+  private static final PathSegment.Wildcard WILDCARD = new PathSegment.Wildcard();
 
-  //private final List<PathSegment> segments = new ArrayList<>();
   private final String rawPath;
   private final List<String> paramNames = new ArrayList<>();
   private final Pattern matchRegex;
   private final Pattern pathParamRegex;
+  private int segmentCount;
 
   PathParser(String path) {
     this.rawPath = path;
     StringJoiner full = new StringJoiner("/");
     for (String rawSeg : path.split("/")) {
       if (!rawSeg.isEmpty()) {
+        segmentCount++;
         final PathSegment pathSegment = parseSegment(rawSeg);
-        //segments.add(pathSegment);
         full.add(pathSegment.asRegexString());
         final String paramName = pathSegment.paramName();
         if (paramName != null) {
@@ -65,18 +65,27 @@ class PathParser {
     return values;
   }
 
-
   private PathSegment parseSegment(String seg) {
     if (seg.startsWith("{")) {
       return new PathSegment.Parameter(seg.substring(1, seg.length() - 1));
     }
     if (seg.equals("*")) {
-      return wildcard;
+      return WILDCARD;
     }
     return new PathSegment.Literal(seg);
   }
 
+  /**
+   * Return the raw path that was parsed (match path).
+   */
   public String raw() {
     return rawPath;
+  }
+
+  /**
+   * Return the number of path segments.
+   */
+  public int getSegmentCount() {
+    return segmentCount;
   }
 }

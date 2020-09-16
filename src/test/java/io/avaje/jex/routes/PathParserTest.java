@@ -14,9 +14,11 @@ class PathParserTest {
   @Test
   void matches_litArg() {
 
-    final PathParser pathParser = new PathParser("/one/{id}");
+    var pathParser = new PathParser("/one/{id}");
     assertTrue(pathParser.matches("/one/1"));
     assertTrue(pathParser.matches("/one/2"));
+    assertThat(pathParser.getSegmentCount()).isEqualTo(2);
+    assertThat(pathParser.raw()).isEqualTo("/one/{id}");
 
     Map<String, String> pathParams = pathParser.extractPathParams("/one/1");
     assertThat(pathParams.get("id")).isEqualTo("1");
@@ -30,6 +32,8 @@ class PathParserTest {
 
     final PathParser pathParser = new PathParser("/{a}/{b}/{c}");
     assertTrue(pathParser.matches("/1a/2b/3c"));
+    assertThat(pathParser.getSegmentCount()).isEqualTo(3);
+    assertThat(pathParser.raw()).isEqualTo("/{a}/{b}/{c}");
 
     Map<String, String> pathParams = pathParser.extractPathParams("/1a/2b/3c");
     assertThat(pathParams.get("a")).isEqualTo("1a");
@@ -43,6 +47,7 @@ class PathParserTest {
   void matches_litArgArgArg() {
 
     final PathParser pathParser = new PathParser("/one/{a}/{b}/{c}");
+    assertThat(pathParser.getSegmentCount()).isEqualTo(4);
     assertTrue(pathParser.matches("/one/1a/2b/3c"));
     assertTrue(pathParser.matches("/one/foo/bar/baz"));
 
@@ -58,6 +63,7 @@ class PathParserTest {
   void matches_litArgLitArgArgLit() {
 
     final PathParser pathParser = new PathParser("/one/{a}/two/{b}/{c}/end");
+    assertThat(pathParser.getSegmentCount()).isEqualTo(6);
     assertTrue(pathParser.matches("/one/1a/two/2b/3c/end"));
     assertFalse(pathParser.matches("/on/1a/two/2b/3c/end"));
     assertFalse(pathParser.matches("/one/1a/tw/2b/3c/end"));

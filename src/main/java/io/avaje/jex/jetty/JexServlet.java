@@ -15,14 +15,14 @@ class JexServlet extends HttpServlet {
 
   //private static final String X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
 
-  private final Routes routeManager;
+  private final Routes routes;
 
   private final ServiceManager serviceManager;
 
   private final MethodMap methodMap = new MethodMap();
 
-  public JexServlet(Routes routeManager, ServiceManager serviceManager) {
-    this.routeManager = routeManager;
+  public JexServlet(Routes routes, ServiceManager serviceManager) {
+    this.routes = routes;
     this.serviceManager = serviceManager;
   }
 
@@ -31,7 +31,7 @@ class JexServlet extends HttpServlet {
 
     final HandlerType handlerType = method(req);
     final String requestURI = req.getRequestURI();
-    RouteEntry route = routeManager.match(handlerType, requestURI);
+    RouteEntry route = routes.match(handlerType, requestURI);
     if (route == null) {
       handleNotFound(req, res, requestURI);
     } else {
