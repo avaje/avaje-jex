@@ -1,6 +1,6 @@
 package io.avaje.jex;
 
-import io.avaje.jex.jetty.JettyLaunch;
+import io.avaje.jex.core.JettyLaunch;
 import io.avaje.jex.spi.JsonService;
 
 public class JexConfig {
@@ -9,7 +9,7 @@ public class JexConfig {
 
   private String contextPath = "/";
 
-  private Jetty jetty = new Jetty();
+  private JexConfigJetty jetty = new JexConfigJetty();
 
   private JsonService jsonService;
 
@@ -35,7 +35,7 @@ public class JexConfig {
     return contextPath;
   }
 
-  public Jetty getJetty() {
+  public JexConfigJetty getJetty() {
     return jetty;
   }
 
@@ -43,16 +43,4 @@ public class JexConfig {
     return jsonService;
   }
 
-  public static class Jetty {
-    boolean sessions = true;
-    boolean security = true;
-
-    public boolean isSessions() {
-      return sessions;
-    }
-
-    public boolean isSecurity() {
-      return security;
-    }
-  }
 }

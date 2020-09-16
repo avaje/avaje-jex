@@ -1,4 +1,4 @@
-package io.avaje.jex.jetty;
+package io.avaje.jex.core;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.routes.HandlerType;

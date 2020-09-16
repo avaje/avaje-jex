@@ -1,4 +1,4 @@
-package io.avaje.jex.jetty;
+package io.avaje.jex.spi;
 
 public class IORuntimeException extends RuntimeException {
 

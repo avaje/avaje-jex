@@ -1,6 +1,7 @@
-package io.avaje.jex.jetty;
+package io.avaje.jex.core;
 
 import io.avaje.jex.JexConfig;
+import io.avaje.jex.JexConfigJetty;
 import io.avaje.jex.JexServer;
 import io.avaje.jex.routes.Routes;
 import io.avaje.jex.routes.RoutesBuilder;
@@ -19,7 +20,7 @@ public class JettyLaunch implements JexServer {
   private static final org.slf4j.Logger log = LoggerFactory.getLogger(JettyLaunch.class);
 
   private final JexConfig config;
-  private final JexConfig.Jetty jetty;
+  private final JexConfigJetty jetty;
   private final Logger defaultLogger;
 
   private Server server;

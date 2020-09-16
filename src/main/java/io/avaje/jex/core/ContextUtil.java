@@ -1,4 +1,6 @@
-package io.avaje.jex.jetty;
+package io.avaje.jex.core;
+
+import io.avaje.jex.spi.IORuntimeException;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;

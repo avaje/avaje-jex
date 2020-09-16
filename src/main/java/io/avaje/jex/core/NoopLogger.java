@@ -1,4 +1,4 @@
-package io.avaje.jex.jetty;
+package io.avaje.jex.core;
 
 import org.eclipse.jetty.util.log.Logger;
 

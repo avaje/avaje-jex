@@ -1,7 +1,8 @@
-package io.avaje.jex.jetty;
+package io.avaje.jex.core;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.avaje.jex.spi.IORuntimeException;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.SpiContext;
 
