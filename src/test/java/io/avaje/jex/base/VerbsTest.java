@@ -13,13 +13,12 @@ class VerbsTest {
   static TestPair pair = init();
 
   static TestPair init() {
-    final Jex app = Jex.create().routing(routing -> {
-      routing
+    final Jex app = Jex.create()
+      .routing(routing -> routing
         .get("/", ctx -> ctx.text("ze-get"))
         .post("/", ctx -> ctx.text("ze-post"))
         .get("/{a}/{b}", ctx -> ctx.text("ze-get-" + ctx.pathParams()))
-        .post("/{a}/{b}", ctx -> ctx.text("ze-post-" + ctx.pathParams()));
-    });
+        .post("/{a}/{b}", ctx -> ctx.text("ze-post-" + ctx.pathParams())));
 
     return HelpTest.create(app);
   }
