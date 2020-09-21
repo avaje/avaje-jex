@@ -1,78 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.avaje</groupId>
-  <artifactId>avaje-jex</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <artifactId>avaje-jex-parent</artifactId>
+  <version>1</version>
+  <packaging>pom</packaging>
 
-  <parent>
-    <groupId>org.avaje</groupId>
-    <artifactId>java11-oss</artifactId>
-    <version>2.2</version>
-  </parent>
-
-  <properties>
-    <jetty.version>9.4.30.v20200611</jetty.version>
-  </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.30</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-server</artifactId>
-      <version>${jetty.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-servlet</artifactId>
-      <version>${jetty.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>2.11.2</version>
-      <optional>true</optional>
-    </dependency>
-
-    <!--    <dependency>-->
-    <!--      <groupId>org.eclipse.jetty.websocket</groupId>-->
-    <!--      <artifactId>websocket-server</artifactId>-->
-    <!--      <version>${jetty.version}</version>-->
-    <!--    </dependency>-->
-
-    <!-- test dependencies -->
-
-    <dependency>
-      <groupId>org.avaje.composite</groupId>
-      <artifactId>junit</artifactId>
-      <version>5.0</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>io.avaje</groupId>
-      <artifactId>avaje-http-client</artifactId>
-      <version>0.5</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>1.2.3</version>
-      <scope>test</scope>
-    </dependency>
-
-  </dependencies>
-
+  <modules>
+    <module>avaje-jex</module>
+    <!-- <module>avaje-jex-websockets</module> -->
+  </modules>
 </project>
+
