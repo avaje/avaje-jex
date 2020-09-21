@@ -43,7 +43,7 @@ class JexHttpContext implements SpiContext {
 
   @Override
   public <T> T bodyAsClass(Class<T> clazz) {
-    return mgr.bodyAsClass(clazz, this);
+    return mgr.jsonRead(clazz, this);
   }
 
   @Override
@@ -96,7 +96,7 @@ class JexHttpContext implements SpiContext {
   @Override
   public Context json(Object bean) {
     contentType("application/json");
-    mgr.json(bean, this);
+    mgr.jsonWrite(bean, this);
     return this;
   }
 

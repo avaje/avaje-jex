@@ -11,11 +11,11 @@ public class ServiceManager {
     this.jsonService = jsonService;
   }
 
-  public <T> T bodyAsClass(Class<T> clazz, SpiContext ctx) {
+  public <T> T jsonRead(Class<T> clazz, SpiContext ctx) {
     return jsonService.jsonRead(clazz, ctx);
   }
 
-  public void json(Object bean, SpiContext ctx) {
+  public void jsonWrite(Object bean, SpiContext ctx) {
     jsonService.jsonWrite(bean, ctx);
   }
 }
