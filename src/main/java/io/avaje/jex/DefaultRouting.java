@@ -32,7 +32,6 @@ class DefaultRouting implements Routing {
     path = path.startsWith("/") ? path : "/" + path;
     pathDeque.addLast(path);
     group.addGroup();
-    //routes.accept(this);
     pathDeque.removeLast();
   }
 
@@ -42,48 +41,16 @@ class DefaultRouting implements Routing {
     return this;
   }
 
-//    /**
-//     * Adds an exception mapper to the instance.
-//     *
-//     * @see <a href="https://javalin.io/documentation#exception-mapping">Exception mapping in docs</a>
-//     */
-//    public <T extends Exception> Javalin exception(@NotNull Class<T> exceptionClass, @NotNull ExceptionHandler<? super T> exceptionHandler) {
-//        servlet.getExceptionMapper().getHandlers().put(exceptionClass, (ExceptionHandler<Exception>) exceptionHandler);
-//        return this;
-//    }
-
-//    /**
-//     * Adds an error mapper to the instance.
-//     * Useful for turning error-codes (404, 500) into standardized messages/pages
-//     *
-//     * @see <a href="https://javalin.io/documentation#error-mapping">Error mapping in docs</a>
-//     */
-//    public ApiBuilder error(int statusCode, @NotNull Handler handler) {
-//        servlet.getErrorMapper().getErrorHandlerMap().put(statusCode, handler);
-//        return this;
-//    }
-//
-//    /**
-//     * Adds an error mapper for the specified content-type to the instance.
-//     * Useful for turning error-codes (404, 500) into standardized messages/pages
-//     *
-//     * @see <a href="https://javalin.io/documentation#error-mapping">Error mapping in docs</a>
-//     */
-//    public Javalin error(int statusCode, @NotNull String contentType, @NotNull Handler handler) {
-//        return error(statusCode, ErrorMapperKt.contentTypeWrap(contentType, handler));
-//    }
-
-
   private void add(Type verb, String path, Handler handler, Set<Role> roles) {
     handlers.add(new Entry(verb, path(path), handler, roles));
   }
 
   private void addBefore(String path, Handler handler) {
-    handlers.add(new Entry(path(path), handler));
+    add(Type.BEFORE, path(path), handler, null);
   }
 
   private void addAfter(String path, Handler handler) {
-    handlers.add(new Entry(path(path), handler));
+    add(Type.AFTER, path(path), handler, null);
   }
 
   // ********************************************************************************************
@@ -274,13 +241,6 @@ class DefaultRouting implements Routing {
       this.path = path;
       this.handler = handler;
       this.roles = roles;
-    }
-
-    Entry(String path, Handler handler) {
-      this.path = path;
-      this.handler = handler;
-      this.type = null;
-      this.roles = null;
     }
 
     @Override

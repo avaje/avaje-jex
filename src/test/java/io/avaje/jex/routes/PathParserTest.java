@@ -90,4 +90,35 @@ class PathParserTest {
     assertFalse(pathParser.matches("/one"));
     assertFalse(pathParser.matches("/one/two/more"));
   }
+
+  @Test
+  void matches_before_litPrefix() {
+    final PathParser pathParser = new PathParser("/one/*");
+    assertTrue(pathParser.matches("/one/two"));
+    assertTrue(pathParser.matches("/one/two/three"));
+    assertTrue(pathParser.matches("/one/two/three/four"));
+  }
+
+  @Test
+  void matches_before_litPrefixAndSuffix() {
+    final PathParser pathParser = new PathParser("/one/*/three");
+    assertTrue(pathParser.matches("/one/two/three"));
+    assertTrue(pathParser.matches("/one/foo/three"));
+
+    assertFalse(pathParser.matches("/one/two"));
+    assertFalse(pathParser.matches("/one/two/three/four"));
+  }
+
+  @Test
+  void matches_before_litPrefixAndSuffixAndWild() {
+    final PathParser pathParser = new PathParser("/one/*/three/*");
+    assertTrue(pathParser.matches("/one/99/three/1000"));
+    assertTrue(pathParser.matches("/one/99/three/1000/banana"));
+    assertTrue(pathParser.matches("/one/two/three/four"));
+    assertTrue(pathParser.matches("/one/42/three/"));
+
+    assertFalse(pathParser.matches("/one/42/three"));
+    assertFalse(pathParser.matches("/one/two"));
+  }
+
 }

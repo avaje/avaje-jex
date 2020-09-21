@@ -29,16 +29,17 @@ class JexHttpServlet extends HttpServlet {
   protected void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
     final Routing.Type handlerType = method(req);
-    final String requestURI = req.getRequestURI();
-    SpiRoutes.Entry route = routes.match(handlerType, requestURI);
+    final String uri = req.getRequestURI();
+    SpiRoutes.Entry route = routes.match(handlerType, uri);
     if (route == null) {
-      handleNotFound(req, res, requestURI);
+      //todo: apply all matching filters on not found?
+      handleNotFound(req, res, uri);
     } else {
-      final Map<String, String> pathParams = route.pathParams(requestURI);
+      final Map<String, String> pathParams = route.pathParams(uri);
       Context ctx = new JexHttpContext(serviceManager, req, res, pathParams, route.rawPath());
-      // before filters
+      routes.before(uri, ctx);
       route.handle(ctx);
-      // after filters
+      routes.after(uri, ctx);
     }
   }
 

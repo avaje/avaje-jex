@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.Enumeration;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 class JexHttpContext implements SpiContext {
@@ -80,6 +82,26 @@ class JexHttpContext implements SpiContext {
   public Context contentType(String contentType) {
     res.setContentType(contentType);
     return this;
+  }
+
+  public Map<String, String> headerMap() {
+    Map<String,String> map = new LinkedHashMap<>();
+    final Enumeration<String> names = req.getHeaderNames();
+    while (names.hasMoreElements()) {
+      final String name = names.nextElement();
+      map.put(name, req.getHeader(name));
+    }
+    return map;
+  }
+
+  @Override
+  public String header(String key) {
+    return req.getHeader(key);
+  }
+
+  @Override
+  public void header(String key, String value) {
+    res.setHeader(key, value);
   }
 
   @Override
