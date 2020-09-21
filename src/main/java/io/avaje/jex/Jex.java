@@ -1,15 +1,14 @@
 package io.avaje.jex;
 
 import io.avaje.jex.core.JettyLaunch;
-import io.avaje.jex.routes.DefaultRouting;
 
 import java.util.function.Consumer;
 
 public class Jex {
 
-  private Routing routing = new DefaultRouting();
+  private final Routing routing = new DefaultRouting();
 
-  private JexConfig config = new JexConfig();
+  private final JexConfig config = new JexConfig();
 
   private Jex() {
     // hide

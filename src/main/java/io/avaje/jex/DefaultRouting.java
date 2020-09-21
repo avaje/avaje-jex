@@ -1,8 +1,4 @@
-package io.avaje.jex.routes;
-
-import io.avaje.jex.Handler;
-import io.avaje.jex.Role;
-import io.avaje.jex.Routing;
+package io.avaje.jex;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -14,15 +10,12 @@ import java.util.Set;
 /**
  *
  */
-public class DefaultRouting implements Routing {
+class DefaultRouting implements Routing {
 
   private final List<Routing.Entry> handlers = new ArrayList<>();
-//  private final List<WebApiEntry> before = new ArrayList<>();
-//  private final List<WebApiEntry> after = new ArrayList<>();
-
   private final Deque<String> pathDeque = new ArrayDeque<>();
 
-  public DefaultRouting() {
+  DefaultRouting() {
     // hide
   }
 
