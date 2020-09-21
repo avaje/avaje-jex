@@ -27,29 +27,28 @@ class JexHttpServlet extends HttpServlet {
 
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
-
-    final Routing.Type handlerType = method(req);
+    final Routing.Type routeType = method(req);
     final String uri = req.getRequestURI();
-    SpiRoutes.Entry route = routes.match(handlerType, uri);
+    SpiRoutes.Entry route = routes.match(routeType, uri);
     if (route == null) {
-      //todo: apply all matching filters on not found?
       handleNotFound(req, res, uri);
     } else {
       final Map<String, String> pathParams = route.pathParams(uri);
-      Context ctx = new JexHttpContext(serviceManager, req, res, pathParams, route.rawPath());
+      Context ctx = new JexHttpContext(serviceManager, req, res, pathParams, route.matchPath());
       routes.before(uri, ctx);
       route.handle(ctx);
       routes.after(uri, ctx);
     }
   }
 
-  private void handleNotFound(HttpServletRequest req, HttpServletResponse res, String requestURI) throws IOException {
+  private void handleNotFound(HttpServletRequest req, HttpServletResponse res, String uri) throws IOException {
+    //todo: apply all matching filters on not found?
     //Context ctx = new Context(req, res, Collections.emptyMap());
     res.setStatus(404);
-    res.getWriter().write("not found - " + requestURI);
+    res.getWriter().write("not found - " + uri);
   }
 
-  private Routing.Type method(HttpServletRequest hreq) {
-    return methodMap.get(hreq.getMethod());
+  private Routing.Type method(HttpServletRequest req) {
+    return methodMap.get(req.getMethod());
   }
 }

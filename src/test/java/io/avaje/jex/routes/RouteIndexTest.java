@@ -23,8 +23,8 @@ class RouteIndexTest {
     index.add(entry("/a/b/d/e/f/g/h"));
     index.add(entry("/a/b/d/e/f/g2/h"));
 
-    assertThat(index.match("/").rawPath()).isEqualTo("/");
-    assertThat(index.match("/a/b/d/e/f/g2/h").rawPath()).isEqualTo("/a/b/d/e/f/g2/h");
+    assertThat(index.match("/").matchPath()).isEqualTo("/");
+    assertThat(index.match("/a/b/d/e/f/g2/h").matchPath()).isEqualTo("/a/b/d/e/f/g2/h");
   }
 
   @Test
@@ -42,11 +42,11 @@ class RouteIndexTest {
     index.add(entry("/a/b/d/e/f/g/h"));
     index.add(entry("/a/b/d/e/f/g2/h"));
 
-    assertThat(index.match("/").rawPath()).isEqualTo("/");
-    assertThat(index.match("/42").rawPath()).isEqualTo("/{id}");
-    assertThat(index.match("/99").rawPath()).isEqualTo("/{id}");
-    assertThat(index.match("/99/a").rawPath()).isEqualTo("/{id}/a");
-    assertThat(index.match("/99/b").rawPath()).isEqualTo("/{id}/b");
+    assertThat(index.match("/").matchPath()).isEqualTo("/");
+    assertThat(index.match("/42").matchPath()).isEqualTo("/{id}");
+    assertThat(index.match("/99").matchPath()).isEqualTo("/{id}");
+    assertThat(index.match("/99/a").matchPath()).isEqualTo("/{id}/a");
+    assertThat(index.match("/99/b").matchPath()).isEqualTo("/{id}/b");
     assertThat(index.match("/99/c")).isNull();
   }
 

@@ -25,7 +25,7 @@ class FilterEntry implements SpiRoutes.Entry {
   }
 
   @Override
-  public String rawPath() {
+  public String matchPath() {
     return path;
   }
 

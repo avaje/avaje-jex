@@ -48,7 +48,7 @@ public interface SpiRoutes {
     /**
      * Return the raw path expression.
      */
-    String rawPath();
+    String matchPath();
 
     /**
      * Return the segment count.

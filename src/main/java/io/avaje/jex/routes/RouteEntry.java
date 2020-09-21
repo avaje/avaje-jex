@@ -11,23 +11,19 @@ import java.util.Set;
 
 class RouteEntry implements SpiRoutes.Entry {
 
-  private final PathParser pathParser;
-  private final Routing.Type type;
-  private final String path;
+  private final PathParser path;
   private final Handler handler;
   private final Set<Role> roles;
 
-  RouteEntry(PathParser pathParser, Routing.Entry apiEntry) {
-    this.pathParser = pathParser;
-    this.type = apiEntry.getType();
-    this.path = apiEntry.getPath();
+  RouteEntry(PathParser path, Routing.Entry apiEntry) {
+    this.path = path;
     this.handler = apiEntry.getHandler();
     this.roles = apiEntry.getRoles();
   }
 
   @Override
   public boolean matches(String requestUri) {
-    return pathParser.matches(requestUri);
+    return path.matches(requestUri);
   }
 
   @Override
@@ -37,16 +33,16 @@ class RouteEntry implements SpiRoutes.Entry {
 
   @Override
   public Map<String, String> pathParams(String uri) {
-    return pathParser.extractPathParams(uri);
+    return path.extractPathParams(uri);
   }
 
   @Override
-  public String rawPath() {
-    return pathParser.raw();
+  public String matchPath() {
+    return path.raw();
   }
 
   @Override
   public int getSegmentCount() {
-    return pathParser.getSegmentCount();
+    return path.getSegmentCount();
   }
 }
