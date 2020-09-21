@@ -1,6 +1,6 @@
 package io.avaje.jex.base;
 
-import io.avaje.jex.routes.WebApi;
+import io.avaje.jex.Jex;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
@@ -13,12 +13,15 @@ class VerbsTest {
   static TestPair pair = init();
 
   static TestPair init() {
-    WebApi.get("/", ctx -> ctx.text("ze-get"));
-    WebApi.post("/", ctx -> ctx.text("ze-post"));
-    WebApi.get("/{a}/{b}", ctx -> ctx.text("ze-get-" + ctx.pathParams()));
-    WebApi.post("/{a}/{b}", ctx -> ctx.text("ze-post-" + ctx.pathParams()));
+    final Jex app = Jex.create().routing(routing -> {
+      routing
+        .get("/", ctx -> ctx.text("ze-get"))
+        .post("/", ctx -> ctx.text("ze-post"))
+        .get("/{a}/{b}", ctx -> ctx.text("ze-get-" + ctx.pathParams()))
+        .post("/{a}/{b}", ctx -> ctx.text("ze-post-" + ctx.pathParams()));
+    });
 
-    return HelpTest.create();
+    return HelpTest.create(app);
   }
 
   @AfterAll

@@ -2,7 +2,7 @@ package io.avaje.jex.core;
 
 import org.eclipse.jetty.util.log.Logger;
 
-final class NoopLogger implements Logger {
+final class JettyNoopLogger implements Logger {
 
   public String getName() {
     return "noop";

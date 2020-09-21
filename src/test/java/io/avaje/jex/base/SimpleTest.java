@@ -13,12 +13,13 @@ class SimpleTest {
   static TestPair pair = init();
 
   static TestPair init() {
-    Jex.create()
-      .get("/", ctx -> ctx.text("hello"))
-      .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id")))
-      .get("/one/{id}/{b}", ctx -> ctx.text("path:" + ctx.pathParams() + " query:" + ctx.queryParam("z")));
-
-    return HelpTest.create();
+    Jex app = Jex.create()
+      .routing(routing -> routing
+        .get("/", ctx -> ctx.text("hello"))
+        .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id")))
+        .get("/one/{id}/{b}", ctx -> ctx.text("path:" + ctx.pathParams() + " query:" + ctx.queryParam("z")))
+      );
+    return HelpTest.create(app);
   }
 
   @AfterAll

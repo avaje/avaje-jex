@@ -23,10 +23,6 @@ public class JexConfig {
     return this;
   }
 
-  public JexServer start() {
-    return new JettyLaunch(this).start();
-  }
-
   public int getPort() {
     return port;
   }

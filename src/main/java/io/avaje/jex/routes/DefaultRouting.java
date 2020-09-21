@@ -2,6 +2,7 @@ package io.avaje.jex.routes;
 
 import io.avaje.jex.Handler;
 import io.avaje.jex.Role;
+import io.avaje.jex.Routing;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -13,46 +14,39 @@ import java.util.Set;
 /**
  *
  */
-public class WebApi {
+public class DefaultRouting implements Routing {
 
-  private static final WebApi me = new WebApi();
-
-  private final List<WebApiEntry> handlers = new ArrayList<>();
-  private final List<WebApiEntry> before = new ArrayList<>();
-  private final List<WebApiEntry> after = new ArrayList<>();
+  private final List<Routing.Entry> handlers = new ArrayList<>();
+//  private final List<WebApiEntry> before = new ArrayList<>();
+//  private final List<WebApiEntry> after = new ArrayList<>();
 
   private final Deque<String> pathDeque = new ArrayDeque<>();
 
-  private WebApi() {
+  public DefaultRouting() {
     // hide
   }
 
-  private static WebApi me() {
-    return me;
+  @Override
+  public List<Routing.Entry> all() {
+    return handlers;
   }
-
-  public static WebApiEntries all() {
-    return me().allEntries();
-  }
-
-  private WebApiEntries allEntries() {
-    return new WebApiEntries(handlers, before, after);
-  }
-
 
   private String path(String path) {
     return String.join("", pathDeque) + ((path.startsWith("/") || path.isEmpty()) ? path : "/" + path);
   }
 
-  private void addEndpoints(String path, EndpointGroup endpointGroup) {
+  private void addEndpoints(String path, Group group) {
     path = path.startsWith("/") ? path : "/" + path;
     pathDeque.addLast(path);
-    endpointGroup.addEndpoints();
+    group.addGroup();
+    //routes.accept(this);
     pathDeque.removeLast();
   }
 
-  public static void path(String path, EndpointGroup endpointGroup) {
-    me().addEndpoints(path, endpointGroup);
+  @Override
+  public Routing path(String path, Group group) {
+    addEndpoints(path, group);
+    return this;
   }
 
 //    /**
@@ -87,72 +81,96 @@ public class WebApi {
 //    }
 
 
-  private void add(HandlerType verb, String path, Handler handler, Set<Role> roles) {
-    handlers.add(new WebApiEntry(verb, path(path), handler, roles));
+  private void add(Type verb, String path, Handler handler, Set<Role> roles) {
+    handlers.add(new Entry(verb, path(path), handler, roles));
   }
 
   private void addBefore(String path, Handler handler) {
-    before.add(new WebApiEntry(path(path), handler));
+    handlers.add(new Entry(path(path), handler));
   }
 
   private void addAfter(String path, Handler handler) {
-    after.add(new WebApiEntry(path(path), handler));
+    handlers.add(new Entry(path(path), handler));
   }
 
   // ********************************************************************************************
   // HTTP verbs
   // ********************************************************************************************
 
-  public static void get(String path, Handler handler, Set<Role> permittedRoles) {
-    me().add(HandlerType.GET, path, handler, permittedRoles);
+  @Override
+  public Routing get(String path, Handler handler, Set<Role> permittedRoles) {
+    add(Type.GET, path, handler, permittedRoles);
+    return this;
   }
 
-  public static void get(String path, Handler handler) {
+  @Override
+  public Routing get(String path, Handler handler) {
     get(path, handler, Collections.emptySet());
+    return this;
   }
 
-  public static void get(Handler handler) {
+  @Override
+  public Routing get(Handler handler) {
     get("", handler);
+    return this;
   }
 
-  public static void get(Handler handler, Set<Role> permittedRoles) {
+  @Override
+  public Routing get(Handler handler, Set<Role> permittedRoles) {
     get("", handler, permittedRoles);
+    return this;
   }
 
-  public static void post(String path, Handler handler, Set<Role> permittedRoles) {
-    me().add(HandlerType.POST, path, handler, permittedRoles);
+  @Override
+  public Routing post(String path, Handler handler, Set<Role> permittedRoles) {
+    add(Type.POST, path, handler, permittedRoles);
+    return this;
   }
 
-  public static void post(String path, Handler handler) {
+  @Override
+  public Routing post(String path, Handler handler) {
     post(path, handler, Collections.emptySet());
+    return this;
   }
 
-  public static void post(Handler handler) {
+  @Override
+  public Routing post(Handler handler) {
     post("", handler);
+    return this;
   }
 
-  public static void post(Handler handler, Set<Role> permittedRoles) {
+  @Override
+  public Routing post(Handler handler, Set<Role> permittedRoles) {
     post("", handler, permittedRoles);
+    return this;
   }
 
   // ********************************************************************************************
   // Before/after handlers (filters)
   // ********************************************************************************************
 
-  public static void before(String path, Handler handler) {
-    me().addBefore(path, handler);
+  @Override
+  public Routing before(String path, Handler handler) {
+    addBefore(path, handler);
+    return this;
   }
 
-  public static void before(Handler handler) {
+  @Override
+  public Routing before(Handler handler) {
     before("/*", handler);
+    return this;
   }
 
-  public static void after(String path, Handler handler) {
-    me().addAfter(path, handler);
+  @Override
+  public Routing after(String path, Handler handler) {
+    addAfter(path, handler);
+    return this;
   }
 
-  public static void after(Handler handler) {
+  @Override
+  public Routing after(Handler handler) {
     after("/*", handler);
+    return this;
   }
 
   // ********************************************************************************************
@@ -251,4 +269,45 @@ public class WebApi {
 //        me().sse(prefixPath(""), client, permittedRoles);
 //    }
 
+  static class Entry implements Routing.Entry {
+
+    private final Type type;
+    private final String path;
+    private final Handler handler;
+    private final Set<Role> roles;
+
+    Entry(Type type, String path, Handler handler, Set<Role> roles) {
+      this.type = type;
+      this.path = path;
+      this.handler = handler;
+      this.roles = roles;
+    }
+
+    Entry(String path, Handler handler) {
+      this.path = path;
+      this.handler = handler;
+      this.type = null;
+      this.roles = null;
+    }
+
+    @Override
+    public Type getType() {
+      return type;
+    }
+
+    @Override
+    public String getPath() {
+      return path;
+    }
+
+    @Override
+    public Handler getHandler() {
+      return handler;
+    }
+
+    @Override
+    public Set<Role> getRoles() {
+      return roles;
+    }
+  }
 }

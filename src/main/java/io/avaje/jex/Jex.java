@@ -1,11 +1,15 @@
 package io.avaje.jex;
 
-import io.avaje.jex.routes.EndpointGroup;
-import io.avaje.jex.routes.WebApi;
+import io.avaje.jex.core.JettyLaunch;
+import io.avaje.jex.routes.DefaultRouting;
 
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class Jex {
+
+  private Routing routing = new DefaultRouting();
+
+  private JexConfig config = new JexConfig();
 
   private Jex() {
     // hide
@@ -15,49 +19,38 @@ public class Jex {
     return new Jex();
   }
 
-  public Jex routes(EndpointGroup endpointGroup) {
-    endpointGroup.addEndpoints();
+  public Jex routing(Routing.Service routes) {
+    routes.add(routing);
     return this;
   }
 
-  public Jex get(String path, Handler handler, Set<Role> permittedRoles) {
-    WebApi.get(path, handler, permittedRoles);
+  public Routing routing() {
+    return routing;
+  }
+
+  public Jex config(Consumer<JexConfig> consumer) {
+    consumer.accept(config);
     return this;
   }
 
-  public Jex get(String path, Handler handler) {
-    WebApi.get(path, handler);
+  public JexConfig config() {
+    return config;
+  }
+
+  public Jex port(int port) {
+    config.port(port);
     return this;
   }
 
-  public Jex get(Handler handler) {
-    WebApi.get(handler);
-    return this;
+  public Server start() {
+    return new JettyLaunch(this).start();
   }
 
-  public Jex get(Handler handler, Set<Role> permittedRoles) {
-    WebApi.get(handler, permittedRoles);
-    return this;
-  }
+  /**
+   * The running server.
+   */
+  public interface Server {
 
-  public Jex post(String path, Handler handler, Set<Role> permittedRoles) {
-    WebApi.post(path, handler, permittedRoles);
-    return this;
+    void shutdown();
   }
-
-  public Jex post(String path, Handler handler) {
-    WebApi.post(path, handler);
-    return this;
-  }
-
-  public Jex post(Handler handler) {
-    WebApi.post(handler);
-    return this;
-  }
-
-  public Jex post(Handler handler, Set<Role> permittedRoles) {
-    WebApi.post(handler, permittedRoles);
-    return this;
-  }
-
 }

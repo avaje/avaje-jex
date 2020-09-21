@@ -11,7 +11,7 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
 
-class RequestContext implements SpiContext {
+class JexHttpContext implements SpiContext {
 
   private final ServiceManager mgr;
   protected final HttpServletRequest req;
@@ -21,7 +21,7 @@ class RequestContext implements SpiContext {
 
   private String characterEncoding;
 
-  RequestContext(ServiceManager mgr, HttpServletRequest req, HttpServletResponse res, Map<String, String> pathParams, String matchedPath) {
+  JexHttpContext(ServiceManager mgr, HttpServletRequest req, HttpServletResponse res, Map<String, String> pathParams, String matchedPath) {
     this.mgr = mgr;
     this.req = req;
     this.res = res;
@@ -45,17 +45,6 @@ class RequestContext implements SpiContext {
   public <T> T bodyAsClass(Class<T> clazz) {
     return mgr.bodyAsClass(clazz, this);
   }
-
-//  /**
-//   * Creates a [Validator] for the body() value, with the prefix "Request body as $clazz"
-//   * Throws [BadRequestResponse] if validation fails.
-//   */
-//  fun <T> bodyValidator(clazz: Class<T>) = try {
-//    BodyValidator(JavalinJson.fromJson(body(), clazz), "Request body as ${clazz.simpleName}")
-//  } catch (e: Exception) {
-//    Javalin.log?.info("Couldn't deserialize body to ${clazz.simpleName}", e)
-//    throw BadRequestResponse("Couldn't deserialize body to ${clazz.simpleName}")
-//  }
 
   @Override
   public byte[] bodyAsBytes() {
@@ -86,7 +75,6 @@ class RequestContext implements SpiContext {
       return vals[0];
     }
   }
-
 
   @Override
   public Context contentType(String contentType) {

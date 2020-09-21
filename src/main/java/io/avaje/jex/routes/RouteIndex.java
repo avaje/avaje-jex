@@ -1,5 +1,7 @@
 package io.avaje.jex.routes;
 
+import io.avaje.jex.spi.SpiRoutes;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +22,11 @@ class RouteIndex {
     return Math.min(segmentCount, 5);
   }
 
-  void add(RouteEntry entry) {
+  void add(SpiRoutes.Entry entry) {
     entries[index(entry.getSegmentCount())].add(entry);
   }
 
-  RouteEntry match(String pathInfo) {
+  SpiRoutes.Entry match(String pathInfo) {
     return entries[index(segmentCount(pathInfo))].match(pathInfo);
   }
 
@@ -44,14 +46,14 @@ class RouteIndex {
 
   private static class Entry {
 
-    private final List<RouteEntry> list = new ArrayList<>();
+    private final List<SpiRoutes.Entry> list = new ArrayList<>();
 
-    void add(RouteEntry entry) {
+    void add(SpiRoutes.Entry entry) {
       list.add(entry);
     }
 
-    RouteEntry match(String pathInfo) {
-      for (RouteEntry entry : list) {
+    SpiRoutes.Entry match(String pathInfo) {
+      for (SpiRoutes.Entry entry : list) {
         if (entry.matches(pathInfo)) {
           return entry;
         }

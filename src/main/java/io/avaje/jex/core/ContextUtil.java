@@ -17,7 +17,7 @@ class ContextUtil {
 
   private static final int BUFFER_MAX = 65536;
 
-  public static String getRequestCharset(RequestContext ctx) {
+  public static String getRequestCharset(JexHttpContext ctx) {
     final String header = ctx.req.getHeader(HeaderKeys.CONTENT_TYPE);
     if (header != null) {
       return parseCharset(header);

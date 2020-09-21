@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ContextUtilTest {
+class ContextUrlDecodeTest {
 
   @Test
   void parseCharset_defaults() {

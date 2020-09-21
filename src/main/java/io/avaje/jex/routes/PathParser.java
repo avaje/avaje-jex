@@ -47,7 +47,7 @@ class PathParser {
     Map<String, String> pathMap = new LinkedHashMap<>();
     final List<String> values = values(uri);
     for (int i = 0; i < values.size(); i++) {
-      pathMap.put(paramNames.get(i), Util.urlDecode(values.get(i)));
+      pathMap.put(paramNames.get(i), UrlDecode.decode(values.get(i)));
     }
     return pathMap;
   }

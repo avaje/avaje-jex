@@ -1,16 +1,20 @@
 package io.avaje.jex.routes;
 
+import io.avaje.jex.Routing;
+import io.avaje.jex.spi.SpiRoutes;
+
 import java.util.EnumMap;
 
-public class Routes {
+class Routes implements SpiRoutes {
 
-  private final EnumMap<HandlerType, RouteIndex> typeMap;
+  private final EnumMap<Routing.Type, RouteIndex> typeMap;
 
-  public Routes(EnumMap<HandlerType, RouteIndex> typeMap) {
+  public Routes(EnumMap<Routing.Type, RouteIndex> typeMap) {
     this.typeMap = typeMap;
   }
 
-  public RouteEntry match(HandlerType type, String pathInfo) {
+  @Override
+  public Entry match(Routing.Type type, String pathInfo) {
     return typeMap.get(type).match(pathInfo);
   }
 }

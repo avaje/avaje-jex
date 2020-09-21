@@ -1,13 +1,12 @@
 package io.avaje.jex.core;
 
+import io.avaje.jex.Jex;
 import io.avaje.jex.JexConfig;
 import io.avaje.jex.JexConfigJetty;
-import io.avaje.jex.JexServer;
-import io.avaje.jex.routes.Routes;
 import io.avaje.jex.routes.RoutesBuilder;
+import io.avaje.jex.spi.SpiRoutes;
 import io.avaje.jex.spi.JsonService;
 import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -15,18 +14,20 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JettyLaunch implements JexServer {
+public class JettyLaunch implements Jex.Server {
 
   private static final org.slf4j.Logger log = LoggerFactory.getLogger(JettyLaunch.class);
 
+  private final Jex jex;
   private final JexConfig config;
   private final JexConfigJetty jetty;
   private final Logger defaultLogger;
 
-  private Server server;
+  private org.eclipse.jetty.server.Server server;
 
-  public JettyLaunch(JexConfig config) {
-    this.config = config;
+  public JettyLaunch(Jex jex) {
+    this.jex = jex;
+    this.config = jex.config();
     this.jetty = config.getJetty();
     this.defaultLogger = Log.getLog();
   }
@@ -40,8 +41,8 @@ public class JettyLaunch implements JexServer {
     }
   }
 
-  public JexServer start() {
-    final Routes routes = new RoutesBuilder().build();
+  public Jex.Server start() {
+    final SpiRoutes routes = new RoutesBuilder(jex.routing()).build();
     try {
       disableJettyLog();
       server = createServer(routes);
@@ -79,22 +80,22 @@ public class JettyLaunch implements JexServer {
     }
   }
 
-  private Server createServer(Routes routes) {
-    Server server = new Server(config.getPort());
+  private org.eclipse.jetty.server.Server createServer(SpiRoutes routes) {
+    org.eclipse.jetty.server.Server server = new org.eclipse.jetty.server.Server(config.getPort());
     server.setHandler(createContextHandler(routes));
     server.setStopAtShutdown(true);
     return server;
   }
 
-  private ServletContextHandler createContextHandler(Routes routes) {
+  private ServletContextHandler createContextHandler(SpiRoutes routes) {
     ServletContextHandler sc = new ServletContextHandler(null, config.getContextPath(), jetty.isSessions(), jetty.isSecurity());
     //SessionHandler sh = new SessionHandler();
     //sc.setSessionHandler();
-    sc.addServlet(new ServletHolder(new JexServlet(routes, serviceManager())), "/*");
+    sc.addServlet(new ServletHolder(new JexHttpServlet(routes, serviceManager())), "/*");
     return sc;
   }
 
-  private void logOnStart(Server server) {
+  private void logOnStart(org.eclipse.jetty.server.Server server) {
     for (Connector c : server.getConnectors()) {
       if (c instanceof ServerConnector) {
         ServerConnector sc = (ServerConnector) c;
@@ -111,6 +112,6 @@ public class JettyLaunch implements JexServer {
   }
 
   private void disableJettyLog() {
-    Log.setLog(new NoopLogger());
+    Log.setLog(new JettyNoopLogger());
   }
 }

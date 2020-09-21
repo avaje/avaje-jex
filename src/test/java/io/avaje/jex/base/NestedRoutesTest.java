@@ -1,13 +1,11 @@
 package io.avaje.jex.base;
 
 import io.avaje.jex.Jex;
-import io.avaje.jex.routes.WebApi;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import java.net.http.HttpResponse;
 
-import static io.avaje.jex.routes.WebApi.path;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class NestedRoutesTest {
@@ -15,21 +13,21 @@ class NestedRoutesTest {
   static TestPair pair = init();
 
   static TestPair init() {
-    Jex.create()
-      .get("/", ctx -> ctx.text("hello"))
-      .routes(() -> {
-        path("api", () -> {
-          WebApi.get(ctx -> ctx.text("apiRoot"));
-          WebApi.get("{id}", ctx -> ctx.text("api-" + ctx.pathParam("id")));
+    Jex app = Jex.create()
+      .routing(routing -> {
+        routing.get("/", ctx -> ctx.text("hello"));
+        routing.path("api", () -> {
+          routing.get(ctx -> ctx.text("apiRoot"));
+          routing.get("{id}", ctx -> ctx.text("api-" + ctx.pathParam("id")));
         });
-        path("extra", () -> {
-          WebApi.get(ctx -> ctx.text("extraRoot"));
-          WebApi.get("{id}", ctx -> ctx.text("extra-id-" + ctx.pathParam("id")));
-          WebApi.get("more/{id}", ctx -> ctx.text("extraMore-" + ctx.pathParam("id")));
+        routing.path("extra", () -> {
+          routing.get(ctx -> ctx.text("extraRoot"));
+          routing.get("{id}", ctx -> ctx.text("extra-id-" + ctx.pathParam("id")));
+          routing.get("more/{id}", ctx -> ctx.text("extraMore-" + ctx.pathParam("id")));
         });
       });
 
-    return HelpTest.create();
+    return HelpTest.create(app);
   }
 
   @AfterAll

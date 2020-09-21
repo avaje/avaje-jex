@@ -1,5 +1,6 @@
 package io.avaje.jex.routes;
 
+import io.avaje.jex.spi.SpiRoutes;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,7 +46,7 @@ class RouteIndexTest {
     assertThat(index.match("/99/c")).isNull();
   }
 
-  private RouteEntry entry(String path) {
-    return new RouteEntry(new PathParser(path), new WebApiEntry(null, null));
+  private SpiRoutes.Entry entry(String path) {
+    return new RouteEntry(new PathParser(path), new DefaultRouting.Entry(null, null));
   }
 }

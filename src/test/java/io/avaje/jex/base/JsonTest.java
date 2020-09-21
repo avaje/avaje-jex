@@ -11,12 +11,14 @@ class JsonTest {
   static TestPair pair = init();
 
   static TestPair init() {
-    Jex.create()
-      .get("/", ctx ->
-        ctx.json(HelloDto.rob()))
-      .post("/", ctx -> ctx.text("bean[" + ctx.bodyAsClass(HelloDto.class) + "]"));
+    Jex app = Jex.create()
+      .routing(routing -> {
+        routing
+          .get("/", ctx -> ctx.json(HelloDto.rob()))
+          .post("/", ctx -> ctx.text("bean[" + ctx.bodyAsClass(HelloDto.class) + "]"));
+      });
 
-    return HelpTest.create();
+    return HelpTest.create(app);
   }
 
   @AfterAll
