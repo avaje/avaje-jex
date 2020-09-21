@@ -16,8 +16,8 @@ class SimpleTest {
     Jex app = Jex.create()
       .routing(routing -> routing
         .get("/", ctx -> ctx.text("hello"))
-        .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id")))
-        .get("/one/{id}/{b}", ctx -> ctx.text("path:" + ctx.pathParams() + " query:" + ctx.queryParam("z")))
+        .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id") + "|match:" + ctx.matchedPath()))
+        .get("/one/{id}/{b}", ctx -> ctx.text("path:" + ctx.pathParams() + "|query:" + ctx.queryParam("z") + "|match:" + ctx.matchedPath()))
       );
     return HelpTest.create(app);
   }
@@ -40,13 +40,13 @@ class SimpleTest {
       .path("one").path("foo").get().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.body()).isEqualTo("one-foo");
+    assertThat(res.body()).isEqualTo("one-foo|match:/one/{id}");
 
     res = pair.request()
       .path("one").path("bar").get().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.body()).isEqualTo("one-bar");
+    assertThat(res.body()).isEqualTo("one-bar|match:/one/{id}");
   }
 
   @Test
@@ -56,14 +56,14 @@ class SimpleTest {
       .get().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.body()).isEqualTo("path:{id=foo, b=bar} query:null");
+    assertThat(res.body()).isEqualTo("path:{id=foo, b=bar}|query:null|match:/one/{id}/{b}");
 
     res = pair.request()
       .path("one").path("fo").path("ba").param("z", "42")
       .get().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.body()).isEqualTo("path:{id=fo, b=ba} query:42");
+    assertThat(res.body()).isEqualTo("path:{id=fo, b=ba}|query:42|match:/one/{id}/{b}");
   }
 
 }
