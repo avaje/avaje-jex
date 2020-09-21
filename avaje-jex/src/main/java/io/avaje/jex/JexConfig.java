@@ -14,6 +14,8 @@ public class JexConfig {
 
   private AccessManager accessManager;
 
+  private boolean prefer405 = true;
+
   /**
    * Set the context path.
    */
@@ -87,5 +89,9 @@ public class JexConfig {
    */
   public AccessManager getAccessManager() {
     return accessManager;
+  }
+
+  public boolean isPrefer405() {
+    return prefer405;
   }
 }

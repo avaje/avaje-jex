@@ -8,6 +8,8 @@ public class Jex {
 
   private final Routing routing = new DefaultRouting();
 
+  private final ErrorHandling errorHandling = new DefaultErrorHandling();
+
   private final JexConfig config = new JexConfig();
 
   private Jex() {
@@ -16,6 +18,15 @@ public class Jex {
 
   public static Jex create() {
     return new Jex();
+  }
+
+  public Jex errorHandling(ErrorHandling.Service service) {
+    service.add(errorHandling);
+    return this;
+  }
+
+  public ErrorHandling errorHandling() {
+    return errorHandling;
   }
 
   public Jex routing(Routing.Service routes) {

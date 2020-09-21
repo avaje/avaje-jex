@@ -91,7 +91,7 @@ public class JettyLaunch implements Jex.Server {
     ServletContextHandler sc = new ServletContextHandler(null, config.getContextPath(), jetty.isSessions(), jetty.isSecurity());
     //SessionHandler sh = new SessionHandler();
     //sc.setSessionHandler();
-    sc.addServlet(new ServletHolder(new JexHttpServlet(routes, serviceManager())), "/*");
+    sc.addServlet(new ServletHolder(new JexHttpServlet(config, routes, serviceManager())), "/*");
     return sc;
   }
 

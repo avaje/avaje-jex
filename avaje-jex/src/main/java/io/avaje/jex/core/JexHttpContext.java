@@ -79,6 +79,12 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
+  public Context status(int statusCode) {
+    res.setStatus(statusCode);
+    return this;
+  }
+
+  @Override
   public Context contentType(String contentType) {
     res.setContentType(contentType);
     return this;

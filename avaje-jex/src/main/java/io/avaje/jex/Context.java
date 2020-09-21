@@ -78,4 +78,9 @@ public interface Context {
    * @param value The header value
    */
   void header(String key, String value);
+
+  /**
+   * Set the status code on the response.
+   */
+  Context status(int statusCode);
 }
