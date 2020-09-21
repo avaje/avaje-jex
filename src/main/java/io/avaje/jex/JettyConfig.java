@@ -1,6 +1,6 @@
 package io.avaje.jex;
 
-public class JexConfigJetty {
+public class JettyConfig {
 
   boolean sessions = true;
 

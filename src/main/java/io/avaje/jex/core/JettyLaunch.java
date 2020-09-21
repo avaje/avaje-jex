@@ -2,7 +2,7 @@ package io.avaje.jex.core;
 
 import io.avaje.jex.Jex;
 import io.avaje.jex.JexConfig;
-import io.avaje.jex.JexConfigJetty;
+import io.avaje.jex.JettyConfig;
 import io.avaje.jex.routes.RoutesBuilder;
 import io.avaje.jex.spi.SpiRoutes;
 import io.avaje.jex.spi.JsonService;
@@ -20,7 +20,7 @@ public class JettyLaunch implements Jex.Server {
 
   private final Jex jex;
   private final JexConfig config;
-  private final JexConfigJetty jetty;
+  private final JettyConfig jetty;
   private final Logger defaultLogger;
 
   private org.eclipse.jetty.server.Server server;

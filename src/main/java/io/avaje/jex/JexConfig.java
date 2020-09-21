@@ -1,6 +1,5 @@
 package io.avaje.jex;
 
-import io.avaje.jex.core.JettyLaunch;
 import io.avaje.jex.spi.JsonService;
 
 public class JexConfig {
@@ -9,7 +8,7 @@ public class JexConfig {
 
   private String contextPath = "/";
 
-  private JexConfigJetty jetty = new JexConfigJetty();
+  private JettyConfig jetty = new JettyConfig();
 
   private JsonService jsonService;
 
@@ -31,7 +30,7 @@ public class JexConfig {
     return contextPath;
   }
 
-  public JexConfigJetty getJetty() {
+  public JettyConfig getJetty() {
     return jetty;
   }
 
