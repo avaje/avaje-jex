@@ -66,6 +66,11 @@ public interface Context {
   Context text(String content);
 
   /**
+   * Write html content to the response.
+   */
+  Context html(String content);
+
+  /**
    * Set the response body as JSON for the given bean.
    */
   Context json(Object bean);
@@ -94,5 +99,6 @@ public interface Context {
    * @param value The header value
    */
   void header(String key, String value);
+
 
 }

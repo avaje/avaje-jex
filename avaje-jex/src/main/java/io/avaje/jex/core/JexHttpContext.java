@@ -116,9 +116,15 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
-  public Context text(String one) {
+  public Context text(String content) {
     res.setContentType("text/plain");
-    return write(one);
+    return write(content);
+  }
+
+  @Override
+  public Context html(String content) {
+    res.setContentType("text/html");
+    return write(content);
   }
 
   @Override

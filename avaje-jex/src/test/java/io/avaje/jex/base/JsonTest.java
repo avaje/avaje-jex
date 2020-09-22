@@ -4,6 +4,9 @@ import io.avaje.jex.Jex;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
+import java.net.http.HttpHeaders;
+import java.net.http.HttpResponse;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class JsonTest {
@@ -33,6 +36,12 @@ class JsonTest {
 
     assertThat(bean.id).isEqualTo(42);
     assertThat(bean.name).isEqualTo("rob");
+
+    final HttpResponse<String> hres = pair.request()
+      .get().asString();
+
+    final HttpHeaders headers = hres.headers();
+    assertThat(headers.firstValue("Content-Type").get()).isEqualTo("application/json");
   }
 
   @Test
