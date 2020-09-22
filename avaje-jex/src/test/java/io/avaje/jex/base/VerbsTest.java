@@ -17,6 +17,8 @@ class VerbsTest {
       .routing(routing -> routing
         .get("/", ctx -> ctx.text("ze-get"))
         .post("/", ctx -> ctx.text("ze-post"))
+        .get("/head", ctx -> ctx.text("req-header-map[" + ctx.headerMap() + "]"))
+        .post("/echo", ctx -> ctx.text("req-body[" + ctx.body() + "]"))
         .get("/{a}/{b}", ctx -> ctx.text("ze-get-" + ctx.pathParams()))
         .post("/{a}/{b}", ctx -> ctx.text("ze-post-" + ctx.pathParams())));
 
@@ -38,6 +40,23 @@ class VerbsTest {
   void post() {
     HttpResponse<String> res = pair.request().body("simple").post().asString();
     assertThat(res.body()).isEqualTo("ze-post");
+  }
+
+  @Test
+  void ctx_headerMap() {
+    HttpResponse<String> res = pair.request().path("head")
+      .header("X-Foo","a")
+      .header("X-Bar", "b")
+      .get().asString();
+
+    assertThat(res.body()).contains("X-Foo=a");
+    assertThat(res.body()).contains("X-Bar=b");
+  }
+
+  @Test
+  void post_body() {
+    HttpResponse<String> res = pair.request().path("echo").body("simple").post().asString();
+    assertThat(res.body()).isEqualTo("req-body[simple]");
   }
 
   @Test
