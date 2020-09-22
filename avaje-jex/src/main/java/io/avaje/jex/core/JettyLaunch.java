@@ -56,7 +56,7 @@ public class JettyLaunch implements Jex.Server {
   }
 
   private ServiceManager serviceManager() {
-    return new ServiceManager(initJsonService());
+    return new ServiceManager(initJsonService(), jex.errorHandling());
   }
 
   private JsonService initJsonService() {

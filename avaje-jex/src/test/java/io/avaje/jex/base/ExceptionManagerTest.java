@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 
 import java.net.http.HttpResponse;
 
-class ExceptionHandlerTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+class ExceptionManagerTest {
 
   static TestPair pair = init();
 
@@ -21,10 +23,8 @@ class ExceptionHandlerTest {
           throw new IllegalStateException("foo");
         }))
       .exception(NullPointerException.class, (exception, ctx) -> ctx.text("npe"))
-      .exception(IllegalStateException.class, (exception, ctx) ->
-              ctx.status(222).text("Handled IllegalStateException|" + exception.getMessage()))
-      .exception(ForbiddenResponse.class, (exception, ctx) ->
-          ctx.status(223).text("Handled ForbiddenResponse|" + exception.getMessage()));
+      .exception(IllegalStateException.class, (exception, ctx) -> ctx.status(222).text("Handled IllegalStateException|" + exception.getMessage()))
+      .exception(ForbiddenResponse.class, (exception, ctx) -> ctx.status(223).text("Handled ForbiddenResponse|" + exception.getMessage()));
 
     return TestPair.create(app);
   }
@@ -36,19 +36,16 @@ class ExceptionHandlerTest {
 
   @Test
   void get() {
-    HttpResponse<String> res = pair.request()
-      .get().asString();
-
-//    assertThat(res.statusCode()).isEqualTo(223);
-//    assertThat(res.body()).isEqualTo("Handled ForbiddenResponse");
+    HttpResponse<String> res = pair.request().get().asString();
+    assertThat(res.statusCode()).isEqualTo(223);
+    assertThat(res.body()).isEqualTo("Handled ForbiddenResponse|Forbidden");
   }
 
   @Test
   void post() {
     HttpResponse<String> res = pair.request().body("simple").post().asString();
-//    assertThat(res.statusCode()).isEqualTo(222);
-//    assertThat(res.body()).isEqualTo("ze-post");
+    assertThat(res.statusCode()).isEqualTo(222);
+    assertThat(res.body()).isEqualTo("Handled IllegalStateException|foo");
   }
-
 
 }

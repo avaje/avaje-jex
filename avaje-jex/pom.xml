@@ -15,7 +15,7 @@
   </parent>
 
   <properties>
-    <jetty.version>9.4.30.v20200611</jetty.version>
+    <jetty.version>9.4.31.v20200723</jetty.version>
   </properties>
 
   <dependencies>
@@ -23,12 +23,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.7.30</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-server</artifactId>
-      <version>${jetty.version}</version>
     </dependency>
 
     <dependency>
@@ -43,12 +37,6 @@
       <version>2.11.2</version>
       <optional>true</optional>
     </dependency>
-
-    <!--    <dependency>-->
-    <!--      <groupId>org.eclipse.jetty.websocket</groupId>-->
-    <!--      <artifactId>websocket-server</artifactId>-->
-    <!--      <version>${jetty.version}</version>-->
-    <!--    </dependency>-->
 
     <!-- test dependencies -->
 
