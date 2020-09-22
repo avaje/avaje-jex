@@ -44,7 +44,7 @@ class ExceptionManager {
     final HttpResponseException e = unwrap(exception);
     ctx.status(e.getStatus());
     if (useJson(ctx)) {
-      ctx.text(asJsonContent(e)).contentType("application/json");
+      ctx.contentType("application/json").write(asJsonContent(e));
     } else {
       ctx.text(asTextContent(e));
     }
@@ -80,6 +80,5 @@ class ExceptionManager {
     return (acceptHeader != null && acceptHeader.contains("application/json")
       || "application/json".equals(ctx.contentType()));
   }
-
 
 }

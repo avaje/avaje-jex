@@ -9,16 +9,17 @@ public interface Context {
    */
   String matchedPath();
 
-  /***
-   * Return the request body as bean.
-   * @param clazz The bean type
-   */
-  <T> T bodyAsClass(Class<T> clazz);
-
   /**
    * Return the request body as bytes.
    */
   byte[] bodyAsBytes();
+
+  /***
+   * Return the request body as bean.
+   *
+   * @param beanType The bean type
+   */
+  <T> T bodyAsClass(Class<T> beanType);
 
   /**
    * Return the request body as String.
@@ -45,14 +46,9 @@ public interface Context {
   String queryParam(String name);
 
   /**
-   * Set the response text content.
+   * Set the status code on the response.
    */
-  Context text(String content);
-
-  /**
-   * Set the response body as JSON for the given bean.
-   */
-  Context json(Object bean);
+  Context status(int statusCode);
 
   /**
    * Set the response content type.
@@ -63,6 +59,21 @@ public interface Context {
    * Return the content type currently set on the response.
    */
   String contentType();
+
+  /**
+   * Write plain text content to the response.
+   */
+  Context text(String content);
+
+  /**
+   * Set the response body as JSON for the given bean.
+   */
+  Context json(Object bean);
+
+  /**
+   * Write raw content to the response.
+   */
+  Context write(String content);
 
   /**
    * Return all the request headers as a map.
@@ -84,8 +95,4 @@ public interface Context {
    */
   void header(String key, String value);
 
-  /**
-   * Set the status code on the response.
-   */
-  Context status(int statusCode);
 }

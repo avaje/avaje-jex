@@ -118,12 +118,7 @@ class JexHttpContext implements SpiContext {
   @Override
   public Context text(String one) {
     res.setContentType("text/plain");
-    try {
-      res.getWriter().write(one);
-      return this;
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    return write(one);
   }
 
   @Override
@@ -131,6 +126,16 @@ class JexHttpContext implements SpiContext {
     contentType("application/json");
     mgr.jsonWrite(bean, this);
     return this;
+  }
+
+  @Override
+  public Context write(String content) {
+    try {
+      res.getWriter().write(content);
+      return this;
+    } catch (IOException e) {
+      throw new IORuntimeException(e);
+    }
   }
 
   @Override
