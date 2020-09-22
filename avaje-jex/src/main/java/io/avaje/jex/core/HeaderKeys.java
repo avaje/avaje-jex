@@ -2,6 +2,7 @@ package io.avaje.jex.core;
 
 public class HeaderKeys {
 
+  public static final String ACCEPT = "Accept";
   public static final String CONTENT_ENCODING = "Content-Encoding";
   public static final String CONTENT_DISPOSITION = "Content-Disposition";
   public static final String CONTENT_LANGUAGE = "Content-Language";

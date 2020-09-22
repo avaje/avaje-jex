@@ -60,6 +60,11 @@ public interface Context {
   Context contentType(String contentType);
 
   /**
+   * Return the content type currently set on the response.
+   */
+  String contentType();
+
+  /**
    * Return all the request headers as a map.
    */
   Map<String, String> headerMap();
