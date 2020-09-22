@@ -26,7 +26,7 @@ class ExceptionHandlerTest {
       .exception(ForbiddenResponse.class, (exception, ctx) ->
           ctx.status(223).text("Handled ForbiddenResponse|" + exception.getMessage()));
 
-    return HelpTest.create(app);
+    return TestPair.create(app);
   }
 
   @AfterAll

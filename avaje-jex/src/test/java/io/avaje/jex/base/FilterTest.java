@@ -26,7 +26,7 @@ class FilterTest {
         .after("/two/*", ctx -> ctx.header("after-two", "set"))
       );
 
-    return HelpTest.create(app);
+    return TestPair.create(app);
   }
 
   @AfterAll

@@ -19,7 +19,7 @@ class SimpleTest {
         .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id") + "|match:" + ctx.matchedPath()))
         .get("/one/{id}/{b}", ctx -> ctx.text("path:" + ctx.pathParams() + "|query:" + ctx.queryParam("z") + "|match:" + ctx.matchedPath()))
       );
-    return HelpTest.create(app);
+    return TestPair.create(app);
   }
 
   @AfterAll

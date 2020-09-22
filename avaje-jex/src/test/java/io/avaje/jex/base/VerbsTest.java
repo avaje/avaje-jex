@@ -20,7 +20,7 @@ class VerbsTest {
         .get("/{a}/{b}", ctx -> ctx.text("ze-get-" + ctx.pathParams()))
         .post("/{a}/{b}", ctx -> ctx.text("ze-post-" + ctx.pathParams())));
 
-    return HelpTest.create(app);
+    return TestPair.create(app);
   }
 
   @AfterAll

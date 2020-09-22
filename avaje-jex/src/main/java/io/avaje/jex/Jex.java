@@ -47,19 +47,25 @@ public class Jex {
     return config;
   }
 
+  /**
+   * Set the port to use.
+   */
   public Jex port(int port) {
     config.port(port);
     return this;
   }
 
   /**
-   * Adds an exception mapper to the instance.
+   * Add an exception handler for the given exception type.
    */
   public <T extends Exception> Jex exception(Class<T> exceptionClass, ExceptionHandler<T> handler) {
     errorHandling.exception(exceptionClass, handler);
     return this;
   }
 
+  /**
+   * Start the server.
+   */
   public Server start() {
     return new JettyLaunch(this).start();
   }

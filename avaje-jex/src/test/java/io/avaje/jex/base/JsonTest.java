@@ -16,7 +16,7 @@ class JsonTest {
         .get("/", ctx -> ctx.json(HelloDto.rob()))
         .post("/", ctx -> ctx.text("bean[" + ctx.bodyAsClass(HelloDto.class) + "]")));
 
-    return HelpTest.create(app);
+    return TestPair.create(app);
   }
 
   @AfterAll

@@ -25,7 +25,7 @@ class NestedRoutesTest {
           routing.get("{id}", ctx -> ctx.text("extra-id-" + ctx.pathParam("id")));
           routing.get("more/{id}", ctx -> ctx.text("extraMore-" + ctx.pathParam("id")));
         }));
-    return HelpTest.create(app);
+    return TestPair.create(app);
   }
 
   @AfterAll
