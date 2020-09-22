@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.net.http.HttpResponse;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 class ExceptionHandlerTest {
 
   static TestPair pair = init();
@@ -22,16 +20,11 @@ class ExceptionHandlerTest {
         .post("/", ctx -> {
           throw new IllegalStateException("foo");
         }))
-      .errorHandling(errorHandling -> {
-        errorHandling
-          .exception(IllegalStateException.class,
-            (exception, ctx) ->
+      .exception(NullPointerException.class, (exception, ctx) -> ctx.text("npe"))
+      .exception(IllegalStateException.class, (exception, ctx) ->
               ctx.status(222).text("Handled IllegalStateException|" + exception.getMessage()))
-
-          .exception(ForbiddenResponse.class,
-            (exception, ctx) ->
-              ctx.status(223).text("Handled ForbiddenResponse|" + exception.getMessage()));
-      });
+      .exception(ForbiddenResponse.class, (exception, ctx) ->
+          ctx.status(223).text("Handled ForbiddenResponse|" + exception.getMessage()));
 
     return HelpTest.create(app);
   }

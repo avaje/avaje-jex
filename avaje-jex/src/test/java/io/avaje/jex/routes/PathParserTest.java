@@ -12,9 +12,33 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class PathParserTest {
 
   @Test
+  void matches_trailingSlash_honor() {
+
+    var pathParser = new PathParser("/one/{id}/", false);
+    assertThat(pathParser.getSegmentCount()).isEqualTo(3);
+
+    assertTrue(pathParser.matches("/one/1/"));
+    assertTrue(pathParser.matches("/one/2/"));
+    assertTrue(pathParser.matches("/one/3//")); // accepts trailing double slash?
+    assertFalse(pathParser.matches("/one/3///")); // but not triple slash?
+    assertFalse(pathParser.matches("/one/1"));
+    assertFalse(pathParser.matches("/one/2"));
+  }
+
+  @Test
+  void matches_trailingSlash_ignore() {
+
+    var pathParser = new PathParser("/one/{id}///", true);
+    assertTrue(pathParser.matches("/one/1"));
+    assertTrue(pathParser.matches("/one/2"));
+    assertTrue(pathParser.matches("/one/2/"));
+    assertThat(pathParser.getSegmentCount()).isEqualTo(2);
+  }
+
+  @Test
   void matches_litArg() {
 
-    var pathParser = new PathParser("/one/{id}");
+    var pathParser = new PathParser("/one/{id}", true);
     assertTrue(pathParser.matches("/one/1"));
     assertTrue(pathParser.matches("/one/2"));
     assertThat(pathParser.getSegmentCount()).isEqualTo(2);
@@ -30,7 +54,7 @@ class PathParserTest {
   @Test
   void matches_argArgArg() {
 
-    final PathParser pathParser = new PathParser("/{a}/{b}/{c}");
+    final PathParser pathParser = new PathParser("/{a}/{b}/{c}", true);
     assertTrue(pathParser.matches("/1a/2b/3c"));
     assertThat(pathParser.getSegmentCount()).isEqualTo(3);
     assertThat(pathParser.raw()).isEqualTo("/{a}/{b}/{c}");
@@ -46,7 +70,7 @@ class PathParserTest {
   @Test
   void matches_litArgArgArg() {
 
-    final PathParser pathParser = new PathParser("/one/{a}/{b}/{c}");
+    final PathParser pathParser = new PathParser("/one/{a}/{b}/{c}", true);
     assertThat(pathParser.getSegmentCount()).isEqualTo(4);
     assertTrue(pathParser.matches("/one/1a/2b/3c"));
     assertTrue(pathParser.matches("/one/foo/bar/baz"));
@@ -62,7 +86,7 @@ class PathParserTest {
   @Test
   void matches_litArgLitArgArgLit() {
 
-    final PathParser pathParser = new PathParser("/one/{a}/two/{b}/{c}/end");
+    final PathParser pathParser = new PathParser("/one/{a}/two/{b}/{c}/end", true);
     assertThat(pathParser.getSegmentCount()).isEqualTo(6);
     assertTrue(pathParser.matches("/one/1a/two/2b/3c/end"));
     assertFalse(pathParser.matches("/on/1a/two/2b/3c/end"));
@@ -81,7 +105,7 @@ class PathParserTest {
   @Test
   void matches_litLit() {
 
-    final PathParser pathParser = new PathParser("/one/two");
+    final PathParser pathParser = new PathParser("/one/two", true);
     assertTrue(pathParser.matches("/one/two"));
     assertTrue(pathParser.matches("/one/two/"));
 
@@ -93,7 +117,7 @@ class PathParserTest {
 
   @Test
   void matches_before_litPrefix() {
-    final PathParser pathParser = new PathParser("/one/*");
+    final PathParser pathParser = new PathParser("/one/*", true);
     assertTrue(pathParser.matches("/one/two"));
     assertTrue(pathParser.matches("/one/two/three"));
     assertTrue(pathParser.matches("/one/two/three/four"));
@@ -101,7 +125,7 @@ class PathParserTest {
 
   @Test
   void matches_before_litPrefixAndSuffix() {
-    final PathParser pathParser = new PathParser("/one/*/three");
+    final PathParser pathParser = new PathParser("/one/*/three", true);
     assertTrue(pathParser.matches("/one/two/three"));
     assertTrue(pathParser.matches("/one/foo/three"));
 
@@ -111,7 +135,7 @@ class PathParserTest {
 
   @Test
   void matches_before_litPrefixAndSuffixAndWild() {
-    final PathParser pathParser = new PathParser("/one/*/three/*");
+    final PathParser pathParser = new PathParser("/one/*/three/*", true);
     assertTrue(pathParser.matches("/one/99/three/1000"));
     assertTrue(pathParser.matches("/one/99/three/1000/banana"));
     assertTrue(pathParser.matches("/one/two/three/four"));

@@ -52,6 +52,14 @@ public class Jex {
     return this;
   }
 
+  /**
+   * Adds an exception mapper to the instance.
+   */
+  public <T extends Exception> Jex exception(Class<T> exceptionClass, ExceptionHandler<T> handler) {
+    errorHandling.exception(exceptionClass, handler);
+    return this;
+  }
+
   public Server start() {
     return new JettyLaunch(this).start();
   }

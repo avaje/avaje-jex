@@ -17,10 +17,10 @@ class FilterEntry implements SpiRoutes.Entry {
   private final PathParser pathParser;
   private final Handler handler;
 
-  FilterEntry(Routing.Entry entry) {
+  FilterEntry(Routing.Entry entry, boolean ignoreTrailingSlashes) {
     this.path = entry.getPath();
     this.matchAll = "/*".equals(path) || "*".equals(path);
-    this.pathParser = matchAll ? null : new PathParser(path);
+    this.pathParser = matchAll ? null : new PathParser(path, ignoreTrailingSlashes);
     this.handler = entry.getHandler();
   }
 

@@ -42,7 +42,7 @@ public class JettyLaunch implements Jex.Server {
   }
 
   public Jex.Server start() {
-    final SpiRoutes routes = new RoutesBuilder(jex.routing()).build();
+    final SpiRoutes routes = new RoutesBuilder(jex.routing(), jex.config()).build();
     try {
       disableJettyLog();
       server = createServer(routes);

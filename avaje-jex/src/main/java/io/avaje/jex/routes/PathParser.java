@@ -19,7 +19,7 @@ class PathParser {
   private final Pattern pathParamRegex;
   private int segmentCount;
 
-  PathParser(String path) {
+  PathParser(String path, boolean ignoreTrailingSlashes) {
     this.rawPath = path;
     StringJoiner full = new StringJoiner("/");
     for (String rawSeg : path.split("/")) {
@@ -33,8 +33,13 @@ class PathParser {
         }
       }
     }
+    String parts = full.toString();
+    if (!ignoreTrailingSlashes && path.endsWith("/")) {
+      segmentCount++;
+      parts += "\\/";
+    }
 
-    final String rawRegex = "^/" + full.toString() + "/?$";
+    final String rawRegex = "^/" + parts + "/?$";
     this.matchRegex = Pattern.compile(rawRegex);
     this.pathParamRegex = Pattern.compile(rawRegex.replace("[^/]+?", "([^/]+?)"));
   }

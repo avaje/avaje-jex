@@ -51,6 +51,6 @@ class RouteIndexTest {
   }
 
   private SpiRoutes.Entry entry(String path) {
-    return new RouteEntry(new PathParser(path), routingEntry);
+    return new RouteEntry(new PathParser(path, true), routingEntry);
   }
 }

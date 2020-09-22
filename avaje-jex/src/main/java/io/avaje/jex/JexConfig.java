@@ -15,6 +15,7 @@ public class JexConfig {
   private AccessManager accessManager;
 
   private boolean prefer405 = true;
+  private boolean ignoreTrailingSlashes = true;
 
   /**
    * Set the context path.
@@ -93,5 +94,9 @@ public class JexConfig {
 
   public boolean isPrefer405() {
     return prefer405;
+  }
+
+  public boolean isIgnoreTrailingSlashes() {
+    return ignoreTrailingSlashes;
   }
 }
