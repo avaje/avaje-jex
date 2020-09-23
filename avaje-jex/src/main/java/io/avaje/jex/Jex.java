@@ -1,6 +1,7 @@
 package io.avaje.jex;
 
 import io.avaje.jex.core.JettyLaunch;
+import io.avaje.jex.spi.JsonService;
 
 import java.util.function.Consumer;
 
@@ -10,9 +11,9 @@ public class Jex {
 
   private final ErrorHandling errorHandling = new DefaultErrorHandling();
 
-  private final JexConfig config = new JexConfig();
-
   private final StaticFileConfig staticFiles;
+
+  public final Inner inner = new Inner();
 
   private Jex() {
     this.staticFiles = new DefaultStaticFileConfig(this);
@@ -20,6 +21,19 @@ public class Jex {
 
   public static Jex create() {
     return new Jex();
+  }
+
+  public class Inner {
+
+    public JettyConfig jetty = new JettyConfig();
+    public int port = 7001;
+    public String contextPath = "/";
+    public boolean prefer405 = true;
+    public boolean ignoreTrailingSlashes = true;
+
+    public boolean preCompressStaticFiles;
+    public JsonService jsonService;
+    public AccessManager accessManager;
   }
 
   public Jex errorHandling(ErrorHandling.Service service) {
@@ -40,23 +54,35 @@ public class Jex {
     return routing;
   }
 
-  public Jex config(Consumer<JexConfig> consumer) {
-    consumer.accept(config);
+
+  /***
+   * Set the AccessManager.
+   */
+  public Jex accessManager(AccessManager accessManager) {
+    this.inner.accessManager = accessManager;
     return this;
   }
 
-  public JexConfig config() {
-    return config;
+  /***
+   * Set the JsonService.
+   */
+  public Jex jsonService(JsonService jsonService) {
+    this.inner.jsonService = jsonService;
+    return this;
   }
 
   /**
-   * Set the port to use.
+   * Set the jetty config.
    */
-  public Jex port(int port) {
-    config.port(port);
+  public Jex jetty(JettyConfig jetty) {
+    this.inner.jetty = jetty;
     return this;
   }
 
+  public Jex configure(Consumer<Jex> configure) {
+    configure.accept(this);
+    return this;
+  }
   /**
    * Add an exception handler for the given exception type.
    */
@@ -66,14 +92,30 @@ public class Jex {
   }
 
   /**
-   * Start the server.
+   * Set the port to use.
    */
-  public Server start() {
-    return new JettyLaunch(this).start();
+  public Jex port(int port) {
+    this.inner.port = port;
+    return this;
+  }
+
+  /**
+   * Set the context path.
+   */
+  public Jex context(String contextPath) {
+    this.inner.contextPath = contextPath;
+    return this;
   }
 
   public StaticFileConfig staticFiles() {
     return staticFiles;
+  }
+
+  /**
+   * Start the server.
+   */
+  public Server start() {
+    return new JettyLaunch(this).start();
   }
 
   /**

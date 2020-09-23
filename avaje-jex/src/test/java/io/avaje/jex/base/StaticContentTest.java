@@ -18,8 +18,7 @@ class StaticContentTest {
       .routing(routing -> routing
         .get("/", ctx -> ctx.text("ze-get"))
         .get("/foo", ctx -> ctx.text("ze-post"))
-      ).config( config -> {
-      })
+      )
       .staticFiles().addClasspath("/static", "static-a")
       .staticFiles().addExternal("/other", "test-static-files");
     ;

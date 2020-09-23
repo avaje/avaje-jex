@@ -1,7 +1,7 @@
 package io.avaje.jex.core;
 
 import io.avaje.jex.Context;
-import io.avaje.jex.JexConfig;
+import io.avaje.jex.Jex;
 import io.avaje.jex.Routing;
 import io.avaje.jex.http.NotFoundResponse;
 import io.avaje.jex.spi.SpiRoutes;
@@ -21,11 +21,11 @@ class JexHttpServlet extends HttpServlet {
   private final HttpMethodMap methodMap = new HttpMethodMap();
   private final boolean prefer405;
 
-  public JexHttpServlet(JexConfig config, SpiRoutes routes, ServiceManager manager, StaticHandler staticHandler) {
+  public JexHttpServlet(Jex jex, SpiRoutes routes, ServiceManager manager, StaticHandler staticHandler) {
     this.routes = routes;
     this.manager = manager;
     this.staticHandler = staticHandler;
-    this.prefer405 = config.isPrefer405();
+    this.prefer405 = jex.inner.prefer405;
   }
 
   @Override

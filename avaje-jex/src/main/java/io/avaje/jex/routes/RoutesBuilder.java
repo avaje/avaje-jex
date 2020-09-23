@@ -1,6 +1,6 @@
 package io.avaje.jex.routes;
 
-import io.avaje.jex.JexConfig;
+import io.avaje.jex.Jex;
 import io.avaje.jex.Routing;
 import io.avaje.jex.spi.SpiRoutes;
 
@@ -15,8 +15,8 @@ public class RoutesBuilder {
   private final List<SpiRoutes.Entry> after = new ArrayList<>();
   private final boolean ignoreTrailingSlashes;
 
-  public RoutesBuilder(Routing routing, JexConfig config) {
-    this.ignoreTrailingSlashes = config.isIgnoreTrailingSlashes();
+  public RoutesBuilder(Routing routing, Jex jex) {
+    this.ignoreTrailingSlashes = jex.inner.ignoreTrailingSlashes;
     for (Routing.Entry handler : routing.all()) {
       switch (handler.getType()) {
         case BEFORE:

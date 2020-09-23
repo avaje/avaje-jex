@@ -1,13 +1,12 @@
 package io.avaje.jex.core;
 
-import io.avaje.jex.Jex;
-import io.avaje.jex.JexConfig;
 import io.avaje.jex.JettyConfig;
+import io.avaje.jex.Jex;
 import io.avaje.jex.StaticFileSource;
-import io.avaje.jex.staticfiles.JettyStaticHandler;
 import io.avaje.jex.routes.RoutesBuilder;
-import io.avaje.jex.spi.SpiRoutes;
 import io.avaje.jex.spi.JsonService;
+import io.avaje.jex.spi.SpiRoutes;
+import io.avaje.jex.staticfiles.JettyStaticHandler;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
@@ -29,7 +28,6 @@ public class JettyLaunch implements Jex.Server {
   private static final org.slf4j.Logger log = LoggerFactory.getLogger(JettyLaunch.class);
 
   private final Jex jex;
-  private final JexConfig config;
   private final JettyConfig jetty;
   private final Logger defaultLogger;
 
@@ -37,8 +35,7 @@ public class JettyLaunch implements Jex.Server {
 
   public JettyLaunch(Jex jex) {
     this.jex = jex;
-    this.config = jex.config();
-    this.jetty = config.getJetty();
+    this.jetty = jex.inner.jetty;
     this.defaultLogger = Log.getLog();
   }
 
@@ -52,7 +49,7 @@ public class JettyLaunch implements Jex.Server {
   }
 
   public Jex.Server start() {
-    final SpiRoutes routes = new RoutesBuilder(jex.routing(), jex.config()).build();
+    final SpiRoutes routes = new RoutesBuilder(jex.routing(), jex).build();
     try {
       disableJettyLog();
       server = createServer(routes);
@@ -70,7 +67,7 @@ public class JettyLaunch implements Jex.Server {
   }
 
   private JsonService initJsonService() {
-    final JsonService jsonService = config.getJsonService();
+    final JsonService jsonService = jex.inner.jsonService;
     if (jsonService != null) {
       return jsonService;
     }
@@ -91,19 +88,19 @@ public class JettyLaunch implements Jex.Server {
   }
 
   private Server createServer(SpiRoutes routes) {
-    Server server = new Server(config.getPort());
+    Server server = new Server(jex.inner.port);
     server.setHandler(createContextHandler(routes));
     server.setStopAtShutdown(true);
     return server;
   }
 
   private ServletContextHandler createContextHandler(SpiRoutes routes) {
-    ServletContextHandler sc = new ContextHandler(config.getContextPath(), jetty.isSessions(), jetty.isSecurity());
+    ServletContextHandler sc = new ContextHandler(jex.inner.contextPath, jetty.isSessions(), jetty.isSecurity());
     //SessionHandler sh = new SessionHandler();
     //sc.setSessionHandler();
     final ServiceManager manager = serviceManager();
     final StaticHandler staticHandler = buildStaticHandler();
-    sc.addServlet(new ServletHolder(new JexHttpServlet(config, routes, manager, staticHandler)), "/*");
+    sc.addServlet(new ServletHolder(new JexHttpServlet(jex, routes, manager, staticHandler)), "/*");
     return sc;
   }
 
@@ -112,7 +109,7 @@ public class JettyLaunch implements Jex.Server {
     if (staticFileSources == null || staticFileSources.isEmpty()) {
       return null;
     }
-    final JettyStaticHandler handler = new JettyStaticHandler(config.isPreCompressStaticFiles());
+    final JettyStaticHandler handler = new JettyStaticHandler(jex.inner.preCompressStaticFiles);
     for (StaticFileSource fileConfig : staticFileSources) {
       handler.addStaticFileConfig(fileConfig);
     }
