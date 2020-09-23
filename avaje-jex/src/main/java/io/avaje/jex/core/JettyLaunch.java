@@ -3,16 +3,26 @@ package io.avaje.jex.core;
 import io.avaje.jex.Jex;
 import io.avaje.jex.JexConfig;
 import io.avaje.jex.JettyConfig;
+import io.avaje.jex.StaticFileSource;
+import io.avaje.jex.staticfiles.JettyStaticHandler;
 import io.avaje.jex.routes.RoutesBuilder;
 import io.avaje.jex.spi.SpiRoutes;
 import io.avaje.jex.spi.JsonService;
 import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 
 public class JettyLaunch implements Jex.Server {
 
@@ -80,19 +90,33 @@ public class JettyLaunch implements Jex.Server {
     }
   }
 
-  private org.eclipse.jetty.server.Server createServer(SpiRoutes routes) {
-    org.eclipse.jetty.server.Server server = new org.eclipse.jetty.server.Server(config.getPort());
+  private Server createServer(SpiRoutes routes) {
+    Server server = new Server(config.getPort());
     server.setHandler(createContextHandler(routes));
     server.setStopAtShutdown(true);
     return server;
   }
 
   private ServletContextHandler createContextHandler(SpiRoutes routes) {
-    ServletContextHandler sc = new ServletContextHandler(null, config.getContextPath(), jetty.isSessions(), jetty.isSecurity());
+    ServletContextHandler sc = new ContextHandler(config.getContextPath(), jetty.isSessions(), jetty.isSecurity());
     //SessionHandler sh = new SessionHandler();
     //sc.setSessionHandler();
-    sc.addServlet(new ServletHolder(new JexHttpServlet(config, routes, serviceManager())), "/*");
+    final ServiceManager manager = serviceManager();
+    final StaticHandler staticHandler = buildStaticHandler();
+    sc.addServlet(new ServletHolder(new JexHttpServlet(config, routes, manager, staticHandler)), "/*");
     return sc;
+  }
+
+  private StaticHandler buildStaticHandler() {
+    final List<StaticFileSource> staticFileConfig = config.getStaticFileConfig();
+    if (staticFileConfig == null || staticFileConfig.isEmpty()) {
+      return null;
+    }
+    final JettyStaticHandler handler = new JettyStaticHandler(config.isPreCompressStaticFiles());
+    for (StaticFileSource fileConfig : staticFileConfig) {
+      handler.addStaticFileConfig(fileConfig);
+    }
+    return handler;
   }
 
   private void logOnStart(org.eclipse.jetty.server.Server server) {
@@ -113,5 +137,20 @@ public class JettyLaunch implements Jex.Server {
 
   private void disableJettyLog() {
     Log.setLog(new JettyNoopLogger());
+  }
+
+  private static class ContextHandler extends ServletContextHandler {
+
+    ContextHandler(String contextPath, boolean sessions, boolean security) {
+      super(null, contextPath, sessions, security);
+    }
+
+    @Override
+    public void doHandle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+      request.setAttribute("jetty-target", target);
+      request.setAttribute("jetty-request", baseRequest);
+      nextHandle(target, baseRequest, request, response);
+      //super.doHandle(target, baseRequest,request, response);
+    }
   }
 }

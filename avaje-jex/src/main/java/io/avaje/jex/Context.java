@@ -1,5 +1,7 @@
 package io.avaje.jex;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 public interface Context {
@@ -100,5 +102,13 @@ public interface Context {
    */
   void header(String key, String value);
 
+  /**
+   * Return the underlying http servlet request.
+   */
+  HttpServletRequest req();
 
+  /**
+   * Return the underlying http servlet response.
+   */
+  HttpServletResponse res();
 }

@@ -1,6 +1,10 @@
 package io.avaje.jex;
 
+import io.avaje.jex.StaticFileSource.Location;
 import io.avaje.jex.spi.JsonService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class JexConfig {
 
@@ -16,6 +20,8 @@ public class JexConfig {
 
   private boolean prefer405 = true;
   private boolean ignoreTrailingSlashes = true;
+
+  private final List<StaticFileSource> staticFileConfig = new ArrayList<>();
 
   /**
    * Set the context path.
@@ -54,6 +60,15 @@ public class JexConfig {
    */
   public JexConfig jetty(JettyConfig jetty) {
     this.jetty = jetty;
+    return this;
+  }
+
+  public StaticFiles staticFiles() {
+    return new StaticFiles();
+  }
+
+  public JexConfig addStaticFiles(StaticFileSource config) {
+    this.staticFileConfig.add(config);
     return this;
   }
 
@@ -98,5 +113,28 @@ public class JexConfig {
 
   public boolean isIgnoreTrailingSlashes() {
     return ignoreTrailingSlashes;
+  }
+
+  public List<StaticFileSource> getStaticFileConfig() {
+    return staticFileConfig;
+  }
+
+  public boolean isPreCompressStaticFiles() {
+    return false;
+  }
+
+  public class StaticFiles {
+    public JexConfig addClasspath(String path) {
+      return addStaticFiles(new StaticFileSource("/", path, Location.CLASSPATH));
+    }
+    public JexConfig addClasspath(String urlPrefix, String path) {
+      return addStaticFiles(new StaticFileSource(urlPrefix, path, Location.CLASSPATH));
+    }
+    public JexConfig addExternal(String path) {
+      return addStaticFiles(new StaticFileSource("/", path, Location.EXTERNAL));
+    }
+    public JexConfig addExternal(String urlPrefix, String path) {
+      return addStaticFiles(new StaticFileSource(urlPrefix, path, Location.EXTERNAL));
+    }
   }
 }

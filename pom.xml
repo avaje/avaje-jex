@@ -9,6 +9,7 @@
 
   <modules>
     <module>avaje-jex</module>
+    <module>example</module>
     <!-- <module>avaje-jex-websockets</module> -->
   </modules>
 </project>

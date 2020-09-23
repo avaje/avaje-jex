@@ -15,45 +15,43 @@ import java.util.Map;
 class JexHttpServlet extends HttpServlet {
 
   //private static final String X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
-
   private final SpiRoutes routes;
-
   private final ServiceManager manager;
-
+  private final StaticHandler staticHandler;
   private final HttpMethodMap methodMap = new HttpMethodMap();
-
   private final boolean prefer405;
 
-  public JexHttpServlet(JexConfig config, SpiRoutes routes, ServiceManager manager) {
+  public JexHttpServlet(JexConfig config, SpiRoutes routes, ServiceManager manager, StaticHandler staticHandler) {
     this.routes = routes;
     this.manager = manager;
+    this.staticHandler = staticHandler;
     this.prefer405 = config.isPrefer405();
   }
 
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse res) {
 
-      final Routing.Type routeType = method(req);
-      final String uri = req.getRequestURI();
-      SpiRoutes.Entry route = routes.match(routeType, uri);
-      if (route == null) {
-        Context ctx = new JexHttpContext(manager, req, res, Collections.emptyMap(), uri);
-        try {
-          processNoRoute(ctx, uri, routeType);
-          routes.after(uri, ctx);
-        } catch (Exception e) {
-          handleException(ctx, e);
-        }
-      } else {
-        final Map<String, String> pathParams = route.pathParams(uri);
-        Context ctx = new JexHttpContext(manager, req, res, pathParams, route.matchPath());
-        try {
-          processRoute(ctx, uri, route);
-          routes.after(uri, ctx);
-        } catch (Exception e) {
-          handleException(ctx, e);
-        }
+    final Routing.Type routeType = method(req);
+    final String uri = req.getRequestURI();
+    SpiRoutes.Entry route = routes.match(routeType, uri);
+    if (route == null) {
+      Context ctx = new JexHttpContext(manager, req, res, Collections.emptyMap(), uri);
+      try {
+        processNoRoute(ctx, uri, routeType);
+        routes.after(uri, ctx);
+      } catch (Exception e) {
+        handleException(ctx, e);
       }
+    } else {
+      final Map<String, String> pathParams = route.pathParams(uri);
+      Context ctx = new JexHttpContext(manager, req, res, pathParams, route.matchPath());
+      try {
+        processRoute(ctx, uri, route);
+        routes.after(uri, ctx);
+      } catch (Exception e) {
+        handleException(ctx, e);
+      }
+    }
   }
 
   private void handleException(Context ctx, Exception e) {
@@ -72,8 +70,10 @@ class JexHttpServlet extends HttpServlet {
       return;
     }
     if (routeType == Routing.Type.GET || routeType == Routing.Type.HEAD) {
-      // todo: check if handled by static resource
-      // if (config.inner.resourceHandler?.handle(wrappedReq, JavalinResponseWrapper(rawRes, rwc)) == true) return@tryWithExceptionMapper
+      // check if handled by static resource
+      if (staticHandler != null && staticHandler.handle(ctx.req(), ctx.res())) {
+        return;
+      }
       // todo: check if handled by singlePageHandler
       //if (config.inner.singlePageHandler.handle(ctx)) return@tryWithExceptionMapper
     }

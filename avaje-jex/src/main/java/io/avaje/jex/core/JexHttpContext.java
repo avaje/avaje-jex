@@ -39,6 +39,16 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
+  public HttpServletRequest req() {
+    return req;
+  }
+
+  @Override
+  public HttpServletResponse res() {
+    return res;
+  }
+
+  @Override
   public String matchedPath() {
     return matchedPath;
   }
@@ -96,7 +106,7 @@ class JexHttpContext implements SpiContext {
   }
 
   public Map<String, String> headerMap() {
-    Map<String,String> map = new LinkedHashMap<>();
+    Map<String, String> map = new LinkedHashMap<>();
     final Enumeration<String> names = req.getHeaderNames();
     while (names.hasMoreElements()) {
       final String name = names.nextElement();
