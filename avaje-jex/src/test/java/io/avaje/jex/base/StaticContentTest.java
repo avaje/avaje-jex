@@ -19,9 +19,10 @@ class StaticContentTest {
         .get("/", ctx -> ctx.text("ze-get"))
         .get("/foo", ctx -> ctx.text("ze-post"))
       ).config( config -> {
-        config.staticFiles().addClasspath("/static", "static-a");
-        config.staticFiles().addExternal("/other", "test-static-files");
-      });
+      })
+      .staticFiles().addClasspath("/static", "static-a")
+      .staticFiles().addExternal("/other", "test-static-files");
+    ;
 
     return TestPair.create(app);
   }

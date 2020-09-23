@@ -19,10 +19,7 @@ public class Main {
           ctx.json(bean);
         })
       )
-      .config(config -> {
-        config.staticFiles().addClasspath("/static", "static-content");
-        //config.addStaticFiles(new StaticFileSource("/static", "static-content", CLASSPATH));
-      })
+      .staticFiles().addClasspath("/static", "static-content")
       .port(7003)
       .start();
   }

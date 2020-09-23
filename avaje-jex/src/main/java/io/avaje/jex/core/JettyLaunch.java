@@ -108,12 +108,12 @@ public class JettyLaunch implements Jex.Server {
   }
 
   private StaticHandler buildStaticHandler() {
-    final List<StaticFileSource> staticFileConfig = config.getStaticFileConfig();
-    if (staticFileConfig == null || staticFileConfig.isEmpty()) {
+    final List<StaticFileSource> staticFileSources = jex.staticFiles().getSources();
+    if (staticFileSources == null || staticFileSources.isEmpty()) {
       return null;
     }
     final JettyStaticHandler handler = new JettyStaticHandler(config.isPreCompressStaticFiles());
-    for (StaticFileSource fileConfig : staticFileConfig) {
+    for (StaticFileSource fileConfig : staticFileSources) {
       handler.addStaticFileConfig(fileConfig);
     }
     return handler;

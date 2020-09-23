@@ -12,8 +12,10 @@ public class Jex {
 
   private final JexConfig config = new JexConfig();
 
+  private final StaticFileConfig staticFiles;
+
   private Jex() {
-    // hide
+    this.staticFiles = new DefaultStaticFileConfig(this);
   }
 
   public static Jex create() {
@@ -68,6 +70,10 @@ public class Jex {
    */
   public Server start() {
     return new JettyLaunch(this).start();
+  }
+
+  public StaticFileConfig staticFiles() {
+    return staticFiles;
   }
 
   /**
