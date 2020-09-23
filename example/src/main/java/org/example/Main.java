@@ -1,9 +1,6 @@
 package org.example;
 
 import io.avaje.jex.Jex;
-import io.avaje.jex.StaticFileSource;
-
-import static io.avaje.jex.StaticFileSource.Location.CLASSPATH;
 
 public class Main {
 
