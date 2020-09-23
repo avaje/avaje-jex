@@ -5,22 +5,49 @@ import java.util.Set;
 
 public interface Routing {
 
+  /**
+   * Add a group of route handlers with a common path prefix.
+   */
   Routing path(String path, Group group);
 
+  /**
+   * Add a GET handler with roles.
+   */
   Routing get(String path, Handler handler, Set<Role> permittedRoles);
 
+  /**
+   * Add a GET handler.
+   */
   Routing get(String path, Handler handler);
 
+  /**
+   * Add a GET handler for "/".
+   */
   Routing get(Handler handler);
 
+  /**
+   * Add a GET handler for "/" with roles.
+   */
   Routing get(Handler handler, Set<Role> permittedRoles);
 
+  /**
+   * Add a POST handler with roles.
+   */
   Routing post(String path, Handler handler, Set<Role> permittedRoles);
 
+  /**
+   * Add a POST handler with roles.
+   */
   Routing post(String path, Handler handler);
 
+  /**
+   * Add a POST handler for "/".
+   */
   Routing post(Handler handler);
 
+  /**
+   * Add a POST handler for "/" with roles.
+   */
   Routing post(Handler handler, Set<Role> permittedRoles);
 
   /**

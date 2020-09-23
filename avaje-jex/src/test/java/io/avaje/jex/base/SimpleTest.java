@@ -13,7 +13,7 @@ class SimpleTest {
   static TestPair pair = init();
 
   static TestPair init() {
-    Jex app = Jex.create()
+    var app = Jex.create()
       .routing(routing -> routing
         .get("/", ctx -> ctx.text("hello"))
         .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id") + "|match:" + ctx.matchedPath()))

@@ -2,6 +2,13 @@
 
 Java cut down version of https://javalin.io
 
+```java
+var app = Jex.create()
+  .routing(routing -> routing
+    .get("/", ctx -> ctx.text("hello"))
+    .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id")))
+  );
+```
 
 ### Goals / intention
 

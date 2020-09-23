@@ -45,15 +45,20 @@ public class Jex {
     return errorHandling;
   }
 
+  /**
+   * Add routes and handlers to the routing.
+   */
   public Jex routing(Routing.Service routes) {
     routes.add(routing);
     return this;
   }
 
+  /**
+   * Return the Routing to configure.
+   */
   public Routing routing() {
     return routing;
   }
-
 
   /***
    * Set the AccessManager.
@@ -79,10 +84,14 @@ public class Jex {
     return this;
   }
 
+  /**
+   * Configure via a lambda taking the jex instance.
+   */
   public Jex configure(Consumer<Jex> configure) {
     configure.accept(this);
     return this;
   }
+
   /**
    * Add an exception handler for the given exception type.
    */
@@ -107,6 +116,9 @@ public class Jex {
     return this;
   }
 
+  /**
+   * Return the static file configuration.
+   */
   public StaticFileConfig staticFiles() {
     return staticFiles;
   }
@@ -123,6 +135,9 @@ public class Jex {
    */
   public interface Server {
 
+    /**
+     * Shutdown the server.
+     */
     void shutdown();
   }
 }
