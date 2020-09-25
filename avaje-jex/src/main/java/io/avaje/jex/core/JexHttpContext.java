@@ -176,6 +176,27 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
+  public String url() {
+    return req.getRequestURL().toString();
+  }
+
+  @Override
+  public String fullUrl() {
+    final String qs = queryString();
+    return qs == null ? url() : url() + "?" + qs;
+  }
+
+  @Override
+  public String contextPath() {
+    return req.getContextPath();
+  }
+
+  @Override
+  public String userAgent() {
+    return req.getHeader(HeaderKeys.USER_AGENT);
+  }
+
+  @Override
   public Context status(int statusCode) {
     res.setStatus(statusCode);
     return this;

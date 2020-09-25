@@ -118,6 +118,26 @@ public interface Context {
   Map<String,Object> sessionAttributeMap();
 
   /**
+   * Return the request url.
+   */
+  String url();
+
+  /**
+   * Return the full request url, including query string (if present)
+   */
+  String fullUrl();
+
+  /**
+   * Return the request context path.
+   */
+  String contextPath();
+
+  /**
+   * Return the request user agent, or null.
+   */
+  String userAgent();
+
+  /**
    * Set the status code on the response.
    */
   Context status(int statusCode);
