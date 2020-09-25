@@ -10,7 +10,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class VerbsTest {
+class ContextTest {
 
   static TestPair pair = init();
 
