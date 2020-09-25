@@ -143,6 +143,11 @@ public interface Context {
   Context status(int statusCode);
 
   /**
+   * Return the current response status.
+   */
+  int status();
+
+  /**
    * Write plain text content to the response.
    */
   Context text(String content);

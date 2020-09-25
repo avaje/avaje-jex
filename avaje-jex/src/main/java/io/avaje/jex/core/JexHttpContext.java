@@ -203,6 +203,11 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
+  public int status() {
+    return res.getStatus();
+  }
+
+  @Override
   public String contentType() {
     return req.getContentType();
   }

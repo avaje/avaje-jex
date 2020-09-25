@@ -38,7 +38,11 @@ class ContextTest {
         .get("/method", ctx -> ctx.text("method:" + ctx.method() + " path:" + ctx.path() + " protocol:" + ctx.protocol() + " port:" + ctx.port()))
         .post("/echo", ctx -> ctx.text("req-body[" + ctx.body() + "]"))
         .get("/{a}/{b}", ctx -> ctx.text("ze-get-" + ctx.pathParamMap()))
-        .post("/{a}/{b}", ctx -> ctx.text("ze-post-" + ctx.pathParamMap())));
+        .post("/{a}/{b}", ctx -> ctx.text("ze-post-" + ctx.pathParamMap()))
+        .get("/status", ctx -> {
+          ctx.status(201);
+          ctx.text("status:" + ctx.status());
+        }));
 
     return TestPair.create(app);
   }
@@ -80,6 +84,14 @@ class ContextTest {
 
     assertThat(res.body()).contains("X-Foo=a");
     assertThat(res.body()).contains("X-Bar=b");
+  }
+
+  @Test
+  void ctx_status() {
+    HttpResponse<String> res = pair.request().path("status")
+      .get().asString();
+
+    assertThat(res.body()).isEqualTo("status:201");
   }
 
   @Test
