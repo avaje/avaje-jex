@@ -34,7 +34,8 @@ class ContextTest {
           requireNonNull(ip);
           ctx.text("ip:" + ip);
         })
-        .post("/multipart", ctx -> ctx.text("isMultipart:" + ctx.isMultipart()+" isMultipartFormData:"+ctx.isMultipartFormData()))
+        .post("/multipart", ctx -> ctx.text("isMultipart:" + ctx.isMultipart() + " isMultipartFormData:" + ctx.isMultipartFormData()))
+        .get("/method", ctx -> ctx.text("method:" + ctx.method() + " path:" + ctx.path() + " protocol:" + ctx.protocol() + " port:" + ctx.port()))
         .post("/echo", ctx -> ctx.text("req-body[" + ctx.body() + "]"))
         .get("/{a}/{b}", ctx -> ctx.text("ze-get-" + ctx.pathParamMap()))
         .post("/{a}/{b}", ctx -> ctx.text("ze-post-" + ctx.pathParamMap())));
@@ -100,7 +101,7 @@ class ContextTest {
   @Test
   void ctx_isMultiPart_when_not() {
     HttpResponse<String> res = pair.request().path("multipart")
-      .formParam("a","aval")
+      .formParam("a", "aval")
       .post().asString();
 
     assertThat(res.body()).isEqualTo("isMultipart:false isMultipartFormData:false");
@@ -119,7 +120,7 @@ class ContextTest {
   @Test
   void ctx_isMultiPart_when_isMultipart() {
     HttpResponse<String> res = pair.request().path("multipart")
-      .header("Content-Type","multipart/foo")
+      .header("Content-Type", "multipart/foo")
       .body("junk")
       .post().asString();
 
@@ -129,11 +130,19 @@ class ContextTest {
   @Test
   void ctx_isMultiPart_when_isMultipartFormData() {
     HttpResponse<String> res = pair.request().path("multipart")
-      .header("Content-Type","multipart/form-data")
+      .header("Content-Type", "multipart/form-data")
       .body("junk")
       .post().asString();
 
     assertThat(res.body()).isEqualTo("isMultipart:true isMultipartFormData:true");
+  }
+
+  @Test
+  void ctx_methodPathPortProtocol() {
+    HttpResponse<String> res = pair.request().path("method")
+      .get().asString();
+
+    assertThat(res.body()).isEqualTo("method:GET path:/method protocol:HTTP/1.1 port:" + pair.port());
   }
 
   @Test

@@ -187,6 +187,26 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
+  public String method() {
+    return req.getMethod();
+  }
+
+  @Override
+  public String path() {
+    return req.getRequestURI();
+  }
+
+  @Override
+  public int port() {
+    return req.getServerPort();
+  }
+
+  @Override
+  public String protocol() {
+    return req.getProtocol();
+  }
+
+  @Override
   public Context text(String content) {
     res.setContentType("text/plain");
     return write(content);

@@ -15,21 +15,28 @@ public class TestPair {
 
   private static final ObjectMapper objectMapper = new ObjectMapper();
 
-  private final Jex.Server jexServer;
+  private final int port;
+
+  private final Jex.Server server;
 
   private final HttpClientContext client;
 
-  public TestPair(Jex.Server jexServer, HttpClientContext client) {
-    this.jexServer = jexServer;
+  public TestPair(int port, Jex.Server server, HttpClientContext client) {
+    this.port = port;
+    this.server = server;
     this.client = client;
   }
 
   public void shutdown() {
-    jexServer.shutdown();
+    server.shutdown();
   }
 
   public HttpClientRequest request() {
     return client.request();
+  }
+
+  public int port() {
+    return port;
   }
 
   /**
@@ -46,6 +53,6 @@ public class TestPair {
       .withBodyAdapter(new JacksonBodyAdapter(objectMapper))
       .build();
 
-    return new TestPair(jexServer, client);
+    return new TestPair(port, jexServer, client);
   }
 }

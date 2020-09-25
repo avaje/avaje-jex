@@ -152,6 +152,26 @@ public interface Context {
   boolean isMultipartFormData();
 
   /**
+   * Returns the request method.
+   */
+  String method();
+
+  /**
+   * Return the request path.
+   */
+  String path();
+
+  /**
+   * Return the request port.
+   */
+  int port();
+
+  /**
+   * Return the request protocol.
+   */
+  String protocol();
+
+  /**
    * Return the underlying http servlet request.
    */
   HttpServletRequest req();
