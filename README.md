@@ -33,3 +33,18 @@ var app = Jex.create()
 - RouteIndex - matching paths by method + number of segments
 - Immutable routes on startup - no adding/removing routes after start()
 - Context json() - call through to "ServiceManager" which has the JsonService (no static JavalinJson)
+
+
+### TODO
+- formParam, formParams(key: String), formParamMap()
+- Uploaded files
+- cookie store
+- app attributes
+
+### Intentionally excluded features
+-
+
+
+### To Review
+- endpointHandlerPath()
+- bodyValidator

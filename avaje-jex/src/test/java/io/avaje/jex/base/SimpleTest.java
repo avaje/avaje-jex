@@ -17,7 +17,8 @@ class SimpleTest {
       .routing(routing -> routing
         .get("/", ctx -> ctx.text("hello"))
         .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id") + "|match:" + ctx.matchedPath()))
-        .get("/one/{id}/{b}", ctx -> ctx.text("path:" + ctx.pathParams() + "|query:" + ctx.queryParam("z") + "|match:" + ctx.matchedPath()))
+        .get("/one/{id}/{b}", ctx -> ctx.text("path:" + ctx.pathParamMap() + "|query:" + ctx.queryParam("z") + "|match:" + ctx.matchedPath()))
+        .get("/queryParamMap", ctx -> ctx.text("qpm: "+ctx.queryParamMap()))
       );
     return TestPair.create(app);
   }
@@ -64,6 +65,34 @@ class SimpleTest {
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("path:{id=fo, b=ba}|query:42|match:/one/{id}/{b}");
+  }
+
+  @Test
+  void queryParamMap_when_empty() {
+    HttpResponse<String> res = pair.request().path("queryParamMap").get().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).isEqualTo("qpm: {}");
+  }
+
+  @Test
+  void queryParamMap_keyWithMultiValues_expect_firstValueInMap() {
+    HttpResponse<String> res = pair.request().path("queryParamMap")
+      .param("a","AVal0")
+      .param("a","AVal1")
+      .param("b", "BVal")
+      .get().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).isEqualTo("qpm: {a=AVal0, b=BVal}");
+  }
+
+  @Test
+  void queryParamMap_basic() {
+    HttpResponse<String> res = pair.request().path("queryParamMap")
+      .param("a","AVal")
+      .param("b", "BVal")
+      .get().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).isEqualTo("qpm: {a=AVal, b=BVal}");
   }
 
 }

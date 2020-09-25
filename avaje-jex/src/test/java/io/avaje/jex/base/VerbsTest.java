@@ -19,8 +19,8 @@ class VerbsTest {
         .post("/", ctx -> ctx.text("ze-post"))
         .get("/head", ctx -> ctx.text("req-header-map[" + ctx.headerMap() + "]"))
         .post("/echo", ctx -> ctx.text("req-body[" + ctx.body() + "]"))
-        .get("/{a}/{b}", ctx -> ctx.text("ze-get-" + ctx.pathParams()))
-        .post("/{a}/{b}", ctx -> ctx.text("ze-post-" + ctx.pathParams())));
+        .get("/{a}/{b}", ctx -> ctx.text("ze-get-" + ctx.pathParamMap()))
+        .post("/{a}/{b}", ctx -> ctx.text("ze-post-" + ctx.pathParamMap())));
 
     return TestPair.create(app);
   }

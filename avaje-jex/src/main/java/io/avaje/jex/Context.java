@@ -31,7 +31,7 @@ public interface Context {
   /**
    * Return all the path parameters as a map.
    */
-  Map<String, String> pathParams();
+  Map<String, String> pathParamMap();
 
   /**
    * Return the path parameter.
@@ -46,6 +46,13 @@ public interface Context {
    * @param name The query parameter name
    */
   String queryParam(String name);
+
+  /**
+   * Return all the query parameters as a map.
+   * <p>
+   * Note this returns the first value for any given key if that key has multiple values.
+   */
+  Map<String, String>  queryParamMap();
 
   /**
    * Set the status code on the response.

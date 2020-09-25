@@ -69,7 +69,7 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
-  public Map<String, String> pathParams() {
+  public Map<String, String> pathParamMap() {
     return pathParams;
   }
 
@@ -86,6 +86,17 @@ class JexHttpContext implements SpiContext {
     } else {
       return vals[0];
     }
+  }
+
+  @Override
+  public Map<String, String> queryParamMap() {
+    final Map<String,String> map = new LinkedHashMap<>();
+    final Enumeration<String> names = req.getParameterNames();
+    while (names.hasMoreElements()) {
+      final String key = names.nextElement();
+      map.put(key, queryParam(key));
+    }
+    return map;
   }
 
   @Override
