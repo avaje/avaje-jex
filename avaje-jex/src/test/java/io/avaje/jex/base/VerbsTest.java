@@ -34,6 +34,7 @@ class VerbsTest {
           requireNonNull(ip);
           ctx.text("ip:" + ip);
         })
+        .post("/multipart", ctx -> ctx.text("isMultipart:" + ctx.isMultipart()+" isMultipartFormData:"+ctx.isMultipartFormData()))
         .post("/echo", ctx -> ctx.text("req-body[" + ctx.body() + "]"))
         .get("/{a}/{b}", ctx -> ctx.text("ze-get-" + ctx.pathParamMap()))
         .post("/{a}/{b}", ctx -> ctx.text("ze-post-" + ctx.pathParamMap())));
@@ -94,6 +95,45 @@ class VerbsTest {
       .get().asString();
 
     assertThat(res.body()).isEqualTo("ip:127.0.0.1");
+  }
+
+  @Test
+  void ctx_isMultiPart_when_not() {
+    HttpResponse<String> res = pair.request().path("multipart")
+      .formParam("a","aval")
+      .post().asString();
+
+    assertThat(res.body()).isEqualTo("isMultipart:false isMultipartFormData:false");
+  }
+
+
+  @Test
+  void ctx_isMultiPart_when_nothing() {
+    HttpResponse<String> res = pair.request().path("multipart")
+      .body("junk")
+      .post().asString();
+
+    assertThat(res.body()).isEqualTo("isMultipart:false isMultipartFormData:false");
+  }
+
+  @Test
+  void ctx_isMultiPart_when_isMultipart() {
+    HttpResponse<String> res = pair.request().path("multipart")
+      .header("Content-Type","multipart/foo")
+      .body("junk")
+      .post().asString();
+
+    assertThat(res.body()).isEqualTo("isMultipart:true isMultipartFormData:false");
+  }
+
+  @Test
+  void ctx_isMultiPart_when_isMultipartFormData() {
+    HttpResponse<String> res = pair.request().path("multipart")
+      .header("Content-Type","multipart/form-data")
+      .body("junk")
+      .post().asString();
+
+    assertThat(res.body()).isEqualTo("isMultipart:true isMultipartFormData:true");
   }
 
   @Test

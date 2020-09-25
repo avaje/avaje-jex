@@ -175,6 +175,18 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
+  public boolean isMultipart() {
+    final String type = header(HeaderKeys.CONTENT_TYPE);
+    return type != null && type.toLowerCase().contains("multipart/");
+  }
+
+  @Override
+  public boolean isMultipartFormData() {
+    final String type = header(HeaderKeys.CONTENT_TYPE);
+    return type != null && type.toLowerCase().contains("multipart/form-data");
+  }
+
+  @Override
   public Context text(String content) {
     res.setContentType("text/plain");
     return write(content);

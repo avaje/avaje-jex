@@ -142,6 +142,16 @@ public interface Context {
   String ip();
 
   /**
+   * Returns true if request is multipart.
+   */
+  boolean isMultipart();
+
+  /**
+   * Returns true if request is multipart/form-data.
+   */
+  boolean isMultipartFormData();
+
+  /**
    * Return the underlying http servlet request.
    */
   HttpServletRequest req();
