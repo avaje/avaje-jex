@@ -10,4 +10,5 @@ public class HeaderKeys {
   public static final String CONTENT_LOCATION = "Content-Location";
   public static final String CONTENT_RANGE = "Content-Range";
   public static final String CONTENT_TYPE = "Content-Type";
+  public static final String HOST = "Host";
 }

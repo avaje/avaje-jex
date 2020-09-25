@@ -165,6 +165,16 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
+  public String host() {
+    return req.getHeader(HeaderKeys.HOST);
+  }
+
+  @Override
+  public String ip() {
+    return req.getRemoteAddr();
+  }
+
+  @Override
   public Context text(String content) {
     res.setContentType("text/plain");
     return write(content);

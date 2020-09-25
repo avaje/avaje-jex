@@ -15,18 +15,18 @@ public interface Context {
    * Sets an attribute on the request.
    * Attributes are available to other handlers in the request lifecycle
    */
-  Context attribute(String key, Object value);// = req.setAttribute(key, value)
+  Context attribute(String key, Object value);
 
   /**
    * Get the specified attribute from the request.
    */
-  <T> T attribute(String key); // req.getAttribute(key) as? T
+  <T> T attribute(String key);
 
   /**
    * Gets a map with all the attribute keys and values on the request.
    */
   //<T>
-  Map<String,Object> attributeMap();// = req.attributeNames.asSequence().associate { it to attribute<T>(it) }
+  Map<String, Object> attributeMap();
 
   /**
    * Return the request body as bytes.
@@ -84,7 +84,7 @@ public interface Context {
    * <p>
    * Note this returns the first value for any given key if that key has multiple values.
    */
-  Map<String, String>  queryParamMap();
+  Map<String, String> queryParamMap();
 
   /**
    * Set the status code on the response.
@@ -130,6 +130,16 @@ public interface Context {
    * @param value The header value
    */
   void header(String key, String value);
+
+  /**
+   * Returns the request host, or null.
+   */
+  String host();
+
+  /**
+   * Returns the request IP.
+   */
+  String ip();
 
   /**
    * Return the underlying http servlet request.
