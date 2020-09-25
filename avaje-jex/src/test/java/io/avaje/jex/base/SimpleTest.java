@@ -21,6 +21,8 @@ class SimpleTest {
         .get("/queryParamMap", ctx -> ctx.text("qpm: "+ctx.queryParamMap()))
         .get("/queryParams", ctx -> ctx.text("qps: "+ctx.queryParams("a")))
         .get("/queryString", ctx -> ctx.text("qs: "+ctx.queryString()))
+        .get("/scheme", ctx -> ctx.text("scheme: "+ctx.scheme()))
+
       );
     return TestPair.create(app);
   }
@@ -133,6 +135,15 @@ class SimpleTest {
       .get().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("qs: foo=f1&bar=b1&bar=b2");
+  }
+
+  @Test
+  void scheme() {
+    HttpResponse<String> res = pair.request().path("scheme")
+      .param("foo","f1")
+      .get().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).isEqualTo("scheme: http");
   }
 
 }

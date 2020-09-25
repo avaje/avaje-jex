@@ -98,6 +98,11 @@ public interface Context {
   String queryString();
 
   /**
+   * Return the request scheme.
+   */
+  String scheme();
+
+  /**
    * Set the status code on the response.
    */
   Context status(int statusCode);
