@@ -12,6 +12,23 @@ public interface Context {
   String matchedPath();
 
   /**
+   * Sets an attribute on the request.
+   * Attributes are available to other handlers in the request lifecycle
+   */
+  Context attribute(String key, Object value);// = req.setAttribute(key, value)
+
+  /**
+   * Get the specified attribute from the request.
+   */
+  <T> T attribute(String key); // req.getAttribute(key) as? T
+
+  /**
+   * Gets a map with all the attribute keys and values on the request.
+   */
+  //<T>
+  Map<String,Object> attributeMap();// = req.attributeNames.asSequence().associate { it to attribute<T>(it) }
+
+  /**
    * Return the request body as bytes.
    */
   byte[] bodyAsBytes();

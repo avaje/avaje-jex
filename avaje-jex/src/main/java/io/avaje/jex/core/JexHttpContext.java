@@ -49,6 +49,29 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
+  public Context attribute(String key, Object value) {
+    req.setAttribute(key, value);
+    return this;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T> T attribute(String key) {
+    return (T) req.getAttribute(key);
+  }
+
+  @Override
+  public Map<String, Object> attributeMap() {
+    final Map<String, Object> map = new LinkedHashMap<>();
+    final Enumeration<String> names = req.getAttributeNames();
+    while (names.hasMoreElements()) {
+      final String name = names.nextElement();
+      map.put(name, req.getAttribute(name));
+    }
+    return map;
+  }
+
+  @Override
   public String matchedPath() {
     return matchedPath;
   }
@@ -90,7 +113,7 @@ class JexHttpContext implements SpiContext {
 
   @Override
   public Map<String, String> queryParamMap() {
-    final Map<String,String> map = new LinkedHashMap<>();
+    final Map<String, String> map = new LinkedHashMap<>();
     final Enumeration<String> names = req.getParameterNames();
     while (names.hasMoreElements()) {
       final String key = names.nextElement();
