@@ -5,10 +5,17 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import java.net.http.HttpResponse;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SimpleTest {
+
+  static UUID uuid = UUID.randomUUID();
+
+  static UUID sessAttrUuid;
+  static Map<String, Object> sessAttrMap;
 
   static TestPair pair = init();
 
@@ -22,6 +29,18 @@ class SimpleTest {
         .get("/queryParams", ctx -> ctx.text("qps: "+ctx.queryParams("a")))
         .get("/queryString", ctx -> ctx.text("qs: "+ctx.queryString()))
         .get("/scheme", ctx -> ctx.text("scheme: "+ctx.scheme()))
+        .get("/sessionSet", ctx -> {
+          ctx.sessionAttribute("myAttr", uuid);
+          ctx.text("ok");
+        })
+        .get("/sessionGet", ctx -> {
+          sessAttrUuid = ctx.sessionAttribute("myAttr");
+          ctx.text("ok");
+        })
+        .get("/sessionMap", ctx -> {
+          sessAttrMap = ctx.sessionAttributeMap();
+          ctx.text("ok");
+        })
 
       );
     return TestPair.create(app);
@@ -144,6 +163,21 @@ class SimpleTest {
       .get().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("scheme: http");
+  }
+
+  @Test
+  void sessionSetGetMap() {
+    HttpResponse<String> res = pair.request().path("sessionSet").get().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+
+    res = pair.request().path("sessionGet").get().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(sessAttrUuid).isSameAs(uuid);
+
+    res = pair.request().path("sessionMap").get().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(sessAttrMap).hasSize(1);
+    assertThat(sessAttrMap.get("myAttr")).isSameAs(uuid);
   }
 
 }

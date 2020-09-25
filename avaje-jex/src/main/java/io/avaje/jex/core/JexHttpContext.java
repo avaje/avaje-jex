@@ -6,6 +6,7 @@ import io.avaje.jex.spi.SpiContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -148,6 +149,30 @@ class JexHttpContext implements SpiContext {
   @Override
   public String scheme() {
     return req.getScheme();
+  }
+
+  @Override
+  public Context sessionAttribute(String key, Object value) {
+    req.getSession().setAttribute(key, value);
+    return this;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T> T sessionAttribute(String key) {
+    return (T) req.getSession().getAttribute(key);
+  }
+
+  @Override
+  public Map<String, Object> sessionAttributeMap() {
+    final Map<String, Object> map = new LinkedHashMap<>();
+    final HttpSession session = req.getSession();
+    final Enumeration<String> names = session.getAttributeNames();
+    while (names.hasMoreElements()) {
+      final String name = names.nextElement();
+      map.put(name, session.getAttribute(name));
+    }
+    return map;
   }
 
   @Override

@@ -2,18 +2,19 @@ package io.avaje.jex;
 
 import io.avaje.jex.core.JettyLaunch;
 import io.avaje.jex.spi.JsonService;
+import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import java.util.function.Consumer;
 
 public class Jex {
 
   private final Routing routing = new DefaultRouting();
-
   private final ErrorHandling errorHandling = new DefaultErrorHandling();
-
   private final StaticFileConfig staticFiles;
 
   public final Inner inner = new Inner();
+  public final Jetty jetty = new Jetty();
 
   private Jex() {
     this.staticFiles = new DefaultStaticFileConfig(this);
@@ -23,9 +24,7 @@ public class Jex {
     return new Jex();
   }
 
-  public class Inner {
-
-    public JettyConfig jetty = new JettyConfig();
+  public static class Inner {
     public int port = 7001;
     public String contextPath = "/";
     public boolean prefer405 = true;
@@ -34,6 +33,17 @@ public class Jex {
     public boolean preCompressStaticFiles;
     public JsonService jsonService;
     public AccessManager accessManager;
+  }
+
+  /**
+   * Jetty specific configuration options.
+   */
+  public static class Jetty {
+    public boolean sessions = true;
+    public boolean security = true;
+    public SessionHandler sessionHandler;
+    public ServletContextHandler contextHandler;
+    public org.eclipse.jetty.server.Server server;
   }
 
   public Jex errorHandling(ErrorHandling.Service service) {
@@ -73,14 +83,6 @@ public class Jex {
    */
   public Jex jsonService(JsonService jsonService) {
     this.inner.jsonService = jsonService;
-    return this;
-  }
-
-  /**
-   * Set the jetty config.
-   */
-  public Jex jetty(JettyConfig jetty) {
-    this.inner.jetty = jetty;
     return this;
   }
 

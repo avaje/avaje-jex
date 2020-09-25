@@ -1,6 +1,5 @@
 package io.avaje.jex.core;
 
-import io.avaje.jex.JettyConfig;
 import io.avaje.jex.Jex;
 import io.avaje.jex.StaticFileSource;
 import io.avaje.jex.routes.RoutesBuilder;
@@ -11,6 +10,7 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.log.Log;
@@ -28,15 +28,14 @@ public class JettyLaunch implements Jex.Server {
   private static final org.slf4j.Logger log = LoggerFactory.getLogger(JettyLaunch.class);
 
   private final Jex jex;
-  private final JettyConfig jetty;
+  private final SpiRoutes routes;
   private final Logger defaultLogger;
-
-  private org.eclipse.jetty.server.Server server;
+  private Server server;
 
   public JettyLaunch(Jex jex) {
     this.jex = jex;
-    this.jetty = jex.inner.jetty;
     this.defaultLogger = Log.getLog();
+    this.routes = new RoutesBuilder(jex.routing(), jex).build();
   }
 
   @Override
@@ -49,10 +48,9 @@ public class JettyLaunch implements Jex.Server {
   }
 
   public Jex.Server start() {
-    final SpiRoutes routes = new RoutesBuilder(jex.routing(), jex).build();
     try {
       disableJettyLog();
-      server = createServer(routes);
+      server = createServer();
       server.start();
       logOnStart(server);
       enableJettyLog();
@@ -62,49 +60,48 @@ public class JettyLaunch implements Jex.Server {
     }
   }
 
-  private ServiceManager serviceManager() {
-    return new ServiceManager(initJsonService(), jex.errorHandling());
-  }
-
-  private JsonService initJsonService() {
-    final JsonService jsonService = jex.inner.jsonService;
-    if (jsonService != null) {
-      return jsonService;
-    }
-    return detectJackson() ? defaultJacksonService() : null;
-  }
-
-  private JsonService defaultJacksonService() {
-    return new JacksonJsonService();
-  }
-
-  private boolean detectJackson() {
-    try {
-      Class.forName("com.fasterxml.jackson.databind.ObjectMapper");
-      return true;
-    } catch (ClassNotFoundException e) {
-      return false;
-    }
-  }
-
-  private Server createServer(SpiRoutes routes) {
-    Server server = new Server(jex.inner.port);
-    server.setHandler(createContextHandler(routes));
+  protected Server createServer() {
+    Server server = initServer();
+    server.setHandler(initContextHandler());
     server.setStopAtShutdown(true);
     return server;
   }
 
-  private ServletContextHandler createContextHandler(SpiRoutes routes) {
-    ServletContextHandler sc = new ContextHandler(jex.inner.contextPath, jetty.isSessions(), jetty.isSecurity());
-    //SessionHandler sh = new SessionHandler();
-    //sc.setSessionHandler();
-    final ServiceManager manager = serviceManager();
-    final StaticHandler staticHandler = buildStaticHandler();
-    sc.addServlet(new ServletHolder(new JexHttpServlet(jex, routes, manager, staticHandler)), "/*");
+  private Server initServer() {
+    Server server = jex.jetty.server;
+    return server != null ? server : new Server(jex.inner.port);
+  }
+
+  protected ServletContextHandler initContextHandler() {
+    final ServletContextHandler sc = initServletContextHandler();
+    sc.setSessionHandler(initSessionHandler());
+    sc.addServlet(initServletHolder(), "/*");
     return sc;
   }
 
-  private StaticHandler buildStaticHandler() {
+  protected ServletHolder initServletHolder() {
+    final ServiceManager manager = serviceManager();
+    final StaticHandler staticHandler = initStaticHandler();
+    return new ServletHolder(new JexHttpServlet(jex, routes, manager, staticHandler));
+  }
+
+  protected ServletContextHandler initServletContextHandler() {
+    final ServletContextHandler ch = jex.jetty.contextHandler;
+    return ch != null ? ch : new ContextHandler(jex.inner.contextPath, jex.jetty.sessions, jex.jetty.security);
+  }
+
+  protected SessionHandler initSessionHandler() {
+    SessionHandler sh = jex.jetty.sessionHandler;
+    return sh == null ? defaultSessionHandler() : sh;
+  }
+
+  protected SessionHandler defaultSessionHandler(){
+    SessionHandler sh = new SessionHandler();
+    sh.setHttpOnly(true);
+    return sh;
+  }
+
+  protected StaticHandler initStaticHandler() {
     final List<StaticFileSource> staticFileSources = jex.staticFiles().getSources();
     if (staticFileSources == null || staticFileSources.isEmpty()) {
       return null;
@@ -114,6 +111,31 @@ public class JettyLaunch implements Jex.Server {
       handler.addStaticFileConfig(fileConfig);
     }
     return handler;
+  }
+
+  protected ServiceManager serviceManager() {
+    return new ServiceManager(initJsonService(), jex.errorHandling());
+  }
+
+  protected JsonService initJsonService() {
+    final JsonService jsonService = jex.inner.jsonService;
+    if (jsonService != null) {
+      return jsonService;
+    }
+    return detectJackson() ? defaultJacksonService() : null;
+  }
+
+  protected JsonService defaultJacksonService() {
+    return new JacksonJsonService();
+  }
+
+  protected boolean detectJackson() {
+    try {
+      Class.forName("com.fasterxml.jackson.databind.ObjectMapper");
+      return true;
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
   }
 
   private void logOnStart(org.eclipse.jetty.server.Server server) {

@@ -103,6 +103,21 @@ public interface Context {
   String scheme();
 
   /**
+   * Sets an attribute for the user session.
+   */
+  Context sessionAttribute(String key, Object value);
+
+  /**
+   * Gets specified attribute from the user session, or null.
+   */
+  <T> T sessionAttribute(String key);
+
+  /**
+   * Return a map of all the attributes in the user session.
+   */
+  Map<String,Object> sessionAttributeMap();
+
+  /**
    * Set the status code on the response.
    */
   Context status(int statusCode);
