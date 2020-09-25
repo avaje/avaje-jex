@@ -40,11 +40,14 @@ var app = Jex.create()
 - Uploaded files
 - cookie store
 - app attributes
+- basicAuthCredentials/basicAuthCredentialsExist
 
 ### Intentionally excluded features
 -
 
 
 ### To Review
+- Javalin uses int getContentLength() rather than long getContentLengthLong()
+- Javalin removeCookie should set null path to "/"
 - endpointHandlerPath()
 - bodyValidator
