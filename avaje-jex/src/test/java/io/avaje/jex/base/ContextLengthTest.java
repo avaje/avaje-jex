@@ -53,7 +53,7 @@ class ContextLengthTest {
   void url() {
     HttpResponse<String> res = pair.request()
       .path("url")
-      .param("a", "av")
+      .queryParam("a", "av")
       .get().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
@@ -74,8 +74,8 @@ class ContextLengthTest {
   void fullUrl_queryString() {
     HttpResponse<String> res = pair.request()
       .path("fullUrl")
-      .param("a", "av")
-      .param("b", "bv")
+      .queryParam("a", "av")
+      .queryParam("b", "bv")
       .get().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
@@ -86,7 +86,7 @@ class ContextLengthTest {
   void contextPath() {
     HttpResponse<String> res = pair.request()
       .path("contextPath")
-      .param("a", "av")
+      .queryParam("a", "av")
       .get().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
@@ -97,10 +97,10 @@ class ContextLengthTest {
   void userAgent() {
     HttpResponse<String> res = pair.request()
       .path("userAgent")
-      .param("a", "av")
+      .queryParam("a", "av")
       .get().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.body()).isEqualTo("userAgent:Java-http-client/14.0.1");
+    assertThat(res.body()).contains("userAgent:Java-http-client");
   }
 }

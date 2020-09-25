@@ -83,7 +83,7 @@ class SimpleTest {
     assertThat(res.body()).isEqualTo("path:{id=foo, b=bar}|query:null|match:/one/{id}/{b}");
 
     res = pair.request()
-      .path("one").path("fo").path("ba").param("z", "42")
+      .path("one").path("fo").path("ba").queryParam("z", "42")
       .get().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
@@ -100,9 +100,9 @@ class SimpleTest {
   @Test
   void queryParamMap_keyWithMultiValues_expect_firstValueInMap() {
     HttpResponse<String> res = pair.request().path("queryParamMap")
-      .param("a","AVal0")
-      .param("a","AVal1")
-      .param("b", "BVal")
+      .queryParam("a","AVal0")
+      .queryParam("a","AVal1")
+      .queryParam("b", "BVal")
       .get().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("qpm: {a=AVal0, b=BVal}");
@@ -111,8 +111,8 @@ class SimpleTest {
   @Test
   void queryParamMap_basic() {
     HttpResponse<String> res = pair.request().path("queryParamMap")
-      .param("a","AVal")
-      .param("b", "BVal")
+      .queryParam("a","AVal")
+      .queryParam("b", "BVal")
       .get().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("qpm: {a=AVal, b=BVal}");
@@ -121,8 +121,8 @@ class SimpleTest {
   @Test
   void queryParams_basic() {
     HttpResponse<String> res = pair.request().path("queryParams")
-      .param("a","one")
-      .param("a", "two")
+      .queryParam("a","one")
+      .queryParam("a", "two")
       .get().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("qps: [one, two]");
@@ -131,7 +131,7 @@ class SimpleTest {
   @Test
   void queryParams_when_null_expect_emptyList() {
     HttpResponse<String> res = pair.request().path("queryParams")
-      .param("b","one")
+      .queryParam("b","one")
       .get().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("qps: []");
@@ -148,9 +148,9 @@ class SimpleTest {
   @Test
   void queryString_when_set() {
     HttpResponse<String> res = pair.request().path("queryString")
-      .param("foo","f1")
-      .param("bar","b1")
-      .param("bar","b2")
+      .queryParam("foo","f1")
+      .queryParam("bar","b1")
+      .queryParam("bar","b2")
       .get().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("qs: foo=f1&bar=b1&bar=b2");
@@ -159,7 +159,7 @@ class SimpleTest {
   @Test
   void scheme() {
     HttpResponse<String> res = pair.request().path("scheme")
-      .param("foo","f1")
+      .queryParam("foo","f1")
       .get().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("scheme: http");
