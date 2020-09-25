@@ -20,6 +20,7 @@ class SimpleTest {
         .get("/one/{id}/{b}", ctx -> ctx.text("path:" + ctx.pathParamMap() + "|query:" + ctx.queryParam("z") + "|match:" + ctx.matchedPath()))
         .get("/queryParamMap", ctx -> ctx.text("qpm: "+ctx.queryParamMap()))
         .get("/queryParams", ctx -> ctx.text("qps: "+ctx.queryParams("a")))
+        .get("/queryString", ctx -> ctx.text("qs: "+ctx.queryString()))
       );
     return TestPair.create(app);
   }
@@ -113,6 +114,25 @@ class SimpleTest {
       .get().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("qps: []");
+  }
+
+  @Test
+  void queryString_when_null() {
+    HttpResponse<String> res = pair.request().path("queryString")
+      .get().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).isEqualTo("qs: null");
+  }
+
+  @Test
+  void queryString_when_set() {
+    HttpResponse<String> res = pair.request().path("queryString")
+      .param("foo","f1")
+      .param("bar","b1")
+      .param("bar","b2")
+      .get().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).isEqualTo("qs: foo=f1&bar=b1&bar=b2");
   }
 
 }

@@ -93,6 +93,11 @@ public interface Context {
   Map<String, String> queryParamMap();
 
   /**
+   * Return the request query string, or null.
+   */
+  String queryString();
+
+  /**
    * Set the status code on the response.
    */
   Context status(int statusCode);
