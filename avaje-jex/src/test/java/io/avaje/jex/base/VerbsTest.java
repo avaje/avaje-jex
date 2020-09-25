@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import java.net.http.HttpResponse;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,7 +18,11 @@ class VerbsTest {
       .routing(routing -> routing
         .get("/", ctx -> ctx.text("ze-get"))
         .post("/", ctx -> ctx.text("ze-post"))
-        .get("/head", ctx -> ctx.text("req-header-map[" + ctx.headerMap() + "]"))
+        .get("/header", ctx -> {
+          ctx.header("From-My-Server", "Set-By-Server");
+          ctx.text("req-header[" + ctx.header("From-My-Client") + "]");
+        })
+        .get("/headerMap", ctx -> ctx.text("req-header-map[" + ctx.headerMap() + "]"))
         .post("/echo", ctx -> ctx.text("req-body[" + ctx.body() + "]"))
         .get("/{a}/{b}", ctx -> ctx.text("ze-get-" + ctx.pathParamMap()))
         .post("/{a}/{b}", ctx -> ctx.text("ze-post-" + ctx.pathParamMap())));
@@ -43,8 +48,19 @@ class VerbsTest {
   }
 
   @Test
+  void ctx_header_getSet() {
+    HttpResponse<String> res = pair.request().path("header")
+      .header("From-My-Client","client-value")
+      .get().asString();
+
+    final Optional<String> serverSetHeader = res.headers().firstValue("From-My-Server");
+    assertThat(serverSetHeader.get()).isEqualTo("Set-By-Server");
+    assertThat(res.body()).isEqualTo("req-header[client-value]");
+  }
+
+  @Test
   void ctx_headerMap() {
-    HttpResponse<String> res = pair.request().path("head")
+    HttpResponse<String> res = pair.request().path("headerMap")
       .header("X-Foo","a")
       .header("X-Bar", "b")
       .get().asString();
