@@ -7,7 +7,12 @@ var app = Jex.create()
   .routing(routing -> routing
     .get("/", ctx -> ctx.text("hello"))
     .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id")))
-  );
+  )
+  .staticFiles().addClasspath("/static", "content")
+  .staticFiles().addExternal("/other", "/external")
+  .port(8080)
+  .start();
+
 ```
 
 ### Goals / intention

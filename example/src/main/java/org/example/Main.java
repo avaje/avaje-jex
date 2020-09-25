@@ -16,7 +16,8 @@ public class Main {
           ctx.json(bean);
         })
       )
-      .staticFiles().addClasspath("/static", "static-content")
+      .staticFiles().addClasspath("/static", "content")
+      .staticFiles().addExternal("/", "/tmp/junk")
       .port(7003)
       .start();
   }
