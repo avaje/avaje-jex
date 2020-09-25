@@ -19,6 +19,7 @@ class SimpleTest {
         .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id") + "|match:" + ctx.matchedPath()))
         .get("/one/{id}/{b}", ctx -> ctx.text("path:" + ctx.pathParamMap() + "|query:" + ctx.queryParam("z") + "|match:" + ctx.matchedPath()))
         .get("/queryParamMap", ctx -> ctx.text("qpm: "+ctx.queryParamMap()))
+        .get("/queryParams", ctx -> ctx.text("qps: "+ctx.queryParams("a")))
       );
     return TestPair.create(app);
   }
@@ -93,6 +94,25 @@ class SimpleTest {
       .get().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("qpm: {a=AVal, b=BVal}");
+  }
+
+  @Test
+  void queryParams_basic() {
+    HttpResponse<String> res = pair.request().path("queryParams")
+      .param("a","one")
+      .param("a", "two")
+      .get().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).isEqualTo("qps: [one, two]");
+  }
+
+  @Test
+  void queryParams_when_null_expect_emptyList() {
+    HttpResponse<String> res = pair.request().path("queryParams")
+      .param("b","one")
+      .get().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).isEqualTo("qps: []");
   }
 
 }

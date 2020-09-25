@@ -9,8 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 class JexHttpContext implements SpiContext {
@@ -113,6 +116,16 @@ class JexHttpContext implements SpiContext {
       return null;
     } else {
       return vals[0];
+    }
+  }
+
+  @Override
+  public List<String> queryParams(String name) {
+    final String[] vals = req.getParameterValues(name);
+    if (vals == null) {
+      return Collections.emptyList();
+    } else {
+      return Arrays.asList(vals);
     }
   }
 

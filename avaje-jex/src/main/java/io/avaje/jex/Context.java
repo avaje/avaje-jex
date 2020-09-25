@@ -2,6 +2,7 @@ package io.avaje.jex;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 
 public interface Context {
@@ -78,6 +79,11 @@ public interface Context {
    * @param name The query parameter name
    */
   String queryParam(String name);
+
+  /**
+   * Return all the query parameters for the given parameter name.
+   */
+  List<String> queryParams(String name);
 
   /**
    * Return all the query parameters as a map.
