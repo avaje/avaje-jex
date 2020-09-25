@@ -16,7 +16,7 @@ class JsonTest {
   static TestPair init() {
     Jex app = Jex.create()
       .routing(routing -> routing
-        .get("/", ctx -> ctx.json(HelloDto.rob()))
+        .get("/", ctx -> ctx.json(HelloDto.rob()).status(200))
         .post("/", ctx -> ctx.text("bean[" + ctx.bodyAsClass(HelloDto.class) + "]")));
 
     return TestPair.create(app);

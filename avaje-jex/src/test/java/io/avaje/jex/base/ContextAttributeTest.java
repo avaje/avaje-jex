@@ -23,8 +23,7 @@ class ContextAttributeTest {
     var app = Jex.create()
       .routing(routing -> routing
         .before( ctx -> {
-          ctx.attribute("oneUuid", uuid);
-          ctx.attribute(TestPair.class.getName(), pair);
+          ctx.attribute("oneUuid", uuid).attribute(TestPair.class.getName(), pair);
         })
         .get("/", ctx -> {
           attrUuid = ctx.attribute("oneUuid");

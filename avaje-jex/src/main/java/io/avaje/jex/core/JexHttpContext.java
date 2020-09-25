@@ -4,6 +4,7 @@ import io.avaje.jex.Context;
 import io.avaje.jex.spi.IORuntimeException;
 import io.avaje.jex.spi.SpiContext;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -73,6 +74,70 @@ class JexHttpContext implements SpiContext {
       map.put(name, req.getAttribute(name));
     }
     return map;
+  }
+
+  @Override
+  public String cookie(String name) {
+    final Cookie[] cookies = req.getCookies();
+    if (cookies != null) {
+      for (Cookie cookie : cookies) {
+        if (cookie.getName().equals(name)) {
+          return cookie.getValue();
+        }
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public Map<String, String> cookieMap() {
+    final Cookie[] cookies = req.getCookies();
+    if (cookies == null) {
+      return Collections.emptyMap();
+    }
+    final Map<String, String> map = new LinkedHashMap<>();
+    for (Cookie cookie : cookies) {
+      map.put(cookie.getName(), cookie.getValue());
+    }
+    return map;
+  }
+
+  @Override
+  public Context cookie(String name, String value) {
+    return cookie(name, value, -1);
+  }
+
+  @Override
+  public Context cookie(String name, String value, int maxAge) {
+    final Cookie cookie = new Cookie(name, value);
+    cookie.setMaxAge(maxAge);
+    return cookie(cookie);
+  }
+
+  @Override
+  public Context cookie(Cookie cookie) {
+    if (cookie.getPath() == null) {
+      cookie.setPath("/");
+    }
+    res.addCookie(cookie);
+    return this;
+  }
+
+  @Override
+  public Context removeCookie(String name) {
+    return removeCookie(name, null);
+  }
+
+  @Override
+  public Context removeCookie(String name, String path) {
+    if (path == null) {
+      path = "/";
+    }
+    final Cookie cookie = new Cookie(name, "");
+    cookie.setPath(path);
+    cookie.setMaxAge(0);
+    res.addCookie(cookie);
+    return this;
   }
 
   @Override

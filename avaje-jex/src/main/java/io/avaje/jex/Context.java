@@ -1,5 +1,6 @@
 package io.avaje.jex;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -26,8 +27,42 @@ public interface Context {
   /**
    * Gets a map with all the attribute keys and values on the request.
    */
-  //<T>
   Map<String, Object> attributeMap();
+
+  /**
+   * Return a request cookie by name, or null.
+   */
+  String cookie(String name);
+
+  /**
+   * Returns a map with all the cookie keys and values on the request.
+   */
+  Map<String, String> cookieMap();
+
+  /**
+   * Sets a cookie with name, value with unlimited age.
+   */
+  Context cookie(String name, String value);
+
+  /**
+   * Sets a cookie with name, value, and max-age.
+   */
+  Context cookie(String name, String value, int maxAge);
+
+  /**
+   * Sets a Cookie.
+   */
+  Context cookie(Cookie cookie);
+
+  /**
+   * Remove a cookie by name.
+   */
+  Context removeCookie(String name);
+
+  /**
+   * Remove a cookie by name and path.
+   */
+  Context removeCookie(String name, String path);
 
   /**
    * Return the request body as bytes.

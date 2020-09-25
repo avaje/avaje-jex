@@ -30,8 +30,7 @@ class SimpleTest {
         .get("/queryString", ctx -> ctx.text("qs: "+ctx.queryString()))
         .get("/scheme", ctx -> ctx.text("scheme: "+ctx.scheme()))
         .get("/sessionSet", ctx -> {
-          ctx.sessionAttribute("myAttr", uuid);
-          ctx.text("ok");
+          ctx.sessionAttribute("myAttr", uuid).text("ok");
         })
         .get("/sessionGet", ctx -> {
           sessAttrUuid = ctx.sessionAttribute("myAttr");
