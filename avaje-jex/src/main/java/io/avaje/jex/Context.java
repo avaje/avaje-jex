@@ -46,6 +46,21 @@ public interface Context {
   String body();
 
   /**
+   * Return the request content length.
+   */
+  long contentLength();
+
+  /**
+   * Return the request content type.
+   */
+  String contentType();
+
+  /**
+   * Set the response content type.
+   */
+  Context contentType(String contentType);
+
+  /**
    * Return all the path parameters as a map.
    */
   Map<String, String> pathParamMap();
@@ -75,16 +90,6 @@ public interface Context {
    * Set the status code on the response.
    */
   Context status(int statusCode);
-
-  /**
-   * Set the response content type.
-   */
-  Context contentType(String contentType);
-
-  /**
-   * Return the content type currently set on the response.
-   */
-  String contentType();
 
   /**
    * Write plain text content to the response.

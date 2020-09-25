@@ -92,6 +92,11 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
+  public long contentLength() {
+    return req.getContentLengthLong();
+  }
+
+  @Override
   public Map<String, String> pathParamMap() {
     return pathParams;
   }
@@ -130,7 +135,7 @@ class JexHttpContext implements SpiContext {
 
   @Override
   public String contentType() {
-    return res.getContentType();
+    return req.getContentType();
   }
 
   @Override
