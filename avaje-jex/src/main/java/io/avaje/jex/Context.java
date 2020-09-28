@@ -143,6 +143,26 @@ public interface Context {
   String queryString();
 
   /**
+   * Return the first form param value for the specified key or null.
+   */
+  String formParam(String key);
+
+  /**
+   * Return the first form param value for the specified key or the default value.
+   */
+  String formParam(String key, String defaultValue);
+
+  /**
+   * Return the form params for the specified key, or empty list.
+   */
+  List<String> formParams(String key);
+
+  /**
+   * Returns a map with all the form param keys and values.
+   */
+  Map<String, List<String>> formParamMap();
+
+  /**
    * Return the request scheme.
    */
   String scheme();

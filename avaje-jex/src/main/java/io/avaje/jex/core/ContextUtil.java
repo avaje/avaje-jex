@@ -8,6 +8,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 class ContextUtil {
 
@@ -60,5 +67,28 @@ class ContextUtil {
     while ((len = in.read(buffer, 0, bufferSize)) > 0) {
       out.write(buffer, 0, len);
     }
+  }
+
+  public static Map<String, List<String>> formParamMap(String body, String charset) {
+    if (body.isEmpty()) {
+      return Collections.emptyMap();
+    }
+    try {
+      Map<String, List<String>> map = new LinkedHashMap<>();
+      for (String pair : body.split("&")) {
+        final String[] split1 = pair.split("=", 2);
+        String key = URLDecoder.decode(split1[0], charset);
+        String val = split1.length > 1 ? URLDecoder.decode(split1[1], charset) : "";
+        map.computeIfAbsent(key, s -> new ArrayList<>()).add(val);
+      }
+      return map;
+    } catch (UnsupportedEncodingException e) {
+      throw new IORuntimeException(e);
+    }
+  }
+
+  public static Map<String, List<String>> multiPartForm(HttpServletRequest req) {
+    //MultipartUtil.getFieldMap
+    return null;
   }
 }

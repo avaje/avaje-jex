@@ -20,6 +20,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+
 class JexHttpContext implements SpiContext {
 
   private final ServiceManager mgr;
@@ -29,6 +32,7 @@ class JexHttpContext implements SpiContext {
   private final String matchedPath;
   private String characterEncoding;
   private Routing.Type mode;
+  private Map<String, List<String>> formParamMap;
 
   JexHttpContext(ServiceManager mgr, HttpServletRequest req, HttpServletResponse res, Map<String, String> pathParams, String matchedPath) {
     this.mgr = mgr;
@@ -100,7 +104,7 @@ class JexHttpContext implements SpiContext {
   public Map<String, String> cookieMap() {
     final Cookie[] cookies = req.getCookies();
     if (cookies == null) {
-      return Collections.emptyMap();
+      return emptyMap();
     }
     final Map<String, String> map = new LinkedHashMap<>();
     for (Cookie cookie : cookies) {
@@ -210,7 +214,7 @@ class JexHttpContext implements SpiContext {
   public List<String> queryParams(String name) {
     final String[] vals = req.getParameterValues(name);
     if (vals == null) {
-      return Collections.emptyList();
+      return emptyList();
     } else {
       return Arrays.asList(vals);
     }
@@ -230,6 +234,39 @@ class JexHttpContext implements SpiContext {
   @Override
   public String queryString() {
     return req.getQueryString();
+  }
+
+  @Override
+  public String formParam(String key) {
+    return formParam(key, null);
+  }
+
+  @Override
+  public String formParam(String key, String defaultValue) {
+    final List<String> values = formParamMap().get(key);
+    return values == null || values.isEmpty() ? defaultValue : values.get(0);
+  }
+
+  @Override
+  public List<String> formParams(String key) {
+    final List<String> values = formParamMap().get(key);
+    return values != null ? values : emptyList();
+  }
+
+  @Override
+  public Map<String, List<String>> formParamMap() {
+    if (formParamMap == null) {
+      formParamMap = initFormParamMap();
+    }
+    return formParamMap;
+  }
+
+  private Map<String, List<String>> initFormParamMap() {
+    if (isMultipartFormData()) {
+      return ContextUtil.multiPartForm(req);
+    } else {
+      return ContextUtil.formParamMap(body(), characterEncoding());
+    }
   }
 
   @Override
