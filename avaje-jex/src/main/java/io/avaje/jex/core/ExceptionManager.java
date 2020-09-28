@@ -5,6 +5,7 @@ import io.avaje.jex.ErrorHandling;
 import io.avaje.jex.ExceptionHandler;
 import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.http.InternalServerErrorResponse;
+import io.avaje.jex.http.RedirectResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,10 +41,17 @@ class ExceptionManager {
     return HttpResponseException.class.isAssignableFrom(e.getClass());
   }
 
+  private boolean isRedirect(Exception e) {
+    return RedirectResponse.class.isAssignableFrom(e.getClass());
+  }
+
   private void defaultHandling(Context ctx, Exception exception) {
     final HttpResponseException e = unwrap(exception);
     ctx.status(e.getStatus());
-    if (useJson(ctx)) {
+    if (isRedirect(e)) {
+      // no content
+      log.trace("redirect");
+    } else if (useJson(ctx)) {
       ctx.contentType("application/json").write(asJsonContent(e));
     } else {
       ctx.text(asTextContent(e));

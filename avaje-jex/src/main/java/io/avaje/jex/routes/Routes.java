@@ -1,7 +1,7 @@
 package io.avaje.jex.routes;
 
-import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
+import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
 
 import java.util.EnumMap;
@@ -36,7 +36,8 @@ class Routes implements SpiRoutes {
   }
 
   @Override
-  public void before(String pathInfo, Context ctx) {
+  public void before(String pathInfo, SpiContext ctx) {
+    ctx.setMode(Routing.Type.BEFORE);
     for (Entry beforeFilter : before) {
       if (beforeFilter.matches(pathInfo)) {
         beforeFilter.handle(ctx);
@@ -45,7 +46,8 @@ class Routes implements SpiRoutes {
   }
 
   @Override
-  public void after(String pathInfo, Context ctx) {
+  public void after(String pathInfo, SpiContext ctx) {
+    ctx.setMode(Routing.Type.AFTER);
     for (Entry afterFilter : after) {
       if (afterFilter.matches(pathInfo)) {
         afterFilter.handle(ctx);

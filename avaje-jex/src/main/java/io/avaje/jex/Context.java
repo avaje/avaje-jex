@@ -65,6 +65,16 @@ public interface Context {
   Context removeCookie(String name, String path);
 
   /**
+   * Redirect to the specified location using 302 status code.
+   */
+  void redirect(String location);
+
+  /**
+   * Redirect to the location specifying the response status code.
+   */
+  void redirect(String location, int httpStatusCode);
+
+  /**
    * Return the request body as bytes.
    */
   byte[] bodyAsBytes();

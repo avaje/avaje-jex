@@ -1,6 +1,8 @@
 package io.avaje.jex.core;
 
 import io.avaje.jex.Context;
+import io.avaje.jex.Routing;
+import io.avaje.jex.http.RedirectResponse;
 import io.avaje.jex.spi.IORuntimeException;
 import io.avaje.jex.spi.SpiContext;
 
@@ -25,8 +27,8 @@ class JexHttpContext implements SpiContext {
   private final HttpServletResponse res;
   private final Map<String, String> pathParams;
   private final String matchedPath;
-
   private String characterEncoding;
+  private Routing.Type mode;
 
   JexHttpContext(ServiceManager mgr, HttpServletRequest req, HttpServletResponse res, Map<String, String> pathParams, String matchedPath) {
     this.mgr = mgr;
@@ -34,6 +36,11 @@ class JexHttpContext implements SpiContext {
     this.res = res;
     this.pathParams = pathParams;
     this.matchedPath = matchedPath;
+  }
+
+  @Override
+  public void setMode(Routing.Type mode) {
+    this.mode = mode;
   }
 
   private String characterEncoding() {
@@ -138,6 +145,20 @@ class JexHttpContext implements SpiContext {
     cookie.setMaxAge(0);
     res.addCookie(cookie);
     return this;
+  }
+
+  @Override
+  public void redirect(String location) {
+    redirect(location, HttpServletResponse.SC_MOVED_TEMPORARILY);
+  }
+
+  @Override
+  public void redirect(String location, int statusCode) {
+    res.setHeader(HeaderKeys.LOCATION, location);
+    status(statusCode);
+    if (mode == Routing.Type.BEFORE) {
+      throw new RedirectResponse(statusCode);
+    }
   }
 
   @Override

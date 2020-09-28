@@ -18,12 +18,12 @@ public interface SpiRoutes {
   /**
    * Execute all appropriate before filters for the given request URI.
    */
-  void before(String pathInfo, Context ctx);
+  void before(String pathInfo, SpiContext ctx);
 
   /**
    * Execute all appropriate after filters for the given request URI.
    */
-  void after(String pathInfo, Context ctx);
+  void after(String pathInfo, SpiContext ctx);
 
   /**
    * A route entry.

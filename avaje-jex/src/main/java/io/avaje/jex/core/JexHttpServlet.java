@@ -4,6 +4,7 @@ import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
 import io.avaje.jex.Routing;
 import io.avaje.jex.http.NotFoundResponse;
+import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
 
 import javax.servlet.http.HttpServlet;
@@ -35,7 +36,7 @@ class JexHttpServlet extends HttpServlet {
     final String uri = req.getRequestURI();
     SpiRoutes.Entry route = routes.match(routeType, uri);
     if (route == null) {
-      Context ctx = new JexHttpContext(manager, req, res, Collections.emptyMap(), uri);
+      SpiContext ctx = new JexHttpContext(manager, req, res, Collections.emptyMap(), uri);
       try {
         processNoRoute(ctx, uri, routeType);
         routes.after(uri, ctx);
@@ -44,7 +45,7 @@ class JexHttpServlet extends HttpServlet {
       }
     } else {
       final Map<String, String> pathParams = route.pathParams(uri);
-      Context ctx = new JexHttpContext(manager, req, res, pathParams, route.matchPath());
+      SpiContext ctx = new JexHttpContext(manager, req, res, pathParams, route.matchPath());
       try {
         processRoute(ctx, uri, route);
         routes.after(uri, ctx);
@@ -58,12 +59,13 @@ class JexHttpServlet extends HttpServlet {
     manager.handleException(ctx, e);
   }
 
-  private void processRoute(Context ctx, String uri, SpiRoutes.Entry route) {
+  private void processRoute(SpiContext ctx, String uri, SpiRoutes.Entry route) {
     routes.before(uri, ctx);
+    ctx.setMode(null);
     route.handle(ctx);
   }
 
-  private void processNoRoute(Context ctx, String uri, Routing.Type routeType) {
+  private void processNoRoute(SpiContext ctx, String uri, Routing.Type routeType) {
     routes.before(uri, ctx);
     if (routeType == Routing.Type.HEAD && hasGetHandler(uri)) {
       processHead(ctx);
