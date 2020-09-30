@@ -1,8 +1,8 @@
 package io.avaje.jex;
 
-import io.avaje.jex.jetty.JettySpiServer;
+import io.avaje.jex.jetty.JettyStartServer;
 import io.avaje.jex.spi.JsonService;
-import io.avaje.jex.spi.SpiServer;
+import io.avaje.jex.spi.SpiStartServer;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
@@ -10,6 +10,22 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.function.Consumer;
 
+/**
+ * Create configure and start Jex.
+ *
+ * <pre>{@code
+ *
+ *     final Jex.Server app = Jex.create()
+ *       .routing(routing -> routing
+ *         .get("/", ctx -> ctx.text("hello world"))
+ *         .get("/one", ctx -> ctx.text("one"))
+ *       .port(8080)
+ *       .start();
+ *
+ *     app.shutdown();
+ *
+ * }</pre>
+ */
 public class Jex {
 
   private final Routing routing = new DefaultRouting();
@@ -23,6 +39,9 @@ public class Jex {
     this.staticFiles = new DefaultStaticFileConfig(this);
   }
 
+  /**
+   * Create Jex to configure with routes etc before starting.
+   */
   public static Jex create() {
     return new Jex();
   }
@@ -49,11 +68,17 @@ public class Jex {
     public org.eclipse.jetty.server.Server server;
   }
 
+  /**
+   * Configure error handlers.
+   */
   public Jex errorHandling(ErrorHandling.Service service) {
     service.add(errorHandling);
     return this;
   }
 
+  /**
+   * Return the Error handler to add error handlers.
+   */
   public ErrorHandling errorHandling() {
     return errorHandling;
   }
@@ -132,11 +157,11 @@ public class Jex {
    * Start the server.
    */
   public Server start() {
-    final Optional<SpiServer> server = ServiceLoader.load(SpiServer.class).findFirst();
-    if (server.isEmpty()) {
-      return new JettySpiServer().start(this);
+    final Optional<SpiStartServer> start = ServiceLoader.load(SpiStartServer.class).findFirst();
+    if (start.isEmpty()) {
+      return new JettyStartServer().start(this);
     }
-    return server.get().start(this);
+    return start.get().start(this);
   }
 
   /**
