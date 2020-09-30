@@ -48,13 +48,13 @@ class JsonTest {
   void post() {
     HelloDto dto = new HelloDto();
     dto.id = 42;
-    dto.name = "rob";
+    dto.name = "rob was here";
 
     var res = pair.request()
       .body(dto)
       .post().asString();
 
-    assertThat(res.body()).isEqualTo("bean[id:42 name:rob]");
+    assertThat(res.body()).isEqualTo("bean[id:42 name:rob was here]");
     assertThat(res.statusCode()).isEqualTo(200);
 
     dto.id = 99;
