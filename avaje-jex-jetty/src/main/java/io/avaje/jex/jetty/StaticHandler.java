@@ -1,7 +1,6 @@
 package io.avaje.jex.jetty;
 
 import io.avaje.jex.StaticFileSource;
-import io.avaje.jex.spi.StaticHandler;
 import io.avaje.jex.spi.IORuntimeException;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.ResourceHandler;
@@ -16,15 +15,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-class JettyStaticHandler implements StaticHandler {
+class StaticHandler {
 
-  private static final Logger log = LoggerFactory.getLogger(JettyStaticHandler.class);
+  private static final Logger log = LoggerFactory.getLogger(StaticHandler.class);
 
   private final List<ResourceHandler> handlers = new ArrayList<>();
 
   private final boolean preCompress;
 
-  JettyStaticHandler(boolean preCompress) {
+  StaticHandler(boolean preCompress) {
     this.preCompress = preCompress;
   }
 
@@ -69,8 +68,7 @@ class JettyStaticHandler implements StaticHandler {
     return "Static resource directory with path: '" + config.getPath() + "' does not exist.";
   }
 
-  @Override
-  public boolean handle(HttpServletRequest req, HttpServletResponse res) {
+  boolean handle(HttpServletRequest req, HttpServletResponse res) {
 
     final String target = (String) req.getAttribute("jetty-target");
     final Request baseRequest = (Request) req.getAttribute("jetty-request");

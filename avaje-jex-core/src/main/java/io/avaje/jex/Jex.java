@@ -135,7 +135,7 @@ public class Jex {
     if (server.isEmpty()) {
       throw new IllegalStateException("No server in classpath? Add avaje-jex-jetty as dependency.");
     }
-    return server.get().run(this);
+    return server.get().start(this);
   }
 
   /**

@@ -6,7 +6,7 @@ import io.avaje.jex.spi.SpiServer;
 public class JettySpiServer implements SpiServer {
 
   @Override
-  public Jex.Server run(Jex jex) {
+  public Jex.Server start(Jex jex) {
     return new JettyLaunch(jex).start();
   }
 }
