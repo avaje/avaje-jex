@@ -1,7 +1,9 @@
-package io.avaje.jex.core;
+package io.avaje.jex.jetty;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
+import io.avaje.jex.core.HeaderKeys;
+import io.avaje.jex.core.ServiceManager;
 import io.avaje.jex.http.RedirectResponse;
 import io.avaje.jex.spi.IORuntimeException;
 import io.avaje.jex.spi.SpiContext;
@@ -14,7 +16,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;

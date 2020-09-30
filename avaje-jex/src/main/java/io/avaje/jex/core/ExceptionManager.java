@@ -9,17 +9,17 @@ import io.avaje.jex.http.RedirectResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class ExceptionManager {
+public class ExceptionManager {
 
   private static final Logger log = LoggerFactory.getLogger(ExceptionManager.class);
 
   private final ErrorHandling errorHandling;
 
-  ExceptionManager(ErrorHandling errorHandling) {
+  public ExceptionManager(ErrorHandling errorHandling) {
     this.errorHandling = errorHandling;
   }
 
-  void handle(Context ctx, Exception e) {
+  public void handle(Context ctx, Exception e) {
     final ExceptionHandler<Exception> handler = errorHandling.find(e.getClass());
     if (handler != null) {
       handler.handle(e, ctx);

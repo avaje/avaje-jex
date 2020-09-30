@@ -1,8 +1,10 @@
-package io.avaje.jex.core;
+package io.avaje.jex.jetty;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
 import io.avaje.jex.Routing;
+import io.avaje.jex.core.HttpMethodMap;
+import io.avaje.jex.core.ServiceManager;
 import io.avaje.jex.http.NotFoundResponse;
 import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
@@ -22,7 +24,7 @@ class JexHttpServlet extends HttpServlet {
   private final HttpMethodMap methodMap = new HttpMethodMap();
   private final boolean prefer405;
 
-  public JexHttpServlet(Jex jex, SpiRoutes routes, ServiceManager manager, StaticHandler staticHandler) {
+  JexHttpServlet(Jex jex, SpiRoutes routes, ServiceManager manager, StaticHandler staticHandler) {
     this.routes = routes;
     this.manager = manager;
     this.staticHandler = staticHandler;

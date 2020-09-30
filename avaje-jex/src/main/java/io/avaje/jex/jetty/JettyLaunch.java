@@ -1,11 +1,12 @@
-package io.avaje.jex.core;
+package io.avaje.jex.jetty;
 
 import io.avaje.jex.Jex;
 import io.avaje.jex.StaticFileSource;
+import io.avaje.jex.core.JacksonJsonService;
+import io.avaje.jex.core.ServiceManager;
 import io.avaje.jex.routes.RoutesBuilder;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.SpiRoutes;
-import io.avaje.jex.staticfiles.JettyStaticHandler;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
@@ -23,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-public class JettyLaunch implements Jex.Server {
+class JettyLaunch implements Jex.Server {
 
   private static final org.slf4j.Logger log = LoggerFactory.getLogger(JettyLaunch.class);
 
@@ -47,7 +48,7 @@ public class JettyLaunch implements Jex.Server {
     }
   }
 
-  public Jex.Server start() {
+  protected Jex.Server start() {
     try {
       disableJettyLog();
       server = createServer();
@@ -102,15 +103,12 @@ public class JettyLaunch implements Jex.Server {
   }
 
   protected StaticHandler initStaticHandler() {
-    final List<StaticFileSource> staticFileSources = jex.staticFiles().getSources();
-    if (staticFileSources == null || staticFileSources.isEmpty()) {
+    final List<StaticFileSource> fileSources = jex.staticFiles().getSources();
+    if (fileSources == null || fileSources.isEmpty()) {
       return null;
     }
-    final JettyStaticHandler handler = new JettyStaticHandler(jex.inner.preCompressStaticFiles);
-    for (StaticFileSource fileConfig : staticFileSources) {
-      handler.addStaticFileConfig(fileConfig);
-    }
-    return handler;
+    StaticHandlerFactory factory = new StaticHandlerFactory();
+    return factory.build(jex, fileSources);
   }
 
   protected ServiceManager serviceManager() {

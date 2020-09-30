@@ -1,5 +1,6 @@
-package io.avaje.jex.core;
+package io.avaje.jex.jetty;
 
+import io.avaje.jex.core.HeaderKeys;
 import io.avaje.jex.spi.IORuntimeException;
 
 import javax.servlet.ServletInputStream;
@@ -24,7 +25,7 @@ class ContextUtil {
 
   private static final int BUFFER_MAX = 65536;
 
-  public static String getRequestCharset(JexHttpContext ctx) {
+  static String getRequestCharset(JexHttpContext ctx) {
     final String header = ctx.req.getHeader(HeaderKeys.CONTENT_TYPE);
     if (header != null) {
       return parseCharset(header);
@@ -32,7 +33,7 @@ class ContextUtil {
     return UTF_8;
   }
 
-  public static String parseCharset(String header) {
+  static String parseCharset(String header) {
     for (String val : header.split(";")) {
       val = val.trim();
       if (val.regionMatches(true, 0, "charset", 0, "charset".length())) {
@@ -42,7 +43,7 @@ class ContextUtil {
     return "UTF-8";
   }
 
-  public static byte[] readBody(HttpServletRequest req) {
+  static byte[] readBody(HttpServletRequest req) {
     try {
       final ServletInputStream inputStream = req.getInputStream();
 
@@ -61,7 +62,7 @@ class ContextUtil {
     }
   }
 
-  public static void copy(InputStream in, OutputStream out, int bufferSize) throws IOException {
+  static void copy(InputStream in, OutputStream out, int bufferSize) throws IOException {
     byte[] buffer = new byte[bufferSize];
     int len;
     while ((len = in.read(buffer, 0, bufferSize)) > 0) {
@@ -69,7 +70,7 @@ class ContextUtil {
     }
   }
 
-  public static Map<String, List<String>> formParamMap(String body, String charset) {
+  static Map<String, List<String>> formParamMap(String body, String charset) {
     if (body.isEmpty()) {
       return Collections.emptyMap();
     }
@@ -87,7 +88,7 @@ class ContextUtil {
     }
   }
 
-  public static Map<String, List<String>> multiPartForm(HttpServletRequest req) {
+  static Map<String, List<String>> multiPartForm(HttpServletRequest req) {
     //MultipartUtil.getFieldMap
     return null;
   }
