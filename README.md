@@ -38,6 +38,7 @@ var app = Jex.create()
 ### TODO
 - formParam, formParams(key: String), formParamMap()
 - Uploaded files
+- render()
 - cookie store
 - app attributes
 - basicAuthCredentials/basicAuthCredentialsExist

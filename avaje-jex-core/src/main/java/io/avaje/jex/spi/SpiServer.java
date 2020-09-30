@@ -1,4 +1,9 @@
 package io.avaje.jex.spi;
 
-public class SpiServer {
+import io.avaje.jex.Jex;
+
+public interface SpiServer {
+
+  Jex.Server run(Jex jex);
+
 }

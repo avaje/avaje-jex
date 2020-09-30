@@ -5,17 +5,17 @@ import io.avaje.jex.Routing;
 import java.util.HashMap;
 import java.util.Map;
 
-final class HttpMethodMap {
+public final class HttpMethodMap {
 
   private final Map<String, Routing.Type> map = new HashMap<>();
 
-  HttpMethodMap() {
+  public HttpMethodMap() {
     for (Routing.Type value : Routing.Type.values()) {
       map.put(value.name(), value);
     }
   }
 
-  Routing.Type get(String method) {
+  public Routing.Type get(String method) {
     return map.get(method);
   }
 }

@@ -1,10 +1,12 @@
 package io.avaje.jex;
 
-import io.avaje.jex.core.JettyLaunch;
 import io.avaje.jex.spi.JsonService;
+import io.avaje.jex.spi.SpiServer;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
+import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.function.Consumer;
 
 public class Jex {
@@ -129,7 +131,11 @@ public class Jex {
    * Start the server.
    */
   public Server start() {
-    return new JettyLaunch(this).start();
+    final Optional<SpiServer> server = ServiceLoader.load(SpiServer.class).findFirst();
+    if (server.isEmpty()) {
+      throw new IllegalStateException("No server in classpath? Add avaje-jex-jetty as dependency.");
+    }
+    return server.get().run(this);
   }
 
   /**
