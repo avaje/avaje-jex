@@ -25,7 +25,9 @@ public class JacksonJsonService implements JsonService {
   public <T> T jsonRead(Class<T> clazz, SpiContext ctx) {
     try {
       // TODO: Handle gzipped content
-      return mapper.readValue(ctx.bodyAsBytes(), clazz);
+      // read direct
+      return mapper.readValue(ctx.inputStream(), clazz);
+      //return mapper.readValue(ctx.bodyAsBytes(), clazz);
     } catch (IOException e) {
       throw new IORuntimeException(e);
     }
@@ -34,9 +36,11 @@ public class JacksonJsonService implements JsonService {
   @Override
   public void jsonWrite(Object bean, SpiContext ctx) {
     try {
-      final byte[] bytes = mapper.writeValueAsBytes(bean);
       // TODO: compression etc
-      ctx.outputStream().write(bytes);
+      // write direct
+      mapper.writeValue(ctx.outputStream(), bean);
+      // final byte[] bytes = mapper.writeValueAsBytes(bean);
+      //ctx.outputStream().write(bytes);
     } catch (IOException e) {
       throw new IORuntimeException(e);
     }

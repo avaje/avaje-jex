@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -169,6 +170,15 @@ class JexHttpContext implements SpiContext {
   @Override
   public String matchedPath() {
     return matchedPath;
+  }
+
+  @Override
+  public InputStream inputStream() {
+    try {
+      return req.getInputStream();
+    } catch (IOException e) {
+      throw new IORuntimeException(e);
+    }
   }
 
   @Override
