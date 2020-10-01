@@ -2,11 +2,11 @@ package io.avaje.jex.core;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.avaje.jex.spi.IORuntimeException;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.SpiContext;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 
 public class JacksonJsonService implements JsonService {
 
@@ -29,7 +29,7 @@ public class JacksonJsonService implements JsonService {
       return mapper.readValue(ctx.inputStream(), clazz);
       //return mapper.readValue(ctx.bodyAsBytes(), clazz);
     } catch (IOException e) {
-      throw new IORuntimeException(e);
+      throw new UncheckedIOException(e);
     }
   }
 
@@ -42,7 +42,7 @@ public class JacksonJsonService implements JsonService {
       // final byte[] bytes = mapper.writeValueAsBytes(bean);
       //ctx.outputStream().write(bytes);
     } catch (IOException e) {
-      throw new IORuntimeException(e);
+      throw new UncheckedIOException(e);
     }
   }
 }

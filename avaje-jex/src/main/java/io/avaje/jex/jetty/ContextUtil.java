@@ -1,7 +1,6 @@
 package io.avaje.jex.jetty;
 
 import io.avaje.jex.core.HeaderKeys;
-import io.avaje.jex.spi.IORuntimeException;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ class ContextUtil {
       copy(inputStream, os, bufferSize);
       return os.toByteArray();
     } catch (IOException e) {
-      throw new IORuntimeException(e);
+      throw new UncheckedIOException(e);
     }
   }
 
@@ -84,7 +84,7 @@ class ContextUtil {
       }
       return map;
     } catch (UnsupportedEncodingException e) {
-      throw new IORuntimeException(e);
+      throw new UncheckedIOException(e);
     }
   }
 

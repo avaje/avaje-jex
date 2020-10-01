@@ -1,7 +1,6 @@
 package io.avaje.jex.jetty;
 
 import io.avaje.jex.StaticFileSource;
-import io.avaje.jex.spi.IORuntimeException;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.EmptyResource;
@@ -44,7 +43,7 @@ class StaticHandler {
     try {
       handler.start();
     } catch (Exception e) {
-      throw new IORuntimeException(e);
+      throw new RuntimeException("Error starting Jetty static resource handler", e);
     }
     handlers.add(handler);
   }

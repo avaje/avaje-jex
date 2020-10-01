@@ -5,7 +5,6 @@ import io.avaje.jex.Routing;
 import io.avaje.jex.core.HeaderKeys;
 import io.avaje.jex.core.ServiceManager;
 import io.avaje.jex.http.RedirectResponse;
-import io.avaje.jex.spi.IORuntimeException;
 import io.avaje.jex.spi.SpiContext;
 
 import javax.servlet.http.Cookie;
@@ -15,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -177,7 +177,7 @@ class JexHttpContext implements SpiContext {
     try {
       return req.getInputStream();
     } catch (IOException e) {
-      throw new IORuntimeException(e);
+      throw new UncheckedIOException(e);
     }
   }
 
@@ -439,7 +439,7 @@ class JexHttpContext implements SpiContext {
       res.getWriter().write(content);
       return this;
     } catch (IOException e) {
-      throw new IORuntimeException(e);
+      throw new UncheckedIOException(e);
     }
   }
 
@@ -448,7 +448,7 @@ class JexHttpContext implements SpiContext {
     try {
       return res.getOutputStream();
     } catch (IOException e) {
-      throw new IORuntimeException(e);
+      throw new UncheckedIOException(e);
     }
   }
 
