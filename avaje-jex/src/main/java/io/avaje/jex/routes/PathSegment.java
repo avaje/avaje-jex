@@ -2,22 +2,29 @@ package io.avaje.jex.routes;
 
 abstract class PathSegment {
 
-  abstract String asRegexString();
+  abstract String asRegexString(boolean extract);
 
-  public String paramName() {
+  String paramName() {
     return null;
   }
 
   static class Parameter extends PathSegment {
     private final String name;
+    private final String regex;
 
-    public Parameter(String name) {
-      this.name = name;
+    Parameter(String param) {
+      final String[] split = param.split(":", 2);
+      this.name = split[0];
+      if (split.length == 1) {
+        this.regex = "[^/]+?"; // Accepting everything except slash;
+      } else {
+        this.regex = split[1];
+      }
     }
 
     @Override
-    public String asRegexString() {
-      return "[^/]+?"; // Accepting everything except slash;
+    public String asRegexString(boolean extract) {
+      return extract ? "(" + regex + ")" : regex;
     }
 
     @Override
@@ -29,12 +36,12 @@ abstract class PathSegment {
   static class Literal extends PathSegment {
     private final String content;
 
-    public Literal(String content) {
+    Literal(String content) {
       this.content = content;
     }
 
     @Override
-    public String asRegexString() {
+    public String asRegexString(boolean extract) {
       return content;
     }
   }
@@ -42,7 +49,7 @@ abstract class PathSegment {
   static class Wildcard extends PathSegment {
 
     @Override
-    public String asRegexString() {
+    public String asRegexString(boolean extract) {
       return ".*?"; // Accept everything
     }
   }

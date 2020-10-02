@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,27 +20,25 @@ class PathParser {
 
   PathParser(String path, boolean ignoreTrailingSlashes) {
     this.rawPath = path;
-    StringJoiner full = new StringJoiner("/");
+    final RegBuilder regBuilder = new RegBuilder();
     for (String rawSeg : path.split("/")) {
       if (!rawSeg.isEmpty()) {
         segmentCount++;
         final PathSegment pathSegment = parseSegment(rawSeg);
-        full.add(pathSegment.asRegexString());
-        final String paramName = pathSegment.paramName();
+        final String paramName = regBuilder.add(pathSegment);
         if (paramName != null) {
           paramNames.add(paramName);
         }
       }
     }
-    String parts = full.toString();
+
     if (!ignoreTrailingSlashes && path.endsWith("/")) {
       segmentCount++;
-      parts += "\\/";
+      regBuilder.trailingSlash();
     }
 
-    final String rawRegex = "^/" + parts + "/?$";
-    this.matchRegex = Pattern.compile(rawRegex);
-    this.pathParamRegex = Pattern.compile(rawRegex.replace("[^/]+?", "([^/]+?)"));
+    this.matchRegex = regBuilder.matchRegex();
+    this.pathParamRegex = regBuilder.extractRegex();
   }
 
   public boolean matches(String url) {

@@ -145,4 +145,40 @@ class PathParserTest {
     assertFalse(pathParser.matches("/one/two"));
   }
 
+  @Test
+  void withRegex() {
+
+    final PathParser pathParser = new PathParser("/{id:[0-9]+}", true);
+    assertTrue(pathParser.matches("/1"));
+    assertTrue(pathParser.matches("/99"));
+
+    assertFalse(pathParser.matches("/a"));
+    assertFalse(pathParser.matches("/foo"));
+  }
+
+  @Test
+  void withRegex_andPrefix() {
+
+    final PathParser pathParser = new PathParser("/one/{id:[0-9]+}", true);
+    assertTrue(pathParser.matches("/one/1"));
+    assertTrue(pathParser.matches("/one/99"));
+
+    assertFalse(pathParser.matches("/one/a"));
+    assertFalse(pathParser.matches("/one/foo"));
+  }
+
+  @Test
+  void withRegexWithLength() {
+
+    final PathParser pathParser = new PathParser("/{id:[0-9]{4}}", true);
+    assertTrue(pathParser.matches("/1234"));
+    assertTrue(pathParser.matches("/9987"));
+
+    assertFalse(pathParser.matches("/1"));
+    assertFalse(pathParser.matches("/12"));
+    assertFalse(pathParser.matches("/123"));
+    assertFalse(pathParser.matches("/12345"));
+    assertFalse(pathParser.matches("/a"));
+    assertFalse(pathParser.matches("/foo"));
+  }
 }
