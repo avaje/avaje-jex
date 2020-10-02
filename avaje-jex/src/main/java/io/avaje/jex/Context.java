@@ -6,6 +6,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Provides access to functions for handling the request and response.
+ */
 public interface Context {
 
   /**
