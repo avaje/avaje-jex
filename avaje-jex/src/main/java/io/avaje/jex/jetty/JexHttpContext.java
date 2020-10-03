@@ -2,6 +2,7 @@ package io.avaje.jex.jetty;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
+import io.avaje.jex.UploadedFile;
 import io.avaje.jex.core.HeaderKeys;
 import io.avaje.jex.core.ServiceManager;
 import io.avaje.jex.http.RedirectResponse;
@@ -452,4 +453,18 @@ class JexHttpContext implements SpiContext {
     }
   }
 
+  @Override
+  public UploadedFile uploadedFile(String name) {
+    final List<UploadedFile> files = uploadedFiles(name);
+    return files.isEmpty() ? null : files.get(0);
+  }
+
+  @Override
+  public List<UploadedFile> uploadedFiles(String name) {
+    if (!isMultipartFormData()) {
+      return emptyList();
+    } else {
+      return MultipartUtil.uploadedFiles(req, name);
+    }
+  }
 }

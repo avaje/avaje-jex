@@ -89,7 +89,6 @@ class ContextUtil {
   }
 
   static Map<String, List<String>> multiPartForm(HttpServletRequest req) {
-    //MultipartUtil.getFieldMap
-    return null;
+    return MultipartUtil.fieldMap(req);
   }
 }

@@ -183,7 +183,7 @@ public interface Context {
   /**
    * Return a map of all the attributes in the user session.
    */
-  Map<String,Object> sessionAttributeMap();
+  Map<String, Object> sessionAttributeMap();
 
   /**
    * Return the request url.
@@ -304,4 +304,14 @@ public interface Context {
    * Return the underlying http servlet response.
    */
   HttpServletResponse res();
+
+  /**
+   * Return the first UploadedFile for the specified name or null.
+   */
+  UploadedFile uploadedFile(String name);
+
+  /**
+   * Return a list of UploadedFiles for the specified name, or empty list.
+   */
+  List<UploadedFile> uploadedFiles(String name);
 }

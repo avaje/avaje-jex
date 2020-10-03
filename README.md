@@ -27,16 +27,21 @@ var app = Jex.create()
     - organisation of internals to reduce some statics (JavalinJson)
     - modularisation of internals using ServiceLoader (for templating implementation, websockets and sse - make these all optional dependencies keeping core small)
 
-### Notes:
-
+### Design Notes (different to Javalin):
+- Context is an interface
+- Routing, ErrorHandling, StaticFileConfig are interfaces
 - PathParser - Has segment count which we use with RouteIndex
 - RouteIndex - matching paths by method + number of segments
 - Immutable routes on startup - no adding/removing routes after start()
 - Context json() - call through to "ServiceManager" which has the JsonService (no static JavalinJson)
 
+### Differences to Javalin
+- Uses `{}` rather than `:` for defining path parameters
+- Supports use of regex in path segments e.g `{id:[0-9]+}` (provides tighter path matching)
+- Added ctx.text(...) for plain text response
+- Method name change to use ctx.write(...) rather than ctx.result(...)
 
 ### TODO
-- formParam, formParams(key: String), formParamMap()
 - Uploaded files
 - render()
 - cookie store

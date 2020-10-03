@@ -40,6 +40,10 @@ public class TestPair {
     return port;
   }
 
+  public String url() {
+    return client.url().build();
+  }
+
   /**
    * Create a Server and Client pair for a given set of tests.
    */
