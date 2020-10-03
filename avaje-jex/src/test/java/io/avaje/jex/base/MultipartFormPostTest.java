@@ -38,6 +38,11 @@ class MultipartFormPostTest {
           }
           ctx.text(out + " paramMap:" + ctx.formParamMap());
         })
+        .post("/delete", ctx -> {
+          final UploadedFile file = ctx.uploadedFile("one");
+          file.delete();
+          ctx.text("withDelete nm:" + file.name() + " fn:" + file.fileName() + " size:" + file.size());
+        })
       );
 
     return TestPair.create(app);
@@ -58,6 +63,18 @@ class MultipartFormPostTest {
         .asString();
 
     assertThat(res.getBody()).isEqualTo("nm:one fn:hello.txt size:18");
+  }
+
+  @Test
+  void delete() throws UnirestException {
+    final String baseUrl = pair.url();
+
+    final com.mashape.unirest.http.HttpResponse<String> res =
+      Unirest.post(baseUrl + "/delete")
+        .field("one", helloFile)
+        .asString();
+
+    assertThat(res.getBody()).isEqualTo("withDelete nm:one fn:hello.txt size:18");
   }
 
   @Test

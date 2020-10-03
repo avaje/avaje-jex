@@ -32,4 +32,5 @@ public interface UploadedFile {
    */
   long size();
 
+  void delete();
 }

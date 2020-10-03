@@ -41,7 +41,7 @@ class MultipartUtil {
   }
 
   private static UploadedFile toUploaded(Part part) {
-    return new HttpUploadedFile(part);
+    return new PartUploadedFile(part);
   }
 
   static Map<String, List<String>> fieldMap(HttpServletRequest req) {

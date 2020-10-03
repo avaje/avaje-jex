@@ -7,11 +7,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 
-class HttpUploadedFile implements UploadedFile {
+/**
+ * UploadedFile using servlet Part.
+ */
+class PartUploadedFile implements UploadedFile {
 
   private final Part part;
 
-  HttpUploadedFile(Part part) {
+  PartUploadedFile(Part part) {
     this.part = part;
   }
 
@@ -44,6 +47,14 @@ class HttpUploadedFile implements UploadedFile {
     return part.getSize();
   }
 
+  @Override
+  public void delete() {
+    try {
+      part.delete();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
 
   @Override
   public String toString() {
