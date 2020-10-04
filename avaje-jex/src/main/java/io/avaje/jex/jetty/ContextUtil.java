@@ -87,8 +87,4 @@ class ContextUtil {
       throw new UncheckedIOException(e);
     }
   }
-
-  static Map<String, List<String>> multiPartForm(HttpServletRequest req) {
-    return MultipartUtil.fieldMap(req);
-  }
 }

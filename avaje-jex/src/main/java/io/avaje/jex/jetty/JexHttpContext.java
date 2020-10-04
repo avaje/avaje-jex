@@ -275,7 +275,7 @@ class JexHttpContext implements SpiContext {
 
   private Map<String, List<String>> initFormParamMap() {
     if (isMultipartFormData()) {
-      return ContextUtil.multiPartForm(req);
+      return mgr.multiPartForm(req);
     } else {
       return ContextUtil.formParamMap(body(), characterEncoding());
     }
@@ -475,7 +475,7 @@ class JexHttpContext implements SpiContext {
     if (!isMultipartFormData()) {
       return emptyList();
     } else {
-      return MultipartUtil.uploadedFiles(req, name);
+      return mgr.uploadedFiles(req, name);
     }
   }
 }

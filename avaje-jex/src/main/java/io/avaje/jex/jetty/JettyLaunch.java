@@ -2,12 +2,8 @@ package io.avaje.jex.jetty;
 
 import io.avaje.jex.Jex;
 import io.avaje.jex.StaticFileSource;
-import io.avaje.jex.TemplateRender;
-import io.avaje.jex.core.JacksonJsonService;
 import io.avaje.jex.core.ServiceManager;
-import io.avaje.jex.core.TemplateManager;
 import io.avaje.jex.routes.RoutesBuilder;
-import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.SpiRoutes;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Request;
@@ -25,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.ServiceLoader;
 
 class JettyLaunch implements Jex.Server {
 
@@ -99,7 +94,7 @@ class JettyLaunch implements Jex.Server {
     return sh == null ? defaultSessionHandler() : sh;
   }
 
-  protected SessionHandler defaultSessionHandler(){
+  protected SessionHandler defaultSessionHandler() {
     SessionHandler sh = new SessionHandler();
     sh.setHttpOnly(true);
     return sh;
@@ -115,37 +110,7 @@ class JettyLaunch implements Jex.Server {
   }
 
   protected ServiceManager serviceManager() {
-    return new ServiceManager(initJsonService(), jex.errorHandling(), initTemplateMgr());
-  }
-
-  private TemplateManager initTemplateMgr() {
-    TemplateManager mgr = new TemplateManager();
-    mgr.register(jex.inner.renderers);
-    for (TemplateRender render : ServiceLoader.load(TemplateRender.class)) {
-      mgr.registerDefault(render);
-    }
-    return mgr;
-  }
-
-  protected JsonService initJsonService() {
-    final JsonService jsonService = jex.inner.jsonService;
-    if (jsonService != null) {
-      return jsonService;
-    }
-    return detectJackson() ? defaultJacksonService() : null;
-  }
-
-  protected JsonService defaultJacksonService() {
-    return new JacksonJsonService();
-  }
-
-  protected boolean detectJackson() {
-    try {
-      Class.forName("com.fasterxml.jackson.databind.ObjectMapper");
-      return true;
-    } catch (ClassNotFoundException e) {
-      return false;
-    }
+    return ServiceManager.create(jex);
   }
 
   private void logOnStart(org.eclipse.jetty.server.Server server) {

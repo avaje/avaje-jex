@@ -1,4 +1,4 @@
-package io.avaje.jex.jetty;
+package io.avaje.jex.core;
 
 import io.avaje.jex.UploadedFile;
 
@@ -21,17 +21,23 @@ import static java.util.stream.Collectors.toList;
 
 class MultipartUtil {
 
-  private static void setConfig(HttpServletRequest req) {
-    req.setAttribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement(System.getProperty("java.io.tmpdir")));
+  private final MultipartConfigElement config;
+
+  MultipartUtil(MultipartConfigElement config) {
+    this.config = config;
   }
 
-  static List<UploadedFile> uploadedFiles(HttpServletRequest req, String partName) {
+  private void setConfig(HttpServletRequest req) {
+    req.setAttribute("org.eclipse.jetty.multipartConfig", config);
+  }
+
+  List<UploadedFile> uploadedFiles(HttpServletRequest req, String partName) {
     try {
       setConfig(req);
       return req.getParts()
         .stream()
         .filter(part -> part.getName().equals(partName) && isFile(part))
-        .map(MultipartUtil::toUploaded)
+        .map(this::toUploaded)
         .collect(toList());
     } catch (IOException e) {
       throw new UncheckedIOException(e);
@@ -40,11 +46,11 @@ class MultipartUtil {
     }
   }
 
-  private static UploadedFile toUploaded(Part part) {
+  UploadedFile toUploaded(Part part) {
     return new PartUploadedFile(part);
   }
 
-  static Map<String, List<String>> fieldMap(HttpServletRequest req) {
+  Map<String, List<String>> fieldMap(HttpServletRequest req) {
     setConfig(req);
     try {
       Map<String, List<String>> map = new LinkedHashMap<>();
@@ -63,7 +69,7 @@ class MultipartUtil {
     }
   }
 
-  private static String readAsString(Part part) {
+  private String readAsString(Part part) {
     try {
       return new BufferedReader(new InputStreamReader(part.getInputStream(), StandardCharsets.UTF_8))
         .lines()
