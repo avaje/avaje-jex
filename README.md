@@ -42,11 +42,13 @@ var app = Jex.create()
 - Method name change to use ctx.write(...) rather than ctx.result(...)
 
 ### TODO
-- Uploaded files
-- render()
 - cookie store
 - app attributes
 - basicAuthCredentials/basicAuthCredentialsExist
+- plugin api
+- render in progress - FreeMarker and Mustache done
+- web sockets
+- sse
 
 ### Intentionally excluded features
 -
