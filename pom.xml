@@ -14,7 +14,7 @@
   </parent>
 
   <scm>
-    <developerConnection>scm:git:git@github.com:avaje/avaje-jax.git</developerConnection>
+    <developerConnection>scm:git:git@github.com:avaje/avaje-jex.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
