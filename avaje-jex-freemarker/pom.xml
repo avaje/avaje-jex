@@ -30,13 +30,6 @@
       <version>${freemarker.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>io.avaje</groupId>
-      <artifactId>avaje-http-client</artifactId>
-      <version>0.9-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-
   </dependencies>
 
 </project>
