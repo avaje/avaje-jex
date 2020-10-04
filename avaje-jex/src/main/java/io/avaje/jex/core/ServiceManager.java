@@ -5,15 +5,20 @@ import io.avaje.jex.ErrorHandling;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.SpiContext;
 
+import java.util.Map;
+
 public class ServiceManager {
 
   private final JsonService jsonService;
 
   private final ExceptionManager exceptionHandler;
 
-  public ServiceManager(JsonService jsonService, ErrorHandling errorHandling) {
+  private final TemplateManager templateManager;
+
+  public ServiceManager(JsonService jsonService, ErrorHandling errorHandling, TemplateManager templateManager) {
     this.jsonService = jsonService;
     this.exceptionHandler = new ExceptionManager(errorHandling);
+    this.templateManager = templateManager;
   }
 
   public <T> T jsonRead(Class<T> clazz, SpiContext ctx) {
@@ -26,5 +31,9 @@ public class ServiceManager {
 
   public void handleException(Context ctx, Exception e) {
     exceptionHandler.handle(ctx, e);
+  }
+
+  public void render(Context ctx, String name, Map<String, Object> model) {
+    templateManager.render(ctx, name, model);
   }
 }

@@ -445,6 +445,17 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
+  public Context render(String name) {
+    return render(name, emptyMap());
+  }
+
+  @Override
+  public Context render(String name, Map<String, Object> model) {
+    mgr.render(this, name, model);
+    return this;
+  }
+
+  @Override
   public OutputStream outputStream() {
     try {
       return res.getOutputStream();

@@ -236,6 +236,21 @@ public interface Context {
   Context write(String content);
 
   /**
+   * Render a template typically as html.
+   *
+   * @param name The template name
+   */
+  Context render(String name);
+
+  /**
+   * Render a template typically as html with the given model.
+   *
+   * @param name  The template name
+   * @param model The model used with the template
+   */
+  Context render(String name, Map<String, Object> model);
+
+  /**
    * Return all the request headers as a map.
    */
   Map<String, String> headerMap();

@@ -6,6 +6,8 @@ import io.avaje.jex.spi.SpiStartServer;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.function.Consumer;
@@ -55,6 +57,7 @@ public class Jex {
     public boolean preCompressStaticFiles;
     public JsonService jsonService;
     public AccessManager accessManager;
+    public final Map<String, TemplateRender> renderers = new HashMap<>();
   }
 
   /**
@@ -151,6 +154,23 @@ public class Jex {
    */
   public StaticFileConfig staticFiles() {
     return staticFiles;
+  }
+
+  /**
+   * Explicitly register a template renderer.
+   * <p>
+   * Note that if not explicitly registered TemplateRender's can be
+   * automatically registered via ServiceLoader just by including them
+   * to the class path.
+   *
+   * @param renderer   The template renderer to register
+   * @param extensions The extensions the renderer is used for
+   */
+  public Jex register(TemplateRender renderer, String... extensions) {
+    for (String extension : extensions) {
+      inner.renderers.put(extension, renderer);
+    }
+    return this;
   }
 
   /**
