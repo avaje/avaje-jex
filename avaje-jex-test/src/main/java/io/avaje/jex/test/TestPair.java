@@ -1,4 +1,4 @@
-package io.avaje.jex.render.freemarker;
+package io.avaje.jex.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.avaje.http.client.HttpClientContext;

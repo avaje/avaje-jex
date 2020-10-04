@@ -1,6 +1,7 @@
 package io.avaje.jex.render.freemarker;
 
 import io.avaje.jex.Jex;
+import io.avaje.jex.test.TestPair;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
