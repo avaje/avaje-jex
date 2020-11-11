@@ -15,7 +15,7 @@ class CharacterEncodingTest {
   static TestPair init() {
     Jex app = Jex.create()
       .routing(routing -> routing
-        .get("/text", ctx -> ctx.text("суп из капусты"))
+        .get("/text", ctx -> ctx.contentType("text/plain;charset=utf-8").write("суп из капусты"))
         .get("/json", ctx -> ctx.json("白菜湯"))
         .get("/html", ctx -> ctx.html("kålsuppe")));
 
@@ -34,12 +34,13 @@ class CharacterEncodingTest {
     var jsonRes = pair.request().path("json").get().asString();
     var htmlRes = pair.request().path("html").get().asString();
 
-    assertThat(contentType(textRes)).isEqualTo("text/plain;charset=utf-8");
     assertThat(contentType(jsonRes)).isEqualTo("application/json");
     assertThat(contentType(htmlRes)).isEqualTo("text/html;charset=utf-8");
-    assertThat(textRes.body()).isEqualTo("суп из капусты");
     assertThat(jsonRes.body()).isEqualTo("\"白菜湯\"");
     assertThat(htmlRes.body()).isEqualTo("kålsuppe");
+
+    assertThat(contentType(textRes)).isEqualTo("text/plain;charset=utf-8");
+    assertThat(textRes.body()).isEqualTo("суп из капусты");
   }
 
   private String contentType(HttpResponse<String> res) {
