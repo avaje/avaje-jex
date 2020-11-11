@@ -4,7 +4,7 @@
 
   <groupId>io.avaje</groupId>
   <artifactId>avaje-jex-parent</artifactId>
-  <version>0.2</version>
+  <version>0.3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <parent>
@@ -15,7 +15,7 @@
 
   <scm>
     <developerConnection>scm:git:git@github.com:avaje/avaje-jex.git</developerConnection>
-    <tag>avaje-jex-parent-0.2</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <modules>
