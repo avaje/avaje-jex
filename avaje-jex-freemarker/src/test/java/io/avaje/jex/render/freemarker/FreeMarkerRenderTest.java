@@ -6,8 +6,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import java.net.http.HttpResponse;
+import java.util.Map;
 
-import static io.avaje.jex.core.Model.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class FreeMarkerRenderTest {
@@ -18,7 +18,7 @@ class FreeMarkerRenderTest {
     var app = Jex.create()
       .routing(routing -> routing
         .get("/noModel", ctx -> ctx.render("one.ftl"))
-        .get("/withModel", ctx -> ctx.render("two.ftl", toMap("message", "hello")))
+        .get("/withModel", ctx -> ctx.render("two.ftl", Map.of("message", "hello")))
       )
       .register(new FreeMarkerRender(), "ftl");
     return TestPair.create(app);

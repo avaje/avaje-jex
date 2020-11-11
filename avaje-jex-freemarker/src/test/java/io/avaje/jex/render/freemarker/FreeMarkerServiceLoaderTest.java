@@ -6,8 +6,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import java.net.http.HttpResponse;
+import java.util.Map;
 
-import static io.avaje.jex.core.Model.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class FreeMarkerServiceLoaderTest {
@@ -18,7 +18,7 @@ class FreeMarkerServiceLoaderTest {
     var app = Jex.create()
       .routing(routing -> routing
         .get("/noModel", ctx -> ctx.render("one.ftl"))
-        .get("/withModel", ctx -> ctx.render("two.ftl", toMap("message", "hello")))
+        .get("/withModel", ctx -> ctx.render("two.ftl", Map.of("message", "hello")))
       );
       // not explicitly registered so auto registered via service loader
     return TestPair.create(app);

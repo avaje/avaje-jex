@@ -6,8 +6,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import java.net.http.HttpResponse;
+import java.util.Map;
 
-import static io.avaje.jex.core.Model.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MustacheRenderTest {
@@ -19,7 +19,7 @@ class MustacheRenderTest {
     var app = Jex.create()
       .routing(routing -> routing
         .get("/noModel", ctx -> ctx.render("one.mustache"))
-        .get("/withModel", ctx -> ctx.render("two.mustache", toMap("message", "hello")))
+        .get("/withModel", ctx -> ctx.render("two.mustache", Map.of("message", "hello")))
       );
     if (explicit) {
       app.register(new MustacheRender(), "mustache");
