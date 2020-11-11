@@ -11,7 +11,7 @@ class Main {
         .get("/two/{name}", ctx -> {
           System.out.println("pathParams: " + ctx.pathParamMap());
           System.out.println("foo: " + ctx.queryParam("foo"));
-          ctx.text("two");
+          ctx.text("two Yo "+ctx.pathParam("name"));
         })
         .post("one", ctx -> ctx.text("posted")))
       .port(7002)

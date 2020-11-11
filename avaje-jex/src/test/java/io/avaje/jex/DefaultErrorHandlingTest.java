@@ -8,8 +8,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class DefaultErrorHandlingTest {
 
-  private final ExceptionHandler rt = new RT();
-  private final ExceptionHandler ise = new ISE();
+  private final ExceptionHandler<RuntimeException> rt = new RT();
+  private final ExceptionHandler<IllegalStateException> ise = new ISE();
 
   @Test
   void exception() {
