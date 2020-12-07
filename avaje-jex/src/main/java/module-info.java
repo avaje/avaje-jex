@@ -5,7 +5,7 @@ module io.avaje.jex {
   exports io.avaje.jex.spi;
 
   requires java.net.http;
-  requires transitive javax.servlet.api;
+  requires transitive jetty.servlet.api;
   requires transitive org.slf4j;
   requires transitive org.eclipse.jetty.http;
   requires transitive org.eclipse.jetty.servlet;

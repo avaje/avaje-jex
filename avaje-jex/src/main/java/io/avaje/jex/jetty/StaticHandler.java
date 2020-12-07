@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,13 +113,18 @@ class StaticHandler {
     if (resource == null || !resource.isDirectory()) {
       return false;
     }
-    final Resource indexHtml = handler.getResource(path);
-    return indexHtml != null && indexHtml.exists();
+    try {
+      final Resource indexHtml = handler.getResource(path);
+      return indexHtml != null && indexHtml.exists();
+    } catch (IOException e) {
+      log.warn("Error checking for welcome file", e);
+      return false;
+    }
   }
 
   private static class WebjarHandler extends ResourceHandler {
     @Override
-    public Resource getResource(String path) {
+    public Resource getResource(String path) throws IOException {
       final Resource resource = Resource.newClassPathResource("META-INF/resources" + path);
       return (resource != null) ? resource : super.getResource(path);
     }
@@ -133,7 +139,7 @@ class StaticHandler {
     }
 
     @Override
-    public Resource getResource(String path) {
+    public Resource getResource(String path) throws IOException {
 
       if (urlPathPrefix.equals("/")) {
         return super.getResource(path); // same as regular ResourceHandler
