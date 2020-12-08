@@ -28,12 +28,10 @@ class JettyLaunch implements Jex.Server {
 
   private final Jex jex;
   private final SpiRoutes routes;
-  private final Logger defaultLogger;
   private Server server;
 
   public JettyLaunch(Jex jex) {
     this.jex = jex;
-    this.defaultLogger = Log.getLog();
     this.routes = new RoutesBuilder(jex.routing(), jex).build();
   }
 
@@ -48,11 +46,9 @@ class JettyLaunch implements Jex.Server {
 
   protected Jex.Server start() {
     try {
-      disableJettyLog();
       server = createServer();
       server.start();
       logOnStart(server);
-      enableJettyLog();
       return this;
     } catch (Exception e) {
       throw new IllegalStateException("Error starting server", e);
@@ -123,14 +119,6 @@ class JettyLaunch implements Jex.Server {
         log.info("bind to {}", c);
       }
     }
-  }
-
-  private void enableJettyLog() {
-    Log.setLog(defaultLogger);
-  }
-
-  private void disableJettyLog() {
-    Log.setLog(new JettyNoopLogger());
   }
 
   private static class ContextHandler extends ServletContextHandler {
