@@ -8,8 +8,8 @@ import io.avaje.jex.UploadedFile;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.SpiContext;
 
-import javax.servlet.MultipartConfigElement;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.MultipartConfigElement;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;

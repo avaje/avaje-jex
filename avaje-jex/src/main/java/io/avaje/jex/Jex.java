@@ -6,7 +6,7 @@ import io.avaje.jex.spi.SpiStartServer;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
-import javax.servlet.MultipartConfigElement;
+import jakarta.servlet.MultipartConfigElement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
