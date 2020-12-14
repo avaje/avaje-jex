@@ -7,6 +7,7 @@ import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import jakarta.servlet.MultipartConfigElement;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -93,7 +94,15 @@ public class Jex {
    * Add routes and handlers to the routing.
    */
   public Jex routing(Routing.Service routes) {
-    routes.add(routing);
+    routing.add(routes);
+    return this;
+  }
+
+  /**
+   * Add many routes and handlers to the routing.
+   */
+  public Jex routing(Collection<Routing.Service> routes) {
+    routing.addAll(routes);
     return this;
   }
 

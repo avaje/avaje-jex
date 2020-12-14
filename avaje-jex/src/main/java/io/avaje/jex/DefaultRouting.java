@@ -2,6 +2,7 @@ package io.avaje.jex;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
@@ -33,6 +34,20 @@ class DefaultRouting implements Routing {
     pathDeque.addLast(path);
     group.addGroup();
     pathDeque.removeLast();
+  }
+
+  @Override
+  public Routing add(Routing.Service routes) {
+    routes.add(this);
+    return this;
+  }
+
+  @Override
+  public Routing addAll(Collection<Routing.Service> routes) {
+    for (Service route : routes) {
+      route.add(this);
+    }
+    return this;
   }
 
   @Override

@@ -1,9 +1,20 @@
 package io.avaje.jex;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 public interface Routing {
+
+  /**
+   * Add the routes provided by the Routing Service.
+   */
+  Routing add(Routing.Service routes);
+
+  /**
+   * Add all the routes provided by the Routing Services.
+   */
+  Routing addAll(Collection<Routing.Service> routes);
 
   /**
    * Add a group of route handlers with a common path prefix.
