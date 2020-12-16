@@ -3,6 +3,7 @@ package io.avaje.jex;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.List;
 import java.util.Map;
 
@@ -108,6 +109,18 @@ public interface Context {
    * Set the response content type.
    */
   Context contentType(String contentType);
+
+  /**
+   * Return the splat path value for the given position.
+   *
+   * @param position the index postion of the splat starting with 0.
+   */
+  String splat(int position);
+
+  /**
+   * Return all the splat values.
+   */
+  List<String> splats();
 
   /**
    * Return all the path parameters as a map.

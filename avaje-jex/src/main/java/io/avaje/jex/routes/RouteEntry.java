@@ -32,7 +32,7 @@ class RouteEntry implements SpiRoutes.Entry {
   }
 
   @Override
-  public Map<String, String> pathParams(String uri) {
+  public SpiRoutes.Params pathParams(String uri) {
     return path.extractPathParams(uri);
   }
 
@@ -44,5 +44,10 @@ class RouteEntry implements SpiRoutes.Entry {
   @Override
   public int getSegmentCount() {
     return path.getSegmentCount();
+  }
+
+  @Override
+  public boolean includesWildcard() {
+    return path.includesWildcard();
   }
 }

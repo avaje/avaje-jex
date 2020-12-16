@@ -1,12 +1,12 @@
 package io.avaje.jex.routes;
 
+import java.util.List;
+
 abstract class PathSegment {
 
   abstract String asRegexString(boolean extract);
 
-  String paramName() {
-    return null;
-  }
+  abstract void addParamName(List<String> paramNames);
 
   static class Parameter extends PathSegment {
     private final String name;
@@ -28,8 +28,8 @@ abstract class PathSegment {
     }
 
     @Override
-    public String paramName() {
-      return name;
+    public void addParamName(List<String> paramNames) {
+      paramNames.add(name);
     }
   }
 
@@ -44,13 +44,22 @@ abstract class PathSegment {
     public String asRegexString(boolean extract) {
       return content;
     }
+
+    @Override
+    public void addParamName(List<String> paramNames) {
+      // do nothing for literal
+    }
   }
 
   static class Wildcard extends PathSegment {
-
     @Override
     public String asRegexString(boolean extract) {
-      return ".*?"; // Accept everything
+      return extract ? "(.*?)" : ".*?"; // Accept everything
+    }
+
+    @Override
+    public void addParamName(List<String> paramNames) {
+      paramNames.add(null); // null for splat
     }
   }
 

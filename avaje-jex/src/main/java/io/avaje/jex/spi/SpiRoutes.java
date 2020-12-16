@@ -3,6 +3,7 @@ package io.avaje.jex.spi;
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,7 +44,7 @@ public interface SpiRoutes {
     /**
      * Return the path parameter map given the uri.
      */
-    Map<String, String> pathParams(String uri);
+    Params pathParams(String uri);
 
     /**
      * Return the raw path expression.
@@ -54,5 +55,34 @@ public interface SpiRoutes {
      * Return the segment count.
      */
     int getSegmentCount();
+
+    /**
+     * Return true if one of the segments is the wildcard match.
+     */
+    boolean includesWildcard();
+  }
+
+  /**
+   * Path and splat/wildcard parameters.
+   */
+  class Params {
+
+    /**
+     * The path parameters.
+     */
+    public final Map<String, String> pathParams;
+
+    /**
+     * The path splat parameters.
+     */
+    public final List<String> splats;
+
+    /**
+     * Create with path parameters and splat/wildcard parameters.
+     */
+    public Params(Map<String, String> pathParams, List<String> splats) {
+      this.pathParams = pathParams;
+      this.splats = splats;
+    }
   }
 }

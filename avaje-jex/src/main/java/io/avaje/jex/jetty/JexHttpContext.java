@@ -7,17 +7,19 @@ import io.avaje.jex.core.HeaderKeys;
 import io.avaje.jex.core.ServiceManager;
 import io.avaje.jex.http.RedirectResponse;
 import io.avaje.jex.spi.SpiContext;
-
+import io.avaje.jex.spi.SpiRoutes;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,17 +34,28 @@ class JexHttpContext implements SpiContext {
   protected final HttpServletRequest req;
   private final HttpServletResponse res;
   private final Map<String, String> pathParams;
+  private final List<String> splats;
   private final String matchedPath;
   private String characterEncoding;
   private Routing.Type mode;
   private Map<String, List<String>> formParamMap;
 
-  JexHttpContext(ServiceManager mgr, HttpServletRequest req, HttpServletResponse res, Map<String, String> pathParams, String matchedPath) {
+  JexHttpContext(ServiceManager mgr, HttpServletRequest req, HttpServletResponse res, String matchedPath) {
     this.mgr = mgr;
     this.req = req;
     this.res = res;
-    this.pathParams = pathParams;
     this.matchedPath = matchedPath;
+    this.pathParams = Collections.emptyMap();
+    this.splats = null;
+  }
+
+  JexHttpContext(ServiceManager mgr, HttpServletRequest req, HttpServletResponse res, String matchedPath, SpiRoutes.Params params) {
+    this.mgr = mgr;
+    this.req = req;
+    this.res = res;
+    this.matchedPath = matchedPath;
+    this.pathParams = params.pathParams;
+    this.splats = params.splats;
   }
 
   @Override
@@ -200,6 +213,16 @@ class JexHttpContext implements SpiContext {
   @Override
   public long contentLength() {
     return req.getContentLengthLong();
+  }
+
+  @Override
+  public String splat(int position) {
+    return splats == null ? null : splats.get(position);
+  }
+
+  @Override
+  public List<String> splats() {
+    return splats == null ? Collections.emptyList() : splats;
   }
 
   @Override

@@ -1,5 +1,6 @@
 package io.avaje.jex.routes;
 
+import java.util.List;
 import java.util.StringJoiner;
 import java.util.regex.Pattern;
 
@@ -11,10 +12,10 @@ class RegBuilder {
   private final StringJoiner extract = new StringJoiner("/");
   private boolean trailingSlash;
 
-  String add(PathSegment pathSegment) {
+  void add(PathSegment pathSegment, List<String> paramNames) {
     full.add(pathSegment.asRegexString(false));
     extract.add(pathSegment.asRegexString(true));
-    return pathSegment.paramName();
+    pathSegment.addParamName(paramNames);
   }
 
   void trailingSlash() {

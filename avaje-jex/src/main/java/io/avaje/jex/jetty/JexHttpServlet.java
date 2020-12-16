@@ -33,12 +33,11 @@ class JexHttpServlet extends HttpServlet {
 
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse res) {
-
     final Routing.Type routeType = method(req);
     final String uri = req.getRequestURI();
     SpiRoutes.Entry route = routes.match(routeType, uri);
     if (route == null) {
-      SpiContext ctx = new JexHttpContext(manager, req, res, Collections.emptyMap(), uri);
+      SpiContext ctx = new JexHttpContext(manager, req, res, uri);
       try {
         processNoRoute(ctx, uri, routeType);
         routes.after(uri, ctx);
@@ -46,8 +45,8 @@ class JexHttpServlet extends HttpServlet {
         handleException(ctx, e);
       }
     } else {
-      final Map<String, String> pathParams = route.pathParams(uri);
-      SpiContext ctx = new JexHttpContext(manager, req, res, pathParams, route.matchPath());
+      final SpiRoutes.Params params = route.pathParams(uri);
+      SpiContext ctx = new JexHttpContext(manager, req, res, route.matchPath(), params);
       try {
         processRoute(ctx, uri, route);
         routes.after(uri, ctx);

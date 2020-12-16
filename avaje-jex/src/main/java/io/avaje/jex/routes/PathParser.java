@@ -1,5 +1,7 @@
 package io.avaje.jex.routes;
 
+import io.avaje.jex.spi.SpiRoutes;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -17,6 +19,7 @@ class PathParser {
   private final Pattern matchRegex;
   private final Pattern pathParamRegex;
   private int segmentCount;
+  private boolean includesWildcard;
 
   PathParser(String path, boolean ignoreTrailingSlashes) {
     this.rawPath = path;
@@ -24,11 +27,7 @@ class PathParser {
     for (String rawSeg : path.split("/")) {
       if (!rawSeg.isEmpty()) {
         segmentCount++;
-        final PathSegment pathSegment = parseSegment(rawSeg);
-        final String paramName = regBuilder.add(pathSegment);
-        if (paramName != null) {
-          paramNames.add(paramName);
-        }
+        regBuilder.add(parseSegment(rawSeg), paramNames);
       }
     }
 
@@ -45,13 +44,20 @@ class PathParser {
     return matchRegex.matcher(url).matches();
   }
 
-  public Map<String, String> extractPathParams(String uri) {
+  public SpiRoutes.Params extractPathParams(String uri) {
+    List<String> splats = includesWildcard ? new ArrayList<>() : null;
     Map<String, String> pathMap = new LinkedHashMap<>();
     final List<String> values = values(uri);
     for (int i = 0; i < values.size(); i++) {
-      pathMap.put(paramNames.get(i), UrlDecode.decode(values.get(i)));
+      final String val = UrlDecode.decode(values.get(i));
+      final String name = paramNames.get(i);
+      if (name == null) {
+        splats.add(val);
+      } else {
+        pathMap.put(name, val);
+      }
     }
-    return pathMap;
+    return new SpiRoutes.Params(pathMap, splats);
   }
 
   private List<String> values(String uri) {
@@ -72,6 +78,7 @@ class PathParser {
       return new PathSegment.Parameter(seg.substring(1, seg.length() - 1));
     }
     if (seg.equals("*")) {
+      includesWildcard = true;
       return WILDCARD;
     }
     return new PathSegment.Literal(seg);
@@ -89,5 +96,12 @@ class PathParser {
    */
   public int getSegmentCount() {
     return segmentCount;
+  }
+
+  /**
+   * Return true if one of the segments is the wildcard match.
+   */
+  public boolean includesWildcard() {
+    return includesWildcard;
   }
 }

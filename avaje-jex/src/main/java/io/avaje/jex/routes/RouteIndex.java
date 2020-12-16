@@ -12,6 +12,11 @@ class RouteIndex {
    */
   private final Entry[] entries = new Entry[6];
 
+  /**
+   * Wildcard/splat based route entries.
+   */
+  private List<SpiRoutes.Entry> wildcardEntries = new ArrayList<>();
+
   RouteIndex() {
     for (int i = 0; i < entries.length; i++) {
       entries[i] = new Entry();
@@ -23,11 +28,25 @@ class RouteIndex {
   }
 
   void add(SpiRoutes.Entry entry) {
-    entries[index(entry.getSegmentCount())].add(entry);
+    if (entry.includesWildcard()) {
+      wildcardEntries.add(entry);
+    } else {
+      entries[index(entry.getSegmentCount())].add(entry);
+    }
   }
 
   SpiRoutes.Entry match(String pathInfo) {
-    return entries[index(segmentCount(pathInfo))].match(pathInfo);
+    final SpiRoutes.Entry match = entries[index(segmentCount(pathInfo))].match(pathInfo);
+    if (match != null) {
+      return match;
+    }
+    // linear search wildcard/splat based matching
+    for (SpiRoutes.Entry wildcardEntry : wildcardEntries) {
+      if (wildcardEntry.matches(pathInfo)) {
+        return wildcardEntry;
+      }
+    }
+    return null;
   }
 
   private int segmentCount(String pathInfo) {

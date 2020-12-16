@@ -40,12 +40,17 @@ class FilterEntry implements SpiRoutes.Entry {
   }
 
   @Override
-  public Map<String, String> pathParams(String uri) {
+  public SpiRoutes.Params pathParams(String uri) {
     throw new IllegalStateException("not allowed");
   }
 
   @Override
   public int getSegmentCount() {
     throw new IllegalStateException("not allowed");
+  }
+
+  @Override
+  public boolean includesWildcard() {
+    return pathParser != null && pathParser.includesWildcard();
   }
 }

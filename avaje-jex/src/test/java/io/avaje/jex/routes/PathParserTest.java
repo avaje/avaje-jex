@@ -1,6 +1,7 @@
 package io.avaje.jex.routes;
 
 
+import io.avaje.jex.spi.SpiRoutes;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -44,10 +45,10 @@ class PathParserTest {
     assertThat(pathParser.getSegmentCount()).isEqualTo(2);
     assertThat(pathParser.raw()).isEqualTo("/one/{id}");
 
-    Map<String, String> pathParams = pathParser.extractPathParams("/one/1");
+    Map<String, String> pathParams = pathParser.extractPathParams("/one/1").pathParams;
     assertThat(pathParams.get("id")).isEqualTo("1");
 
-    pathParams = pathParser.extractPathParams("/one/next");
+    pathParams = pathParser.extractPathParams("/one/next").pathParams;
     assertThat(pathParams.get("id")).isEqualTo("next");
   }
 
@@ -59,7 +60,7 @@ class PathParserTest {
     assertThat(pathParser.getSegmentCount()).isEqualTo(3);
     assertThat(pathParser.raw()).isEqualTo("/{a}/{b}/{c}");
 
-    Map<String, String> pathParams = pathParser.extractPathParams("/1a/2b/3c");
+    Map<String, String> pathParams = pathParser.extractPathParams("/1a/2b/3c").pathParams;
     assertThat(pathParams.get("a")).isEqualTo("1a");
     assertThat(pathParams).containsOnlyKeys("a", "b", "c");
     assertThat(pathParams).containsEntry("a", "1a");
@@ -75,7 +76,7 @@ class PathParserTest {
     assertTrue(pathParser.matches("/one/1a/2b/3c"));
     assertTrue(pathParser.matches("/one/foo/bar/baz"));
 
-    Map<String, String> pathParams = pathParser.extractPathParams("/one/1a/2b/3c");
+    Map<String, String> pathParams = pathParser.extractPathParams("/one/1a/2b/3c").pathParams;
     assertThat(pathParams.get("a")).isEqualTo("1a");
     assertThat(pathParams).containsOnlyKeys("a", "b", "c");
     assertThat(pathParams).containsEntry("a", "1a");
@@ -95,7 +96,7 @@ class PathParserTest {
     assertFalse(pathParser.matches("/one/1a/two/2b/3c/end/extra"));
     assertFalse(pathParser.matches("extra/one/1a/two/2b/3c/end"));
 
-    Map<String, String> pathParams = pathParser.extractPathParams("/one/1a/two/2b/3c/end");
+    Map<String, String> pathParams = pathParser.extractPathParams("/one/1a/two/2b/3c/end").pathParams;
     assertThat(pathParams).containsOnlyKeys("a", "b", "c");
     assertThat(pathParams).containsEntry("a", "1a");
     assertThat(pathParams).containsEntry("b", "2b");
@@ -180,5 +181,45 @@ class PathParserTest {
     assertFalse(pathParser.matches("/12345"));
     assertFalse(pathParser.matches("/a"));
     assertFalse(pathParser.matches("/foo"));
+  }
+
+  @Test
+  void matches_splat0() {
+
+    final PathParser pathParser = new PathParser("/{a}/*", true);
+    assertTrue(pathParser.matches("/1a/2b/3c"));
+    assertThat(pathParser.getSegmentCount()).isEqualTo(2);
+    assertThat(pathParser.raw()).isEqualTo("/{a}/*");
+
+    final SpiRoutes.Params params = pathParser.extractPathParams("/1a/2b/3c");
+    assertThat(params.pathParams.get("a")).isEqualTo("1a");
+    assertThat(params.splats).containsOnly("2b/3c");
+
+    assertThat(params.pathParams).containsOnlyKeys("a");
+    assertThat(params.pathParams).containsEntry("a", "1a");
+  }
+
+  @Test
+  void matches_splat0LiteralSplat() {
+
+    final PathParser pathParser = new PathParser("/{a}/*/and/*", true);
+    assertThat(pathParser.raw()).isEqualTo("/{a}/*/and/*");
+    assertThat(pathParser.getSegmentCount()).isEqualTo(4);
+
+    assertTrue(pathParser.matches("/1/2/and/3"));
+    assertFalse(pathParser.matches("/1/2/3/4"));
+    assertTrue(pathParser.matches("/1/a/b/c/d/and/f/g/h/i"));
+
+    SpiRoutes.Params params = pathParser.extractPathParams("/1a/2b/and/3c");
+    assertThat(params.pathParams.get("a")).isEqualTo("1a");
+    assertThat(params.pathParams).containsOnlyKeys("a");
+
+    assertThat(params.splats).containsOnly("2b","3c");
+
+    params = pathParser.extractPathParams("/1/a/b/c/d/and/f/g/h/i");
+    assertThat(params.pathParams.get("a")).isEqualTo("1");
+    assertThat(params.pathParams).containsOnlyKeys("a");
+
+    assertThat(params.splats).containsOnly("a/b/c/d","f/g/h/i");
   }
 }

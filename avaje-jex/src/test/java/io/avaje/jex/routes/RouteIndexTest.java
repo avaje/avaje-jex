@@ -50,6 +50,21 @@ class RouteIndexTest {
     assertThat(index.match("/99/c")).isNull();
   }
 
+  @Test
+  void match_splat() {
+    RouteIndex index = new RouteIndex();
+    index.add(entry("/"));
+    index.add(entry("/{id}"));
+    index.add(entry("/{id}/a"));
+    index.add(entry("/{id}/*"));
+
+    assertThat(index.match("/").matchPath()).isEqualTo("/");
+    assertThat(index.match("/42").matchPath()).isEqualTo("/{id}");
+    assertThat(index.match("/42/a").matchPath()).isEqualTo("/{id}/a");
+    assertThat(index.match("/42/banana").matchPath()).isEqualTo("/{id}/*");
+    assertThat(index.match("/42/banana/apple/grape/bean/nut").matchPath()).isEqualTo("/{id}/*");
+  }
+
   private SpiRoutes.Entry entry(String path) {
     return new RouteEntry(new PathParser(path, true), routingEntry);
   }
