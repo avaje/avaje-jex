@@ -17,7 +17,7 @@ public class Main {
         })
       )
       .staticFiles().addClasspath("/static", "content")
-      .staticFiles().addExternal("/", "/tmp/junk")
+//      .staticFiles().addExternal("/", "/tmp/junk")
       .port(7003)
       .start();
   }
