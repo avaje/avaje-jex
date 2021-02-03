@@ -62,7 +62,7 @@ class MultipartFormPostTest {
         .field("one", helloFile)
         .asString();
 
-    assertThat(res.getBody()).isEqualTo("nm:one fn:hello.txt size:18");
+    assertThat(res.getBody()).isEqualTo("nm:one fn:hello.txt size:" + helloFile.length());
   }
 
   @Test
@@ -74,7 +74,7 @@ class MultipartFormPostTest {
         .field("one", helloFile)
         .asString();
 
-    assertThat(res.getBody()).isEqualTo("withDelete nm:one fn:hello.txt size:18");
+    assertThat(res.getBody()).isEqualTo("withDelete nm:one fn:hello.txt size:" + helloFile.length());
   }
 
   @Test
@@ -88,7 +88,7 @@ class MultipartFormPostTest {
         .field("one", helloFile)
         .asString();
 
-    assertThat(res.getBody()).isEqualTo("nm:one fn:hello.txt size:18 paramMap:{a=[aval], b=[bval]}");
+    assertThat(res.getBody()).isEqualTo("nm:one fn:hello.txt size:" + helloFile.length() + " paramMap:{a=[aval], b=[bval]}");
   }
 
   @Test
@@ -106,6 +106,6 @@ class MultipartFormPostTest {
         .field("one", hello2File)
         .asString();
 
-    assertThat(res.getBody()).isEqualTo("file[nm:one fn:hello.txt size:18]file[nm:one fn:hello2.txt size:28] paramMap:{a=[a1, a2], b=[b1, b2], c=[c1]}");
+    assertThat(res.getBody()).isEqualTo("file[nm:one fn:hello.txt size:" + helloFile.length()+ "]file[nm:one fn:hello2.txt size:" + hello2File.length() + "] paramMap:{a=[a1, a2], b=[b1, b2], c=[c1]}");
   }
 }
