@@ -70,6 +70,15 @@ public class Jex {
   public static class Jetty {
     public boolean sessions = true;
     public boolean security = true;
+    /**
+     * Set true to use Loom virtual threads for ThreadPool.
+     * This requires JDK 17 with Loom included.
+     */
+    public boolean virtualThreads;
+    /**
+     * Set maxThreads when using default QueuedThreadPool. Defaults to 200.
+     */
+    public int maxThreads;
     public SessionHandler sessionHandler;
     public ServletContextHandler contextHandler;
     public org.eclipse.jetty.server.Server server;

@@ -5,6 +5,9 @@ import io.avaje.jex.StaticFileSource;
 import io.avaje.jex.core.ServiceManager;
 import io.avaje.jex.routes.RoutesBuilder;
 import io.avaje.jex.spi.SpiRoutes;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
@@ -12,13 +15,8 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.log.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -30,7 +28,7 @@ class JettyLaunch implements Jex.Server {
   private final SpiRoutes routes;
   private Server server;
 
-  public JettyLaunch(Jex jex) {
+  JettyLaunch(Jex jex) {
     this.jex = jex;
     this.routes = new RoutesBuilder(jex.routing(), jex).build();
   }
@@ -62,9 +60,12 @@ class JettyLaunch implements Jex.Server {
     return server;
   }
 
-  private Server initServer() {
+  protected Server initServer() {
     Server server = jex.jetty.server;
-    return server != null ? server : new Server(jex.inner.port);
+    if (server != null) {
+      return server;
+    }
+    return new JettyBuilder(jex).build();
   }
 
   protected ServletContextHandler initContextHandler() {
