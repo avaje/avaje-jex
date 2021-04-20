@@ -38,6 +38,14 @@ class MultipartFormPostTest {
           }
           ctx.text(out + " paramMap:" + ctx.formParamMap());
         })
+        .post("/multiAll", ctx -> {
+          String out = "";
+          final List<UploadedFile> files = ctx.uploadedFiles();
+          for (UploadedFile file : files) {
+            out += "file[nm:" + file.name() + " fn:" + file.fileName() + " size:" + file.size() + "]";
+          }
+          ctx.text(out);
+        })
         .post("/delete", ctx -> {
           final UploadedFile file = ctx.uploadedFile("one");
           file.delete();
@@ -107,5 +115,18 @@ class MultipartFormPostTest {
         .asString();
 
     assertThat(res.getBody()).isEqualTo("file[nm:one fn:hello.txt size:" + helloFile.length()+ "]file[nm:one fn:hello2.txt size:" + hello2File.length() + "] paramMap:{a=[a1, a2], b=[b1, b2], c=[c1]}");
+  }
+
+  @Test
+  void multipleFilesAll() throws UnirestException {
+    final String baseUrl = pair.url();
+
+    final com.mashape.unirest.http.HttpResponse<String> res =
+      Unirest.post(baseUrl + "/multiAll")
+        .field("one", helloFile)
+        .field("two", hello2File)
+        .asString();
+
+    assertThat(res.getBody()).isEqualTo("file[nm:one fn:hello.txt size:" + helloFile.length()+ "]file[nm:two fn:hello2.txt size:" + hello2File.length() + "]");
   }
 }

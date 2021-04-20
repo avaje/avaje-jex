@@ -501,4 +501,13 @@ class JexHttpContext implements SpiContext {
       return mgr.uploadedFiles(req, name);
     }
   }
+
+  @Override
+  public List<UploadedFile> uploadedFiles() {
+    if (!isMultipartFormData()) {
+      return emptyList();
+    } else {
+      return mgr.uploadedFiles(req);
+    }
+  }
 }

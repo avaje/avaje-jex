@@ -342,4 +342,10 @@ public interface Context {
    * Return a list of UploadedFiles for the specified name, or empty list.
    */
   List<UploadedFile> uploadedFiles(String name);
+
+  /**
+   * Return a list of all UploadedFiles.
+   */
+  List<UploadedFile> uploadedFiles();
+
 }

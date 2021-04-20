@@ -51,6 +51,10 @@ public class ServiceManager {
     templateManager.render(ctx, name, model);
   }
 
+  public List<UploadedFile> uploadedFiles(HttpServletRequest req) {
+    return multipartUtil.uploadedFiles(req);
+  }
+
   public List<UploadedFile> uploadedFiles(HttpServletRequest req, String name) {
     return multipartUtil.uploadedFiles(req, name);
   }

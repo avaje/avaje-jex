@@ -31,11 +31,24 @@ class MultipartUtil {
     req.setAttribute("org.eclipse.jetty.multipartConfig", config);
   }
 
+  List<UploadedFile> uploadedFiles(HttpServletRequest req) {
+    try {
+      setConfig(req);
+      return req.getParts().stream()
+        .filter(part -> isFile(part))
+        .map(this::toUploaded)
+        .collect(toList());
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    } catch (ServletException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   List<UploadedFile> uploadedFiles(HttpServletRequest req, String partName) {
     try {
       setConfig(req);
-      return req.getParts()
-        .stream()
+      return req.getParts().stream()
         .filter(part -> part.getName().equals(partName) && isFile(part))
         .map(this::toUploaded)
         .collect(toList());
