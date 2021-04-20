@@ -32,7 +32,7 @@ class RouteSplatTest {
 
   @Test
   void when_utf8Encoded() {
-    // This fails in Jetty 11.0.1 due to: https://github.com/eclipse/jetty.project/issues/6001
+    // This fails in Jetty 11.0.2 due to: https://github.com/eclipse/jetty.project/issues/6001
     // String path = URLEncoder.encode("java/kotlin", StandardCharsets.UTF_8)
     //  + "/two/" + URLEncoder.encode("x/y", StandardCharsets.UTF_8);
     // HttpResponse<String> res = pair.request().path(path).get().asString();
