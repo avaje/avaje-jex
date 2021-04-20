@@ -15,6 +15,7 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.Uptime;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -115,9 +116,9 @@ class JettyLaunch implements Jex.Server {
       if (c instanceof ServerConnector) {
         ServerConnector sc = (ServerConnector) c;
         String host = (sc.getHost() == null) ? "localhost" : sc.getHost();
-        log.info("Listening with {} host:{} port:{}", sc.getProtocols(), host, sc.getLocalPort());
+        log.info("Listening with {} host:{} port:{} @{}ms", sc.getProtocols(), host, sc.getLocalPort(), Uptime.getUptime());
       } else {
-        log.info("bind to {}", c);
+        log.info("bind to {} @{}ms", c, Uptime.getUptime());
       }
     }
   }
