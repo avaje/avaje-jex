@@ -35,7 +35,6 @@ class JettyBuilder {
 
   private ThreadPool pool() {
     if (config.virtualThreads) {
-      log.debug("using loom VirtualThreadPool");
       return new VirtualThreadPool();
     } else {
       return config.maxThreads == 0 ? new QueuedThreadPool() : new QueuedThreadPool(config.maxThreads);
