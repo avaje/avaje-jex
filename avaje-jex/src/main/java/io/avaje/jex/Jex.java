@@ -52,6 +52,7 @@ public class Jex {
 
   public static class Inner {
     public int port = 7001;
+    public String host;
     public String contextPath = "/";
     public boolean prefer405 = true;
     public boolean ignoreTrailingSlashes = true;

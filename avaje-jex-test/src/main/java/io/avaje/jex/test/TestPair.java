@@ -56,7 +56,7 @@ public class TestPair {
     var client = HttpClientContext.newBuilder()
       .withBaseUrl(url)
       .withBodyAdapter(new JacksonBodyAdapter(objectMapper))
-      .withResponseListener(new RequestLogger())
+      .withRequestListener(new RequestLogger())
       .build();
 
     return new TestPair(port, jexServer, client);

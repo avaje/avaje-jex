@@ -116,8 +116,8 @@ class JettyLaunch implements Jex.Server {
       String virtualThreads = jex.jetty.virtualThreads ? "with virtualThreads" : "";
       if (c instanceof ServerConnector) {
         ServerConnector sc = (ServerConnector) c;
-        String host = (sc.getHost() == null) ? "localhost" : sc.getHost();
-        log.info("Listening with {} host:{} port:{} @{}ms {}", sc.getProtocols(), host, sc.getLocalPort(), Uptime.getUptime(), virtualThreads);
+        String host = (sc.getHost() == null) ? "0.0.0.0" : sc.getHost();
+        log.info("Listening with {} {}:{} @{}ms {}", sc.getProtocols(), host, sc.getLocalPort(), Uptime.getUptime(), virtualThreads);
       } else {
         log.info("bind to {} @{}ms {}", c, Uptime.getUptime(), virtualThreads);
       }
