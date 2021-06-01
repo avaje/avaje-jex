@@ -41,21 +41,21 @@ class VerbTest {
 
   @Test
   void get() {
-    HttpResponse<String> res = pair.request().get().asString();
+    HttpResponse<String> res = pair.request().GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("get");
   }
 
   @Test
   void get_with_path() {
-    HttpResponse<String> res = pair.request().path("get").get().asString();
+    HttpResponse<String> res = pair.request().path("get").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("getWithPath");
   }
 
   @Test
   void post() {
-    HttpResponse<String> res = pair.request().body("dummy").post().asString();
+    HttpResponse<String> res = pair.request().body("dummy").POST().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("post");
   }

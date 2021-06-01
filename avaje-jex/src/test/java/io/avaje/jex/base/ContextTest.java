@@ -54,13 +54,13 @@ class ContextTest {
 
   @Test
   void get() {
-    HttpResponse<String> res = pair.request().get().asString();
+    HttpResponse<String> res = pair.request().GET().asString();
     assertThat(res.body()).isEqualTo("ze-get");
   }
 
   @Test
   void post() {
-    HttpResponse<String> res = pair.request().body("simple").post().asString();
+    HttpResponse<String> res = pair.request().body("simple").POST().asString();
     assertThat(res.body()).isEqualTo("ze-post");
   }
 
@@ -68,7 +68,7 @@ class ContextTest {
   void ctx_header_getSet() {
     HttpResponse<String> res = pair.request().path("header")
       .header("From-My-Client", "client-value")
-      .get().asString();
+      .GET().asString();
 
     final Optional<String> serverSetHeader = res.headers().firstValue("From-My-Server");
     assertThat(serverSetHeader.get()).isEqualTo("Set-By-Server");
@@ -80,7 +80,7 @@ class ContextTest {
     HttpResponse<String> res = pair.request().path("headerMap")
       .header("X-Foo", "a")
       .header("X-Bar", "b")
-      .get().asString();
+      .GET().asString();
 
     assertThat(res.body()).contains("X-Foo=a");
     assertThat(res.body()).contains("X-Bar=b");
@@ -89,7 +89,7 @@ class ContextTest {
   @Test
   void ctx_status() {
     HttpResponse<String> res = pair.request().path("status")
-      .get().asString();
+      .GET().asString();
 
     assertThat(res.body()).isEqualTo("status:201");
   }
@@ -97,7 +97,7 @@ class ContextTest {
   @Test
   void ctx_host() {
     HttpResponse<String> res = pair.request().path("host")
-      .get().asString();
+      .GET().asString();
 
     assertThat(res.body()).contains("host:localhost");
   }
@@ -105,7 +105,7 @@ class ContextTest {
   @Test
   void ctx_ip() {
     HttpResponse<String> res = pair.request().path("ip")
-      .get().asString();
+      .GET().asString();
 
     assertThat(res.body()).isEqualTo("ip:127.0.0.1");
   }
@@ -114,7 +114,7 @@ class ContextTest {
   void ctx_isMultiPart_when_not() {
     HttpResponse<String> res = pair.request().path("multipart")
       .formParam("a", "aval")
-      .post().asString();
+      .POST().asString();
 
     assertThat(res.body()).isEqualTo("isMultipart:false isMultipartFormData:false");
   }
@@ -124,7 +124,7 @@ class ContextTest {
   void ctx_isMultiPart_when_nothing() {
     HttpResponse<String> res = pair.request().path("multipart")
       .body("junk")
-      .post().asString();
+      .POST().asString();
 
     assertThat(res.body()).isEqualTo("isMultipart:false isMultipartFormData:false");
   }
@@ -134,7 +134,7 @@ class ContextTest {
     HttpResponse<String> res = pair.request().path("multipart")
       .header("Content-Type", "multipart/foo")
       .body("junk")
-      .post().asString();
+      .POST().asString();
 
     assertThat(res.body()).isEqualTo("isMultipart:true isMultipartFormData:false");
   }
@@ -144,7 +144,7 @@ class ContextTest {
     HttpResponse<String> res = pair.request().path("multipart")
       .header("Content-Type", "multipart/form-data")
       .body("junk")
-      .post().asString();
+      .POST().asString();
 
     assertThat(res.body()).isEqualTo("isMultipart:true isMultipartFormData:true");
   }
@@ -152,26 +152,26 @@ class ContextTest {
   @Test
   void ctx_methodPathPortProtocol() {
     HttpResponse<String> res = pair.request().path("method")
-      .get().asString();
+      .GET().asString();
 
     assertThat(res.body()).isEqualTo("method:GET path:/method protocol:HTTP/1.1 port:" + pair.port());
   }
 
   @Test
   void post_body() {
-    HttpResponse<String> res = pair.request().path("echo").body("simple").post().asString();
+    HttpResponse<String> res = pair.request().path("echo").body("simple").POST().asString();
     assertThat(res.body()).isEqualTo("req-body[simple]");
   }
 
   @Test
   void get_path_path() {
     var res = pair.request()
-      .path("A").path("B").get().asString();
+      .path("A").path("B").GET().asString();
 
     assertThat(res.body()).isEqualTo("ze-get-{a=A, b=B}");
 
     res = pair.request()
-      .path("one").path("bar").body("simple").post().asString();
+      .path("one").path("bar").body("simple").POST().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("ze-post-{a=one, b=bar}");

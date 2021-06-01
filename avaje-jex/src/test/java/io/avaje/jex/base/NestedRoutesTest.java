@@ -35,19 +35,19 @@ class NestedRoutesTest {
 
   @Test
   void get() {
-    HttpResponse<String> res = pair.request().get().asString();
+    HttpResponse<String> res = pair.request().GET().asString();
     assertThat(res.body()).isEqualTo("hello");
   }
 
   @Test
   void get_api_paths() {
     var res = pair.request()
-      .path("api").get().asString();
+      .path("api").GET().asString();
 
     assertThat(res.body()).isEqualTo("apiRoot");
 
     res = pair.request()
-      .path("api").path("99").get().asString();
+      .path("api").path("99").GET().asString();
 
     assertThat(res.body()).isEqualTo("api-99");
   }
@@ -55,17 +55,17 @@ class NestedRoutesTest {
   @Test
   void get_extra_paths() {
     var res = pair.request()
-      .path("extra").get().asString();
+      .path("extra").GET().asString();
 
     assertThat(res.body()).isEqualTo("extraRoot");
 
     res = pair.request()
-      .path("extra").path("99").get().asString();
+      .path("extra").path("99").GET().asString();
 
     assertThat(res.body()).isEqualTo("extra-id-99");
 
     res = pair.request()
-      .path("extra").path("more").path("42").get().asString();
+      .path("extra").path("more").path("42").GET().asString();
 
     assertThat(res.body()).isEqualTo("extraMore-42");
   }

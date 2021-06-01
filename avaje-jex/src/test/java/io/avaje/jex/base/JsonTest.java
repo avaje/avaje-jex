@@ -31,14 +31,14 @@ class JsonTest {
   void get() {
 
     var bean = pair.request()
-      .get()
+      .GET()
       .bean(HelloDto.class);
 
     assertThat(bean.id).isEqualTo(42);
     assertThat(bean.name).isEqualTo("rob");
 
     final HttpResponse<String> hres = pair.request()
-      .get().asString();
+      .GET().asString();
 
     final HttpHeaders headers = hres.headers();
     assertThat(headers.firstValue("Content-Type").get()).isEqualTo("application/json");
@@ -52,7 +52,7 @@ class JsonTest {
 
     var res = pair.request()
       .body(dto)
-      .post().asString();
+      .POST().asString();
 
     assertThat(res.body()).isEqualTo("bean[id:42 name:rob was here]");
     assertThat(res.statusCode()).isEqualTo(200);
@@ -62,7 +62,7 @@ class JsonTest {
 
     res = pair.request()
       .body(dto)
-      .post().asString();
+      .POST().asString();
 
     assertThat(res.body()).isEqualTo("bean[id:99 name:fi]");
     assertThat(res.statusCode()).isEqualTo(200);

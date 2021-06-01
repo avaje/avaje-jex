@@ -33,35 +33,35 @@ class StaticContentTest {
 
   @Test
   void get_fromClassPath() {
-    HttpResponse<String> res = pair.request().path("static/hello.txt").get().asString();
+    HttpResponse<String> res = pair.request().path("static/hello.txt").GET().asString();
     assertThat(res.body().trim()).isEqualTo("hello-from-static");
     assertThat(contentType(res.headers())).isEqualTo("text/plain");
   }
 
   @Test
   void get_fromClassPath_another() {
-    HttpResponse<String> res = pair.request().path("static/goodbye.html").get().asString();
+    HttpResponse<String> res = pair.request().path("static/goodbye.html").GET().asString();
     assertThat(res.body().trim()).isEqualTo("<html>goodbye</html>");
     assertThat(contentType(res.headers())).isEqualTo("text/html");
   }
 
   @Test
   void get_fromExternalFile() {
-    HttpResponse<String> res = pair.request().path("other/plain-file.txt").get().asString();
+    HttpResponse<String> res = pair.request().path("other/plain-file.txt").GET().asString();
     assertThat(res.body().trim()).isEqualTo("plain-file");
     assertThat(contentType(res.headers())).isEqualTo("text/plain");
   }
 
   @Test
   void get_fromExternalFile2() {
-    HttpResponse<String> res = pair.request().path("other/basic.html").get().asString();
+    HttpResponse<String> res = pair.request().path("other/basic.html").GET().asString();
     assertThat(res.body().trim()).isEqualTo("<html><body>basic</body><html>");
     assertThat(contentType(res.headers())).isEqualTo("text/html");
   }
 
 //  @Test
 //  void get_fromExternal_index() {
-//    HttpResponse<String> res = pair.request().path("other/").get().asString();
+//    HttpResponse<String> res = pair.request().path("other/").GET().asString();
 //    assertThat(res.body().trim()).isEqualTo("hello-from-static");
 //    assertThat(contentType(res.headers())).isEqualTo("text/plain");
 //  }

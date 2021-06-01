@@ -37,21 +37,21 @@ class RouteSplatTest {
     //  + "/two/" + URLEncoder.encode("x/y", StandardCharsets.UTF_8);
     // HttpResponse<String> res = pair.request().path(path).get().asString();
 
-    HttpResponse<String> res = pair.request().path("java/kotlin/two/x/y").get().asString();
+    HttpResponse<String> res = pair.request().path("java/kotlin/two/x/y").GET().asString();
     assertThat(res.body()).isEqualTo("splats:[java/kotlin, x/y]");
     assertThat(res.statusCode()).isEqualTo(200);
   }
 
   @Test
   void when_pathParamMatch() {
-    HttpResponse<String> res = pair.request().path("42/one").get().asString();
+    HttpResponse<String> res = pair.request().path("42/one").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("id:42");
   }
 
   @Test
   void when_splatMatch() {
-    HttpResponse<String> res = pair.request().path("42/foo/one").get().asString();
+    HttpResponse<String> res = pair.request().path("42/foo/one").GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("splat:42/foo");
@@ -59,7 +59,7 @@ class RouteSplatTest {
 
   @Test
   void when_splats() {
-    HttpResponse<String> res = pair.request().path("a/b/c/two/x/y").get().asString();
+    HttpResponse<String> res = pair.request().path("a/b/c/two/x/y").GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("splats:[a/b/c, x/y]");
@@ -67,7 +67,7 @@ class RouteSplatTest {
 
   @Test
   void when_noSplats() {
-    HttpResponse<String> res = pair.request().path("42/one2").get().asString();
+    HttpResponse<String> res = pair.request().path("42/one2").GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("id:42-[]-null-null");

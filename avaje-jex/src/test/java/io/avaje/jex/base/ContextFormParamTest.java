@@ -34,7 +34,7 @@ class ContextFormParamTest {
       .formParam("one", "ao")
       .formParam("one", "bo")
       .formParam("two", "z")
-      .post().asString();
+      .POST().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("map:{one=[ao, bo], two=[z]}");
@@ -48,7 +48,7 @@ class ContextFormParamTest {
       .formParam("one", "bo")
       .formParam("two", "z")
       .path("formParams").path("one")
-      .post().asString();
+      .POST().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("formParams:[ao, bo]");
@@ -61,7 +61,7 @@ class ContextFormParamTest {
       .formParam("one", "bo")
       .formParam("two", "z")
       .path("formParams").path("two")
-      .post().asString();
+      .POST().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("formParams:[z]");
@@ -75,7 +75,7 @@ class ContextFormParamTest {
       .formParam("one", "bo")
       .formParam("two", "z")
       .path("formParam").path("doesNotExist")
-      .post().asString();
+      .POST().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("formParam:null");
@@ -88,7 +88,7 @@ class ContextFormParamTest {
       .formParam("one", "bo")
       .formParam("two", "z")
       .path("formParam").path("one")
-      .post().asString();
+      .POST().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("formParam:ao");
@@ -101,7 +101,7 @@ class ContextFormParamTest {
       .formParam("one", "bo")
       .formParam("two", "z")
       .path("formParamWithDefault").path("doesNotExist")
-      .post().asString();
+      .POST().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("formParam:foo");
@@ -114,7 +114,7 @@ class ContextFormParamTest {
       .formParam("one", "bo")
       .formParam("two", "z")
       .path("formParamWithDefault").path("one")
-      .post().asString();
+      .POST().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("formParam:ao");
@@ -127,7 +127,7 @@ class ContextFormParamTest {
       .formParam("one", "bo")
       .formParam("two", "z")
       .path("formParamWithDefault").path("two")
-      .post().asString();
+      .POST().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("formParam:z");

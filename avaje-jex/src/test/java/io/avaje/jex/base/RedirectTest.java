@@ -32,14 +32,14 @@ class RedirectTest {
 
   @Test
   void redirect_via_handler() {
-    HttpResponse<String> res = pair.request().path("redirect/me").get().asString();
+    HttpResponse<String> res = pair.request().path("redirect/me").GET().asString();
     assertThat(res.body()).isEqualTo("one");
     assertThat(res.statusCode()).isEqualTo(200);
   }
 
   @Test
   void redirect_via_beforeHandler() {
-    HttpResponse<String> res = pair.request().path("other/me").get().asString();
+    HttpResponse<String> res = pair.request().path("other/me").GET().asString();
     assertThat(res.body()).isEqualTo("two");
     assertThat(res.statusCode()).isEqualTo(200);
   }

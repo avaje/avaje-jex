@@ -31,14 +31,14 @@ class FreeMarkerServiceLoaderTest {
 
   @Test
   void noModel() {
-    HttpResponse<String> res = pair.request().path("noModel").get().asString();
+    HttpResponse<String> res = pair.request().path("noModel").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body().trim()).isEqualTo("HelloFreeMarker");
   }
 
   @Test
   void withModel() {
-    HttpResponse<String> res = pair.request().path("withModel").get().asString();
+    HttpResponse<String> res = pair.request().path("withModel").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body().trim()).isEqualTo("<b>hello</b>");
   }

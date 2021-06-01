@@ -31,29 +31,29 @@ class ContextCookieTest {
   @Test
   void set_read_readMap_remove_readMap_remove_readMap() {
     HttpResponse<String> res = pair.request()
-      .path("setCookie").get().asString();
+      .path("setCookie").GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
 
-    res = pair.request().path("readCookie").path("ck").get().asString();
+    res = pair.request().path("readCookie").path("ck").GET().asString();
     assertThat(res.body()).isEqualTo("readCookie:val");
 
-    res = pair.request().path("readCookie").path("ck2").get().asString();
+    res = pair.request().path("readCookie").path("ck2").GET().asString();
     assertThat(res.body()).isEqualTo("readCookie:val2");
 
-    res = pair.request().path("readCookieMap").get().asString();
+    res = pair.request().path("readCookieMap").GET().asString();
     assertThat(res.body()).isEqualTo("cookieMap:{ck=val, ck2=val2}");
 
-    res = pair.request().path("removeCookie").path("ck").get().asString();
+    res = pair.request().path("removeCookie").path("ck").GET().asString();
     assertThat(res.body()).isEqualTo("ok");
 
-    res = pair.request().path("readCookieMap").get().asString();
+    res = pair.request().path("readCookieMap").GET().asString();
     assertThat(res.body()).isEqualTo("cookieMap:{ck2=val2}");
 
-    res = pair.request().path("removeCookie").path("ck2").get().asString();
+    res = pair.request().path("removeCookie").path("ck2").GET().asString();
     assertThat(res.body()).isEqualTo("ok");
 
-    res = pair.request().path("readCookieMap").get().asString();
+    res = pair.request().path("readCookieMap").GET().asString();
     assertThat(res.body()).isEqualTo("cookieMap:{}");
   }
 

@@ -52,7 +52,7 @@ class SimpleTest {
 
   @Test
   void get() {
-    HttpResponse<String> res = pair.request().get().asString();
+    HttpResponse<String> res = pair.request().GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("hello");
   }
@@ -60,13 +60,13 @@ class SimpleTest {
   @Test
   void getOne_path() {
     var res = pair.request()
-      .path("one").path("foo").get().asString();
+      .path("one").path("foo").GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("one-foo|match:/one/{id}");
 
     res = pair.request()
-      .path("one").path("bar").get().asString();
+      .path("one").path("bar").GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("one-bar|match:/one/{id}");
@@ -76,14 +76,14 @@ class SimpleTest {
   void getOne_path_path() {
     var res = pair.request()
       .path("one").path("foo").path("bar")
-      .get().asString();
+      .GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("path:{id=foo, b=bar}|query:null|match:/one/{id}/{b}");
 
     res = pair.request()
       .path("one").path("fo").path("ba").queryParam("z", "42")
-      .get().asString();
+      .GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("path:{id=fo, b=ba}|query:42|match:/one/{id}/{b}");
@@ -91,7 +91,7 @@ class SimpleTest {
 
   @Test
   void queryParamMap_when_empty() {
-    HttpResponse<String> res = pair.request().path("queryParamMap").get().asString();
+    HttpResponse<String> res = pair.request().path("queryParamMap").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("qpm: {}");
   }
@@ -102,7 +102,7 @@ class SimpleTest {
       .queryParam("a","AVal0")
       .queryParam("a","AVal1")
       .queryParam("b", "BVal")
-      .get().asString();
+      .GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("qpm: {a=AVal0, b=BVal}");
   }
@@ -112,7 +112,7 @@ class SimpleTest {
     HttpResponse<String> res = pair.request().path("queryParamMap")
       .queryParam("a","AVal")
       .queryParam("b", "BVal")
-      .get().asString();
+      .GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("qpm: {a=AVal, b=BVal}");
   }
@@ -122,7 +122,7 @@ class SimpleTest {
     HttpResponse<String> res = pair.request().path("queryParams")
       .queryParam("a","one")
       .queryParam("a", "two")
-      .get().asString();
+      .GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("qps: [one, two]");
   }
@@ -131,7 +131,7 @@ class SimpleTest {
   void queryParams_when_null_expect_emptyList() {
     HttpResponse<String> res = pair.request().path("queryParams")
       .queryParam("b","one")
-      .get().asString();
+      .GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("qps: []");
   }
@@ -139,7 +139,7 @@ class SimpleTest {
   @Test
   void queryString_when_null() {
     HttpResponse<String> res = pair.request().path("queryString")
-      .get().asString();
+      .GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("qs: null");
   }
@@ -150,7 +150,7 @@ class SimpleTest {
       .queryParam("foo","f1")
       .queryParam("bar","b1")
       .queryParam("bar","b2")
-      .get().asString();
+      .GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("qs: foo=f1&bar=b1&bar=b2");
   }
@@ -159,21 +159,21 @@ class SimpleTest {
   void scheme() {
     HttpResponse<String> res = pair.request().path("scheme")
       .queryParam("foo","f1")
-      .get().asString();
+      .GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("scheme: http");
   }
 
   @Test
   void sessionSetGetMap() {
-    HttpResponse<String> res = pair.request().path("sessionSet").get().asString();
+    HttpResponse<String> res = pair.request().path("sessionSet").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
 
-    res = pair.request().path("sessionGet").get().asString();
+    res = pair.request().path("sessionGet").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(sessAttrUuid).isSameAs(uuid);
 
-    res = pair.request().path("sessionMap").get().asString();
+    res = pair.request().path("sessionMap").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(sessAttrMap).hasSize(1);
     assertThat(sessAttrMap.get("myAttr")).isSameAs(uuid);

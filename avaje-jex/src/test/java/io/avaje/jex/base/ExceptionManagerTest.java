@@ -43,21 +43,21 @@ class ExceptionManagerTest {
 
   @Test
   void get() {
-    HttpResponse<String> res = pair.request().get().asString();
+    HttpResponse<String> res = pair.request().GET().asString();
     assertThat(res.statusCode()).isEqualTo(223);
     assertThat(res.body()).isEqualTo("Handled ForbiddenResponse|Forbidden");
   }
 
   @Test
   void post() {
-    HttpResponse<String> res = pair.request().body("simple").post().asString();
+    HttpResponse<String> res = pair.request().body("simple").POST().asString();
     assertThat(res.statusCode()).isEqualTo(222);
     assertThat(res.body()).isEqualTo("Handled IllegalStateException|foo");
   }
 
   @Test
   void expect_fallback_to_default_asPlainText() {
-    HttpResponse<String> res = pair.request().path("conflict").get().asString();
+    HttpResponse<String> res = pair.request().path("conflict").GET().asString();
     assertThat(res.statusCode()).isEqualTo(409);
     assertThat(res.body()).isEqualTo("Baz");
     assertThat(res.headers().firstValue("Content-Type").get()).contains("text/plain");
@@ -65,7 +65,7 @@ class ExceptionManagerTest {
 
   @Test
   void expect_fallback_to_default_asJson() {
-    HttpResponse<String> res = pair.request().path("conflict").header("Accept", "application/json").get().asString();
+    HttpResponse<String> res = pair.request().path("conflict").header("Accept", "application/json").GET().asString();
     assertThat(res.statusCode()).isEqualTo(409);
     assertThat(res.body()).isEqualTo("{\"title\": Baz, \"status\": 409}");
     assertThat(res.headers().firstValue("Content-Type").get()).contains("application/json");
@@ -73,7 +73,7 @@ class ExceptionManagerTest {
 
   @Test
   void expect_fallback_to_internalServerError() {
-    HttpResponse<String> res = pair.request().path("fiveHundred").get().asString();
+    HttpResponse<String> res = pair.request().path("fiveHundred").GET().asString();
     assertThat(res.statusCode()).isEqualTo(500);
     assertThat(res.body()).isEqualTo("Internal server error");
   }

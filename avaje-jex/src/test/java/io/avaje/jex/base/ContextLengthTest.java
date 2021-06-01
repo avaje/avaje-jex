@@ -32,7 +32,7 @@ class ContextLengthTest {
   @Test
   void when_noReqContentType() {
     HttpResponse<String> res = pair.request().body("MyBodyContent")
-      .post().asString();
+      .POST().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("contentLength:13 type:null");
@@ -43,7 +43,7 @@ class ContextLengthTest {
     HttpResponse<String> res = pair.request()
       .formParam("a", "my-a-val")
       .formParam("b", "my-b-val")
-      .post().asString();
+      .POST().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("contentLength:21 type:application/x-www-form-urlencoded");
@@ -54,7 +54,7 @@ class ContextLengthTest {
     HttpResponse<String> res = pair.request()
       .path("url")
       .queryParam("a", "av")
-      .get().asString();
+      .GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("url:http://localhost:" + pair.port() + "/url");
@@ -64,7 +64,7 @@ class ContextLengthTest {
   void fullUrl_no_queryString() {
     HttpResponse<String> res = pair.request()
       .path("fullUrl")
-      .get().asString();
+      .GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("fullUrl:http://localhost:" + pair.port() + "/fullUrl");
@@ -76,7 +76,7 @@ class ContextLengthTest {
       .path("fullUrl")
       .queryParam("a", "av")
       .queryParam("b", "bv")
-      .get().asString();
+      .GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("fullUrl:http://localhost:" + pair.port() + "/fullUrl?a=av&b=bv");
@@ -87,7 +87,7 @@ class ContextLengthTest {
     HttpResponse<String> res = pair.request()
       .path("contextPath")
       .queryParam("a", "av")
-      .get().asString();
+      .GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("contextPath:");
@@ -98,7 +98,7 @@ class ContextLengthTest {
     HttpResponse<String> res = pair.request()
       .path("userAgent")
       .queryParam("a", "av")
-      .get().asString();
+      .GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).contains("userAgent:Java-http-client");

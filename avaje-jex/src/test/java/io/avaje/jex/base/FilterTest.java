@@ -37,15 +37,15 @@ class FilterTest {
 
   @Test
   void get() {
-    HttpResponse<String> res = pair.request().get().asString();
+    HttpResponse<String> res = pair.request().GET().asString();
     assertHasBeforeAfterAll(res);
     assertNoBeforeAfterTwo(res);
 
-    res = pair.request().path("one").get().asString();
+    res = pair.request().path("one").GET().asString();
     assertHasBeforeAfterAll(res);
     assertNoBeforeAfterTwo(res);
 
-    res = pair.request().path("two").get().asString();
+    res = pair.request().path("two").GET().asString();
     assertHasBeforeAfterAll(res);
     assertNoBeforeAfterTwo(res);
   }
@@ -54,7 +54,7 @@ class FilterTest {
   @Test
   void get_two_expect_extraFilters() {
     HttpResponse<String> res = pair.request()
-      .path("two/42").get().asString();
+      .path("two/42").GET().asString();
 
     final HttpHeaders headers = res.headers();
     assertHasBeforeAfterAll(res);

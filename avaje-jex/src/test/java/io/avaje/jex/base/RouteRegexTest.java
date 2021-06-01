@@ -28,7 +28,7 @@ class RouteRegexTest {
 
   @Test
   void when_digitMatch() {
-    HttpResponse<String> res = pair.request().path("foo/7").get().asString();
+    HttpResponse<String> res = pair.request().path("foo/7").GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("digit:7");
@@ -36,7 +36,7 @@ class RouteRegexTest {
 
   @Test
   void when_notDigitMatch() {
-    HttpResponse<String> res = pair.request().path("foo/count").get().asString();
+    HttpResponse<String> res = pair.request().path("foo/count").GET().asString();
 
 
     assertThat(res.statusCode()).isEqualTo(200);
@@ -45,7 +45,7 @@ class RouteRegexTest {
 
   @Test
   void when_noMatch() {
-    HttpResponse<String> res = pair.request().path("foo/a").get().asString();
+    HttpResponse<String> res = pair.request().path("foo/a").GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(404);
   }

@@ -30,9 +30,9 @@ class CharacterEncodingTest {
   @Test
   void get() {
 
-    var textRes = pair.request().path("text").get().asString();
-    var jsonRes = pair.request().path("json").get().asString();
-    var htmlRes = pair.request().path("html").get().asString();
+    var textRes = pair.request().path("text").GET().asString();
+    var jsonRes = pair.request().path("json").GET().asString();
+    var htmlRes = pair.request().path("html").GET().asString();
 
     assertThat(contentType(jsonRes)).isEqualTo("application/json");
     assertThat(contentType(htmlRes)).isEqualTo("text/html;charset=utf-8");
