@@ -9,12 +9,12 @@
 
   <groupId>io.avaje</groupId>
   <artifactId>avaje-jex-parent</artifactId>
-  <version>1.5-SNAPSHOT</version>
+  <version>1.5</version>
   <packaging>pom</packaging>
 
   <scm>
     <developerConnection>scm:git:git@github.com:avaje/avaje-jex.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>avaje-jex-parent-1.5</tag>
   </scm>
 
   <properties>
