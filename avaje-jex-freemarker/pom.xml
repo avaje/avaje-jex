@@ -4,7 +4,7 @@
   <parent>
     <artifactId>avaje-jex-parent</artifactId>
     <groupId>io.avaje</groupId>
-    <version>1.5</version>
+    <version>1.6-SNAPSHOT</version>
   </parent>
 
   <artifactId>avaje-jex-freemarker</artifactId>
@@ -18,7 +18,7 @@
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-jex</artifactId>
-      <version>1.5</version>
+      <version>1.6-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -30,7 +30,7 @@
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-jex-test</artifactId>
-      <version>1.5</version>
+      <version>1.6-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
