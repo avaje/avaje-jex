@@ -32,6 +32,21 @@ public interface Routing {
   Routing withRoles(Set<Role> permittedRoles);
 
   /**
+   * Specify permittedRoles for the last added handler using varargs.
+   * <pre>{@code
+   *
+   *  routing
+   *  .get("/customers", getHandler).withRoles(ADMIN, USER)
+   *  .post("/customers", postHandler).withRoles(ADMIN)
+   *  ...
+   *
+   * }</pre>
+   *
+   * @param permittedRoles The permitted roles required for the last handler
+   */
+  Routing withRoles(Role... permittedRoles);
+
+  /**
    * Add a group of route handlers with a common path prefix.
    */
   Routing path(String path, Group group);

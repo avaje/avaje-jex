@@ -2,23 +2,16 @@ package io.avaje.jex.routes;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.Handler;
-import io.avaje.jex.Role;
-import io.avaje.jex.Routing;
 import io.avaje.jex.spi.SpiRoutes;
-
-import java.util.Map;
-import java.util.Set;
 
 class RouteEntry implements SpiRoutes.Entry {
 
   private final PathParser path;
   private final Handler handler;
-  private final Set<Role> roles;
 
-  RouteEntry(PathParser path, Routing.Entry apiEntry) {
+  RouteEntry(PathParser path, Handler handler) {
     this.path = path;
-    this.handler = apiEntry.getHandler();
-    this.roles = apiEntry.getRoles();
+    this.handler = handler;
   }
 
   @Override

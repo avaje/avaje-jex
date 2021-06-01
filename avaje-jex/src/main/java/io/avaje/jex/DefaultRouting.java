@@ -1,37 +1,22 @@
 package io.avaje.jex;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.List;
-import java.util.Set;
-
-import static java.util.stream.Collectors.toList;
+import java.util.*;
 
 /**
  *
  */
 class DefaultRouting implements Routing {
 
-  private final List<MutableEntry> handlers = new ArrayList<>();
+  private final List<Routing.Entry> handlers = new ArrayList<>();
   private final Deque<String> pathDeque = new ArrayDeque<>();
-
   /**
    * Last entry that we can add permitted roles to.
    */
-  private MutableEntry lastEntry;
-
-  DefaultRouting() {
-    // hide
-  }
+  private Entry lastEntry;
 
   @Override
   public List<Routing.Entry> all() {
-    return handlers.stream()
-      .map(MutableEntry::toEntry)
-      .collect(toList());
+    return handlers;
   }
 
   private String path(String path) {
@@ -67,13 +52,20 @@ class DefaultRouting implements Routing {
 
   @Override
   public Routing withRoles(Set<Role> permittedRoles) {
+    if (lastEntry == null) {
+      throw new IllegalStateException("Must call withRoles() after adding a route");
+    }
     lastEntry.withRoles(permittedRoles);
     return this;
   }
 
+  @Override
+  public Routing withRoles(Role... permittedRoles) {
+    return withRoles(Set.of(permittedRoles));
+  }
 
   private void add(Type verb, String path, Handler handler) {
-    lastEntry = new MutableEntry(verb, path(path), handler);
+    lastEntry = new Entry(verb, path(path), handler);
     handlers.add(lastEntry);
   }
 
@@ -297,40 +289,20 @@ class DefaultRouting implements Routing {
 //        me().sse(prefixPath(""), client, permittedRoles);
 //    }
 
-  private static class MutableEntry {
-
-    private final Type type;
-    private final String path;
-    private final Handler handler;
-    private Set<Role> roles;
-
-    MutableEntry(Type type, String path, Handler handler) {
-      this.type = type;
-      this.path = path;
-      this.handler = handler;
-      this.roles = Collections.emptySet();
-    }
-
-    void withRoles(Set<Role> roles) {
-      this.roles = roles;
-    }
-
-    Routing.Entry toEntry() {
-      return new Entry(type, path, handler, roles);
-    }
-  }
-
   private static class Entry implements Routing.Entry {
 
     private final Type type;
     private final String path;
     private final Handler handler;
-    private final Set<Role> roles;
+    private Set<Role> roles = Collections.emptySet();
 
-    Entry(Type type, String path, Handler handler, Set<Role> roles) {
+    Entry(Type type, String path, Handler handler) {
       this.type = type;
       this.path = path;
       this.handler = handler;
+    }
+
+    void withRoles(Set<Role> roles) {
       this.roles = roles;
     }
 
