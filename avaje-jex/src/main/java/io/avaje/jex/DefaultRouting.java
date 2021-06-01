@@ -8,13 +8,20 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  *
  */
 class DefaultRouting implements Routing {
 
-  private final List<Routing.Entry> handlers = new ArrayList<>();
+  private final List<MutableEntry> handlers = new ArrayList<>();
   private final Deque<String> pathDeque = new ArrayDeque<>();
+
+  /**
+   * Last entry that we can add permitted roles to.
+   */
+  private MutableEntry lastEntry;
 
   DefaultRouting() {
     // hide
@@ -22,7 +29,9 @@ class DefaultRouting implements Routing {
 
   @Override
   public List<Routing.Entry> all() {
-    return handlers;
+    return handlers.stream()
+      .map(MutableEntry::toEntry)
+      .collect(toList());
   }
 
   private String path(String path) {
@@ -56,16 +65,24 @@ class DefaultRouting implements Routing {
     return this;
   }
 
-  private void add(Type verb, String path, Handler handler, Set<Role> roles) {
-    handlers.add(new Entry(verb, path(path), handler, roles));
+  @Override
+  public Routing withRoles(Set<Role> permittedRoles) {
+    lastEntry.withRoles(permittedRoles);
+    return this;
+  }
+
+
+  private void add(Type verb, String path, Handler handler) {
+    lastEntry = new MutableEntry(verb, path(path), handler);
+    handlers.add(lastEntry);
   }
 
   private void addBefore(String path, Handler handler) {
-    add(Type.BEFORE, path(path), handler, null);
+    add(Type.BEFORE, path(path), handler);
   }
 
   private void addAfter(String path, Handler handler) {
-    add(Type.AFTER, path(path), handler, null);
+    add(Type.AFTER, path(path), handler);
   }
 
   // ********************************************************************************************
@@ -73,14 +90,8 @@ class DefaultRouting implements Routing {
   // ********************************************************************************************
 
   @Override
-  public Routing get(String path, Handler handler, Set<Role> permittedRoles) {
-    add(Type.GET, path, handler, permittedRoles);
-    return this;
-  }
-
-  @Override
   public Routing get(String path, Handler handler) {
-    get(path, handler, Collections.emptySet());
+    add(Type.GET, path, handler);
     return this;
   }
 
@@ -91,20 +102,8 @@ class DefaultRouting implements Routing {
   }
 
   @Override
-  public Routing get(Handler handler, Set<Role> permittedRoles) {
-    get("", handler, permittedRoles);
-    return this;
-  }
-
-  @Override
-  public Routing post(String path, Handler handler, Set<Role> permittedRoles) {
-    add(Type.POST, path, handler, permittedRoles);
-    return this;
-  }
-
-  @Override
   public Routing post(String path, Handler handler) {
-    post(path, handler, Collections.emptySet());
+    add(Type.POST, path, handler);
     return this;
   }
 
@@ -115,8 +114,62 @@ class DefaultRouting implements Routing {
   }
 
   @Override
-  public Routing post(Handler handler, Set<Role> permittedRoles) {
-    post("", handler, permittedRoles);
+  public Routing put(String path, Handler handler) {
+    add(Type.PUT, path, handler);
+    return this;
+  }
+
+  @Override
+  public Routing put(Handler handler) {
+    put("", handler);
+    return this;
+  }
+
+  @Override
+  public Routing patch(String path, Handler handler) {
+    add(Type.PATCH, path, handler);
+    return this;
+  }
+
+  @Override
+  public Routing patch(Handler handler) {
+    patch("", handler);
+    return this;
+  }
+
+  @Override
+  public Routing delete(String path, Handler handler) {
+    add(Type.DELETE, path, handler);
+    return this;
+  }
+
+  @Override
+  public Routing delete(Handler handler) {
+    delete("", handler);
+    return this;
+  }
+
+  @Override
+  public Routing head(String path, Handler handler) {
+    add(Type.HEAD, path, handler);
+    return this;
+  }
+
+  @Override
+  public Routing head(Handler handler) {
+    head("", handler);
+    return this;
+  }
+
+  @Override
+  public Routing trace(String path, Handler handler) {
+    add(Type.TRACE, path, handler);
+    return this;
+  }
+
+  @Override
+  public Routing trace(Handler handler) {
+    trace("", handler);
     return this;
   }
 
@@ -244,7 +297,30 @@ class DefaultRouting implements Routing {
 //        me().sse(prefixPath(""), client, permittedRoles);
 //    }
 
-  static class Entry implements Routing.Entry {
+  private static class MutableEntry {
+
+    private final Type type;
+    private final String path;
+    private final Handler handler;
+    private Set<Role> roles;
+
+    MutableEntry(Type type, String path, Handler handler) {
+      this.type = type;
+      this.path = path;
+      this.handler = handler;
+      this.roles = Collections.emptySet();
+    }
+
+    void withRoles(Set<Role> roles) {
+      this.roles = roles;
+    }
+
+    Routing.Entry toEntry() {
+      return new Entry(type, path, handler, roles);
+    }
+  }
+
+  private static class Entry implements Routing.Entry {
 
     private final Type type;
     private final String path;

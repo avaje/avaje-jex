@@ -24,6 +24,7 @@ class FilterTest {
         .before("/two/*", ctx -> ctx.header("before-two", "set"))
         .after(ctx -> ctx.header("after-all", "set"))
         .after("/two/*", ctx -> ctx.header("after-two", "set"))
+        .get("/dummy", ctx -> ctx.text("dummy"))
       );
 
     return TestPair.create(app);

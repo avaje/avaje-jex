@@ -17,14 +17,34 @@ public interface Routing {
   Routing addAll(Collection<Routing.Service> routes);
 
   /**
+   * Specify permittedRoles for the last added handler.
+   * <pre>{@code
+   *
+   *  routing
+   *  .get("/customers", getHandler).withRoles(readRoles)
+   *  .post("/customers", postHandler).withRoles(writeRoles)
+   *  ...
+   *
+   * }</pre>
+   *
+   * @param permittedRoles The permitted roles required for the last handler
+   */
+  Routing withRoles(Set<Role> permittedRoles);
+
+  /**
    * Add a group of route handlers with a common path prefix.
    */
   Routing path(String path, Group group);
 
   /**
-   * Add a GET handler with roles.
+   * Add a HEAD handler.
    */
-  Routing get(String path, Handler handler, Set<Role> permittedRoles);
+  Routing head(String path, Handler handler);
+
+  /**
+   * Add a HEAD handler for "/".
+   */
+  Routing head(Handler handler);
 
   /**
    * Add a GET handler.
@@ -37,17 +57,7 @@ public interface Routing {
   Routing get(Handler handler);
 
   /**
-   * Add a GET handler for "/" with roles.
-   */
-  Routing get(Handler handler, Set<Role> permittedRoles);
-
-  /**
-   * Add a POST handler with roles.
-   */
-  Routing post(String path, Handler handler, Set<Role> permittedRoles);
-
-  /**
-   * Add a POST handler with roles.
+   * Add a POST handler.
    */
   Routing post(String path, Handler handler);
 
@@ -57,9 +67,44 @@ public interface Routing {
   Routing post(Handler handler);
 
   /**
-   * Add a POST handler for "/" with roles.
+   * Add a PUT handler.
    */
-  Routing post(Handler handler, Set<Role> permittedRoles);
+  Routing put(String path, Handler handler);
+
+  /**
+   * Add a PUT handler for "/".
+   */
+  Routing put(Handler handler);
+
+  /**
+   * Add a PATCH handler.
+   */
+  Routing patch(String path, Handler handler);
+
+  /**
+   * Add a PATCH handler for "/".
+   */
+  Routing patch(Handler handler);
+
+  /**
+   * Add a DELETE handler.
+   */
+  Routing delete(String path, Handler handler);
+
+  /**
+   * Add a DELETE handler for "/".
+   */
+  Routing delete(Handler handler);
+
+  /**
+   * Add a TRACE handler.
+   */
+  Routing trace(String path, Handler handler);
+
+  /**
+   * Add a TRACE handler for "/".
+   */
+  Routing trace(Handler handler);
 
   /**
    * Add a before filter for the given path.
@@ -177,6 +222,6 @@ public interface Routing {
     /**
      * HTTP TRACE.
      */
-    TRACE;//, CONNECT, OPTIONS, INVALID;
+    TRACE//, CONNECT, OPTIONS, INVALID;
   }
 }
