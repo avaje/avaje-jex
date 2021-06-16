@@ -4,8 +4,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * Provides access to functions for handling the request and response.
@@ -242,6 +244,22 @@ public interface Context {
    * Set the response body as JSON for the given bean.
    */
   Context json(Object bean);
+
+  /**
+   * Write the stream as a JSON stream with new line delimiters
+   * {@literal application/x-json-stream}.
+   *
+   * @param stream The stream of beans to write as json
+   */
+  <E> Context jsonStream(Stream<E> stream);
+
+  /**
+   * Write the stream as a JSON stream with new line delimiters
+   * {@literal application/x-json-stream}.
+   *
+   * @param iterator The iterator of beans to write as json
+   */
+  <E> Context jsonStream(Iterator<E> iterator);
 
   /**
    * Write raw content to the response.

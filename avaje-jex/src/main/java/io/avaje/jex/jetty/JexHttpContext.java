@@ -18,12 +18,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
@@ -440,20 +436,34 @@ class JexHttpContext implements SpiContext {
 
   @Override
   public Context text(String content) {
-    res.setContentType("text/plain");
+    res.setContentType(TEXT_PLAIN);
     return write(content);
   }
 
   @Override
   public Context html(String content) {
-    res.setContentType("text/html");
+    res.setContentType(TEXT_HTML);
     return write(content);
   }
 
   @Override
   public Context json(Object bean) {
-    contentType("application/json");
+    contentType(APPLICATION_JSON);
     mgr.jsonWrite(bean, this);
+    return this;
+  }
+
+  @Override
+  public <E> Context jsonStream(Stream<E> stream) {
+    contentType(APPLICATION_X_JSON_STREAM);
+    mgr.jsonWriteStream(stream, this);
+    return this;
+  }
+
+  @Override
+  public <E> Context jsonStream(Iterator<E> iterator) {
+    contentType(APPLICATION_X_JSON_STREAM);
+    mgr.jsonWriteStream(iterator, this);
     return this;
   }
 

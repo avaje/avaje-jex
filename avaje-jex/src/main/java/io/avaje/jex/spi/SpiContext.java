@@ -11,6 +11,11 @@ import java.io.OutputStream;
  */
 public interface SpiContext extends Context {
 
+  String TEXT_HTML = "text/html";
+  String TEXT_PLAIN = "text/plain";
+  String APPLICATION_JSON = "application/json";
+  String APPLICATION_X_JSON_STREAM = "application/x-json-stream";
+
   /**
    * Return the response outputStream to write content to.
    */

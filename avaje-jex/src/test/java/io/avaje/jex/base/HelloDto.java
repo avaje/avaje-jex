@@ -11,10 +11,17 @@ public class HelloDto {
   }
 
   public static HelloDto rob() {
-    HelloDto me = new HelloDto();
-    me.id = 42;
-    me.name = "rob";
-    return me;
+    return create(42, "rob");
   }
 
+  public static HelloDto fi() {
+    return create(45, "fi");
+  }
+
+  public static HelloDto create(long id, String name) {
+    HelloDto me = new HelloDto();
+    me.id = id;
+    me.name = name;
+    return me;
+  }
 }

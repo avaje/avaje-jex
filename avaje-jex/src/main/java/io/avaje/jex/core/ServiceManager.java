@@ -10,9 +10,12 @@ import io.avaje.jex.spi.SpiContext;
 
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.stream.Stream;
 
 public class ServiceManager {
 
@@ -43,6 +46,30 @@ public class ServiceManager {
     jsonService.jsonWrite(bean, ctx);
   }
 
+  public <E> void jsonWriteStream(Stream<E> stream, SpiContext ctx) {
+    try (stream) {
+      jsonService.jsonWriteStream(stream.iterator(), ctx);
+    }
+  }
+
+  public <E> void jsonWriteStream(Iterator<E> iterator, SpiContext ctx) {
+    try {
+      jsonService.jsonWriteStream(iterator, ctx);
+    } finally {
+      maybeClose(iterator);
+    }
+  }
+
+  private <E> void maybeClose(Object iterator) {
+    if (AutoCloseable.class.isAssignableFrom(iterator.getClass())) {
+      try {
+        ((AutoCloseable) iterator).close();
+      } catch (Exception e) {
+        throw new RuntimeException("Error closing iterator " + iterator, e);
+      }
+    }
+  }
+
   public void handleException(Context ctx, Exception e) {
     exceptionHandler.handle(ctx, e);
   }
@@ -65,22 +92,13 @@ public class ServiceManager {
 
   private static class Builder {
     private final Jex jex;
-    private ErrorHandling errorHandling;
-    private JsonService jsonService;
-    private TemplateManager templateManager;
-    private MultipartUtil multipartUtil;
 
     Builder(Jex jex) {
       this.jex = jex;
     }
 
     ServiceManager build() {
-      this.errorHandling = jex.errorHandling();
-      this.templateManager = initTemplateMgr();
-      this.jsonService = initJsonService();
-      this.multipartUtil = initMultiPart();
-
-      return new ServiceManager(jsonService, errorHandling, templateManager, multipartUtil);
+      return new ServiceManager(initJsonService(), jex.errorHandling(), initTemplateMgr(), initMultiPart());
     }
 
     JsonService initJsonService() {

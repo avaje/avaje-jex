@@ -1,5 +1,7 @@
 package io.avaje.jex.spi;
 
+import java.util.Iterator;
+
 /**
  * Service used to convert request/response bodies to beans.
  */
@@ -14,4 +16,10 @@ public interface JsonService {
    * Write the bean as JSON response content.
    */
   void jsonWrite(Object bean, SpiContext ctx);
+
+  /**
+   * Write the beans as {@literal x-json-stream } JSON with new line delimiter.
+   */
+  <E> void jsonWriteStream(Iterator<E> stream, SpiContext ctx);
+
 }
