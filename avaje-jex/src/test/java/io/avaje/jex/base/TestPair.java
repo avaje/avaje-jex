@@ -1,10 +1,8 @@
 package io.avaje.jex.base;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.avaje.http.client.HttpClientContext;
 import io.avaje.http.client.HttpClientRequest;
 import io.avaje.http.client.JacksonBodyAdapter;
-import io.avaje.http.client.RequestLogger;
 import io.avaje.jex.Jex;
 
 import java.util.Random;
@@ -13,8 +11,6 @@ import java.util.Random;
  * Server and Client pair for a test.
  */
 public class TestPair {
-
-  private static final ObjectMapper objectMapper = new ObjectMapper();
 
   private final int port;
 
@@ -54,9 +50,8 @@ public class TestPair {
 
     var url = "http://localhost:" + port;
     var client = HttpClientContext.newBuilder()
-      .withBaseUrl(url)
-      .withBodyAdapter(new JacksonBodyAdapter(objectMapper))
-      .withRequestListener(new RequestLogger())
+      .baseUrl(url)
+      .bodyAdapter(new JacksonBodyAdapter())
       .build();
 
     return new TestPair(port, jexServer, client);

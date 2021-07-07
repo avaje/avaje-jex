@@ -14,8 +14,6 @@ import java.util.Random;
  */
 public class TestPair {
 
-  private static final ObjectMapper objectMapper = new ObjectMapper();
-
   private final int port;
 
   private final Jex.Server server;
@@ -54,9 +52,8 @@ public class TestPair {
 
     var url = "http://localhost:" + port;
     var client = HttpClientContext.newBuilder()
-      .withBaseUrl(url)
-      .withBodyAdapter(new JacksonBodyAdapter(objectMapper))
-      .withRequestListener(new RequestLogger())
+      .baseUrl(url)
+      .bodyAdapter(new JacksonBodyAdapter())
       .build();
 
     return new TestPair(port, jexServer, client);
