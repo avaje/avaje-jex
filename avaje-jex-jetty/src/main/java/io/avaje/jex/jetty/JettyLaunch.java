@@ -1,9 +1,9 @@
 package io.avaje.jex.jetty;
 
 import io.avaje.jex.Jex;
+import io.avaje.jex.ServerConfig;
 import io.avaje.jex.StaticFileSource;
-import io.avaje.jex.core.ServiceManager;
-import io.avaje.jex.routes.RoutesBuilder;
+import io.avaje.jex.spi.SpiServiceManager;
 import io.avaje.jex.spi.SpiRoutes;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,11 +27,19 @@ class JettyLaunch implements Jex.Server {
 
   private final Jex jex;
   private final SpiRoutes routes;
+  private final SpiServiceManager serviceManager;
+  private final JettyServerConfig config;
   private Server server;
 
-  JettyLaunch(Jex jex) {
+  JettyLaunch(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
     this.jex = jex;
-    this.routes = new RoutesBuilder(jex.routing(), jex).build();
+    this.routes = routes;
+    this.serviceManager = serviceManager;
+    this.config = initConfig(jex.serverConfig());
+  }
+
+  private JettyServerConfig initConfig(ServerConfig config) {
+    return config == null ? new JettyServerConfig() : (JettyServerConfig)config;
   }
 
   @Override
@@ -62,11 +70,11 @@ class JettyLaunch implements Jex.Server {
   }
 
   protected Server initServer() {
-    Server server = jex.jetty.server;
+    Server server = config.server();
     if (server != null) {
       return server;
     }
-    return new JettyBuilder(jex).build();
+    return new JettyBuilder(jex, config).build();
   }
 
   protected ServletContextHandler initContextHandler() {
@@ -77,18 +85,17 @@ class JettyLaunch implements Jex.Server {
   }
 
   protected ServletHolder initServletHolder() {
-    final ServiceManager manager = serviceManager();
     final StaticHandler staticHandler = initStaticHandler();
-    return new ServletHolder(new JexHttpServlet(jex, routes, manager, staticHandler));
+    return new ServletHolder(new JexHttpServlet(jex, routes, serviceManager, staticHandler));
   }
 
   protected ServletContextHandler initServletContextHandler() {
-    final ServletContextHandler ch = jex.jetty.contextHandler;
-    return ch != null ? ch : new ContextHandler(jex.inner.contextPath, jex.jetty.sessions, jex.jetty.security);
+    final ServletContextHandler ch = config.contextHandler();
+    return ch != null ? ch : new ContextHandler(jex.inner.contextPath, config.sessions(), config.security());
   }
 
   protected SessionHandler initSessionHandler() {
-    SessionHandler sh = jex.jetty.sessionHandler;
+    SessionHandler sh = config.sessionHandler();
     return sh == null ? defaultSessionHandler() : sh;
   }
 
@@ -107,13 +114,9 @@ class JettyLaunch implements Jex.Server {
     return factory.build(jex, fileSources);
   }
 
-  protected ServiceManager serviceManager() {
-    return ServiceManager.create(jex);
-  }
-
   private void logOnStart(org.eclipse.jetty.server.Server server) {
     for (Connector c : server.getConnectors()) {
-      String virtualThreads = jex.jetty.virtualThreads ? "with virtualThreads" : "";
+      String virtualThreads = config.virtualThreads() ? "with virtualThreads" : "";
       if (c instanceof ServerConnector) {
         ServerConnector sc = (ServerConnector) c;
         String host = (sc.getHost() == null) ? "0.0.0.0" : sc.getHost();

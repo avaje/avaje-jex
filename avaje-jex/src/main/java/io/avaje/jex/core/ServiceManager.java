@@ -1,13 +1,10 @@
 package io.avaje.jex.core;
 
-import io.avaje.jex.Context;
-import io.avaje.jex.ErrorHandling;
-import io.avaje.jex.Jex;
-import io.avaje.jex.TemplateRender;
-import io.avaje.jex.UploadedFile;
+import io.avaje.jex.*;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.SpiContext;
 
+import io.avaje.jex.spi.SpiServiceManager;
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -17,7 +14,9 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.stream.Stream;
 
-public class ServiceManager {
+class ServiceManager implements SpiServiceManager {
+
+  private final HttpMethodMap methodMap = new HttpMethodMap();
 
   private final JsonService jsonService;
 
@@ -27,7 +26,7 @@ public class ServiceManager {
 
   private final MultipartUtil multipartUtil;
 
-  public static ServiceManager create(Jex jex) {
+  static SpiServiceManager create(Jex jex) {
     return new Builder(jex).build();
   }
 
@@ -38,20 +37,24 @@ public class ServiceManager {
     this.multipartUtil = multipartUtil;
   }
 
+  @Override
   public <T> T jsonRead(Class<T> clazz, SpiContext ctx) {
     return jsonService.jsonRead(clazz, ctx);
   }
 
+  @Override
   public void jsonWrite(Object bean, SpiContext ctx) {
     jsonService.jsonWrite(bean, ctx);
   }
 
+  @Override
   public <E> void jsonWriteStream(Stream<E> stream, SpiContext ctx) {
     try (stream) {
       jsonService.jsonWriteStream(stream.iterator(), ctx);
     }
   }
 
+  @Override
   public <E> void jsonWriteStream(Iterator<E> iterator, SpiContext ctx) {
     try {
       jsonService.jsonWriteStream(iterator, ctx);
@@ -60,7 +63,8 @@ public class ServiceManager {
     }
   }
 
-  private <E> void maybeClose(Object iterator) {
+  @Override
+  public void maybeClose(Object iterator) {
     if (AutoCloseable.class.isAssignableFrom(iterator.getClass())) {
       try {
         ((AutoCloseable) iterator).close();
@@ -70,22 +74,32 @@ public class ServiceManager {
     }
   }
 
+  @Override
+  public Routing.Type lookupRoutingType(String method) {
+    return methodMap.get(method);
+  }
+
+  @Override
   public void handleException(Context ctx, Exception e) {
     exceptionHandler.handle(ctx, e);
   }
 
+  @Override
   public void render(Context ctx, String name, Map<String, Object> model) {
     templateManager.render(ctx, name, model);
   }
 
+  @Override
   public List<UploadedFile> uploadedFiles(HttpServletRequest req) {
     return multipartUtil.uploadedFiles(req);
   }
 
+  @Override
   public List<UploadedFile> uploadedFiles(HttpServletRequest req, String name) {
     return multipartUtil.uploadedFiles(req, name);
   }
 
+  @Override
   public Map<String, List<String>> multiPartForm(HttpServletRequest req) {
     return multipartUtil.fieldMap(req);
   }
@@ -97,7 +111,7 @@ public class ServiceManager {
       this.jex = jex;
     }
 
-    ServiceManager build() {
+    SpiServiceManager build() {
       return new ServiceManager(initJsonService(), jex.errorHandling(), initTemplateMgr(), initMultiPart());
     }
 

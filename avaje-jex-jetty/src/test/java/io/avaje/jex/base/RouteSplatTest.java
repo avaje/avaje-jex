@@ -4,9 +4,7 @@ import io.avaje.jex.Jex;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
-import java.net.URLEncoder;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

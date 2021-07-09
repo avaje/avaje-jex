@@ -8,7 +8,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Set;
 
-public class RoutesBuilder {
+class RoutesBuilder {
 
   private final EnumMap<Routing.Type, RouteIndex> typeMap = new EnumMap<>(Routing.Type.class);
   private final List<SpiRoutes.Entry> before = new ArrayList<>();
@@ -16,9 +16,9 @@ public class RoutesBuilder {
   private final boolean ignoreTrailingSlashes;
   private final AccessManager accessManager;
 
-  public RoutesBuilder(Routing routing, Jex jex) {
-    this.accessManager = jex.inner.accessManager;
-    this.ignoreTrailingSlashes = jex.inner.ignoreTrailingSlashes;
+  RoutesBuilder(Routing routing, AccessManager accessManager, boolean ignoreTrailingSlashes) {
+    this.accessManager = accessManager;
+    this.ignoreTrailingSlashes = ignoreTrailingSlashes;
     for (Routing.Entry handler : routing.all()) {
       switch (handler.getType()) {
         case BEFORE:

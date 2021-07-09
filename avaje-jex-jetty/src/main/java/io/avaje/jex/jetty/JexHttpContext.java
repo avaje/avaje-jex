@@ -3,8 +3,8 @@ package io.avaje.jex.jetty;
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
 import io.avaje.jex.UploadedFile;
-import io.avaje.jex.core.HeaderKeys;
-import io.avaje.jex.core.ServiceManager;
+import io.avaje.jex.spi.SpiServiceManager;
+import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.http.RedirectResponse;
 import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
@@ -26,7 +26,7 @@ import static java.util.Collections.emptyMap;
 
 class JexHttpContext implements SpiContext {
 
-  private final ServiceManager mgr;
+  private final SpiServiceManager mgr;
   protected final HttpServletRequest req;
   private final HttpServletResponse res;
   private final Map<String, String> pathParams;
@@ -36,7 +36,7 @@ class JexHttpContext implements SpiContext {
   private Routing.Type mode;
   private Map<String, List<String>> formParamMap;
 
-  JexHttpContext(ServiceManager mgr, HttpServletRequest req, HttpServletResponse res, String matchedPath) {
+  JexHttpContext(SpiServiceManager mgr, HttpServletRequest req, HttpServletResponse res, String matchedPath) {
     this.mgr = mgr;
     this.req = req;
     this.res = res;
@@ -45,7 +45,7 @@ class JexHttpContext implements SpiContext {
     this.splats = null;
   }
 
-  JexHttpContext(ServiceManager mgr, HttpServletRequest req, HttpServletResponse res, String matchedPath, SpiRoutes.Params params) {
+  JexHttpContext(SpiServiceManager mgr, HttpServletRequest req, HttpServletResponse res, String matchedPath, SpiRoutes.Params params) {
     this.mgr = mgr;
     this.req = req;
     this.res = res;

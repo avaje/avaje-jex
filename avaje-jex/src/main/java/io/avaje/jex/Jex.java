@@ -1,10 +1,9 @@
 package io.avaje.jex;
 
-import io.avaje.jex.jetty.JettyStartServer;
-import io.avaje.jex.spi.JsonService;
-import io.avaje.jex.spi.SpiStartServer;
-import org.eclipse.jetty.server.session.SessionHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
+import io.avaje.jex.spi.*;
+//import io.avaje.jex.jetty.JettyStartServer;
+//import org.eclipse.jetty.server.session.SessionHandler;
+//import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import jakarta.servlet.MultipartConfigElement;
 import java.util.Collection;
@@ -37,7 +36,7 @@ public class Jex {
   private final StaticFileConfig staticFiles;
 
   public final Inner inner = new Inner();
-  public final Jetty jetty = new Jetty();
+  private ServerConfig serverConfig;
 
   private Jex() {
     this.staticFiles = new DefaultStaticFileConfig(this);
@@ -65,25 +64,6 @@ public class Jex {
     public final Map<String, TemplateRender> renderers = new HashMap<>();
   }
 
-  /**
-   * Jetty specific configuration options.
-   */
-  public static class Jetty {
-    public boolean sessions = true;
-    public boolean security = true;
-    /**
-     * Set true to use Loom virtual threads for ThreadPool.
-     * This requires JDK 17 with Loom included.
-     */
-    public boolean virtualThreads;
-    /**
-     * Set maxThreads when using default QueuedThreadPool. Defaults to 200.
-     */
-    public int maxThreads;
-    public SessionHandler sessionHandler;
-    public ServletContextHandler contextHandler;
-    public org.eclipse.jetty.server.Server server;
-  }
 
   /**
    * Configure error handlers.
@@ -98,6 +78,21 @@ public class Jex {
    */
   public ErrorHandling errorHandling() {
     return errorHandling;
+  }
+
+  /**
+   * Return the server specific configuration.
+   */
+  public ServerConfig serverConfig() {
+    return serverConfig;
+  }
+
+  /**
+   * Set the server specific configuration.
+   */
+  public Jex serverConfig(ServerConfig serverConfig) {
+    this.serverConfig = serverConfig;
+    return this;
   }
 
   /**
@@ -199,11 +194,19 @@ public class Jex {
    * Start the server.
    */
   public Server start() {
+    final SpiRoutes routes = ServiceLoader.load(SpiRoutesProvider.class)
+      .findFirst().get()
+      .create(this.routing, this.inner.accessManager, this.inner.ignoreTrailingSlashes);
+
+    final SpiServiceManager serviceManager = ServiceLoader.load(SpiServiceManagerProvider.class)
+      .findFirst().get()
+      .create(this);
+
     final Optional<SpiStartServer> start = ServiceLoader.load(SpiStartServer.class).findFirst();
     if (start.isEmpty()) {
-      return new JettyStartServer().start(this);
+      throw new IllegalStateException("There is no SpiStartServer? Missing dependency on jex-jetty?");
     }
-    return start.get().start(this);
+    return start.get().start(this, routes, serviceManager);
   }
 
   /**

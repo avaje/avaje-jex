@@ -10,6 +10,6 @@ public interface SpiStartServer {
   /**
    * Return the started server.
    */
-  Jex.Server start(Jex jex);
+  Jex.Server start(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager);
 
 }

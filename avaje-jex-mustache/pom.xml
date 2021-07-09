@@ -30,6 +30,13 @@
 
     <dependency>
       <groupId>io.avaje</groupId>
+      <artifactId>avaje-jex-jetty</artifactId>
+      <version>1.8-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.avaje</groupId>
       <artifactId>avaje-jex-test</artifactId>
       <version>1.8-SNAPSHOT</version>
       <scope>test</scope>

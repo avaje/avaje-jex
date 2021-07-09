@@ -6,20 +6,21 @@ import io.avaje.jex.ExceptionHandler;
 import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.http.InternalServerErrorResponse;
 import io.avaje.jex.http.RedirectResponse;
+import io.avaje.jex.spi.HeaderKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExceptionManager {
+class ExceptionManager {
 
   private static final Logger log = LoggerFactory.getLogger(ExceptionManager.class);
 
   private final ErrorHandling errorHandling;
 
-  public ExceptionManager(ErrorHandling errorHandling) {
+  ExceptionManager(ErrorHandling errorHandling) {
     this.errorHandling = errorHandling;
   }
 
-  public void handle(Context ctx, Exception e) {
+  void handle(Context ctx, Exception e) {
     final ExceptionHandler<Exception> handler = errorHandling.find(e.getClass());
     if (handler != null) {
       handler.handle(e, ctx);

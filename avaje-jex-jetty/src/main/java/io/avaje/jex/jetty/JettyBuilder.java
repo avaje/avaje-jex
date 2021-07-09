@@ -19,11 +19,11 @@ class JettyBuilder {
   private static final Logger log = LoggerFactory.getLogger(JettyBuilder.class);
 
   private final Jex.Inner inner;
-  private final Jex.Jetty config;
+  private final JettyServerConfig config;
 
-  JettyBuilder(Jex jex) {
+  JettyBuilder(Jex jex, JettyServerConfig config) {
     this.inner = jex.inner;
-    this.config = jex.jetty;
+    this.config = config;
   }
 
   Server build() {
@@ -38,10 +38,10 @@ class JettyBuilder {
   }
 
   private ThreadPool pool() {
-    if (config.virtualThreads) {
+    if (config.virtualThreads()) {
       return virtualThreadBasePool();
     } else {
-      return config.maxThreads == 0 ? new QueuedThreadPool() : new QueuedThreadPool(config.maxThreads);
+      return config.maxThreads() == 0 ? new QueuedThreadPool() : new QueuedThreadPool(config.maxThreads());
     }
   }
 

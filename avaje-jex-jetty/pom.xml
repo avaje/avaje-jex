@@ -2,58 +2,50 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>java11-oss</artifactId>
-    <groupId>org.avaje</groupId>
-    <version>3.2</version>
+    <artifactId>avaje-jex-parent</artifactId>
+    <groupId>io.avaje</groupId>
+    <version>1.8-SNAPSHOT</version>
   </parent>
+  <modelVersion>4.0.0</modelVersion>
 
   <artifactId>avaje-jex-jetty</artifactId>
-  <groupId>io.avaje</groupId>
-  <version>1.0</version>
 
   <properties>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <javadoc.source>17</javadoc.source>
-    <java.release>17</java.release>
-    <jetty.version>11.0.2</jetty.version>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <jetty.version>11.0.6</jetty.version>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-jex</artifactId>
+      <version>1.8-SNAPSHOT</version>
+    </dependency>
 
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlet</artifactId>
       <version>${jetty.version}</version>
-      <scope>provided</scope>
     </dependency>
-
   </dependencies>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>org.moditect</groupId>
-        <artifactId>moditect-maven-plugin</artifactId>
-        <version>1.0.0.RC1</version>
-        <executions>
-          <execution>
-            <id>add-module-infos</id>
-            <phase>package</phase>
-            <goals>
-              <goal>add-module-info</goal>
-            </goals>
-            <configuration>
-              <jvmVersion>9</jvmVersion>
-              <module>
-                <moduleInfoFile>src/main/java9/module-info.java</moduleInfoFile>
-              </module>
-            </configuration>
-          </execution>
-        </executions>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>
+            --add-opens io.avaje.jex.jetty/io.avaje.jex.base=com.fasterxml.jackson.databind
+            --add-modules com.fasterxml.jackson.databind
+            --add-opens io.avaje.jex.jetty/io.avaje.jex=ALL-UNNAMED
+            --add-opens io.avaje.jex.jetty/io.avaje.jex.base=ALL-UNNAMED
+            --add-opens io.avaje.jex.jetty/io.avaje.jex.core=ALL-UNNAMED
+            --add-opens io.avaje.jex.jetty/io.avaje.jex.routes=ALL-UNNAMED
+            --add-opens io.avaje.jex.jetty/io.avaje.jex.jetty=ALL-UNNAMED
+          </argLine>
+        </configuration>
       </plugin>
     </plugins>
   </build>

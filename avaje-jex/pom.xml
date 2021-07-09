@@ -21,16 +21,28 @@
     </dependency>
 
     <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-servlet</artifactId>
-      <version>${jetty.version}</version>
+      <groupId>org.eclipse.jetty.toolchain</groupId>
+      <artifactId>jetty-jakarta-servlet-api</artifactId>
+      <version>5.0.2</version>
     </dependency>
 
-    <dependency>
-      <groupId>io.avaje</groupId>
-      <artifactId>avaje-jex-jetty</artifactId>
-      <version>1.0</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.eclipse.jetty</groupId>-->
+<!--      <artifactId>jetty-servlet</artifactId>-->
+<!--      <version>${jetty.version}</version>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>io.avaje</groupId>-->
+<!--      <artifactId>avaje-jex-jetty</artifactId>-->
+<!--      <version>1.8A-SNAPSHOT</version>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>io.avaje</groupId>-->
+<!--      <artifactId>avaje-jex-jetty</artifactId>-->
+<!--      <version>1.0</version>-->
+<!--    </dependency>-->
 
   </dependencies>
 
