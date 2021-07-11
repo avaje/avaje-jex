@@ -1,38 +1,15 @@
 package io.avaje.jex.jetty;
 
-import io.avaje.jex.spi.HeaderKeys;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.*;
-import java.net.URLDecoder;
-import java.util.*;
 
 class ContextUtil {
-
-  public static final String UTF_8 = "UTF-8";
 
   private static final int DEFAULT_BUFFER_SIZE = 8 * 1024;
 
   private static final int BUFFER_MAX = 65536;
-
-  static String getRequestCharset(JexHttpContext ctx) {
-    final String header = ctx.req.getHeader(HeaderKeys.CONTENT_TYPE);
-    if (header != null) {
-      return parseCharset(header);
-    }
-    return UTF_8;
-  }
-
-  static String parseCharset(String header) {
-    for (String val : header.split(";")) {
-      val = val.trim();
-      if (val.regionMatches(true, 0, "charset", 0, "charset".length())) {
-        return val.split("=")[1].trim();
-      }
-    }
-    return "UTF-8";
-  }
 
   static byte[] readBody(HttpServletRequest req) {
     try {
@@ -61,21 +38,4 @@ class ContextUtil {
     }
   }
 
-  static Map<String, List<String>> formParamMap(String body, String charset) {
-    if (body.isEmpty()) {
-      return Collections.emptyMap();
-    }
-    try {
-      Map<String, List<String>> map = new LinkedHashMap<>();
-      for (String pair : body.split("&")) {
-        final String[] split1 = pair.split("=", 2);
-        String key = URLDecoder.decode(split1[0], charset);
-        String val = split1.length > 1 ? URLDecoder.decode(split1[1], charset) : "";
-        map.computeIfAbsent(key, s -> new ArrayList<>()).add(val);
-      }
-      return map;
-    } catch (UnsupportedEncodingException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
 }

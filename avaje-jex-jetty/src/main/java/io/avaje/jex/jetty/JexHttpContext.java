@@ -3,11 +3,11 @@ package io.avaje.jex.jetty;
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
 import io.avaje.jex.UploadedFile;
-import io.avaje.jex.spi.SpiServiceManager;
-import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.http.RedirectResponse;
+import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
+import io.avaje.jex.spi.SpiServiceManager;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -61,17 +61,15 @@ class JexHttpContext implements SpiContext {
 
   private String characterEncoding() {
     if (characterEncoding == null) {
-      characterEncoding = ContextUtil.getRequestCharset(this);
+      characterEncoding = mgr.requestCharset(this);
     }
     return characterEncoding;
   }
 
-  @Override
   public HttpServletRequest req() {
     return req;
   }
 
-  @Override
   public HttpServletResponse res() {
     return res;
   }
@@ -137,7 +135,7 @@ class JexHttpContext implements SpiContext {
     return cookie(cookie);
   }
 
-  @Override
+  //@Override
   public Context cookie(Cookie cookie) {
     if (cookie.getPath() == null) {
       cookie.setPath("/");
@@ -296,7 +294,7 @@ class JexHttpContext implements SpiContext {
     if (isMultipartFormData()) {
       return mgr.multiPartForm(req);
     } else {
-      return ContextUtil.formParamMap(body(), characterEncoding());
+      return mgr.formParamMap(this, characterEncoding());
     }
   }
 
@@ -372,6 +370,11 @@ class JexHttpContext implements SpiContext {
     return this;
   }
 
+  @Override
+  public String contentTypeOfResponse() {
+    return req.getContentType();
+  }
+
   public Map<String, String> headerMap() {
     Map<String, String> map = new LinkedHashMap<>();
     final Enumeration<String> names = req.getHeaderNames();
@@ -436,13 +439,13 @@ class JexHttpContext implements SpiContext {
 
   @Override
   public Context text(String content) {
-    res.setContentType(TEXT_PLAIN);
+    contentType(TEXT_PLAIN);
     return write(content);
   }
 
   @Override
   public Context html(String content) {
-    res.setContentType(TEXT_HTML);
+    contentType(TEXT_HTML);
     return write(content);
   }
 

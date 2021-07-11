@@ -1,9 +1,5 @@
 package io.avaje.jex;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -55,10 +51,10 @@ public interface Context {
    */
   Context cookie(String name, String value, int maxAge);
 
-  /**
-   * Sets a Cookie.
-   */
-  Context cookie(Cookie cookie);
+//  /**
+//   * Sets a Cookie.
+//   */
+//  Context cookie(Cookie cookie);
 
   /**
    * Remove a cookie by name.
@@ -111,6 +107,11 @@ public interface Context {
    * Set the response content type.
    */
   Context contentType(String contentType);
+
+  /**
+   * Return the content type of the response.
+   */
+  String contentTypeOfResponse();
 
   /**
    * Return the splat path value for the given position.
@@ -340,16 +341,6 @@ public interface Context {
    * Return the request protocol.
    */
   String protocol();
-
-  /**
-   * Return the underlying http servlet request.
-   */
-  HttpServletRequest req();
-
-  /**
-   * Return the underlying http servlet response.
-   */
-  HttpServletResponse res();
 
   /**
    * Return the first UploadedFile for the specified name or null.

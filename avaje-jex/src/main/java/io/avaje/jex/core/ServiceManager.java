@@ -1,6 +1,7 @@
 package io.avaje.jex.core;
 
 import io.avaje.jex.*;
+import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.SpiContext;
 
@@ -8,13 +9,15 @@ import io.avaje.jex.spi.SpiServiceManager;
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.ServiceLoader;
+import java.io.UncheckedIOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.*;
 import java.util.stream.Stream;
 
 class ServiceManager implements SpiServiceManager {
+
+  public static final String UTF_8 = "UTF-8";
 
   private final HttpMethodMap methodMap = new HttpMethodMap();
 
@@ -102,6 +105,46 @@ class ServiceManager implements SpiServiceManager {
   @Override
   public Map<String, List<String>> multiPartForm(HttpServletRequest req) {
     return multipartUtil.fieldMap(req);
+  }
+
+  @Override
+  public String requestCharset(Context ctx) {
+    return parseCharset(ctx.header(HeaderKeys.CONTENT_TYPE));
+  }
+
+  static String parseCharset(String header) {
+    if (header != null) {
+      for (String val : header.split(";")) {
+        val = val.trim();
+        if (val.regionMatches(true, 0, "charset", 0, "charset".length())) {
+          return val.split("=")[1].trim();
+        }
+      }
+    }
+    return UTF_8;
+  }
+
+  @Override
+  public Map<String, List<String>> formParamMap(Context ctx, String charset) {
+    return formParamMap(ctx.body(), charset);
+  }
+
+  static Map<String, List<String>> formParamMap(String body, String charset) {
+    if (body.isEmpty()) {
+      return Collections.emptyMap();
+    }
+    try {
+      Map<String, List<String>> map = new LinkedHashMap<>();
+      for (String pair : body.split("&")) {
+        final String[] split1 = pair.split("=", 2);
+        String key = URLDecoder.decode(split1[0], charset);
+        String val = split1.length > 1 ? URLDecoder.decode(split1[1], charset) : "";
+        map.computeIfAbsent(key, s -> new ArrayList<>()).add(val);
+      }
+      return map;
+    } catch (UnsupportedEncodingException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   private static class Builder {
