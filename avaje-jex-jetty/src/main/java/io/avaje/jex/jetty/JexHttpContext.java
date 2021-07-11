@@ -347,11 +347,6 @@ class JexHttpContext implements SpiContext {
     return this;
   }
 
-  @Override
-  public String contentTypeOfResponse() {
-    return req.getContentType();
-  }
-
   public Map<String, String> headerMap() {
     Map<String, String> map = new LinkedHashMap<>();
     final Enumeration<String> names = req.getHeaderNames();
@@ -360,6 +355,11 @@ class JexHttpContext implements SpiContext {
       map.put(name, req.getHeader(name));
     }
     return map;
+  }
+
+  @Override
+  public String responseHeader(String key) {
+    return req.getHeader(key);
   }
 
   @Override
@@ -443,11 +443,6 @@ class JexHttpContext implements SpiContext {
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
-  }
-
-  @Override
-  public Context render(String name) {
-    return render(name, emptyMap());
   }
 
   @Override

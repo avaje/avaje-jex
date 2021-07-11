@@ -124,8 +124,8 @@ class JdkContext implements Context, SpiContext {
   }
 
   @Override
-  public String contentTypeOfResponse() {
-    return header(exchange.getResponseHeaders(), HeaderKeys.CONTENT_TYPE);
+  public String responseHeader(String key) {
+    return header(exchange.getResponseHeaders(), key);
   }
 
   private String header(Headers headers, String name) {
@@ -279,11 +279,6 @@ class JdkContext implements Context, SpiContext {
 
   int statusCode() {
     return statusCode == 0 ? 200 : statusCode;
-  }
-
-  @Override
-  public Context render(String name) {
-    return render(name, Collections.emptyMap());
   }
 
   @Override

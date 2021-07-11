@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import static io.avaje.jex.spi.SpiContext.TEXT_HTML;
 import static io.avaje.jex.spi.SpiContext.TEXT_PLAIN;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 
 /**
  * Provides access to functions for handling the request and response.
@@ -113,11 +114,6 @@ public interface Context {
    * Set the response content type.
    */
   Context contentType(String contentType);
-
-  /**
-   * Return the content type of the response.
-   */
-  String contentTypeOfResponse();
 
   /**
    * Return the splat path value for the given position.
@@ -294,7 +290,9 @@ public interface Context {
    *
    * @param name The template name
    */
-  Context render(String name);
+  default Context render(String name) {
+    return render(name, emptyMap());
+  }
 
   /**
    * Render a template typically as html with the given model.
@@ -323,6 +321,11 @@ public interface Context {
    * @param value The header value
    */
   void header(String key, String value);
+
+  /**
+   * Return the response header.
+   */
+  String responseHeader(String key);
 
   /**
    * Returns the request host, or null.

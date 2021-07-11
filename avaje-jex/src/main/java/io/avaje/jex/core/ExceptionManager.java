@@ -87,7 +87,7 @@ class ExceptionManager {
   private boolean useJson(Context ctx) {
     final String acceptHeader = ctx.header(HeaderKeys.ACCEPT);
     return (acceptHeader != null && acceptHeader.contains("application/json")
-      || "application/json".equals(ctx.contentTypeOfResponse()));
+      || "application/json".equals(ctx.responseHeader(HeaderKeys.CONTENT_TYPE)));
   }
 
 }
