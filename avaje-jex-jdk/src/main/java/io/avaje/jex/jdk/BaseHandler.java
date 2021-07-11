@@ -12,9 +12,9 @@ import java.net.URI;
 class BaseHandler implements HttpHandler {
 
   final SpiRoutes routes;
-  final JdkServiceManager mgr;
+  final ServiceManager mgr;
 
-  BaseHandler(SpiRoutes routes, JdkServiceManager mgr) {
+  BaseHandler(SpiRoutes routes, ServiceManager mgr) {
     this.mgr = mgr;
     this.routes = routes;
   }

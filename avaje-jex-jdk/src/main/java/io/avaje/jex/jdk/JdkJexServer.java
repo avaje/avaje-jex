@@ -3,11 +3,11 @@ package io.avaje.jex.jdk;
 import com.sun.net.httpserver.HttpServer;
 import io.avaje.jex.Jex;
 
-class JdkServer implements Jex.Server {
+class JdkJexServer implements Jex.Server {
 
   private final HttpServer server;
 
-  JdkServer(HttpServer server) {
+  JdkJexServer(HttpServer server) {
     this.server = server;
   }
 

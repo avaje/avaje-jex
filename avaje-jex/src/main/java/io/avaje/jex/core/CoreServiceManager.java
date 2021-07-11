@@ -4,10 +4,7 @@ import io.avaje.jex.*;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.SpiContext;
-
 import io.avaje.jex.spi.SpiServiceManager;
-import jakarta.servlet.MultipartConfigElement;
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
@@ -15,7 +12,10 @@ import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Stream;
 
-class ServiceManager implements SpiServiceManager {
+/**
+ * Core implementation of SpiServiceManager provided to specific implementations like jetty etc.
+ */
+class CoreServiceManager implements SpiServiceManager {
 
   public static final String UTF_8 = "UTF-8";
 
@@ -27,17 +27,14 @@ class ServiceManager implements SpiServiceManager {
 
   private final TemplateManager templateManager;
 
-  private final MultipartUtil multipartUtil;
-
   static SpiServiceManager create(Jex jex) {
     return new Builder(jex).build();
   }
 
-  ServiceManager(JsonService jsonService, ErrorHandling errorHandling, TemplateManager templateManager, MultipartUtil multipartUtil) {
+  CoreServiceManager(JsonService jsonService, ErrorHandling errorHandling, TemplateManager templateManager) {
     this.jsonService = jsonService;
     this.exceptionHandler = new ExceptionManager(errorHandling);
     this.templateManager = templateManager;
-    this.multipartUtil = multipartUtil;
   }
 
   @Override
@@ -92,20 +89,6 @@ class ServiceManager implements SpiServiceManager {
     templateManager.render(ctx, name, model);
   }
 
-  @Override
-  public List<UploadedFile> uploadedFiles(HttpServletRequest req) {
-    return multipartUtil.uploadedFiles(req);
-  }
-
-  @Override
-  public List<UploadedFile> uploadedFiles(HttpServletRequest req, String name) {
-    return multipartUtil.uploadedFiles(req, name);
-  }
-
-  @Override
-  public Map<String, List<String>> multiPartForm(HttpServletRequest req) {
-    return multipartUtil.fieldMap(req);
-  }
 
   @Override
   public String requestCharset(Context ctx) {
@@ -155,7 +138,7 @@ class ServiceManager implements SpiServiceManager {
     }
 
     SpiServiceManager build() {
-      return new ServiceManager(initJsonService(), jex.errorHandling(), initTemplateMgr(), initMultiPart());
+      return new CoreServiceManager(initJsonService(), jex.errorHandling(), initTemplateMgr());
     }
 
     JsonService initJsonService() {
@@ -188,13 +171,5 @@ class ServiceManager implements SpiServiceManager {
       return mgr;
     }
 
-    MultipartUtil initMultiPart() {
-      MultipartConfigElement config = jex.inner.multipartConfig;
-      if (config == null) {
-        final int fileThreshold = jex.inner.multipartFileThreshold;
-        config = new MultipartConfigElement(System.getProperty("java.io.tmpdir"), -1, -1, fileThreshold);
-      }
-      return new MultipartUtil(config);
-    }
   }
 }

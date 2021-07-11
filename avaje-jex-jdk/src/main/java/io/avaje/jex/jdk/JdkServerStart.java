@@ -1,9 +1,7 @@
 package io.avaje.jex.jdk;
 
-import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.HttpsServer;
 import io.avaje.jex.Jex;
 import io.avaje.jex.spi.SpiRoutes;
 import io.avaje.jex.spi.SpiServiceManager;
@@ -17,7 +15,7 @@ public class JdkServerStart implements SpiStartServer {
   @Override
   public Jex.Server start(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
 
-    final JdkServiceManager manager = new JdkServiceManager(serviceManager);
+    final ServiceManager manager = new ServiceManager(serviceManager);
     HttpHandler handler = new BaseHandler(routes, manager);
     try {
       final HttpServer server = HttpServer.create();
@@ -27,7 +25,7 @@ public class JdkServerStart implements SpiStartServer {
       server.bind(new InetSocketAddress(port), 0);
       server.start();
 
-      return new JdkServer(server);
+      return new JdkJexServer(server);
 
     } catch (IOException e) {
       throw new RuntimeException(e);

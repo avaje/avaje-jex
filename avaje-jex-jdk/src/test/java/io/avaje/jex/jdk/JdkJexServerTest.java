@@ -9,7 +9,7 @@ import java.net.http.HttpResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class JdkServerTest {
+class JdkJexServerTest {
 
   @Test
   void init() {

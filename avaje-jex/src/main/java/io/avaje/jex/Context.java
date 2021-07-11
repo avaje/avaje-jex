@@ -1,9 +1,15 @@
 package io.avaje.jex;
 
+import io.avaje.jex.spi.HeaderKeys;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+
+import static io.avaje.jex.spi.SpiContext.TEXT_HTML;
+import static io.avaje.jex.spi.SpiContext.TEXT_PLAIN;
+import static java.util.Collections.emptyList;
 
 /**
  * Provides access to functions for handling the request and response.
@@ -164,17 +170,25 @@ public interface Context {
   /**
    * Return the first form param value for the specified key or null.
    */
-  String formParam(String key);
+  default String formParam(String key) {
+    return formParam(key, null);
+  }
 
   /**
    * Return the first form param value for the specified key or the default value.
    */
-  String formParam(String key, String defaultValue);
+  default String formParam(String key, String defaultValue) {
+    final List<String> values = formParamMap().get(key);
+    return values == null || values.isEmpty() ? defaultValue : values.get(0);
+  }
 
   /**
    * Return the form params for the specified key, or empty list.
    */
-  List<String> formParams(String key);
+  default List<String> formParams(String key) {
+    final List<String> values = formParamMap().get(key);
+    return values != null ? values : emptyList();
+  }
 
   /**
    * Returns a map with all the form param keys and values.
@@ -219,7 +233,9 @@ public interface Context {
   /**
    * Return the request user agent, or null.
    */
-  String userAgent();
+  default String userAgent() {
+    return header(HeaderKeys.USER_AGENT);
+  }
 
   /**
    * Set the status code on the response.
@@ -234,12 +250,18 @@ public interface Context {
   /**
    * Write plain text content to the response.
    */
-  Context text(String content);
+  default Context text(String content) {
+    contentType(TEXT_PLAIN);
+    return write(content);
+  }
 
   /**
    * Write html content to the response.
    */
-  Context html(String content);
+  default Context html(String content) {
+    contentType(TEXT_HTML);
+    return write(content);
+  }
 
   /**
    * Set the response body as JSON for the given bean.

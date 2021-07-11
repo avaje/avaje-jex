@@ -4,9 +4,7 @@ import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
 import io.avaje.jex.Routing;
 import io.avaje.jex.http.NotFoundResponse;
-import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
-import io.avaje.jex.spi.SpiServiceManager;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,11 +13,11 @@ class JexHttpServlet extends HttpServlet {
 
   //private static final String X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
   private final SpiRoutes routes;
-  private final SpiServiceManager manager;
+  private final ServiceManager manager;
   private final StaticHandler staticHandler;
   private final boolean prefer405;
 
-  JexHttpServlet(Jex jex, SpiRoutes routes, SpiServiceManager manager, StaticHandler staticHandler) {
+  JexHttpServlet(Jex jex, SpiRoutes routes, ServiceManager manager, StaticHandler staticHandler) {
     this.routes = routes;
     this.manager = manager;
     this.staticHandler = staticHandler;

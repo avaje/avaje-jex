@@ -7,6 +7,6 @@ import io.avaje.jex.spi.SpiServiceManagerProvider;
 public class BootstapServiceManager implements SpiServiceManagerProvider {
   @Override
   public SpiServiceManager create(Jex jex) {
-    return ServiceManager.create(jex);
+    return CoreServiceManager.create(jex);
   }
 }

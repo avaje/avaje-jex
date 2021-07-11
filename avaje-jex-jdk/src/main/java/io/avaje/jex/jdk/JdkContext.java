@@ -16,15 +16,15 @@ import java.util.stream.Stream;
 
 class JdkContext implements Context, SpiContext {
 
-  private final JdkServiceManager mgr;
+  private final ServiceManager mgr;
   private final String path;
   private final SpiRoutes.Params params;
   private final HttpExchange exchange;
   private Routing.Type mode;
-
+  private Map<String, List<String>> formParamMap;
   private int statusCode;
 
-  JdkContext(JdkServiceManager mgr, HttpExchange exchange, String path, SpiRoutes.Params params) {
+  JdkContext(ServiceManager mgr, HttpExchange exchange, String path, SpiRoutes.Params params) {
     this.mgr = mgr;
     this.exchange = exchange;
     this.path = path;
@@ -38,17 +38,19 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public Context attribute(String key, Object value) {
-    return null;
+    exchange.setAttribute(key, value);
+    return this;
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public <T> T attribute(String key) {
-    return null;
+    return (T)exchange.getAttribute(key);
   }
 
   @Override
   public Map<String, Object> attributeMap() {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -70,11 +72,6 @@ class JdkContext implements Context, SpiContext {
   public Context cookie(String name, String value, int maxAge) {
     return null;
   }
-
-//  @Override
-//  public Context cookie(Cookie cookie) {
-//    return null;
-//  }
 
   @Override
   public Context removeCookie(String name) {
@@ -117,7 +114,8 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public long contentLength() {
-    return 0;
+    final String len = header(HeaderKeys.CONTENT_LENGTH);
+    return len == null ? 0 : Long.parseLong(len);
   }
 
   @Override
@@ -137,7 +135,7 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public Context contentType(String contentType) {
-    exchange.getResponseHeaders().add(HeaderKeys.CONTENT_TYPE, contentType);
+    exchange.getResponseHeaders().set(HeaderKeys.CONTENT_TYPE, contentType);
     return this;
   }
 
@@ -180,23 +178,6 @@ class JdkContext implements Context, SpiContext {
   public String queryString() {
     return null;
   }
-
-  @Override
-  public String formParam(String key) {
-    return null;
-  }
-
-  @Override
-  public String formParam(String key, String defaultValue) {
-    return null;
-  }
-
-  @Override
-  public List<String> formParams(String key) {
-    return null;
-  }
-
-  private Map<String, List<String>> formParamMap;
 
   @Override
   public Map<String, List<String>> formParamMap() {
@@ -247,11 +228,6 @@ class JdkContext implements Context, SpiContext {
   }
 
   @Override
-  public String userAgent() {
-    return null;
-  }
-
-  @Override
   public Context status(int statusCode) {
     this.statusCode = statusCode;
     return this;
@@ -260,20 +236,6 @@ class JdkContext implements Context, SpiContext {
   @Override
   public int status() {
     return statusCode;
-  }
-
-  @Override
-  public Context text(String content) {
-    contentType(TEXT_PLAIN);
-    write(content);
-    return this;
-  }
-
-  @Override
-  public Context html(String content) {
-    contentType(TEXT_HTML);
-    write(content);
-    return this;
   }
 
   @Override

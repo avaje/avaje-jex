@@ -1,8 +1,8 @@
-package io.avaje.jex.core;
+package io.avaje.jex.jetty;
 
 import io.avaje.jex.UploadedFile;
-
 import jakarta.servlet.http.Part;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;

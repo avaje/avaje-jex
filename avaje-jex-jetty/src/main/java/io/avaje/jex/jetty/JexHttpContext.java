@@ -7,7 +7,6 @@ import io.avaje.jex.http.RedirectResponse;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
-import io.avaje.jex.spi.SpiServiceManager;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,7 +25,7 @@ import static java.util.Collections.emptyMap;
 
 class JexHttpContext implements SpiContext {
 
-  private final SpiServiceManager mgr;
+  private final ServiceManager mgr;
   protected final HttpServletRequest req;
   private final HttpServletResponse res;
   private final Map<String, String> pathParams;
@@ -36,7 +35,7 @@ class JexHttpContext implements SpiContext {
   private Routing.Type mode;
   private Map<String, List<String>> formParamMap;
 
-  JexHttpContext(SpiServiceManager mgr, HttpServletRequest req, HttpServletResponse res, String matchedPath) {
+  JexHttpContext(ServiceManager mgr, HttpServletRequest req, HttpServletResponse res, String matchedPath) {
     this.mgr = mgr;
     this.req = req;
     this.res = res;
@@ -45,7 +44,7 @@ class JexHttpContext implements SpiContext {
     this.splats = null;
   }
 
-  JexHttpContext(SpiServiceManager mgr, HttpServletRequest req, HttpServletResponse res, String matchedPath, SpiRoutes.Params params) {
+  JexHttpContext(ServiceManager mgr, HttpServletRequest req, HttpServletResponse res, String matchedPath, SpiRoutes.Params params) {
     this.mgr = mgr;
     this.req = req;
     this.res = res;
@@ -266,23 +265,6 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
-  public String formParam(String key) {
-    return formParam(key, null);
-  }
-
-  @Override
-  public String formParam(String key, String defaultValue) {
-    final List<String> values = formParamMap().get(key);
-    return values == null || values.isEmpty() ? defaultValue : values.get(0);
-  }
-
-  @Override
-  public List<String> formParams(String key) {
-    final List<String> values = formParamMap().get(key);
-    return values != null ? values : emptyList();
-  }
-
-  @Override
   public Map<String, List<String>> formParamMap() {
     if (formParamMap == null) {
       formParamMap = initFormParamMap();
@@ -341,11 +323,6 @@ class JexHttpContext implements SpiContext {
   @Override
   public String contextPath() {
     return req.getContextPath();
-  }
-
-  @Override
-  public String userAgent() {
-    return req.getHeader(HeaderKeys.USER_AGENT);
   }
 
   @Override
@@ -435,18 +412,6 @@ class JexHttpContext implements SpiContext {
   @Override
   public String protocol() {
     return req.getProtocol();
-  }
-
-  @Override
-  public Context text(String content) {
-    contentType(TEXT_PLAIN);
-    return write(content);
-  }
-
-  @Override
-  public Context html(String content) {
-    contentType(TEXT_HTML);
-    return write(content);
   }
 
   @Override

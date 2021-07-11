@@ -8,16 +8,16 @@ class ContextUtilTest {
 
   @Test
   void parseCharset_defaults() {
-    assertThat(ServiceManager.parseCharset("")).isEqualTo(ServiceManager.UTF_8);
-    assertThat(ServiceManager.parseCharset("junk")).isEqualTo(ServiceManager.UTF_8);
+    assertThat(CoreServiceManager.parseCharset("")).isEqualTo(CoreServiceManager.UTF_8);
+    assertThat(CoreServiceManager.parseCharset("junk")).isEqualTo(CoreServiceManager.UTF_8);
   }
 
   @Test
   void parseCharset_caseCheck() {
-    assertThat(ServiceManager.parseCharset("app/foo; charset=ME")).isEqualTo("ME");
-    assertThat(ServiceManager.parseCharset("app/foo;charset=ME")).isEqualTo("ME");
-    assertThat(ServiceManager.parseCharset("app/foo;charset = ME ")).isEqualTo("ME");
-    assertThat(ServiceManager.parseCharset("app/foo;charset = ME;")).isEqualTo("ME");
-    assertThat(ServiceManager.parseCharset("app/foo;charset = ME;other=junk")).isEqualTo("ME");
+    assertThat(CoreServiceManager.parseCharset("app/foo; charset=ME")).isEqualTo("ME");
+    assertThat(CoreServiceManager.parseCharset("app/foo;charset=ME")).isEqualTo("ME");
+    assertThat(CoreServiceManager.parseCharset("app/foo;charset = ME ")).isEqualTo("ME");
+    assertThat(CoreServiceManager.parseCharset("app/foo;charset = ME;")).isEqualTo("ME");
+    assertThat(CoreServiceManager.parseCharset("app/foo;charset = ME;other=junk")).isEqualTo("ME");
   }
 }

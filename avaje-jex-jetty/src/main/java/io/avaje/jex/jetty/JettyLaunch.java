@@ -5,6 +5,7 @@ import io.avaje.jex.ServerConfig;
 import io.avaje.jex.StaticFileSource;
 import io.avaje.jex.spi.SpiServiceManager;
 import io.avaje.jex.spi.SpiRoutes;
+import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,19 +28,28 @@ class JettyLaunch implements Jex.Server {
 
   private final Jex jex;
   private final SpiRoutes routes;
-  private final SpiServiceManager serviceManager;
+  private final ServiceManager serviceManager;
   private final JettyServerConfig config;
   private Server server;
 
   JettyLaunch(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
     this.jex = jex;
     this.routes = routes;
-    this.serviceManager = serviceManager;
+    this.serviceManager = new ServiceManager(serviceManager, initMultiPart());
     this.config = initConfig(jex.serverConfig());
   }
 
   private JettyServerConfig initConfig(ServerConfig config) {
     return config == null ? new JettyServerConfig() : (JettyServerConfig)config;
+  }
+
+  MultipartUtil initMultiPart() {
+    MultipartConfigElement config = jex.inner.multipartConfig;
+    if (config == null) {
+      final int fileThreshold = jex.inner.multipartFileThreshold;
+      config = new MultipartConfigElement(System.getProperty("java.io.tmpdir"), -1, -1, fileThreshold);
+    }
+    return new MultipartUtil(config);
   }
 
   @Override
