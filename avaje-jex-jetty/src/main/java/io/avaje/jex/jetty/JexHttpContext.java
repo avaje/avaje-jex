@@ -323,8 +323,9 @@ class JexHttpContext implements SpiContext {
 
   @Override
   public String fullUrl() {
+    final String url = url();
     final String qs = queryString();
-    return qs == null ? url() : url() + "?" + qs;
+    return qs == null ? url : url + "?" + qs;
   }
 
   @Override

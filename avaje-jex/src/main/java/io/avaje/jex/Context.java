@@ -24,6 +24,7 @@ public interface Context {
 
   /**
    * Sets an attribute on the request.
+   * <p>
    * Attributes are available to other handlers in the request lifecycle
    */
   Context attribute(String key, Object value);
@@ -34,8 +35,11 @@ public interface Context {
   <T> T attribute(String key);
 
   /**
+   * Deprecated for removal - not supported by JDK http server.
+   * <p>
    * Gets a map with all the attribute keys and values on the request.
    */
+  @Deprecated
   Map<String, Object> attributeMap();
 
   /**
@@ -219,7 +223,11 @@ public interface Context {
   /**
    * Return the full request url, including query string (if present)
    */
-  String fullUrl();
+  default String fullUrl() {
+    final String url = url();
+    final String qs = queryString();
+    return qs == null ? url : url + "?" + qs;
+  }
 
   /**
    * Return the request context path.
@@ -400,6 +408,7 @@ public interface Context {
     public String name() {
       return name;
     }
+
     public String value() {
       return value;
     }
@@ -409,7 +418,7 @@ public interface Context {
     }
 
     public Cookie domain(String domain) {
-      this.domain= domain;
+      this.domain = domain;
       return this;
     }
 

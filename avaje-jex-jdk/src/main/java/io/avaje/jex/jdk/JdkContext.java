@@ -256,17 +256,14 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public String url() {
-    return null;
-  }
-
-  @Override
-  public String fullUrl() {
-    return null;
+    StringBuffer url = new StringBuffer(128);
+    url.append(scheme()).append("://").append(host()).append(path);
+    return url.toString();
   }
 
   @Override
   public String contextPath() {
-    return null;
+    return mgr.contextPath();
   }
 
   @Override

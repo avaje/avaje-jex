@@ -8,12 +8,14 @@ import java.io.OutputStream;
 class ServiceManager extends ProxyServiceManager {
 
   private final String scheme;
+  private final String contextPath;
   private final long outputBufferMax = 1024;
   private final int outputBufferInitial = 256;
 
-  ServiceManager(SpiServiceManager delegate, String scheme) {
+  ServiceManager(SpiServiceManager delegate, String scheme, String contextPath) {
     super(delegate);
     this.scheme = scheme;
+    this.contextPath = contextPath;
   }
 
   OutputStream createOutputStream(JdkContext jdkContext) {
@@ -22,5 +24,13 @@ class ServiceManager extends ProxyServiceManager {
 
   String scheme() {
     return scheme;
+  }
+
+  public String url(JdkContext jdkContext) {
+    return scheme+"://";
+  }
+
+  public String contextPath() {
+    return contextPath;
   }
 }

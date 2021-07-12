@@ -15,7 +15,7 @@ public class JdkServerStart implements SpiStartServer {
   @Override
   public Jex.Server start(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
 
-    final ServiceManager manager = new ServiceManager(serviceManager, "http");
+    final ServiceManager manager = new ServiceManager(serviceManager, "http", "");
     HttpHandler handler = new BaseHandler(routes, manager);
     try {
       final HttpServer server = HttpServer.create();
