@@ -13,6 +13,8 @@ public interface SpiContext extends Context {
 
   String TEXT_HTML = "text/html";
   String TEXT_PLAIN = "text/plain";
+  String TEXT_HTML_UTF8 = "text/html;charset=utf-8";
+  String TEXT_PLAIN_UTF8 = "text/plain;charset=utf-8";
   String APPLICATION_JSON = "application/json";
   String APPLICATION_X_JSON_STREAM = "application/x-json-stream";
 

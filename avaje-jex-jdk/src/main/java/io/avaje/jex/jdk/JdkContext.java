@@ -265,6 +265,18 @@ class JdkContext implements Context, SpiContext {
   }
 
   @Override
+  public Context text(String content) {
+    contentType(TEXT_PLAIN_UTF8);
+    return write(content);
+  }
+
+  @Override
+  public Context html(String content) {
+    contentType(TEXT_HTML_UTF8);
+    return write(content);
+  }
+
+  @Override
   public Context write(String content) {
     try {
       writeBytes(content.getBytes(StandardCharsets.UTF_8));

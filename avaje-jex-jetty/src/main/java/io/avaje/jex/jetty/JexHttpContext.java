@@ -442,6 +442,24 @@ class JexHttpContext implements SpiContext {
     return this;
   }
 
+  /**
+   * Write plain text content to the response.
+   */
+  @Override
+  public Context text(String content) {
+    contentType(TEXT_PLAIN);
+    return write(content);
+  }
+
+  /**
+   * Write html content to the response.
+   */
+  @Override
+  public Context html(String content) {
+    contentType(TEXT_HTML);
+    return write(content);
+  }
+
   @Override
   public Context write(String content) {
     try {

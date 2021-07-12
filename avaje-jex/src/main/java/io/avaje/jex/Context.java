@@ -246,18 +246,12 @@ public interface Context {
   /**
    * Write plain text content to the response.
    */
-  default Context text(String content) {
-    contentType(TEXT_PLAIN);
-    return write(content);
-  }
+  Context text(String content);
 
   /**
    * Write html content to the response.
    */
-  default Context html(String content) {
-    contentType(TEXT_HTML);
-    return write(content);
-  }
+  Context html(String content);
 
   /**
    * Set the response body as JSON for the given bean.
