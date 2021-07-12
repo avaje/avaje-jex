@@ -5,15 +5,22 @@ import com.sun.net.httpserver.HttpExchange;
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
 import io.avaje.jex.UploadedFile;
+import io.avaje.jex.http.RedirectResponse;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
@@ -22,6 +29,7 @@ import static java.util.Collections.emptyMap;
 class JdkContext implements Context, SpiContext {
 
   private static final String UTF8 = "UTF8";
+  private static final int SC_MOVED_TEMPORARILY = 302;
   private final ServiceManager mgr;
   private final String path;
   private final SpiRoutes.Params params;
@@ -107,12 +115,28 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public void redirect(String location) {
-
+    redirect(location, SC_MOVED_TEMPORARILY);
   }
 
   @Override
-  public void redirect(String location, int httpStatusCode) {
+  public void redirect(String location, int statusCode) {
+    header(HeaderKeys.LOCATION, location);
+    status(statusCode);
+    if (mode == Routing.Type.BEFORE) {
+      throw new RedirectResponse(statusCode);
+    } else {
+      performRedirect();
+    }
+  }
 
+  @Override
+  public void performRedirect() {
+    try {
+      exchange.sendResponseHeaders(statusCode(), 0);
+      exchange.getResponseBody().close();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   @Override

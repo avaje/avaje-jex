@@ -32,4 +32,9 @@ public interface SpiContext extends Context {
    * Set to indicate BEFORE, Handler and AFTER modes of the request.
    */
   void setMode(Routing.Type type);
+
+  /**
+   * Preform the redirect as part of Exception handling typically due to before handler.
+   */
+  void performRedirect();
 }

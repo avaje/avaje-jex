@@ -182,6 +182,11 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
+  public void performRedirect() {
+    // do nothing
+  }
+
+  @Override
   public String matchedPath() {
     return matchedPath;
   }

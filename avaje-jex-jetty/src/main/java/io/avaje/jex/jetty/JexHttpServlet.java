@@ -4,6 +4,7 @@ import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
 import io.avaje.jex.Routing;
 import io.avaje.jex.http.NotFoundResponse;
+import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,7 +50,7 @@ class JexHttpServlet extends HttpServlet {
     }
   }
 
-  private void handleException(Context ctx, Exception e) {
+  private void handleException(SpiContext ctx, Exception e) {
     manager.handleException(ctx, e);
   }
 

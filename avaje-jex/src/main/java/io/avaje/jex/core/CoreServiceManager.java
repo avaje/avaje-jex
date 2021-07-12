@@ -80,7 +80,7 @@ class CoreServiceManager implements SpiServiceManager {
   }
 
   @Override
-  public void handleException(Context ctx, Exception e) {
+  public void handleException(SpiContext ctx, Exception e) {
     exceptionHandler.handle(ctx, e);
   }
 

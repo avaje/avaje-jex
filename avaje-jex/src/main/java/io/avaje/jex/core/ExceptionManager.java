@@ -1,12 +1,12 @@
 package io.avaje.jex.core;
 
-import io.avaje.jex.Context;
 import io.avaje.jex.ErrorHandling;
 import io.avaje.jex.ExceptionHandler;
 import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.http.InternalServerErrorResponse;
 import io.avaje.jex.http.RedirectResponse;
 import io.avaje.jex.spi.HeaderKeys;
+import io.avaje.jex.spi.SpiContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +20,7 @@ class ExceptionManager {
     this.errorHandling = errorHandling;
   }
 
-  void handle(Context ctx, Exception e) {
+  void handle(SpiContext ctx, Exception e) {
     final ExceptionHandler<Exception> handler = errorHandling.find(e.getClass());
     if (handler != null) {
       handler.handle(e, ctx);
@@ -33,7 +33,7 @@ class ExceptionManager {
     }
   }
 
-  private void unhandledException(Context ctx, Exception e) {
+  private void unhandledException(SpiContext ctx, Exception e) {
     log.warn("Uncaught exception", e);
     defaultHandling(ctx, new InternalServerErrorResponse());
   }
@@ -46,12 +46,11 @@ class ExceptionManager {
     return RedirectResponse.class.isAssignableFrom(e.getClass());
   }
 
-  private void defaultHandling(Context ctx, Exception exception) {
+  private void defaultHandling(SpiContext ctx, Exception exception) {
     final HttpResponseException e = unwrap(exception);
     ctx.status(e.getStatus());
     if (isRedirect(e)) {
-      // no content
-      log.trace("redirect");
+      ctx.performRedirect();
     } else if (useJson(ctx)) {
       ctx.contentType("application/json").write(asJsonContent(e));
     } else {
@@ -84,7 +83,7 @@ class ExceptionManager {
     //(if (e is CompletionException) e.cause else e) as HttpResponseException
   }
 
-  private boolean useJson(Context ctx) {
+  private boolean useJson(SpiContext ctx) {
     final String acceptHeader = ctx.header(HeaderKeys.ACCEPT);
     return (acceptHeader != null && acceptHeader.contains("application/json")
       || "application/json".equals(ctx.responseHeader(HeaderKeys.CONTENT_TYPE)));

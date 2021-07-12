@@ -46,7 +46,7 @@ public interface SpiServiceManager {
   /**
    * Handle the exception.
    */
-  void handleException(Context ctx, Exception e);
+  void handleException(SpiContext ctx, Exception e);
 
   /**
    * Render using template manager.

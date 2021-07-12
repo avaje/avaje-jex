@@ -53,7 +53,7 @@ public abstract class ProxyServiceManager implements SpiServiceManager {
   }
 
   @Override
-  public void handleException(Context ctx, Exception e) {
+  public void handleException(SpiContext ctx, Exception e) {
     delegate.handleException(ctx, e);
   }
 

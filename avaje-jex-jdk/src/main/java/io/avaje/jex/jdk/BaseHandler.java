@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpHandler;
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
 import io.avaje.jex.http.NotFoundResponse;
+import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
 
 import java.io.IOException;
@@ -49,7 +50,7 @@ class BaseHandler implements HttpHandler {
     }
   }
 
-  private void handleException(Context ctx, Exception e) {
+  private void handleException(SpiContext ctx, Exception e) {
     mgr.handleException(ctx, e);
   }
 
