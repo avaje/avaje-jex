@@ -2,7 +2,11 @@ package io.avaje.jex;
 
 import io.avaje.jex.spi.HeaderKeys;
 
-import java.net.HttpCookie;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -54,9 +58,7 @@ public interface Context {
   /**
    * Sets a cookie with name, value with unlimited age.
    */
-  default Context cookie(String name, String value) {
-    return cookie(name, value, -1);
-  }
+  Context cookie(String name, String value);
 
   /**
    * Sets a cookie with name, value, and max-age.
@@ -66,7 +68,7 @@ public interface Context {
   /**
    * Sets a Cookie.
    */
-  Context cookie(HttpCookie cookie);
+  Context cookie(Cookie cookie);
 
   /**
    * Remove a cookie by name.
@@ -385,4 +387,134 @@ public interface Context {
    */
   List<UploadedFile> uploadedFiles();
 
+  class Cookie {
+    private static final ZonedDateTime EXPIRED = ZonedDateTime.of(LocalDateTime.of(2000, 1, 1, 0, 0, 0), ZoneId.of("GMT"));
+    private static final DateTimeFormatter RFC_1123_DATE_TIME = DateTimeFormatter.RFC_1123_DATE_TIME;
+    private static final String PARAM_SEPARATOR = "; ";
+    private final String name; // NAME= ... "$Name" style is reserved
+    private final String value; // value of NAME
+    private String domain; // ;Domain=VALUE ... domain that sees cookie
+    private ZonedDateTime expires;
+    private Duration maxAge;// = -1; // ;Max-Age=VALUE ... cookies auto-expire
+    private String path; // ;Path=VALUE ... URLs that see the cookie
+    private boolean secure; // ;Secure ... e.g. use SSL
+    private boolean httpOnly;
+
+    private Cookie(String name, String value) {
+      if (name == null || name.length() == 0) {
+        throw new IllegalArgumentException("name required");
+      }
+      this.name = name;
+      this.value = value;
+    }
+
+    public static Cookie expired(String name) {
+      return new Cookie(name, "").expires(EXPIRED);
+    }
+
+    public static Cookie of(String name, String value) {
+      return new Cookie(name, value);
+    }
+
+    public String name() {
+      return name;
+    }
+
+    public String value() {
+      return value;
+    }
+
+    public String domain() {
+      return domain;
+    }
+
+    public Cookie domain(String domain) {
+      this.domain = domain;
+      return this;
+    }
+
+    public Duration maxAge() {
+      return maxAge;
+    }
+
+    public Cookie maxAge(Duration maxAge) {
+      this.maxAge = maxAge;
+      return this;
+    }
+
+    public ZonedDateTime expires() {
+      return expires;
+    }
+
+    public Cookie expires(ZonedDateTime expires) {
+      this.expires = expires;
+      return this;
+    }
+
+    public String path() {
+      return path;
+    }
+
+    public Cookie path(String path) {
+      this.path = path;
+      return this;
+    }
+
+    public boolean secure() {
+      return secure;
+    }
+
+    public Cookie secure(boolean secure) {
+      this.secure = secure;
+      return this;
+    }
+
+    public boolean httpOnly() {
+      return httpOnly;
+    }
+
+    public Cookie httpOnly(boolean httpOnly) {
+      this.httpOnly = httpOnly;
+      return this;
+    }
+
+    /**
+     * Returns content of this instance as a 'Set-Cookie:' header value specified
+     * by <a href="https://tools.ietf.org/html/rfc6265">RFC6265</a>.
+     */
+    @Override
+    public String toString() {
+      StringBuilder result = new StringBuilder(60);
+      result.append(name).append('=').append(value);
+      if (expires != null) {
+        result.append(PARAM_SEPARATOR);
+        result.append("Expires=");
+        result.append(expires.format(RFC_1123_DATE_TIME));
+      }
+      if ((maxAge != null) && !maxAge.isNegative() && !maxAge.isZero()) {
+        result.append(PARAM_SEPARATOR);
+        result.append("Max-Age=");
+        result.append(maxAge.getSeconds());
+      }
+      if (domain != null) {
+        result.append(PARAM_SEPARATOR);
+        result.append("Domain=");
+        result.append(domain);
+      }
+      if (path != null) {
+        result.append(PARAM_SEPARATOR);
+        result.append("Path=");
+        result.append(path);
+      }
+      if (secure) {
+        result.append(PARAM_SEPARATOR);
+        result.append("Secure");
+      }
+      if (httpOnly) {
+        result.append(PARAM_SEPARATOR);
+        result.append("HttpOnly");
+      }
+      return result.toString();
+    }
+  }
 }

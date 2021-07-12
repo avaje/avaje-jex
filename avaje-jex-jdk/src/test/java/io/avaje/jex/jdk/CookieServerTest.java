@@ -1,11 +1,12 @@
 package io.avaje.jex.jdk;
 
+import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
-import java.net.HttpCookie;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,10 +22,8 @@ class CookieServerTest {
         .get("/readCookieMap", ctx -> ctx.text("cookieMap:" + ctx.cookieMap()))
         .get("/removeCookie/{name}", ctx -> ctx.removeCookie(ctx.pathParam("name")).text("ok"))
         .get("/setCookieAll", ctx -> {
-          final HttpCookie httpCookie = new HttpCookie("ac", "v_all");
-          httpCookie.setPath("/");
-          httpCookie.setHttpOnly(true);
-          httpCookie.setMaxAge(10_000);
+          final Context.Cookie httpCookie = Context.Cookie.of("ac", "v_all")
+            .path("/").httpOnly(true).maxAge(Duration.ofSeconds(10_000));
           ctx.cookie(httpCookie).text("ok");
         })
       );

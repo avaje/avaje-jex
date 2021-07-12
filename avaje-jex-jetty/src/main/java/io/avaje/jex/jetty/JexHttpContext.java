@@ -7,7 +7,6 @@ import io.avaje.jex.http.RedirectResponse;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -16,8 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
-import java.net.HttpCookie;
 import java.nio.charset.Charset;
+import java.time.Duration;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -99,9 +98,9 @@ class JexHttpContext implements SpiContext {
 
   @Override
   public String cookie(String name) {
-    final Cookie[] cookies = req.getCookies();
+    final jakarta.servlet.http.Cookie[] cookies = req.getCookies();
     if (cookies != null) {
-      for (Cookie cookie : cookies) {
+      for (jakarta.servlet.http.Cookie cookie : cookies) {
         if (cookie.getName().equals(name)) {
           return cookie.getValue();
         }
@@ -112,42 +111,50 @@ class JexHttpContext implements SpiContext {
 
   @Override
   public Map<String, String> cookieMap() {
-    final Cookie[] cookies = req.getCookies();
+    final jakarta.servlet.http.Cookie[] cookies = req.getCookies();
     if (cookies == null) {
       return emptyMap();
     }
     final Map<String, String> map = new LinkedHashMap<>();
-    for (Cookie cookie : cookies) {
+    for (jakarta.servlet.http.Cookie cookie : cookies) {
       map.put(cookie.getName(), cookie.getValue());
     }
     return map;
   }
 
   @Override
-  public Context cookie(HttpCookie cookie) {
-    final Cookie newCookie = new Cookie(cookie.getName(), cookie.getValue());
-    newCookie.setPath(cookie.getPath());
+  public Context cookie(Cookie cookie) {
+    final jakarta.servlet.http.Cookie newCookie = new jakarta.servlet.http.Cookie(cookie.name(), cookie.value());
+    newCookie.setPath(cookie.path());
     if (newCookie.getPath() == null) {
       newCookie.setPath("/");
     }
-    final String domain = cookie.getDomain();
+    final String domain = cookie.domain();
     if (domain != null) {
       newCookie.setDomain(domain);
     }
-    newCookie.setMaxAge((int) cookie.getMaxAge());
-    newCookie.setHttpOnly(cookie.isHttpOnly());
-    newCookie.setSecure(cookie.getSecure());
+    final Duration duration = cookie.maxAge();
+    if (duration != null) {
+      newCookie.setMaxAge((int)duration.toSeconds());
+    }
+    newCookie.setHttpOnly(cookie.httpOnly());
+    newCookie.setSecure(cookie.secure());
     res.addCookie(newCookie);
     return this;
   }
 
   @Override
   public Context cookie(String name, String value, int maxAge) {
-    final Cookie cookie = new Cookie(name, value);
+    final jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie(name, value);
     cookie.setPath("/");
     cookie.setMaxAge(maxAge);
     res.addCookie(cookie);
     return this;
+  }
+
+  @Override
+  public Context cookie(String name, String value) {
+    return cookie(name, value, -1);
   }
 
   @Override
@@ -160,7 +167,7 @@ class JexHttpContext implements SpiContext {
     if (path == null) {
       path = "/";
     }
-    final Cookie cookie = new Cookie(name, "");
+    final jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie(name, "");
     cookie.setPath(path);
     cookie.setMaxAge(0);
     res.addCookie(cookie);
