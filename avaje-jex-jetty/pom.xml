@@ -37,8 +37,8 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <argLine>
-            --add-opens io.avaje.jex.jetty/io.avaje.jex.base=com.fasterxml.jackson.databind
             --add-modules com.fasterxml.jackson.databind
+            --add-opens io.avaje.jex.jetty/io.avaje.jex.base=com.fasterxml.jackson.databind
             --add-opens io.avaje.jex.jetty/io.avaje.jex=ALL-UNNAMED
             --add-opens io.avaje.jex.jetty/io.avaje.jex.base=ALL-UNNAMED
             --add-opens io.avaje.jex.jetty/io.avaje.jex.core=ALL-UNNAMED
