@@ -52,16 +52,21 @@ public class JacksonJsonService implements JsonService {
     try {
       generator = mapper.createGenerator(ctx.outputStream());
       generator.setPrettyPrinter(null);
+      try {
+        while (iterator.hasNext()) {
+          try {
+            mapper.writeValue(generator, iterator.next());
+            generator.writeRaw('\n');
+          } catch (IOException e) {
+            throw new UncheckedIOException(e);
+          }
+        }
+      } finally {
+        generator.flush();
+        generator.close();
+      }
     } catch (IOException e) {
       throw new UncheckedIOException(e);
-    }
-    while (iterator.hasNext()) {
-      try {
-        mapper.writeValue(generator, iterator.next());
-        generator.writeRaw('\n');
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
     }
   }
 }
