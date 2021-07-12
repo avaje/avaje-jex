@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Iterator;
@@ -29,7 +30,6 @@ import static java.util.Collections.emptyMap;
 
 class JdkContext implements Context, SpiContext {
 
-  private static final String EXPIRE_COOKIE = "; Expires=Sat, 01 Jan 2000 00:00:00 GMT";
   private static final String UTF8 = "UTF8";
   private static final int SC_MOVED_TEMPORARILY = 302;
   private static final String SET_COOKIE = "Set-Cookie";
@@ -43,6 +43,7 @@ class JdkContext implements Context, SpiContext {
   private Map<String, List<String>> queryParams;
   private Map<String, String> cookieMap;
   private int statusCode;
+  private String characterEncoding;
 
   JdkContext(ServiceManager mgr, HttpExchange exchange, String path, SpiRoutes.Params params) {
     this.mgr = mgr;
@@ -59,21 +60,6 @@ class JdkContext implements Context, SpiContext {
     this.exchange = exchange;
     this.path = path;
     this.params = null;
-  }
-
-  private Map<String, String> internalCookieMap() {
-    if (cookieMap == null) {
-      cookieMap = parseCookies();
-    }
-    return cookieMap;
-  }
-
-  private Map<String, String> parseCookies() {
-    final String cookieHeader = header(exchange.getRequestHeaders(), COOKIE);
-    if (cookieHeader == null || cookieHeader.isEmpty()) {
-      return emptyMap();
-    }
-    return CookieParser.parse(cookieHeader);
   }
 
   @Override
@@ -98,14 +84,25 @@ class JdkContext implements Context, SpiContext {
     throw new UnsupportedOperationException();
   }
 
-  @Override
-  public String cookie(String name) {
-    return internalCookieMap().get(name);
+  private Map<String, String> parseCookies() {
+    final String cookieHeader = header(exchange.getRequestHeaders(), COOKIE);
+    if (cookieHeader == null || cookieHeader.isEmpty()) {
+      return emptyMap();
+    }
+    return CookieParser.parse(cookieHeader);
   }
 
   @Override
   public Map<String, String> cookieMap() {
-    return internalCookieMap();
+    if (cookieMap == null) {
+      cookieMap = parseCookies();
+    }
+    return cookieMap;
+  }
+
+  @Override
+  public String cookie(String name) {
+    return cookieMap().get(name);
   }
 
   @Override
@@ -178,9 +175,16 @@ class JdkContext implements Context, SpiContext {
     }
   }
 
+  private String characterEncoding() {
+    if (characterEncoding == null) {
+      characterEncoding = mgr.requestCharset(this);
+    }
+    return characterEncoding;
+  }
+
   @Override
   public String body() {
-    return new String(bodyAsBytes(), StandardCharsets.UTF_8);
+    return new String(bodyAsBytes(), Charset.forName(characterEncoding()));
   }
 
   @Override
@@ -279,8 +283,7 @@ class JdkContext implements Context, SpiContext {
   }
 
   private Map<String, List<String>> initFormParamMap() {
-    final String charset = mgr.requestCharset(this);
-    return mgr.formParamMap(this, charset);
+    return mgr.formParamMap(this, characterEncoding());
   }
 
   @Override
@@ -290,24 +293,22 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public Context sessionAttribute(String key, Object value) {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public <T> T sessionAttribute(String key) {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public Map<String, Object> sessionAttributeMap() {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public String url() {
-    StringBuffer url = new StringBuffer(128);
-    url.append(scheme()).append("://").append(host()).append(path);
-    return url.toString();
+    return scheme() + "://" + host() + path;
   }
 
   @Override
