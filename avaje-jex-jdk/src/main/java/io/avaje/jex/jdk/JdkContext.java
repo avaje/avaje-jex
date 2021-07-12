@@ -54,6 +54,11 @@ class JdkContext implements Context, SpiContext {
   }
 
   @Override
+  public Context cookie(Cookie cookie) {
+    return null;
+  }
+
+  @Override
   public String cookie(String name) {
     return null;
   }
