@@ -31,6 +31,16 @@ class JdkContext implements Context, SpiContext {
     this.params = params;
   }
 
+  /**
+   * Create when no route matched.
+   */
+  JdkContext(ServiceManager mgr, HttpExchange exchange, String path) {
+    this.mgr = mgr;
+    this.exchange = exchange;
+    this.path = path;
+    this.params = null;
+  }
+
   @Override
   public String matchedPath() {
     return path;
@@ -135,7 +145,7 @@ class JdkContext implements Context, SpiContext {
 
   private String header(Headers headers, String name) {
     final List<String> values = headers.get(name);
-    return values.isEmpty() ? null : values.get(0);
+    return (values == null || values.isEmpty()) ? null : values.get(0);
   }
 
   @Override
