@@ -109,11 +109,12 @@ class CoreServiceManager implements SpiServiceManager {
 
   @Override
   public Map<String, List<String>> formParamMap(Context ctx, String charset) {
-    return formParamMap(ctx.body(), charset);
+    return parseParamMap(ctx.body(), charset);
   }
 
-  static Map<String, List<String>> formParamMap(String body, String charset) {
-    if (body.isEmpty()) {
+  @Override
+  public Map<String, List<String>> parseParamMap(String body, String charset) {
+    if (body == null || body.isEmpty()) {
       return Collections.emptyMap();
     }
     try {

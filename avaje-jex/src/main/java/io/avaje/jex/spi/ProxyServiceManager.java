@@ -71,4 +71,9 @@ public abstract class ProxyServiceManager implements SpiServiceManager {
   public Map<String, List<String>> formParamMap(Context ctx, String charset) {
     return delegate.formParamMap(ctx, charset);
   }
+
+  @Override
+  public Map<String, List<String>> parseParamMap(String body, String charset) {
+    return delegate.parseParamMap(body, charset);
+  }
 }

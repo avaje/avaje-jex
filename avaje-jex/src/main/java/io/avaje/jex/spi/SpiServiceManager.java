@@ -63,4 +63,8 @@ public interface SpiServiceManager {
    */
   Map<String, List<String>> formParamMap(Context ctx, String charset);
 
+  /**
+   * Parse and return the content as url encoded parameters.
+   */
+  Map<String, List<String>> parseParamMap(String body, String charset);
 }

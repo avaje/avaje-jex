@@ -16,14 +16,19 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+
 class JdkContext implements Context, SpiContext {
 
+  private static final String UTF8 = "UTF8";
   private final ServiceManager mgr;
   private final String path;
   private final SpiRoutes.Params params;
   private final HttpExchange exchange;
   private Routing.Type mode;
-  private Map<String, List<String>> formParamMap;
+  private Map<String, List<String>> formParams;
+  private Map<String, List<String>> queryParams;
   private int statusCode;
 
   JdkContext(ServiceManager mgr, HttpExchange exchange, String path, SpiRoutes.Params params) {
@@ -178,30 +183,50 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public String queryParam(String name) {
-    return null;
+    final List<String> vals = queryParams(name);
+    return vals == null || vals.isEmpty() ? null : vals.get(0);
+  }
+
+  private Map<String, List<String>> queryParams() {
+    if (queryParams == null) {
+      queryParams = mgr.parseParamMap(queryString(), UTF8);
+    }
+    return queryParams;
   }
 
   @Override
   public List<String> queryParams(String name) {
-    return null;
+    final List<String> vals = queryParams().get(name);
+    return vals == null ? emptyList() : vals;
   }
 
   @Override
   public Map<String, String> queryParamMap() {
-    return null;
+    final Map<String, List<String>> map = queryParams();
+    if (map.isEmpty()) {
+      return emptyMap();
+    }
+    final Map<String, String> single = new LinkedHashMap<>();
+    for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+      final List<String> value = entry.getValue();
+      if (value != null && !value.isEmpty()) {
+        single.put(entry.getKey(), value.get(0));
+      }
+    }
+    return single;
   }
 
   @Override
   public String queryString() {
-    return null;
+    return exchange.getRequestURI().getQuery();
   }
 
   @Override
   public Map<String, List<String>> formParamMap() {
-    if (formParamMap == null) {
-      formParamMap = initFormParamMap();
+    if (formParams == null) {
+      formParams = initFormParamMap();
     }
-    return formParamMap;
+    return formParams;
   }
 
   private Map<String, List<String>> initFormParamMap() {
@@ -211,7 +236,7 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public String scheme() {
-    return null;
+    return mgr.scheme();
   }
 
   @Override
