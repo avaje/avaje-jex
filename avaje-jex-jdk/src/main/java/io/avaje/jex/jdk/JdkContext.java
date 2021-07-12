@@ -10,6 +10,8 @@ import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
 
 import java.io.*;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Stream;
@@ -55,7 +57,7 @@ class JdkContext implements Context, SpiContext {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T attribute(String key) {
-    return (T)exchange.getAttribute(key);
+    return (T) exchange.getAttribute(key);
   }
 
   @Override
@@ -338,12 +340,17 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public String host() {
-    return exchange.getRemoteAddress().getHostString();
+    return header(HeaderKeys.HOST);
   }
 
   @Override
   public String ip() {
-    return null;//exchange.getRemoteAddress();
+    final InetSocketAddress remote = exchange.getRemoteAddress();
+    if (remote == null) {
+      return "";
+    }
+    InetAddress address = remote.getAddress();
+    return address == null ? remote.getHostString() : address.getHostAddress();
   }
 
   @Override
@@ -370,7 +377,7 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public int port() {
-    return 0;
+    return exchange.getLocalAddress().getPort();
   }
 
   @Override
