@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.net.HttpCookie;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
@@ -79,7 +80,7 @@ class JdkContext implements Context, SpiContext {
   }
 
   @Override
-  public Context cookie(Cookie cookie) {
+  public Context cookie(HttpCookie cookie) {
     return null;
   }
 
@@ -94,13 +95,8 @@ class JdkContext implements Context, SpiContext {
   }
 
   @Override
-  public Context cookie(String name, String value) {
-    return null;
-  }
-
-  @Override
   public Context cookie(String name, String value, int maxAge) {
-    return null;
+    return this;
   }
 
   @Override

@@ -40,12 +40,15 @@ public class TestPair {
     return client.url().build();
   }
 
+  public static TestPair create(Jex app) {
+    int port = 10000 + new Random().nextInt(1000);
+    return create(app, port);
+  }
+
   /**
    * Create a Server and Client pair for a given set of tests.
    */
-  public static TestPair create(Jex app) {
-
-    int port = 10000 + new Random().nextInt(1000);
+  public static TestPair create(Jex app, int port) {
     var jexServer = app.port(port).start();
 
     var url = "http://localhost:" + port;

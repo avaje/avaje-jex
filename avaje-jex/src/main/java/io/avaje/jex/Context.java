@@ -2,13 +2,12 @@ package io.avaje.jex;
 
 import io.avaje.jex.spi.HeaderKeys;
 
+import java.net.HttpCookie;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static io.avaje.jex.spi.SpiContext.TEXT_HTML;
-import static io.avaje.jex.spi.SpiContext.TEXT_PLAIN;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
@@ -55,7 +54,9 @@ public interface Context {
   /**
    * Sets a cookie with name, value with unlimited age.
    */
-  Context cookie(String name, String value);
+  default Context cookie(String name, String value) {
+    return cookie(name, value, -1);
+  }
 
   /**
    * Sets a cookie with name, value, and max-age.
@@ -65,7 +66,7 @@ public interface Context {
   /**
    * Sets a Cookie.
    */
-  Context cookie(Cookie cookie);
+  Context cookie(HttpCookie cookie);
 
   /**
    * Remove a cookie by name.
@@ -384,78 +385,4 @@ public interface Context {
    */
   List<UploadedFile> uploadedFiles();
 
-  class Cookie {
-    private final String name; // NAME= ... "$Name" style is reserved
-    private final String value; // value of NAME
-    private String domain; // ;Domain=VALUE ... domain that sees cookie
-    private int maxAge = -1; // ;Max-Age=VALUE ... cookies auto-expire
-    private String path; // ;Path=VALUE ... URLs that see the cookie
-    private boolean secure; // ;Secure ... e.g. use SSL
-    private boolean httpOnly;
-
-    private Cookie(String name, String value) {
-      if (name == null || name.length() == 0) {
-        throw new IllegalArgumentException("name required");
-      }
-      this.name = name;
-      this.value = value;
-    }
-
-    public static Cookie of(String name, String value) {
-      return new Cookie(name, value);
-    }
-
-    public String name() {
-      return name;
-    }
-
-    public String value() {
-      return value;
-    }
-
-    public String domain() {
-      return domain;
-    }
-
-    public Cookie domain(String domain) {
-      this.domain = domain;
-      return this;
-    }
-
-    public int maxAge() {
-      return maxAge;
-    }
-
-    public Cookie maxAge(int maxAge) {
-      this.maxAge = maxAge;
-      return this;
-    }
-
-    public String path() {
-      return path;
-    }
-
-    public Cookie path(String path) {
-      this.path = path;
-      return this;
-    }
-
-    public boolean secure() {
-      return secure;
-    }
-
-    public Cookie secure(boolean secure) {
-      this.secure = secure;
-      return this;
-    }
-
-    public boolean httpOnly() {
-      return httpOnly;
-    }
-
-    public Cookie httpOnly(boolean httpOnly) {
-      this.httpOnly = httpOnly;
-      return this;
-    }
-  }
 }
