@@ -1,16 +1,8 @@
 package io.avaje.jex;
 
 import io.avaje.jex.spi.*;
-//import io.avaje.jex.jetty.JettyStartServer;
-//import org.eclipse.jetty.server.session.SessionHandler;
-//import org.eclipse.jetty.servlet.ServletContextHandler;
 
-import jakarta.servlet.MultipartConfigElement;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ServiceLoader;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -59,7 +51,7 @@ public class Jex {
     public boolean preCompressStaticFiles;
     public JsonService jsonService;
     public AccessManager accessManager;
-    public MultipartConfigElement multipartConfig;
+    public UploadConfig multipartConfig;
     public int multipartFileThreshold = 8 * 1024;
     public final Map<String, TemplateRender> renderers = new HashMap<>();
   }

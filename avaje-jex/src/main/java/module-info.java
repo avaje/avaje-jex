@@ -14,7 +14,6 @@ module io.avaje.jex {
 
   requires java.net.http;
   requires transitive org.slf4j;
-  requires jetty.servlet.api;
 
   requires transitive com.fasterxml.jackson.databind;
 

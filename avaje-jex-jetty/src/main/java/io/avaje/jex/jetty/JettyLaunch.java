@@ -3,6 +3,7 @@ package io.avaje.jex.jetty;
 import io.avaje.jex.Jex;
 import io.avaje.jex.ServerConfig;
 import io.avaje.jex.StaticFileSource;
+import io.avaje.jex.UploadConfig;
 import io.avaje.jex.spi.SpiServiceManager;
 import io.avaje.jex.spi.SpiRoutes;
 import jakarta.servlet.MultipartConfigElement;
@@ -44,12 +45,15 @@ class JettyLaunch implements Jex.Server {
   }
 
   MultipartUtil initMultiPart() {
-    MultipartConfigElement config = jex.inner.multipartConfig;
-    if (config == null) {
+    return new MultipartUtil(initMultipartConfigElement(jex.inner.multipartConfig));
+  }
+
+  MultipartConfigElement initMultipartConfigElement(UploadConfig uploadConfig) {
+    if (uploadConfig == null) {
       final int fileThreshold = jex.inner.multipartFileThreshold;
-      config = new MultipartConfigElement(System.getProperty("java.io.tmpdir"), -1, -1, fileThreshold);
+      return new MultipartConfigElement(System.getProperty("java.io.tmpdir"), -1, -1, fileThreshold);
     }
-    return new MultipartUtil(config);
+    return new MultipartConfigElement(uploadConfig.location(), uploadConfig.maxFileSize(), uploadConfig.maxRequestSize(), uploadConfig.fileSizeThreshold());
   }
 
   @Override
