@@ -29,8 +29,11 @@ import static java.util.Collections.emptyMap;
 
 class JdkContext implements Context, SpiContext {
 
+  private static final String EXPIRE_COOKIE = "; Expires=Sat, 01 Jan 2000 00:00:00 GMT";
   private static final String UTF8 = "UTF8";
   private static final int SC_MOVED_TEMPORARILY = 302;
+  private static final String SET_COOKIE2 = "Set-Cookie";
+  private static final String COOKIE = "Cookie";
   private final ServiceManager mgr;
   private final String path;
   private final SpiRoutes.Params params;
@@ -38,6 +41,7 @@ class JdkContext implements Context, SpiContext {
   private Routing.Type mode;
   private Map<String, List<String>> formParams;
   private Map<String, List<String>> queryParams;
+  private Map<String, String> cookieMap;
   private int statusCode;
 
   JdkContext(ServiceManager mgr, HttpExchange exchange, String path, SpiRoutes.Params params) {
@@ -55,6 +59,21 @@ class JdkContext implements Context, SpiContext {
     this.exchange = exchange;
     this.path = path;
     this.params = null;
+  }
+
+  private Map<String, String> internalCookieMap() {
+    if (cookieMap == null) {
+      cookieMap = parseCookies();
+    }
+    return cookieMap;
+  }
+
+  private Map<String, String> parseCookies() {
+    final String cookieHeader = header(exchange.getRequestHeaders(), COOKIE);
+    if (cookieHeader == null || cookieHeader.isEmpty()) {
+      return emptyMap();
+    }
+    return CookieParser.parse(cookieHeader);
   }
 
   @Override
@@ -80,33 +99,74 @@ class JdkContext implements Context, SpiContext {
   }
 
   @Override
-  public Context cookie(HttpCookie cookie) {
-    return null;
-  }
-
-  @Override
   public String cookie(String name) {
-    return null;
+    return internalCookieMap().get(name);
   }
 
   @Override
   public Map<String, String> cookieMap() {
-    return null;
+    return internalCookieMap();
   }
 
   @Override
-  public Context cookie(String name, String value, int maxAge) {
+  public Context cookie(HttpCookie cookie) {
+    header(SET_COOKIE2, toCookieHeader(cookie));
     return this;
   }
 
   @Override
+  public Context cookie(String name, String value, int maxAge) {
+    HttpCookie cookie = new HttpCookie(name, value);
+    cookie.setMaxAge(maxAge);
+    cookie.setPath("/");
+    header(SET_COOKIE2, toCookieHeader(cookie));
+    return this;
+  }
+
+  private String toCookieHeader(HttpCookie cookie) {
+    return toCookieHeader(cookie, null);
+  }
+  private String toCookieHeader(HttpCookie cookie, String forceExpire) {
+    StringBuilder sb = new StringBuilder(100);
+    sb.append(cookie.getName()).append("=").append(cookie.getValue()).append("; Path=");
+    if (cookie.getPath() == null) {
+      sb.append("/");
+    } else {
+      sb.append(cookie.getPath());
+    }
+    if (cookie.getDomain() != null) {
+      sb.append("; Domain=").append(cookie.getDomain());
+    }
+    if (forceExpire != null) {
+      sb.append(forceExpire);
+    }
+    final long maxAge = cookie.getMaxAge();
+    if (maxAge > 1) {
+      sb.append("; Max-Age=").append(maxAge);
+    }
+    if (cookie.getSecure()) {
+      sb.append("; Secure");
+    }
+    if (cookie.isHttpOnly()) {
+      sb.append("; HttpOnly");
+    }
+    return sb.toString();
+  }
+
+
+  @Override
   public Context removeCookie(String name) {
-    return null;
+    HttpCookie cookie = new HttpCookie(name, "");
+    header(SET_COOKIE2, toCookieHeader(cookie, EXPIRE_COOKIE));
+    return this;
   }
 
   @Override
   public Context removeCookie(String name, String path) {
-    return null;
+    HttpCookie cookie = new HttpCookie(name, "");
+    cookie.setPath(path);
+    header(SET_COOKIE2, toCookieHeader(cookie, EXPIRE_COOKIE));
+    return this;
   }
 
   @Override
