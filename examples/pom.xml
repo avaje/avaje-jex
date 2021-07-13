@@ -8,14 +8,14 @@
     <version>1.8-SNAPSHOT</version>
   </parent>
 
-  <artifactId>examples-jex</artifactId>
+  <artifactId>examples</artifactId>
   <version>0.1</version>
   <packaging>pom</packaging>
 
   <modules>
-    <module>example-jex-jdk</module>
+    <module>example-jdk</module>
+    <module>example-jetty</module>
   </modules>
-
 
 </project>
 
