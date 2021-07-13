@@ -13,7 +13,7 @@
   </root>
 
   <logger name="io.avaje.jex" level="TRACE"/>
-  <logger name="io.avaje.http.client" level="trace"/>
+  <logger name="io.avaje.http.client" level="TRACE"/>
   <logger name="org.eclipse.jetty" level="WARN"/>
 
 </configuration>

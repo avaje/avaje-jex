@@ -30,7 +30,7 @@
     <module>avaje-jex-jetty</module>
     <module>avaje-jex-jdk</module>
     <!-- <module>avaje-jex-jetty</module> REQUIRES JDK 17 with Loom -->
-    <!-- <module>example</module>-->
+<!--     <module>examples</module>-->
     <!-- <module>avaje-jex-websockets</module> -->
   </modules>
 

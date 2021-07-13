@@ -6,6 +6,7 @@ import io.avaje.jex.spi.SpiRoutes;
 
 import java.util.EnumMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 class Routes implements SpiRoutes {
 
@@ -24,10 +25,31 @@ class Routes implements SpiRoutes {
    */
   private final List<Entry> after;
 
+  private final AtomicLong noRouteCounter = new AtomicLong();
+
   Routes(EnumMap<Routing.Type, RouteIndex> typeMap, List<Entry> before, List<Entry> after) {
     this.typeMap = typeMap;
     this.before = before;
     this.after = after;
+  }
+
+  @Override
+  public void inc() {
+    noRouteCounter.incrementAndGet();
+  }
+
+  @Override
+  public void dec() {
+    noRouteCounter.decrementAndGet();
+  }
+
+  @Override
+  public long activeRequests() {
+    long total = noRouteCounter.get();
+    for (RouteIndex value : typeMap.values()) {
+      total += value.activeRequests();
+    }
+    return total;
   }
 
   @Override

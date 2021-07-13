@@ -25,7 +25,9 @@ public class Jex {
 
   private final Routing routing = new DefaultRouting();
   private final ErrorHandling errorHandling = new DefaultErrorHandling();
+  private final AppLifecycle lifecycle = new DefaultLifecycle();
   private final StaticFileConfig staticFiles;
+  private final Map<Class<?>, Object> attributes = new HashMap<>();
 
   public final Inner inner = new Inner();
   private ServerConfig serverConfig;
@@ -39,6 +41,21 @@ public class Jex {
    */
   public static Jex create() {
     return new Jex();
+  }
+
+  /**
+   * Set a custom attribute that can be used by an implementation.
+   */
+  public <T> Jex attribute(Class<T> cls, T instance) {
+    attributes.put(cls, instance);
+    return this;
+  }
+
+  /**
+   * Return a custom attribute.
+   */
+  public <T> T attribute(Class<T> cls) {
+    return (T) attributes.get(cls);
   }
 
   public static class Inner {
@@ -110,7 +127,7 @@ public class Jex {
     return routing;
   }
 
-  /***
+  /**
    * Set the AccessManager.
    */
   public Jex accessManager(AccessManager accessManager) {
@@ -118,11 +135,19 @@ public class Jex {
     return this;
   }
 
-  /***
+  /**
    * Set the JsonService.
    */
   public Jex jsonService(JsonService jsonService) {
     this.inner.jsonService = jsonService;
+    return this;
+  }
+
+  /**
+   * Add Plugin functionality.
+   */
+  public Jex configure(Plugin plugin) {
+    plugin.apply(this);
     return this;
   }
 
@@ -199,6 +224,13 @@ public class Jex {
       throw new IllegalStateException("There is no SpiStartServer? Missing dependency on jex-jetty?");
     }
     return start.get().start(this, routes, serviceManager);
+  }
+
+  /**
+   * Return the application lifecycle support.
+   */
+  public AppLifecycle lifecycle() {
+    return lifecycle;
   }
 
   /**

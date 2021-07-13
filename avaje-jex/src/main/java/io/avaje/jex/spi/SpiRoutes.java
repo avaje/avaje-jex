@@ -27,6 +27,21 @@ public interface SpiRoutes {
   void after(String pathInfo, SpiContext ctx);
 
   /**
+   * Increment active request count for no route match.
+   */
+  void inc();
+
+  /**
+   * Decrement active request count for no route match.
+   */
+  void dec();
+
+  /**
+   * Return the active request count.
+   */
+  long activeRequests();
+
+  /**
    * A route entry.
    */
   interface Entry {
@@ -60,6 +75,21 @@ public interface SpiRoutes {
      * Return true if one of the segments is the wildcard match.
      */
     boolean includesWildcard();
+
+    /**
+     * Increment active request count for the route.
+     */
+    void inc();
+
+    /**
+     * Decrement active request count for the route.
+     */
+    void dec();
+
+    /**
+     * Return the active request count for the route.
+     */
+    long activeRequests();
   }
 
   /**

@@ -7,45 +7,71 @@ import io.avaje.jex.Routing;
 import io.avaje.jex.http.NotFoundResponse;
 import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URI;
+import java.util.concurrent.locks.LockSupport;
 
 class BaseHandler implements HttpHandler {
 
-  final SpiRoutes routes;
-  final ServiceManager mgr;
+  private static final Logger log = LoggerFactory.getLogger(BaseHandler.class);
+
+  private final SpiRoutes routes;
+  private final ServiceManager mgr;
 
   BaseHandler(SpiRoutes routes, ServiceManager mgr) {
     this.mgr = mgr;
     this.routes = routes;
   }
 
-  @Override
-  public void handle(HttpExchange exchange) throws IOException {
+  /**
+   * Wait based routes.activeRequests().
+   */
+  void waitForIdle(long maxSeconds) {
+    final long maxAttempts = maxSeconds * 10; // 100 millis per attempt
+    long attempts = 0;
+    while ((routes.activeRequests()) > 0 && ++attempts < maxAttempts) {
+      LockSupport.parkNanos(100_000_000);
+    }
+    if (attempts >= maxAttempts) {
+      final long active = routes.activeRequests();
+      if (active > 0) {
+        log.warn("Active requests since in process - count:{}", active);
+      }
+    }
+  }
 
-    final String requestMethod = exchange.getRequestMethod();
-    final URI requestURI = exchange.getRequestURI();
-    final String uri = requestURI.getPath();
-    final Routing.Type routeType = mgr.lookupRoutingType(requestMethod);
+  @Override
+  public void handle(HttpExchange exchange) {
+
+    final String uri = exchange.getRequestURI().getPath();
+    final Routing.Type routeType = mgr.lookupRoutingType(exchange.getRequestMethod());
     final SpiRoutes.Entry route = routes.match(routeType, uri);
 
     if (route == null) {
       var ctx = new JdkContext(mgr, exchange, uri);
+      routes.inc();
       try {
         processNoRoute(ctx, uri, routeType);
         routes.after(uri, ctx);
       } catch (Exception e) {
         handleException(ctx, e);
+      } finally {
+        routes.dec();
       }
     } else {
-      final SpiRoutes.Params params = route.pathParams(uri);
-      JdkContext ctx = new JdkContext(mgr, exchange, route.matchPath(), params);
+      route.inc();
       try {
-        processRoute(ctx, uri, route);
-        routes.after(uri, ctx);
-      } catch (Exception e) {
-        handleException(ctx, e);
+        final SpiRoutes.Params params = route.pathParams(uri);
+        JdkContext ctx = new JdkContext(mgr, exchange, route.matchPath(), params);
+        try {
+          processRoute(ctx, uri, route);
+          routes.after(uri, ctx);
+        } catch (Exception e) {
+          handleException(ctx, e);
+        }
+      } finally {
+        route.dec();
       }
     }
   }

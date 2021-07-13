@@ -25,6 +25,22 @@ class FilterEntry implements SpiRoutes.Entry {
   }
 
   @Override
+  public void inc() {
+    // do nothing
+  }
+
+  @Override
+  public void dec() {
+    // do nothing
+  }
+
+  @Override
+  public long activeRequests() {
+    // always zero for filters
+    return 0;
+  }
+
+  @Override
   public String matchPath() {
     return path;
   }

@@ -12,9 +12,8 @@ module io.avaje.jex {
   exports io.avaje.jex.spi;
   exports io.avaje.jex.core;
 
-  requires java.net.http;
+  requires transitive java.net.http;
   requires transitive org.slf4j;
-
   requires transitive com.fasterxml.jackson.databind;
 
   uses TemplateRender;

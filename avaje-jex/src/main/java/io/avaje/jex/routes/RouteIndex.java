@@ -10,16 +10,16 @@ class RouteIndex {
   /**
    * Partition entries by the number of path segments.
    */
-  private final Entry[] entries = new Entry[6];
+  private final RouteIndex.Entry[] entries = new RouteIndex.Entry[6];
 
   /**
    * Wildcard/splat based route entries.
    */
-  private List<SpiRoutes.Entry> wildcardEntries = new ArrayList<>();
+  private final List<SpiRoutes.Entry> wildcardEntries = new ArrayList<>();
 
   RouteIndex() {
     for (int i = 0; i < entries.length; i++) {
-      entries[i] = new Entry();
+      entries[i] = new RouteIndex.Entry();
     }
   }
 
@@ -63,6 +63,17 @@ class RouteIndex {
     return count;
   }
 
+  long activeRequests() {
+    long total = 0;
+    for (RouteIndex.Entry entry : entries) {
+      total += entry.activeRequests();
+    }
+    for (SpiRoutes.Entry entry : wildcardEntries) {
+      total += entry.activeRequests();
+    }
+    return total;
+  }
+
   private static class Entry {
 
     private final List<SpiRoutes.Entry> list = new ArrayList<>();
@@ -78,6 +89,14 @@ class RouteIndex {
         }
       }
       return null;
+    }
+
+    long activeRequests() {
+      long total = 0;
+      for (SpiRoutes.Entry entry : list) {
+        total += entry.activeRequests();
+      }
+      return total;
     }
   }
 }

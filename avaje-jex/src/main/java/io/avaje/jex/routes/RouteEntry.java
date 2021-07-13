@@ -4,14 +4,32 @@ import io.avaje.jex.Context;
 import io.avaje.jex.Handler;
 import io.avaje.jex.spi.SpiRoutes;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 class RouteEntry implements SpiRoutes.Entry {
 
+  private final AtomicLong active = new AtomicLong();
   private final PathParser path;
   private final Handler handler;
 
   RouteEntry(PathParser path, Handler handler) {
     this.path = path;
     this.handler = handler;
+  }
+
+  @Override
+  public void inc() {
+    active.incrementAndGet();
+  }
+
+  @Override
+  public void dec() {
+    active.decrementAndGet();
+  }
+
+  @Override
+  public long activeRequests() {
+    return active.get();
   }
 
   @Override
