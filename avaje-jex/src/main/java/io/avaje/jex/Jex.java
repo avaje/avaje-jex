@@ -54,6 +54,7 @@ public class Jex {
   /**
    * Return a custom attribute.
    */
+  @SuppressWarnings("unchecked")
   public <T> T attribute(Class<T> cls) {
     return (T) attributes.get(cls);
   }
