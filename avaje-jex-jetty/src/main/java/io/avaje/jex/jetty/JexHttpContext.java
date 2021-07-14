@@ -388,8 +388,9 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
-  public void header(String key, String value) {
+  public Context header(String key, String value) {
     res.setHeader(key, value);
+    return this;
   }
 
   @Override

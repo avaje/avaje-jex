@@ -29,8 +29,9 @@
     <module>avaje-jex-mustache</module>
     <module>avaje-jex-jetty</module>
     <module>avaje-jex-jdk</module>
-     <module>examples</module>
-    <!-- <module>avaje-jex-websockets</module> -->
+    <module>avaje-jex-grizzly</module>
+    <module>examples</module>
+      <!-- <module>avaje-jex-websockets</module> -->
   </modules>
 
   <dependencies>
@@ -68,6 +69,13 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>1.2.3</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      <version>1.7.30</version>
       <scope>test</scope>
     </dependency>
 

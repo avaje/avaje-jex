@@ -325,7 +325,7 @@ public interface Context {
    * @param key   The header key
    * @param value The header value
    */
-  void header(String key, String value);
+  Context header(String key, String value);
 
   /**
    * Return the response header.

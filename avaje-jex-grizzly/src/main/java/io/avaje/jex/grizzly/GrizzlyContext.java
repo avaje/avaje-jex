@@ -1,7 +1,5 @@
-package io.avaje.jex.jdk;
+package io.avaje.jex.grizzly;
 
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpExchange;
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
 import io.avaje.jex.UploadedFile;
@@ -9,45 +7,41 @@ import io.avaje.jex.http.RedirectResponse;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
+import org.glassfish.grizzly.http.server.Request;
+import org.glassfish.grizzly.http.server.Response;
+import org.glassfish.grizzly.http.util.ContentType;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
-class JdkContext implements Context, SpiContext {
+class GrizzlyContext implements Context, SpiContext {
+
+  private static final ContentType JSON = ContentType.newContentType(APPLICATION_JSON);
+  private static final ContentType JSON_STREAM = ContentType.newContentType(APPLICATION_X_JSON_STREAM);
+  private static final ContentType HTML_UTF8 = ContentType.newContentType("text/html","utf-8");
+  private static final ContentType PLAIN_UTF8 = ContentType.newContentType("text/plain","utf-8");
 
   private static final String UTF8 = "UTF8";
   private static final int SC_MOVED_TEMPORARILY = 302;
-  private static final String SET_COOKIE = "Set-Cookie";
-  private static final String COOKIE = "Cookie";
   private final ServiceManager mgr;
   private final String path;
   private final SpiRoutes.Params params;
-  private final HttpExchange exchange;
+  private final Request request;
+  private final Response response;
   private Routing.Type mode;
   private Map<String, List<String>> formParams;
   private Map<String, List<String>> queryParams;
   private Map<String, String> cookieMap;
-  private int statusCode;
-  private String characterEncoding;
 
-  JdkContext(ServiceManager mgr, HttpExchange exchange, String path, SpiRoutes.Params params) {
+  GrizzlyContext(ServiceManager mgr, Request request, Response response, String path, SpiRoutes.Params params) {
     this.mgr = mgr;
-    this.exchange = exchange;
+    this.request = request;
+    this.response = response;
     this.path = path;
     this.params = params;
   }
@@ -55,9 +49,10 @@ class JdkContext implements Context, SpiContext {
   /**
    * Create when no route matched.
    */
-  JdkContext(ServiceManager mgr, HttpExchange exchange, String path) {
+  GrizzlyContext(ServiceManager mgr, Request request, Response response, String path) {
     this.mgr = mgr;
-    this.exchange = exchange;
+    this.request = request;
+    this.response = response;
     this.path = path;
     this.params = null;
   }
@@ -69,14 +64,14 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public Context attribute(String key, Object value) {
-    exchange.setAttribute(key, value);
+    request.setAttribute(key, value);
     return this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public <T> T attribute(String key) {
-    return (T) exchange.getAttribute(key);
+    return (T) request.getAttribute(key);
   }
 
   @Override
@@ -84,18 +79,14 @@ class JdkContext implements Context, SpiContext {
     throw new UnsupportedOperationException();
   }
 
-  private Map<String, String> parseCookies() {
-    final String cookieHeader = header(exchange.getRequestHeaders(), COOKIE);
-    if (cookieHeader == null || cookieHeader.isEmpty()) {
-      return emptyMap();
-    }
-    return CookieParser.parse(cookieHeader);
-  }
-
   @Override
   public Map<String, String> cookieMap() {
     if (cookieMap == null) {
-      cookieMap = parseCookies();
+      cookieMap = new LinkedHashMap<>();
+      final org.glassfish.grizzly.http.Cookie[] cookies = request.getCookies();
+      for (org.glassfish.grizzly.http.Cookie cookie : cookies) {
+        cookieMap.put(cookie.getName(), cookie.getValue());
+      }
     }
     return cookieMap;
   }
@@ -107,32 +98,27 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public Context cookie(Cookie cookie) {
-    header(SET_COOKIE, cookie.toString());
-    return this;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public Context cookie(String name, String value) {
-    header(SET_COOKIE, Cookie.of(name, value).toString());
-    return this;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public Context cookie(String name, String value, int maxAge) {
-    header(SET_COOKIE, Cookie.of(name, value).maxAge(Duration.ofSeconds(maxAge)).toString());
-    return this;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public Context removeCookie(String name) {
-    header(SET_COOKIE, Cookie.expired(name).path("/").toString());
-    return this;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public Context removeCookie(String name, String path) {
-    header(SET_COOKIE, Cookie.expired(name).path(path).toString());
-    return this;
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -142,23 +128,22 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public void redirect(String location, int statusCode) {
-    header(HeaderKeys.LOCATION, location);
     status(statusCode);
     if (mode == Routing.Type.BEFORE) {
+      header(HeaderKeys.LOCATION, location);
       throw new RedirectResponse(statusCode);
     } else {
-      performRedirect();
+      try {
+        response.sendRedirect(location);
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
     }
   }
 
   @Override
   public void performRedirect() {
-    try {
-      exchange.sendResponseHeaders(statusCode(), 0);
-      exchange.getResponseBody().close();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    // TODO check this
   }
 
   @Override
@@ -168,49 +153,37 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public byte[] bodyAsBytes() {
-    try {
-      return exchange.getRequestBody().readAllBytes();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+      return ContextUtil.requestBodyAsBytes(request);
   }
 
   private String characterEncoding() {
-    if (characterEncoding == null) {
-      characterEncoding = mgr.requestCharset(this);
-    }
-    return characterEncoding;
+    String encoding = request.getCharacterEncoding();
+    return encoding != null ? encoding : UTF8;
   }
 
   @Override
   public String body() {
-    return new String(bodyAsBytes(), Charset.forName(characterEncoding()));
+    return ContextUtil.requestBodyAsString(request);
   }
 
   @Override
   public long contentLength() {
-    final String len = header(HeaderKeys.CONTENT_LENGTH);
-    return len == null ? 0 : Long.parseLong(len);
+    return request.getContentLengthLong();
   }
 
   @Override
   public String contentType() {
-    return header(exchange.getRequestHeaders(), HeaderKeys.CONTENT_TYPE);
+    return request.getContentType();
   }
 
   @Override
   public String responseHeader(String key) {
-    return header(exchange.getResponseHeaders(), key);
-  }
-
-  private String header(Headers headers, String name) {
-    final List<String> values = headers.get(name);
-    return (values == null || values.isEmpty()) ? null : values.get(0);
+    return response.getHeader(key);
   }
 
   @Override
   public Context contentType(String contentType) {
-    exchange.getResponseHeaders().set(HeaderKeys.CONTENT_TYPE, contentType);
+    response.setContentType(contentType);
     return this;
   }
 
@@ -236,21 +209,21 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public String queryParam(String name) {
-    final List<String> vals = queryParams(name);
-    return vals == null || vals.isEmpty() ? null : vals.get(0);
+    final List<String> values = queryParams(name);
+    return values == null || values.isEmpty() ? null : values.get(0);
   }
 
   private Map<String, List<String>> queryParams() {
     if (queryParams == null) {
-      queryParams = mgr.parseParamMap(queryString(), UTF8);
+      queryParams = mgr.parseParamMap(queryString(), characterEncoding());
     }
     return queryParams;
   }
 
   @Override
   public List<String> queryParams(String name) {
-    final List<String> vals = queryParams().get(name);
-    return vals == null ? emptyList() : vals;
+    final List<String> values = queryParams().get(name);
+    return values == null ? emptyList() : values;
   }
 
   @Override
@@ -271,7 +244,33 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public String queryString() {
-    return exchange.getRequestURI().getQuery();
+    return request.getQueryString();
+  }
+
+  /**
+   * Return the first form param value for the specified key or null.
+   */
+  @Override
+  public String formParam(String key) {
+    return request.getParameter(key);
+  }
+
+  /**
+   * Return the first form param value for the specified key or the default value.
+   */
+  @Override
+  public String formParam(String key, String defaultValue) {
+    String value = request.getParameter(key);
+    return value == null ? defaultValue : value;
+  }
+
+  /**
+   * Return the form params for the specified key, or empty list.
+   */
+  @Override
+  public List<String> formParams(String key) {
+    final String[] values = request.getParameterValues(key);
+    return values == null ? emptyList() : asList(values);
   }
 
   @Override
@@ -283,32 +282,43 @@ class JdkContext implements Context, SpiContext {
   }
 
   private Map<String, List<String>> initFormParamMap() {
-    return mgr.formParamMap(this, characterEncoding());
+    final Map<String, String[]> parameterMap = request.getParameterMap();
+    if (parameterMap.isEmpty()) {
+      return emptyMap();
+    }
+    final Set<Map.Entry<String, String[]>> entries = parameterMap.entrySet();
+    Map<String, List<String>> map = new LinkedHashMap<>(entries.size());
+    for (Map.Entry<String, String[]> entry : entries) {
+      map.put(entry.getKey(), asList(entry.getValue()));
+    }
+    return map;
   }
 
   @Override
   public String scheme() {
-    return mgr.scheme();
+    return request.getScheme();
   }
 
   @Override
   public Context sessionAttribute(String key, Object value) {
-    throw new UnsupportedOperationException();
+    request.getSession().setAttribute(key, value);
+    return this;
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public <T> T sessionAttribute(String key) {
-    throw new UnsupportedOperationException();
+    return (T) request.getSession().getAttribute(key);
   }
 
   @Override
   public Map<String, Object> sessionAttributeMap() {
-    throw new UnsupportedOperationException();
+    return request.getSession().attributes();
   }
 
   @Override
   public String url() {
-    return scheme() + "://" + host() + path;
+    return scheme() + "://" + host() + ":" + port() + path;
   }
 
   @Override
@@ -318,68 +328,57 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public Context status(int statusCode) {
-    this.statusCode = statusCode;
+    response.setStatus(statusCode);
     return this;
   }
 
   @Override
   public int status() {
-    return statusCode;
+    return response.getStatus();
   }
+
 
   @Override
   public Context json(Object bean) {
-    contentType(APPLICATION_JSON);
+    response.setContentType(JSON);
     mgr.jsonWrite(bean, this);
     return this;
   }
 
   @Override
   public <E> Context jsonStream(Stream<E> stream) {
-    contentType(APPLICATION_X_JSON_STREAM);
+    response.setContentType(JSON_STREAM);
     mgr.jsonWriteStream(stream, this);
     return this;
   }
 
   @Override
   public <E> Context jsonStream(Iterator<E> iterator) {
-    contentType(APPLICATION_X_JSON_STREAM);
+    response.setContentType(JSON_STREAM);
     mgr.jsonWriteStream(iterator, this);
     return this;
   }
 
   @Override
   public Context text(String content) {
-    contentType(TEXT_PLAIN_UTF8);
+    response.setContentType(PLAIN_UTF8);
     return write(content);
   }
 
   @Override
   public Context html(String content) {
-    contentType(TEXT_HTML_UTF8);
+    response.setContentType(HTML_UTF8);
     return write(content);
   }
 
   @Override
   public Context write(String content) {
     try {
-      writeBytes(content.getBytes(StandardCharsets.UTF_8));
+      response.getOutputBuffer().write(content);
       return this;
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
-  }
-
-  void writeBytes(byte[] bytes) throws IOException {
-    exchange.sendResponseHeaders(statusCode(), bytes.length);
-    final OutputStream os = exchange.getResponseBody();
-    os.write(bytes);
-    os.flush();
-    os.close();
-  }
-
-  int statusCode() {
-    return statusCode == 0 ? 200 : statusCode;
   }
 
   @Override
@@ -391,56 +390,48 @@ class JdkContext implements Context, SpiContext {
   @Override
   public Map<String, String> headerMap() {
     Map<String, String> map = new LinkedHashMap<>();
-    for (Map.Entry<String, List<String>> entry : exchange.getRequestHeaders().entrySet()) {
-      final List<String> value = entry.getValue();
-      if (!value.isEmpty()) {
-        map.put(entry.getKey(), value.get(0));
-      }
+    for (String headerName : request.getHeaderNames()) {
+      map.put(headerName, request.getHeader(headerName));
     }
     return map;
   }
 
   @Override
   public String header(String key) {
-    return header(exchange.getRequestHeaders(), key);
+    return request.getHeader(key);
   }
 
   @Override
   public Context header(String key, String value) {
-    exchange.getResponseHeaders().add(key, value);
+    response.setHeader(key, value);
     return this;
   }
 
   @Override
   public String host() {
-    return header(HeaderKeys.HOST);
+    return request.getRemoteHost();
   }
 
   @Override
   public String ip() {
-    final InetSocketAddress remote = exchange.getRemoteAddress();
-    if (remote == null) {
-      return "";
-    }
-    InetAddress address = remote.getAddress();
-    return address == null ? remote.getHostString() : address.getHostAddress();
+    return request.getRemoteAddr();
   }
 
   @Override
   public boolean isMultipart() {
-    // not really supported
+    // TODO
     return false;
   }
 
   @Override
   public boolean isMultipartFormData() {
-    // not really supported
+    // TODO
     return false;
   }
 
   @Override
   public String method() {
-    return exchange.getRequestMethod();
+    return request.getMethod().getMethodString();
   }
 
   @Override
@@ -450,12 +441,12 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public int port() {
-    return exchange.getLocalAddress().getPort();
+    return request.getServerPort();
   }
 
   @Override
   public String protocol() {
-    return exchange.getProtocol();
+    return request.getProtocol().getProtocolString();
   }
 
   @Override
@@ -475,21 +466,17 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public OutputStream outputStream() {
-    return mgr.createOutputStream(this);
+    return response.getOutputStream();
   }
 
   @Override
   public InputStream inputStream() {
-    return exchange.getRequestBody();
+    return request.getInputStream();
   }
 
   @Override
   public void setMode(Routing.Type type) {
     this.mode = type;
-  }
-
-  HttpExchange exchange() {
-    return exchange;
   }
 
 }
