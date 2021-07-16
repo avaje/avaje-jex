@@ -1,9 +1,6 @@
 package io.avaje.jex.jetty;
 
-import io.avaje.jex.Jex;
-import io.avaje.jex.ServerConfig;
-import io.avaje.jex.StaticFileSource;
-import io.avaje.jex.UploadConfig;
+import io.avaje.jex.*;
 import io.avaje.jex.spi.SpiServiceManager;
 import io.avaje.jex.spi.SpiRoutes;
 import jakarta.servlet.MultipartConfigElement;
@@ -18,30 +15,33 @@ import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.Uptime;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
-class JettyLaunch implements Jex.Server {
+class JettyJexServer implements Jex.Server {
 
-  private static final org.slf4j.Logger log = LoggerFactory.getLogger(JettyLaunch.class);
+  private static final Logger log = LoggerFactory.getLogger(Jex.class);
 
   private final Jex jex;
   private final SpiRoutes routes;
   private final ServiceManager serviceManager;
   private final JettyServerConfig config;
+  private final AppLifecycle lifecycle;
   private Server server;
 
-  JettyLaunch(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
+  JettyJexServer(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
     this.jex = jex;
+    this.lifecycle = jex.lifecycle();
     this.routes = routes;
     this.serviceManager = new ServiceManager(serviceManager, initMultiPart());
     this.config = initConfig(jex.serverConfig());
   }
 
   private JettyServerConfig initConfig(ServerConfig config) {
-    return config == null ? new JettyServerConfig() : (JettyServerConfig)config;
+    return config == null ? new JettyServerConfig() : (JettyServerConfig) config;
   }
 
   MultipartUtil initMultiPart() {
@@ -59,7 +59,11 @@ class JettyLaunch implements Jex.Server {
   @Override
   public void shutdown() {
     try {
+      lifecycle.status(AppLifecycle.Status.STOPPING);
+      routes.waitForIdle(30);
       server.stop();
+      lifecycle.status(AppLifecycle.Status.STOPPED);
+      log.info("shutdown complete");
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -70,6 +74,7 @@ class JettyLaunch implements Jex.Server {
       server = createServer();
       server.start();
       logOnStart(server);
+      lifecycle.registerShutdownHook(this::shutdown);
       return this;
     } catch (Exception e) {
       throw new IllegalStateException("Error starting server", e);
@@ -79,7 +84,10 @@ class JettyLaunch implements Jex.Server {
   protected Server createServer() {
     Server server = initServer();
     server.setHandler(initContextHandler());
-    server.setStopAtShutdown(true);
+    if (server.getStopAtShutdown()) {
+      // do not use Jetty ShutdownHook, use the AppLifecycle one instead
+      server.setStopAtShutdown(false);
+    }
     return server;
   }
 

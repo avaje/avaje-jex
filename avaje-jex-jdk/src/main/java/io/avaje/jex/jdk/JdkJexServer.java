@@ -24,11 +24,9 @@ class JdkJexServer implements Jex.Server {
   @Override
   public void shutdown() {
     lifecycle.status(AppLifecycle.Status.STOPPING);
-    int maxWaitSeconds = 20;
-    log.debug("stopping server with maxWaitSeconds {}", maxWaitSeconds);
-    handler.waitForIdle(maxWaitSeconds);
+    handler.waitForIdle(30);
     server.stop(0);
-    log.info("shutdown");
     lifecycle.status(AppLifecycle.Status.STOPPED);
+    log.info("shutdown complete");
   }
 }

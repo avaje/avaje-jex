@@ -42,6 +42,11 @@ public interface SpiRoutes {
   long activeRequests();
 
   /**
+   * Wait for no active requests.
+   */
+  void waitForIdle(long maxSeconds);
+
+  /**
    * A route entry.
    */
   interface Entry {

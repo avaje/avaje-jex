@@ -12,7 +12,6 @@ public class JettyStartServer implements SpiStartServer {
 
   @Override
   public Jex.Server start(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
-    return new JettyLaunch(jex, routes, serviceManager)
-      .start();
+    return new JettyJexServer(jex, routes, serviceManager).start();
   }
 }

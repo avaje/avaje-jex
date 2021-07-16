@@ -24,21 +24,8 @@ class BaseHandler implements HttpHandler {
     this.routes = routes;
   }
 
-  /**
-   * Wait based routes.activeRequests().
-   */
   void waitForIdle(long maxSeconds) {
-    final long maxAttempts = maxSeconds * 10; // 100 millis per attempt
-    long attempts = 0;
-    while ((routes.activeRequests()) > 0 && ++attempts < maxAttempts) {
-      LockSupport.parkNanos(100_000_000);
-    }
-    if (attempts >= maxAttempts) {
-      final long active = routes.activeRequests();
-      if (active > 0) {
-        log.warn("Active requests since in process - count:{}", active);
-      }
-    }
+    routes.waitForIdle(maxSeconds);
   }
 
   @Override

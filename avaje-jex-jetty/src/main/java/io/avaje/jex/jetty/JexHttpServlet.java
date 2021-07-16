@@ -32,20 +32,26 @@ class JexHttpServlet extends HttpServlet {
     SpiRoutes.Entry route = routes.match(routeType, uri);
     if (route == null) {
       var ctx = new JexHttpContext(manager, req, res, uri);
+      routes.inc();
       try {
         processNoRoute(ctx, uri, routeType);
         routes.after(uri, ctx);
       } catch (Exception e) {
         handleException(ctx, e);
+      } finally {
+        routes.dec();
       }
     } else {
       final SpiRoutes.Params params = route.pathParams(uri);
       var ctx = new JexHttpContext(manager, req, res, route.matchPath(), params);
+      route.inc();
       try {
         processRoute(ctx, uri, route);
         routes.after(uri, ctx);
       } catch (Exception e) {
         handleException(ctx, e);
+      } finally {
+        route.dec();
       }
     }
   }
