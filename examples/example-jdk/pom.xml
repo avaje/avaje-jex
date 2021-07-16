@@ -14,10 +14,8 @@
   <version>1</version>
 
   <properties>
-    <javadoc.source>17</javadoc.source>
-    <java.release>17</java.release>
-<!--    <maven.compiler.source>17</maven.compiler.source>-->
-<!--    <maven.compiler.target>17</maven.compiler.target>-->
+    <javadoc.source>11</javadoc.source>
+    <java.release>11</java.release>
   </properties>
 
   <dependencies>

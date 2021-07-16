@@ -5,6 +5,7 @@ import io.avaje.http.client.HttpClientRequest;
 import io.avaje.http.client.JacksonBodyAdapter;
 import io.avaje.jex.Jex;
 
+import java.net.http.HttpClient;
 import java.util.Random;
 
 /**
@@ -55,6 +56,7 @@ public class TestPair {
     var client = HttpClientContext.newBuilder()
       .baseUrl(url)
       .bodyAdapter(new JacksonBodyAdapter())
+      .version(HttpClient.Version.HTTP_1_1)
       .build();
 
     return new TestPair(port, jexServer, client);
