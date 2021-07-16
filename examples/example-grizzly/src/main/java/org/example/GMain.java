@@ -17,7 +17,7 @@ public class GMain {
   public static void main(String[] args) throws InterruptedException {
 
     Jex.create()
-      .attribute(Executor.class, Executors.newVirtualThreadExecutor())
+      //.attribute(Executor.class, Executors.newVirtualThreadExecutor())
       .routing(routing -> routing
         //.get("/", ctx -> ctx.text("hello world"))
         .get("/", ctx -> ctx.json(HelloDto.rob())) //.header("x2-foo","asd")
