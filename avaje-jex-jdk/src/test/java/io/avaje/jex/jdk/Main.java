@@ -11,7 +11,6 @@ public class Main {
       .routing(routing -> routing
         .get("/", ctx -> ctx.text("hello world"))
       )
-      .configure(new HealthPlugin())
       .port(9009)
       .start();
   }

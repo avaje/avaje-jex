@@ -34,7 +34,6 @@ class HealthPluginTest {
           ctx.json(obj);
         })
       )
-      .configure(new HealthPlugin())
       .port(port);
 
     server =  jex.start();

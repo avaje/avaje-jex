@@ -1,5 +1,6 @@
 package io.avaje.jex;
 
+import io.avaje.jex.core.HealthPlugin;
 import io.avaje.jex.spi.*;
 
 import java.util.*;
@@ -63,6 +64,10 @@ public class Jex {
     public int port = 7001;
     public String host;
     public String contextPath = "/";
+    /**
+     * By default include the HealthPlugin.
+     */
+    public boolean health = true;
     public boolean prefer405 = true;
     public boolean ignoreTrailingSlashes = true;
 
@@ -147,7 +152,7 @@ public class Jex {
   /**
    * Add Plugin functionality.
    */
-  public Jex configure(Plugin plugin) {
+  public Jex plugin(Plugin plugin) {
     plugin.apply(this);
     return this;
   }
@@ -212,6 +217,9 @@ public class Jex {
    * Start the server.
    */
   public Server start() {
+    if (config.health) {
+      plugin(new HealthPlugin());
+    }
     final SpiRoutes routes = ServiceLoader.load(SpiRoutesProvider.class)
       .findFirst().get()
       .create(this.routing, this.config.accessManager, this.config.ignoreTrailingSlashes);

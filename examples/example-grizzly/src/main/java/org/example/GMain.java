@@ -40,7 +40,6 @@ public class GMain {
         })
         .get("/dump", ctx -> dumpThreadCount())
       )
-      .configure(new HealthPlugin())
       .port(7003)
       .start();
 

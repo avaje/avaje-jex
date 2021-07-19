@@ -1,14 +1,12 @@
 package org.example;
 
+import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
-import io.avaje.jex.core.HealthPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class Main {
 
@@ -20,34 +18,37 @@ public class Main {
       //.attribute(Executor.class, Executors.newVirtualThreadExecutor())
       .routing(routing -> routing
         .get("/", ctx -> ctx.text("hello world"))
-        .get("/foo/{id}", ctx -> {
-          HelloDto bean = new HelloDto();
-          bean.id = Integer.parseInt(ctx.pathParam("id"));
-          bean.name = "Rob";
-          ctx.json(bean);
-        })
-        .get("/delay", ctx -> {
-          log.info("delay start");
-          try {
-            Thread.sleep(5_000);
-          } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            e.printStackTrace();
-          }
-          ctx.text("delay done");
-          log.info("delay done");
-        })
+        .get("/foo/{id}", Main::fooBean)
+        .get("/delay", Main::delay)
         .get("/dump", ctx -> dumpThreadCount())
       )
-      .configure(new HealthPlugin())
       .port(7003)
       .start();
+  }
+
+  private static void fooBean(Context ctx) {
+    HelloDto bean = new HelloDto();
+    bean.id = Integer.parseInt(ctx.pathParam("id"));
+    bean.name = "Rob";
+    ctx.json(bean);
+  }
+
+  private static void delay(Context ctx) {
+    log.info("delay start");
+    try {
+      Thread.sleep(5_000);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      e.printStackTrace();
+    }
+    ctx.text("delay done");
+    log.info("delay done");
   }
 
   private static void dumpThreadCount() {
     Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
     System.out.println("Thread count: " + allStackTraces.size());
-        Set<Thread> threads = allStackTraces.keySet();
-        System.out.println("Threads: " + threads);
+    Set<Thread> threads = allStackTraces.keySet();
+    System.out.println("Threads: " + threads);
   }
 }
