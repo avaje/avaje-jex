@@ -9,7 +9,7 @@ class StaticHandlerFactory {
 
   StaticHandler build(Jex jex, List<StaticFileSource> sourceList) {
 
-    StaticHandler handler = new StaticHandler(jex.inner.preCompressStaticFiles);
+    StaticHandler handler = new StaticHandler(jex.config.preCompressStaticFiles);
     for (StaticFileSource source : sourceList) {
       handler.addStaticFileConfig(source);
     }

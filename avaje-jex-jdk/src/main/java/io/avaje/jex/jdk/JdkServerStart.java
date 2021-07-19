@@ -29,7 +29,7 @@ public class JdkServerStart implements SpiStartServer {
       if (executor != null) {
         server.setExecutor(executor);
       }
-      int port = jex.inner.port;
+      int port = jex.config.port;
       log.debug("starting server on port {}", port);
       server.bind(new InetSocketAddress(port), 0);
       server.start();

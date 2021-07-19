@@ -18,11 +18,11 @@ class JettyBuilder {
 
   private static final Logger log = LoggerFactory.getLogger(JettyBuilder.class);
 
-  private final Jex.Inner inner;
+  private final Jex.Config inner;
   private final JettyServerConfig config;
 
   JettyBuilder(Jex jex, JettyServerConfig config) {
-    this.inner = jex.inner;
+    this.inner = jex.config;
     this.config = config;
   }
 

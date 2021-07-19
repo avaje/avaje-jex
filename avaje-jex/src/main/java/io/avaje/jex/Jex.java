@@ -29,7 +29,7 @@ public class Jex {
   private final StaticFileConfig staticFiles;
   private final Map<Class<?>, Object> attributes = new HashMap<>();
 
-  public final Inner inner = new Inner();
+  public final Config config = new Config();
   private ServerConfig serverConfig;
 
   private Jex() {
@@ -59,7 +59,7 @@ public class Jex {
     return (T) attributes.get(cls);
   }
 
-  public static class Inner {
+  public static class Config {
     public int port = 7001;
     public String host;
     public String contextPath = "/";
@@ -132,7 +132,7 @@ public class Jex {
    * Set the AccessManager.
    */
   public Jex accessManager(AccessManager accessManager) {
-    this.inner.accessManager = accessManager;
+    this.config.accessManager = accessManager;
     return this;
   }
 
@@ -140,7 +140,7 @@ public class Jex {
    * Set the JsonService.
    */
   public Jex jsonService(JsonService jsonService) {
-    this.inner.jsonService = jsonService;
+    this.config.jsonService = jsonService;
     return this;
   }
 
@@ -172,7 +172,7 @@ public class Jex {
    * Set the port to use.
    */
   public Jex port(int port) {
-    this.inner.port = port;
+    this.config.port = port;
     return this;
   }
 
@@ -180,7 +180,7 @@ public class Jex {
    * Set the context path.
    */
   public Jex context(String contextPath) {
-    this.inner.contextPath = contextPath;
+    this.config.contextPath = contextPath;
     return this;
   }
 
@@ -203,7 +203,7 @@ public class Jex {
    */
   public Jex register(TemplateRender renderer, String... extensions) {
     for (String extension : extensions) {
-      inner.renderers.put(extension, renderer);
+      config.renderers.put(extension, renderer);
     }
     return this;
   }
@@ -214,7 +214,7 @@ public class Jex {
   public Server start() {
     final SpiRoutes routes = ServiceLoader.load(SpiRoutesProvider.class)
       .findFirst().get()
-      .create(this.routing, this.inner.accessManager, this.inner.ignoreTrailingSlashes);
+      .create(this.routing, this.config.accessManager, this.config.ignoreTrailingSlashes);
 
     final SpiServiceManager serviceManager = ServiceLoader.load(SpiServiceManagerProvider.class)
       .findFirst().get()

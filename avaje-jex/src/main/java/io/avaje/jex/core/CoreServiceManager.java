@@ -143,7 +143,7 @@ class CoreServiceManager implements SpiServiceManager {
     }
 
     JsonService initJsonService() {
-      final JsonService jsonService = jex.inner.jsonService;
+      final JsonService jsonService = jex.config.jsonService;
       if (jsonService != null) {
         return jsonService;
       }
@@ -165,7 +165,7 @@ class CoreServiceManager implements SpiServiceManager {
 
     TemplateManager initTemplateMgr() {
       TemplateManager mgr = new TemplateManager();
-      mgr.register(jex.inner.renderers);
+      mgr.register(jex.config.renderers);
       for (TemplateRender render : ServiceLoader.load(TemplateRender.class)) {
         mgr.registerDefault(render);
       }

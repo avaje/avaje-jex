@@ -22,7 +22,7 @@ class JexHttpServlet extends HttpServlet {
     this.routes = routes;
     this.manager = manager;
     this.staticHandler = staticHandler;
-    this.prefer405 = jex.inner.prefer405;
+    this.prefer405 = jex.config.prefer405;
   }
 
   @Override

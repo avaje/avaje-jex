@@ -45,12 +45,12 @@ class JettyJexServer implements Jex.Server {
   }
 
   MultipartUtil initMultiPart() {
-    return new MultipartUtil(initMultipartConfigElement(jex.inner.multipartConfig));
+    return new MultipartUtil(initMultipartConfigElement(jex.config.multipartConfig));
   }
 
   MultipartConfigElement initMultipartConfigElement(UploadConfig uploadConfig) {
     if (uploadConfig == null) {
-      final int fileThreshold = jex.inner.multipartFileThreshold;
+      final int fileThreshold = jex.config.multipartFileThreshold;
       return new MultipartConfigElement(System.getProperty("java.io.tmpdir"), -1, -1, fileThreshold);
     }
     return new MultipartConfigElement(uploadConfig.location(), uploadConfig.maxFileSize(), uploadConfig.maxRequestSize(), uploadConfig.fileSizeThreshold());
@@ -113,7 +113,7 @@ class JettyJexServer implements Jex.Server {
 
   protected ServletContextHandler initServletContextHandler() {
     final ServletContextHandler ch = config.contextHandler();
-    return ch != null ? ch : new ContextHandler(jex.inner.contextPath, config.sessions(), config.security());
+    return ch != null ? ch : new ContextHandler(jex.config.contextPath, config.sessions(), config.security());
   }
 
   protected SessionHandler initSessionHandler() {
