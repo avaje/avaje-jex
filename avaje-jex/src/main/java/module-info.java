@@ -15,7 +15,7 @@ module io.avaje.jex {
   requires transitive java.net.http;
   requires transitive org.slf4j;
   requires transitive com.fasterxml.jackson.databind;
-  requires io.avaje.inject;
+  requires static io.avaje.inject;
 
   uses TemplateRender;
   uses SpiRoutesProvider;
