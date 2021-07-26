@@ -65,10 +65,10 @@ class JsonTest {
       .GET()
       .stream(HelloDto.class);
 
-    // assert AutoCloseable iterator on the server-side was closed
-    assertThat(ITERATOR.isClosed()).isTrue();
     // expect client gets the expected stream of beans
     assertCollectedStream(beanStream);
+    // assert AutoCloseable iterator on the server-side was closed
+    assertThat(ITERATOR.isClosed()).isTrue();
   }
 
   @Test
