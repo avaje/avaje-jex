@@ -71,7 +71,7 @@ class JettyJexServer implements Jex.Server {
 
   protected Jex.Server start() {
     try {
-      server = createServer();
+      createServer();
       server.start();
       logOnStart(server);
       lifecycle.registerShutdownHook(this::shutdown);
@@ -81,14 +81,13 @@ class JettyJexServer implements Jex.Server {
     }
   }
 
-  protected Server createServer() {
-    Server server = initServer();
+  protected void createServer() {
+    server = initServer();
     server.setHandler(initContextHandler());
     if (server.getStopAtShutdown()) {
       // do not use Jetty ShutdownHook, use the AppLifecycle one instead
       server.setStopAtShutdown(false);
     }
-    return server;
   }
 
   protected Server initServer() {
@@ -133,7 +132,7 @@ class JettyJexServer implements Jex.Server {
       return null;
     }
     StaticHandlerFactory factory = new StaticHandlerFactory();
-    return factory.build(jex, fileSources);
+    return factory.build(server, jex, fileSources);
   }
 
   private void logOnStart(org.eclipse.jetty.server.Server server) {

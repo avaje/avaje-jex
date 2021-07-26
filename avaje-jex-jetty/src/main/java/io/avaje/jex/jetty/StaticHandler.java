@@ -4,6 +4,7 @@ import io.avaje.jex.StaticFileSource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.EmptyResource;
 import org.eclipse.jetty.util.resource.Resource;
@@ -20,15 +21,15 @@ class StaticHandler {
   private static final Logger log = LoggerFactory.getLogger(StaticHandler.class);
 
   private final List<ResourceHandler> handlers = new ArrayList<>();
-
+  private final Server server;
   private final boolean preCompress;
 
-  StaticHandler(boolean preCompress) {
+  StaticHandler(boolean preCompress, Server server) {
     this.preCompress = preCompress;
+    this.server = server;
   }
 
   void addStaticFileConfig(StaticFileSource config) {
-
     ResourceHandler handler;
     if ("/webjars".equals(config.getPath())) {
       handler = new WebjarHandler();
@@ -42,6 +43,7 @@ class StaticHandler {
     log.info("Static file handler added {}", config);
 
     try {
+      handler.setServer(server);
       handler.start();
     } catch (Exception e) {
       throw new RuntimeException("Error starting Jetty static resource handler", e);
@@ -69,7 +71,6 @@ class StaticHandler {
   }
 
   boolean handle(HttpServletRequest req, HttpServletResponse res) {
-
     final String target = (String) req.getAttribute("jetty-target");
     final Request baseRequest = (Request) req.getAttribute("jetty-request");
     for (ResourceHandler handler : handlers) {
@@ -140,7 +141,6 @@ class StaticHandler {
 
     @Override
     public Resource getResource(String path) throws IOException {
-
       if (urlPathPrefix.equals("/")) {
         return super.getResource(path); // same as regular ResourceHandler
       }
