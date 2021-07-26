@@ -1,5 +1,6 @@
 package io.avaje.jex;
 
+import io.avaje.inject.BeanScope;
 import io.avaje.jex.core.HealthPlugin;
 import io.avaje.jex.spi.*;
 
@@ -154,6 +155,24 @@ public class Jex {
    */
   public Jex plugin(Plugin plugin) {
     plugin.apply(this);
+    return this;
+  }
+
+  /**
+   * Configure given the dependency injection scope from <em>avaje-inject</em>.
+   *
+   * @param beanScope The scope potentially containing Handlers, AccessManager, Plugins etc.
+   */
+  public Jex configureWith(BeanScope beanScope) {
+    lifecycle.onShutdown(beanScope::close);
+    final AccessManager accessManager = beanScope.get(AccessManager.class);
+    if (accessManager != null) {
+      accessManager(accessManager);
+    }
+    for (Plugin plugin : beanScope.list(Plugin.class)) {
+      plugin.apply(this);
+    }
+    routing.addAll(beanScope.list(Routing.Service.class));
     return this;
   }
 

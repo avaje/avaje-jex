@@ -1,5 +1,6 @@
 package org.example;
 
+import io.avaje.inject.BeanScope;
 import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
 import org.slf4j.Logger;
@@ -10,10 +11,14 @@ public class JMain {
   private static final Logger log = LoggerFactory.getLogger(JMain.class);
 
   public static void main(String[] args) {
+    new JMain().start(BeanScope.newBuilder().build());
+  }
+
+  void start(BeanScope beanScope) {
 
     Jex.create()
+      .configureWith(beanScope)
       .routing(routing -> routing
-        .get("/", ctx -> ctx.text("hello world"))
         .get("/foo/{id}", JMain::helloBean)
         .get("/delay", JMain::delay)
       )

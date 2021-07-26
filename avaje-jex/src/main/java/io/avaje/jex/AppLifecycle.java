@@ -13,6 +13,13 @@ public interface AppLifecycle {
   }
 
   /**
+   * Register a Runnable to run on shutdown of the server.
+   * <p>
+   * This will execute after the server has deemed there are no active requests.
+   */
+  void onShutdown(Runnable onShutdown);
+
+  /**
    * Register the runnable with the Runtime as a shutdown hook.
    */
   void registerShutdownHook(Runnable onShutdown);
