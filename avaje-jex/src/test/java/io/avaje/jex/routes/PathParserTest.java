@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PathParserTest {
 
@@ -82,6 +82,29 @@ class PathParserTest {
     assertThat(pathParams).containsEntry("a", "1a");
     assertThat(pathParams).containsEntry("b", "2b");
     assertThat(pathParams).containsEntry("c", "3c");
+  }
+
+  @Test
+  void illegalPath_adjacentViolation() {
+    asList("/one/*<a>/after", "*{", "}*", "*<", ">*")
+      .forEach(path -> assertThrows(IllegalArgumentException.class, () -> new PathParser(path, true)));
+  }
+
+  @Test
+  void matches_withSlashAccepting() {
+
+    final PathParser pathParser = new PathParser("/one/<a>/after", true);
+    assertThat(pathParser.getSegmentCount()).isEqualTo(3);
+    assertTrue(pathParser.matches("/one/bazz/after"));
+    assertTrue(pathParser.matches("/one/foo/bar/after"));
+
+    Map<String, String> pathParams = pathParser.extractPathParams("/one/foo/bar/after").pathParams;
+    assertThat(pathParams.get("a")).isEqualTo("foo/bar");
+    assertThat(pathParams).containsOnlyKeys("a");
+
+    pathParams = pathParser.extractPathParams("/one/bazz/after").pathParams;
+    assertThat(pathParams.get("a")).isEqualTo("bazz");
+    assertThat(pathParams).containsOnlyKeys("a");
   }
 
   @Test

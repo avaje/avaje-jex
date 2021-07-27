@@ -8,15 +8,27 @@ abstract class PathSegment {
 
   abstract void addParamName(List<String> paramNames);
 
-  static class Parameter extends PathSegment {
+  static class SlashIgnoringParameter extends Parameter {
+    SlashIgnoringParameter(String param) {
+      super(param, "[^/]+?"); // Accepting everything except slash;);
+    }
+  }
+
+  static class SlashAcceptingParameter extends Parameter {
+    SlashAcceptingParameter(String param) {
+      super(param, ".+?"); // Accept everything
+    }
+  }
+
+  private static class Parameter extends PathSegment {
     private final String name;
     private final String regex;
 
-    Parameter(String param) {
+    Parameter(String param, String acceptPattern) {
       final String[] split = param.split(":", 2);
       this.name = split[0];
       if (split.length == 1) {
-        this.regex = "[^/]+?"; // Accepting everything except slash;
+        this.regex = acceptPattern;
       } else {
         this.regex = split[1];
       }

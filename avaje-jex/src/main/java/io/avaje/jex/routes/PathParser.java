@@ -74,14 +74,11 @@ class PathParser {
   }
 
   private PathSegment parseSegment(String seg) {
-    if (seg.startsWith("{")) {
-      return new PathSegment.Parameter(seg.substring(1, seg.length() - 1));
-    }
     if (seg.equals("*")) {
       includesWildcard = true;
       return WILDCARD;
     }
-    return new PathSegment.Literal(seg);
+    return new PathSegmentParser(seg, rawPath).parse();
   }
 
   /**
