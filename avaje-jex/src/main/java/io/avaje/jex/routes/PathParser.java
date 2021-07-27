@@ -16,7 +16,7 @@ class PathParser {
   private final List<String> paramNames = new ArrayList<>();
   private final Pattern matchRegex;
   private final Pattern pathParamRegex;
-  private final boolean includesWildcard;
+  private final boolean multiSlash;
   private int segmentCount;
 
   PathParser(String path, boolean ignoreTrailingSlashes) {
@@ -36,7 +36,7 @@ class PathParser {
 
     this.matchRegex = regBuilder.matchRegex();
     this.pathParamRegex = regBuilder.extractRegex();
-    this.includesWildcard = regBuilder.includesWildcard();
+    this.multiSlash = regBuilder.multiSlash();
   }
 
   public boolean matches(String url) {
@@ -88,9 +88,9 @@ class PathParser {
   }
 
   /**
-   * Return true if one of the segments is the wildcard match.
+   * Return true if one of the segments is wildcard or slash accepting.
    */
-  public boolean includesWildcard() {
-    return includesWildcard;
+  public boolean multiSlash() {
+    return multiSlash;
   }
 }

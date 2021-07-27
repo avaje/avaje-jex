@@ -28,7 +28,7 @@ class RouteIndex {
   }
 
   void add(SpiRoutes.Entry entry) {
-    if (entry.includesWildcard()) {
+    if (entry.multiSlash()) {
       wildcardEntries.add(entry);
     } else {
       entries[index(entry.getSegmentCount())].add(entry);

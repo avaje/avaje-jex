@@ -288,7 +288,7 @@ class PathParserTest {
   void multiSegment_mixed() {
     final PathParser pathParser = new PathParser("/{one}/x{two}y{three}z/{four}", true);
     assertThat(pathParser.getSegmentCount()).isEqualTo(3);
-    assertFalse(pathParser.includesWildcard());
+    assertFalse(pathParser.multiSlash());
 
     assertTrue(pathParser.matches("/0/x1y2z/3"));
 
@@ -304,7 +304,7 @@ class PathParserTest {
   void multiSegment_mixed_slashConsuming() {
     final PathParser pathParser = new PathParser("/<one>/x<two>y<three>z/<four>", true);
     assertThat(pathParser.getSegmentCount()).isEqualTo(3);
-    assertTrue(pathParser.includesWildcard());
+    assertTrue(pathParser.multiSlash());
 
     assertTrue(pathParser.matches("/0/x1y2z/3"));
     assertTrue(pathParser.matches("/0/SLASH0/x1/SLASH1y2/SLASH2z/3/SLASH/SLASH"));

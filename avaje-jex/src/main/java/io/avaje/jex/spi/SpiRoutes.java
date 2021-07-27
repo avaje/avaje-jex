@@ -76,9 +76,9 @@ public interface SpiRoutes {
     int getSegmentCount();
 
     /**
-     * Return true if one of the segments is the wildcard match.
+     * Return true if one of the segments is the wildcard match or accepting slashes.
      */
-    boolean includesWildcard();
+    boolean multiSlash();
 
     /**
      * Increment active request count for the route.

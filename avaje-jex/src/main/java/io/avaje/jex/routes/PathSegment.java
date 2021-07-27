@@ -10,7 +10,7 @@ abstract class PathSegment {
 
   abstract void addParamName(List<String> paramNames);
 
-  boolean includesWildcard() {
+  boolean multiSlash() {
     return false;
   }
 
@@ -26,7 +26,7 @@ abstract class PathSegment {
     }
 
     @Override
-    boolean includesWildcard() {
+    boolean multiSlash() {
       return true;
     }
   }
@@ -65,9 +65,9 @@ abstract class PathSegment {
     }
 
     @Override
-    boolean includesWildcard() {
+    boolean multiSlash() {
       for (PathSegment segment : segments) {
-        if (segment.includesWildcard()) {
+        if (segment.multiSlash()) {
           return true;
         }
       }
@@ -110,7 +110,7 @@ abstract class PathSegment {
   static class Wildcard extends PathSegment {
 
     @Override
-    boolean includesWildcard() {
+    boolean multiSlash() {
       return true;
     }
 

@@ -58,7 +58,7 @@ class RouteEntry implements SpiRoutes.Entry {
   }
 
   @Override
-  public boolean includesWildcard() {
-    return path.includesWildcard();
+  public boolean multiSlash() {
+    return path.multiSlash();
   }
 }
