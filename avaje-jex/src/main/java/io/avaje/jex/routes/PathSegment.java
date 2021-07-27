@@ -2,7 +2,11 @@ package io.avaje.jex.routes;
 
 import java.util.List;
 
+import static java.util.stream.Collectors.joining;
+
 abstract class PathSegment {
+
+  static final PathSegment WILDCARD = new PathSegment.Wildcard();
 
   abstract String asRegexString(boolean extract);
 
@@ -42,6 +46,29 @@ abstract class PathSegment {
     @Override
     public void addParamName(List<String> paramNames) {
       paramNames.add(name);
+    }
+  }
+
+  static class Multi extends PathSegment {
+
+    private final List<PathSegment> segments;
+
+    Multi(List<PathSegment> segments) {
+      this.segments = segments;
+    }
+
+    @Override
+    String asRegexString(boolean extract) {
+      return segments.stream()
+        .map(pathSegment -> pathSegment.asRegexString(extract))
+        .collect(joining());
+    }
+
+    @Override
+    void addParamName(List<String> paramNames) {
+      for (PathSegment segment : segments) {
+        segment.addParamName(paramNames);
+      }
     }
   }
 

@@ -2,11 +2,13 @@ package io.avaje.jex.routes;
 
 
 import io.avaje.jex.spi.SpiRoutes;
+import org.assertj.core.api.ThrowableAssertAlternative;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -237,12 +239,61 @@ class PathParserTest {
     assertThat(params.pathParams.get("a")).isEqualTo("1a");
     assertThat(params.pathParams).containsOnlyKeys("a");
 
-    assertThat(params.splats).containsOnly("2b","3c");
+    assertThat(params.splats).containsOnly("2b", "3c");
 
     params = pathParser.extractPathParams("/1/a/b/c/d/and/f/g/h/i");
     assertThat(params.pathParams.get("a")).isEqualTo("1");
     assertThat(params.pathParams).containsOnlyKeys("a");
 
-    assertThat(params.splats).containsOnly("a/b/c/d","f/g/h/i");
+    assertThat(params.splats).containsOnly("a/b/c/d", "f/g/h/i");
+  }
+
+  @Test
+  void multiSegment_noSlashes() {
+    final PathParser pathParser = new PathParser("/x{a}y{b}z", true);
+    assertThat(pathParser.raw()).isEqualTo("/x{a}y{b}z");
+    assertThat(pathParser.getSegmentCount()).isEqualTo(1);
+
+    assertTrue(pathParser.matches("/xAyBz"));
+    assertTrue(pathParser.matches("/xHELLOyTHEREz"));
+    assertTrue(pathParser.matches("/xAAAAyBBBBz"));
+
+    assertFalse(pathParser.matches("/AAAAyBBBBz"));
+    assertFalse(pathParser.matches("/xAAAABBBBz"));
+    assertFalse(pathParser.matches("/xAAAAyBBBB"));
+
+    final SpiRoutes.Params params = pathParser.extractPathParams("/xHELLOyTHEREz");
+    assertThat(params.pathParams.get("a")).isEqualTo("HELLO");
+    assertThat(params.pathParams.get("b")).isEqualTo("THERE");
+    assertThat(params.pathParams).containsOnlyKeys("a", "b");
+  }
+
+  @Test
+  void multiSegment_mixed() {
+    final PathParser pathParser = new PathParser("/{one}/x{two}y{three}z/{four}", true);
+    assertThat(pathParser.getSegmentCount()).isEqualTo(3);
+
+    assertTrue(pathParser.matches("/0/x1y2z/3"));
+
+    final SpiRoutes.Params params = pathParser.extractPathParams("/0/x1y2z/3");
+    assertThat(params.pathParams.get("one")).isEqualTo("0");
+    assertThat(params.pathParams.get("two")).isEqualTo("1");
+    assertThat(params.pathParams.get("three")).isEqualTo("2");
+    assertThat(params.pathParams.get("four")).isEqualTo("3");
+    assertThat(params.pathParams).containsOnlyKeys("one", "two", "three", "four");
+  }
+
+  @Test
+  void matchMulti_when_illegalSegments_expect_IllegalArgumentException() {
+
+    expectParseError("some/a-<foo<bar>>-b")
+      .withMessage("Path [some/a-<foo<bar>>-b] has illegal segment [a-<foo<bar>>-b] starting at position [2]");
+
+    expectParseError("some/before/more-{foo{bar}}-b/after")
+      .withMessage("Path [some/before/more-{foo{bar}}-b/after] has illegal segment [more-{foo{bar}}-b] starting at position [5]");
+  }
+
+  private ThrowableAssertAlternative<IllegalArgumentException> expectParseError(String path) {
+    return assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new PathParser(path, true));
   }
 }

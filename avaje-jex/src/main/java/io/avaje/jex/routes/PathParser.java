@@ -12,8 +12,6 @@ import java.util.regex.Pattern;
 
 class PathParser {
 
-  private static final PathSegment.Wildcard WILDCARD = new PathSegment.Wildcard();
-
   private final String rawPath;
   private final List<String> paramNames = new ArrayList<>();
   private final Pattern matchRegex;
@@ -76,7 +74,7 @@ class PathParser {
   private PathSegment parseSegment(String seg) {
     if (seg.equals("*")) {
       includesWildcard = true;
-      return WILDCARD;
+      return PathSegment.WILDCARD;
     }
     return new PathSegmentParser(seg, rawPath).parse();
   }
