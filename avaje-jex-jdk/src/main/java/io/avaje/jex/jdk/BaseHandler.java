@@ -7,14 +7,10 @@ import io.avaje.jex.Routing;
 import io.avaje.jex.http.NotFoundResponse;
 import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.locks.LockSupport;
+import java.util.Map;
 
 class BaseHandler implements HttpHandler {
-
-  private static final Logger log = LoggerFactory.getLogger(BaseHandler.class);
 
   private final SpiRoutes routes;
   private final ServiceManager mgr;
@@ -49,7 +45,7 @@ class BaseHandler implements HttpHandler {
     } else {
       route.inc();
       try {
-        final SpiRoutes.Params params = route.pathParams(uri);
+        final Map<String, String> params = route.pathParams(uri);
         JdkContext ctx = new JdkContext(mgr, exchange, route.matchPath(), params);
         try {
           processRoute(ctx, uri, route);

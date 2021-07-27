@@ -6,7 +6,6 @@ import io.avaje.jex.UploadedFile;
 import io.avaje.jex.http.RedirectResponse;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
-import io.avaje.jex.spi.SpiRoutes;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.http.util.ContentType;
@@ -30,7 +29,7 @@ class GrizzlyContext implements Context, SpiContext {
   private static final int SC_MOVED_TEMPORARILY = 302;
   private final ServiceManager mgr;
   private final String path;
-  private final SpiRoutes.Params params;
+  private final Map<String, String> pathParams;
   private final Request request;
   private final Response response;
   private Routing.Type mode;
@@ -38,12 +37,12 @@ class GrizzlyContext implements Context, SpiContext {
   private Map<String, List<String>> queryParams;
   private Map<String, String> cookieMap;
 
-  GrizzlyContext(ServiceManager mgr, Request request, Response response, String path, SpiRoutes.Params params) {
+  GrizzlyContext(ServiceManager mgr, Request request, Response response, String path, Map<String, String> pathParams) {
     this.mgr = mgr;
     this.request = request;
     this.response = response;
     this.path = path;
-    this.params = params;
+    this.pathParams = pathParams;
   }
 
   /**
@@ -54,7 +53,7 @@ class GrizzlyContext implements Context, SpiContext {
     this.request = request;
     this.response = response;
     this.path = path;
-    this.params = null;
+    this.pathParams = null;
   }
 
   @Override
@@ -189,12 +188,12 @@ class GrizzlyContext implements Context, SpiContext {
 
   @Override
   public Map<String, String> pathParamMap() {
-    return params.pathParams;
+    return pathParams;
   }
 
   @Override
   public String pathParam(String name) {
-    return params.pathParams.get(name);
+    return pathParams.get(name);
   }
 
   @Override

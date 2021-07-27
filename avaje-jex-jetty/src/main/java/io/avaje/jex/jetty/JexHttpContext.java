@@ -6,7 +6,6 @@ import io.avaje.jex.UploadedFile;
 import io.avaje.jex.http.RedirectResponse;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
-import io.avaje.jex.spi.SpiRoutes;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -42,12 +41,12 @@ class JexHttpContext implements SpiContext {
     this.pathParams = Collections.emptyMap();
   }
 
-  JexHttpContext(ServiceManager mgr, HttpServletRequest req, HttpServletResponse res, String matchedPath, SpiRoutes.Params params) {
+  JexHttpContext(ServiceManager mgr, HttpServletRequest req, HttpServletResponse res, String matchedPath, Map<String, String> pathParams) {
     this.mgr = mgr;
     this.req = req;
     this.res = res;
     this.matchedPath = matchedPath;
-    this.pathParams = params.pathParams;
+    this.pathParams = pathParams;
   }
 
   @Override

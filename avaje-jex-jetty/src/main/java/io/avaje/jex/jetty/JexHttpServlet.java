@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.Map;
+
 class JexHttpServlet extends HttpServlet {
 
   //private static final String X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
@@ -42,7 +44,7 @@ class JexHttpServlet extends HttpServlet {
         routes.dec();
       }
     } else {
-      final SpiRoutes.Params params = route.pathParams(uri);
+      final Map<String, String> params = route.pathParams(uri);
       var ctx = new JexHttpContext(manager, req, res, route.matchPath(), params);
       route.inc();
       try {

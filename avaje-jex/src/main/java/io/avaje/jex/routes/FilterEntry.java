@@ -5,6 +5,8 @@ import io.avaje.jex.Handler;
 import io.avaje.jex.Routing;
 import io.avaje.jex.spi.SpiRoutes;
 
+import java.util.Map;
+
 /**
  * Filter with special matchAll.
  */
@@ -54,7 +56,7 @@ class FilterEntry implements SpiRoutes.Entry {
   }
 
   @Override
-  public SpiRoutes.Params pathParams(String uri) {
+  public Map<String, String> pathParams(String uri) {
     throw new IllegalStateException("not allowed");
   }
 

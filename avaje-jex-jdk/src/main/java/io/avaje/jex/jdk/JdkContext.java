@@ -8,7 +8,6 @@ import io.avaje.jex.UploadedFile;
 import io.avaje.jex.http.RedirectResponse;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
-import io.avaje.jex.spi.SpiRoutes;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +35,7 @@ class JdkContext implements Context, SpiContext {
   private static final String COOKIE = "Cookie";
   private final ServiceManager mgr;
   private final String path;
-  private final SpiRoutes.Params params;
+  private final Map<String, String> pathParams;
   private final HttpExchange exchange;
   private Routing.Type mode;
   private Map<String, List<String>> formParams;
@@ -45,11 +44,11 @@ class JdkContext implements Context, SpiContext {
   private int statusCode;
   private String characterEncoding;
 
-  JdkContext(ServiceManager mgr, HttpExchange exchange, String path, SpiRoutes.Params params) {
+  JdkContext(ServiceManager mgr, HttpExchange exchange, String path, Map<String, String> pathParams) {
     this.mgr = mgr;
     this.exchange = exchange;
     this.path = path;
-    this.params = params;
+    this.pathParams = pathParams;
   }
 
   /**
@@ -59,7 +58,7 @@ class JdkContext implements Context, SpiContext {
     this.mgr = mgr;
     this.exchange = exchange;
     this.path = path;
-    this.params = null;
+    this.pathParams = null;
   }
 
   @Override
@@ -216,12 +215,12 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public Map<String, String> pathParamMap() {
-    return params.pathParams;
+    return pathParams;
   }
 
   @Override
   public String pathParam(String name) {
-    return params.pathParams.get(name);
+    return pathParams.get(name);
   }
 
   @Override

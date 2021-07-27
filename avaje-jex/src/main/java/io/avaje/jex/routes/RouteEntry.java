@@ -4,6 +4,7 @@ import io.avaje.jex.Context;
 import io.avaje.jex.Handler;
 import io.avaje.jex.spi.SpiRoutes;
 
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 class RouteEntry implements SpiRoutes.Entry {
@@ -43,7 +44,7 @@ class RouteEntry implements SpiRoutes.Entry {
   }
 
   @Override
-  public SpiRoutes.Params pathParams(String uri) {
+  public Map<String, String> pathParams(String uri) {
     return path.extractPathParams(uri);
   }
 
@@ -54,7 +55,7 @@ class RouteEntry implements SpiRoutes.Entry {
 
   @Override
   public int segmentCount() {
-    return path.getSegmentCount();
+    return path.segmentCount();
   }
 
   @Override

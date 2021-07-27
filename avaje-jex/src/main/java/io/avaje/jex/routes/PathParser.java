@@ -43,7 +43,7 @@ class PathParser {
     return matchRegex.matcher(url).matches();
   }
 
-  public SpiRoutes.Params extractPathParams(String uri) {
+  public Map<String, String> extractPathParams(String uri) {
     Map<String, String> pathMap = new LinkedHashMap<>();
     final List<String> values = values(uri);
     for (int i = 0; i < values.size(); i++) {
@@ -53,7 +53,7 @@ class PathParser {
         pathMap.put(name, UrlDecode.decode(values.get(i)));
       }
     }
-    return new SpiRoutes.Params(pathMap);
+    return pathMap;
   }
 
   private List<String> values(String uri) {
@@ -83,7 +83,7 @@ class PathParser {
   /**
    * Return the number of path segments.
    */
-  public int getSegmentCount() {
+  public int segmentCount() {
     return segmentCount;
   }
 

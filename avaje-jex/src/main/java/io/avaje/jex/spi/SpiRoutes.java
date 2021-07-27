@@ -63,7 +63,7 @@ public interface SpiRoutes {
     /**
      * Return the path parameter map given the uri.
      */
-    Params pathParams(String uri);
+    Map<String, String> pathParams(String uri);
 
     /**
      * Return the raw path expression.
@@ -94,23 +94,5 @@ public interface SpiRoutes {
      * Return the active request count for the route.
      */
     long activeRequests();
-  }
-
-  /**
-   * Path and splat/wildcard parameters.
-   */
-  class Params {
-
-    /**
-     * The path parameters.
-     */
-    public final Map<String, String> pathParams;
-
-    /**
-     * Create with path parameters and splat/wildcard parameters.
-     */
-    public Params(Map<String, String> pathParams) {
-      this.pathParams = pathParams;
-    }
   }
 }

@@ -9,6 +9,8 @@ import org.glassfish.grizzly.http.server.HttpHandler;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 
+import java.util.Map;
+
 class RouteHandler extends HttpHandler {
 
   private final SpiRoutes routes;
@@ -35,7 +37,7 @@ class RouteHandler extends HttpHandler {
         handleException(ctx, e);
       }
     } else {
-      final SpiRoutes.Params params = route.pathParams(uri);
+      final Map<String, String> params = route.pathParams(uri);
       var ctx = new GrizzlyContext(mgr, request, response, route.matchPath(), params);
       try {
         processRoute(ctx, uri, route);
