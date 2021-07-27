@@ -31,7 +31,7 @@ class RouteIndex {
     if (entry.multiSlash()) {
       wildcardEntries.add(entry);
     } else {
-      entries[index(entry.getSegmentCount())].add(entry);
+      entries[index(entry.segmentCount())].add(entry);
     }
   }
 

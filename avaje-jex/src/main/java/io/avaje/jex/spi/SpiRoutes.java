@@ -73,7 +73,7 @@ public interface SpiRoutes {
     /**
      * Return the segment count.
      */
-    int getSegmentCount();
+    int segmentCount();
 
     /**
      * Return true if one of the segments is the wildcard match or accepting slashes.

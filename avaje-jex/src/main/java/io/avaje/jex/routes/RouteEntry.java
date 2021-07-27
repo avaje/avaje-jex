@@ -53,7 +53,7 @@ class RouteEntry implements SpiRoutes.Entry {
   }
 
   @Override
-  public int getSegmentCount() {
+  public int segmentCount() {
     return path.getSegmentCount();
   }
 

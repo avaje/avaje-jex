@@ -59,7 +59,7 @@ class FilterEntry implements SpiRoutes.Entry {
   }
 
   @Override
-  public int getSegmentCount() {
+  public int segmentCount() {
     throw new IllegalStateException("not allowed");
   }
 
