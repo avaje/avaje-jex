@@ -88,6 +88,8 @@ class JettyJexServer implements Jex.Server {
       // do not use Jetty ShutdownHook, use the AppLifecycle one instead
       server.setStopAtShutdown(false);
     }
+    config.server(server);
+    config.postConfigure();
   }
 
   protected Server initServer() {
@@ -102,6 +104,7 @@ class JettyJexServer implements Jex.Server {
     final ServletContextHandler sc = initServletContextHandler();
     sc.setSessionHandler(initSessionHandler());
     sc.addServlet(initServletHolder(), "/*");
+    config.contextHandler(sc);
     return sc;
   }
 
