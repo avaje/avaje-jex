@@ -11,11 +11,15 @@ class RegBuilder {
   private final StringJoiner full = new StringJoiner("/");
   private final StringJoiner extract = new StringJoiner("/");
   private boolean trailingSlash;
+  private boolean includesWildcard;
 
   void add(PathSegment pathSegment, List<String> paramNames) {
     full.add(pathSegment.asRegexString(false));
     extract.add(pathSegment.asRegexString(true));
     pathSegment.addParamName(paramNames);
+    if (!includesWildcard) {
+      includesWildcard = pathSegment.includesWildcard();
+    }
   }
 
   void trailingSlash() {
@@ -43,4 +47,7 @@ class RegBuilder {
     return "^/" + parts + "/?$";
   }
 
+  boolean includesWildcard() {
+    return includesWildcard;
+  }
 }

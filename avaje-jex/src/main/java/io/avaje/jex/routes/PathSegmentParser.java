@@ -9,6 +9,8 @@ import static java.util.stream.Collectors.toList;
 
 class PathSegmentParser {
 
+  private static final PathSegment WILDCARD = new PathSegment.Wildcard();
+
   private static final String[] ADJACENT_VIOLATIONS = {"*{", "*<", "}*", ">*"};
 
   private static final String NAME_STR = "[a-zA-Z0-9_-]+";
@@ -26,6 +28,13 @@ class PathSegmentParser {
   PathSegmentParser(String segment, String rawPath) {
     this.segment = segment;
     this.rawPath = rawPath;
+  }
+
+  static PathSegment parse(String seg, String rawPath) {
+    if (seg.equals("*")) {
+      return WILDCARD;
+    }
+    return new PathSegmentParser(seg, rawPath).parse();
   }
 
   PathSegment parse() {
@@ -64,7 +73,7 @@ class PathSegmentParser {
 
   private PathSegment tokenSegment(String token) {
     if (token.equals("*")) {
-      return PathSegment.WILDCARD;
+      return WILDCARD;
     } else if (token.startsWith("<")) {
       return slashAccepting(token);
     } else if (token.startsWith("{")) {

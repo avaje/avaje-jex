@@ -16,9 +16,9 @@ class RouteSplatTest {
     var app = Jex.create()
       .routing(routing -> routing
         .get("/{id}/one", ctx -> ctx.text("id:" + ctx.pathParam("id")))
-        .get("/{id}/one2", ctx -> ctx.text("id:" + ctx.pathParam("id") + "-" + ctx.splats() + "-" + ctx.splat(0) + "-" + ctx.splat(99)))
-        .get("/*/one", ctx -> ctx.text("splat:" + ctx.splat(0)))
-        .get("/*/two/*", ctx -> ctx.text("splats:" + ctx.splats()))
+        .get("/{id}/one2", ctx -> ctx.text("id:" + ctx.pathParam("id")))
+        .get("/<a>/one", ctx -> ctx.text("s1:" + ctx.pathParam("a")))
+        .get("/<a>/two/<b>", ctx -> ctx.text("s2:" + ctx.pathParam("a") + "|" + ctx.pathParam("b")))
       );
     return TestPair.create(app);
   }
@@ -36,7 +36,7 @@ class RouteSplatTest {
     // HttpResponse<String> res = pair.request().path(path).get().asString();
 
     HttpResponse<String> res = pair.request().path("java/kotlin/two/x/y").GET().asString();
-    assertThat(res.body()).isEqualTo("splats:[java/kotlin, x/y]");
+    assertThat(res.body()).isEqualTo("s2:java/kotlin|x/y");
     assertThat(res.statusCode()).isEqualTo(200);
   }
 
@@ -52,7 +52,7 @@ class RouteSplatTest {
     HttpResponse<String> res = pair.request().path("42/foo/one").GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.body()).isEqualTo("splat:42/foo");
+    assertThat(res.body()).isEqualTo("s1:42/foo");
   }
 
   @Test
@@ -60,7 +60,7 @@ class RouteSplatTest {
     HttpResponse<String> res = pair.request().path("a/b/c/two/x/y").GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.body()).isEqualTo("splats:[a/b/c, x/y]");
+    assertThat(res.body()).isEqualTo("s2:a/b/c|x/y");
   }
 
   @Test
@@ -68,6 +68,6 @@ class RouteSplatTest {
     HttpResponse<String> res = pair.request().path("42/one2").GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.body()).isEqualTo("id:42-[]-null-null");
+    assertThat(res.body()).isEqualTo("id:42");
   }
 }

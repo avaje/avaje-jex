@@ -218,8 +218,6 @@ class PathParserTest {
 
     final SpiRoutes.Params params = pathParser.extractPathParams("/1a/2b/3c");
     assertThat(params.pathParams.get("a")).isEqualTo("1a");
-    assertThat(params.splats).containsOnly("2b/3c");
-
     assertThat(params.pathParams).containsOnlyKeys("a");
     assertThat(params.pathParams).containsEntry("a", "1a");
   }
@@ -239,13 +237,31 @@ class PathParserTest {
     assertThat(params.pathParams.get("a")).isEqualTo("1a");
     assertThat(params.pathParams).containsOnlyKeys("a");
 
-    assertThat(params.splats).containsOnly("2b", "3c");
-
     params = pathParser.extractPathParams("/1/a/b/c/d/and/f/g/h/i");
     assertThat(params.pathParams.get("a")).isEqualTo("1");
     assertThat(params.pathParams).containsOnlyKeys("a");
+  }
 
-    assertThat(params.splats).containsOnly("a/b/c/d", "f/g/h/i");
+  @Test
+  void matches_slashConsumers() {
+    final PathParser pathParser = new PathParser("/{a}/<one>/and/<two>", true);
+    assertThat(pathParser.raw()).isEqualTo("/{a}/<one>/and/<two>");
+    assertThat(pathParser.getSegmentCount()).isEqualTo(4);
+
+    assertTrue(pathParser.matches("/1/2/and/3"));
+    assertFalse(pathParser.matches("/1/2/3/4"));
+    assertTrue(pathParser.matches("/1/a/b/c/d/and/f/g/h/i"));
+
+    SpiRoutes.Params params = pathParser.extractPathParams("/1a/2/b/and/3c/more/here");
+    assertThat(params.pathParams.get("a")).isEqualTo("1a");
+    assertThat(params.pathParams.get("one")).isEqualTo("2/b");
+    assertThat(params.pathParams.get("two")).isEqualTo("3c/more/here");
+    assertThat(params.pathParams).containsOnlyKeys("a", "one", "two");
+
+    params = pathParser.extractPathParams("/1/a/b/c/d/and/f/g/h/i");
+    assertThat(params.pathParams.get("a")).isEqualTo("1");
+    assertThat(params.pathParams.get("one")).isEqualTo("a/b/c/d");
+    assertThat(params.pathParams.get("two")).isEqualTo("f/g/h/i");
   }
 
   @Test
@@ -272,6 +288,7 @@ class PathParserTest {
   void multiSegment_mixed() {
     final PathParser pathParser = new PathParser("/{one}/x{two}y{three}z/{four}", true);
     assertThat(pathParser.getSegmentCount()).isEqualTo(3);
+    assertFalse(pathParser.includesWildcard());
 
     assertTrue(pathParser.matches("/0/x1y2z/3"));
 
@@ -281,6 +298,31 @@ class PathParserTest {
     assertThat(params.pathParams.get("three")).isEqualTo("2");
     assertThat(params.pathParams.get("four")).isEqualTo("3");
     assertThat(params.pathParams).containsOnlyKeys("one", "two", "three", "four");
+  }
+
+  @Test
+  void multiSegment_mixed_slashConsuming() {
+    final PathParser pathParser = new PathParser("/<one>/x<two>y<three>z/<four>", true);
+    assertThat(pathParser.getSegmentCount()).isEqualTo(3);
+    assertTrue(pathParser.includesWildcard());
+
+    assertTrue(pathParser.matches("/0/x1y2z/3"));
+    assertTrue(pathParser.matches("/0/SLASH0/x1/SLASH1y2/SLASH2z/3/SLASH/SLASH"));
+
+
+    SpiRoutes.Params params = pathParser.extractPathParams("/0/x1y2z/3");
+    assertThat(params.pathParams.get("one")).isEqualTo("0");
+    assertThat(params.pathParams.get("two")).isEqualTo("1");
+    assertThat(params.pathParams.get("three")).isEqualTo("2");
+    assertThat(params.pathParams.get("four")).isEqualTo("3");
+    assertThat(params.pathParams).containsOnlyKeys("one", "two", "three", "four");
+
+
+    params = pathParser.extractPathParams("/0/SLASH0/x1/SLASH1y2/SLASH2z/3/SLASH/SLASH");
+    assertThat(params.pathParams.get("one")).isEqualTo("0/SLASH0");
+    assertThat(params.pathParams.get("two")).isEqualTo("1/SLASH1");
+    assertThat(params.pathParams.get("three")).isEqualTo("2/SLASH2");
+    assertThat(params.pathParams.get("four")).isEqualTo("3/SLASH/SLASH");
   }
 
   @Test

@@ -123,18 +123,6 @@ public interface Context {
   Context contentType(String contentType);
 
   /**
-   * Return the splat path value for the given position.
-   *
-   * @param position the index postion of the splat starting with 0.
-   */
-  String splat(int position);
-
-  /**
-   * Return all the splat values.
-   */
-  List<String> splats();
-
-  /**
    * Return all the path parameters as a map.
    */
   Map<String, String> pathParamMap();

@@ -29,7 +29,6 @@ class JexHttpContext implements SpiContext {
   protected final HttpServletRequest req;
   private final HttpServletResponse res;
   private final Map<String, String> pathParams;
-  private final List<String> splats;
   private final String matchedPath;
   private String characterEncoding;
   private Routing.Type mode;
@@ -41,7 +40,6 @@ class JexHttpContext implements SpiContext {
     this.res = res;
     this.matchedPath = matchedPath;
     this.pathParams = Collections.emptyMap();
-    this.splats = null;
   }
 
   JexHttpContext(ServiceManager mgr, HttpServletRequest req, HttpServletResponse res, String matchedPath, SpiRoutes.Params params) {
@@ -50,7 +48,6 @@ class JexHttpContext implements SpiContext {
     this.res = res;
     this.matchedPath = matchedPath;
     this.pathParams = params.pathParams;
-    this.splats = params.splats;
   }
 
   @Override
@@ -225,16 +222,6 @@ class JexHttpContext implements SpiContext {
   @Override
   public long contentLength() {
     return req.getContentLengthLong();
-  }
-
-  @Override
-  public String splat(int position) {
-    return splats == null ? null : splats.get(position);
-  }
-
-  @Override
-  public List<String> splats() {
-    return splats == null ? Collections.emptyList() : splats;
   }
 
   @Override

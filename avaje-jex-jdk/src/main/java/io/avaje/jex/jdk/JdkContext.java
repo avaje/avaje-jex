@@ -215,16 +215,6 @@ class JdkContext implements Context, SpiContext {
   }
 
   @Override
-  public String splat(int position) {
-    return params.splats.get(position);
-  }
-
-  @Override
-  public List<String> splats() {
-    return params.splats;
-  }
-
-  @Override
   public Map<String, String> pathParamMap() {
     return params.pathParams;
   }

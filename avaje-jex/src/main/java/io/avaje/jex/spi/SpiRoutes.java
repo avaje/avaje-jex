@@ -3,7 +3,6 @@ package io.avaje.jex.spi;
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -108,16 +107,10 @@ public interface SpiRoutes {
     public final Map<String, String> pathParams;
 
     /**
-     * The path splat parameters.
-     */
-    public final List<String> splats;
-
-    /**
      * Create with path parameters and splat/wildcard parameters.
      */
-    public Params(Map<String, String> pathParams, List<String> splats) {
+    public Params(Map<String, String> pathParams) {
       this.pathParams = pathParams;
-      this.splats = splats;
     }
   }
 }

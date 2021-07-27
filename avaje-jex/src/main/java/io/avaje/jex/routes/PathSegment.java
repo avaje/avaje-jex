@@ -6,11 +6,13 @@ import static java.util.stream.Collectors.joining;
 
 abstract class PathSegment {
 
-  static final PathSegment WILDCARD = new PathSegment.Wildcard();
-
   abstract String asRegexString(boolean extract);
 
   abstract void addParamName(List<String> paramNames);
+
+  boolean includesWildcard() {
+    return false;
+  }
 
   static class SlashIgnoringParameter extends Parameter {
     SlashIgnoringParameter(String param) {
@@ -22,9 +24,14 @@ abstract class PathSegment {
     SlashAcceptingParameter(String param) {
       super(param, ".+?"); // Accept everything
     }
+
+    @Override
+    boolean includesWildcard() {
+      return true;
+    }
   }
 
-  private static class Parameter extends PathSegment {
+  private abstract static class Parameter extends PathSegment {
     private final String name;
     private final String regex;
 
@@ -55,6 +62,16 @@ abstract class PathSegment {
 
     Multi(List<PathSegment> segments) {
       this.segments = segments;
+    }
+
+    @Override
+    boolean includesWildcard() {
+      for (PathSegment segment : segments) {
+        if (segment.includesWildcard()) {
+          return true;
+        }
+      }
+      return false;
     }
 
     @Override
@@ -91,6 +108,12 @@ abstract class PathSegment {
   }
 
   static class Wildcard extends PathSegment {
+
+    @Override
+    boolean includesWildcard() {
+      return true;
+    }
+
     @Override
     public String asRegexString(boolean extract) {
       return extract ? "(.*?)" : ".*?"; // Accept everything
@@ -98,7 +121,7 @@ abstract class PathSegment {
 
     @Override
     public void addParamName(List<String> paramNames) {
-      paramNames.add(null); // null for splat
+      paramNames.add(null); // null for wildcard
     }
   }
 

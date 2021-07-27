@@ -16,8 +16,8 @@ class PathParser {
   private final List<String> paramNames = new ArrayList<>();
   private final Pattern matchRegex;
   private final Pattern pathParamRegex;
+  private final boolean includesWildcard;
   private int segmentCount;
-  private boolean includesWildcard;
 
   PathParser(String path, boolean ignoreTrailingSlashes) {
     this.rawPath = path;
@@ -36,6 +36,7 @@ class PathParser {
 
     this.matchRegex = regBuilder.matchRegex();
     this.pathParamRegex = regBuilder.extractRegex();
+    this.includesWildcard = regBuilder.includesWildcard();
   }
 
   public boolean matches(String url) {
@@ -43,19 +44,16 @@ class PathParser {
   }
 
   public SpiRoutes.Params extractPathParams(String uri) {
-    List<String> splats = includesWildcard ? new ArrayList<>() : null;
     Map<String, String> pathMap = new LinkedHashMap<>();
     final List<String> values = values(uri);
     for (int i = 0; i < values.size(); i++) {
-      final String val = UrlDecode.decode(values.get(i));
       final String name = paramNames.get(i);
-      if (name == null) {
-        splats.add(val);
-      } else {
-        pathMap.put(name, val);
+      if (name != null) {
+        // null names for wildcard placeholders
+        pathMap.put(name, UrlDecode.decode(values.get(i)));
       }
     }
-    return new SpiRoutes.Params(pathMap, splats);
+    return new SpiRoutes.Params(pathMap);
   }
 
   private List<String> values(String uri) {
@@ -71,12 +69,8 @@ class PathParser {
     return values;
   }
 
-  private PathSegment parseSegment(String seg) {
-    if (seg.equals("*")) {
-      includesWildcard = true;
-      return PathSegment.WILDCARD;
-    }
-    return new PathSegmentParser(seg, rawPath).parse();
+  private PathSegment parseSegment(String segment) {
+    return PathSegmentParser.parse(segment, rawPath);
   }
 
   /**
