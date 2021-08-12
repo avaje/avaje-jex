@@ -25,8 +25,9 @@ public interface AppLifecycle {
    * The runnables are executed with order from low to high (0 means run first).
    * <p>
    * This will execute after the server has deemed there are no active requests.
+   *
    * @param onShutdown The function to run on shutdown
-   * @param order The relative order to execute with 0 meaning run first
+   * @param order      The relative order to execute with 0 meaning run first
    */
   void onShutdown(Runnable onShutdown, int order);
 
@@ -61,14 +62,4 @@ public interface AppLifecycle {
     return status == Status.STARTED;
   }
 
-//  void register(Listener listener);
-//
-//  interface Listener {
-//    void onChange(StatusChange change);
-//  }
-//
-//  interface StatusChange {
-//    Status newStatus();
-//    Status oldStatus();
-//  }
 }
