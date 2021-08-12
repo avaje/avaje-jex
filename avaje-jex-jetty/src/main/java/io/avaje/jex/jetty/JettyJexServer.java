@@ -57,11 +57,18 @@ class JettyJexServer implements Jex.Server {
   }
 
   @Override
+  public void onShutdown(Runnable onShutdown) {
+    lifecycle.onShutdown(onShutdown, Integer.MAX_VALUE);
+  }
+
+  @Override
   public void shutdown() {
     try {
+      log.trace("starting shutdown");
       lifecycle.status(AppLifecycle.Status.STOPPING);
       routes.waitForIdle(30);
       server.stop();
+      log.trace("server http listeners stopped");
       lifecycle.status(AppLifecycle.Status.STOPPED);
       log.info("shutdown complete");
     } catch (Exception e) {

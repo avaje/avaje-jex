@@ -22,6 +22,11 @@ class JdkJexServer implements Jex.Server {
   }
 
   @Override
+  public void onShutdown(Runnable onShutdown) {
+    lifecycle.onShutdown(onShutdown, Integer.MAX_VALUE);
+  }
+
+  @Override
   public void shutdown() {
     log.trace("starting shutdown");
     lifecycle.status(AppLifecycle.Status.STOPPING);

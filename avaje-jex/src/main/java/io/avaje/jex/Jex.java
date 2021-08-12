@@ -267,6 +267,14 @@ public class Jex {
   public interface Server {
 
     /**
+     * Register a function to execute LAST on shutdown after all the
+     * normal lifecycle shutdown functions have run.
+     * <p>
+     * Typically we desire to shut down logging (e.g. Log4J) last.
+     */
+    void onShutdown(Runnable onShutdown);
+
+    /**
      * Shutdown the server.
      */
     void shutdown();

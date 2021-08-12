@@ -20,6 +20,17 @@ public interface AppLifecycle {
   void onShutdown(Runnable onShutdown);
 
   /**
+   * Register a Runnable to run on shutdown of the server with ordering.
+   * <p>
+   * The runnables are executed with order from low to high (0 means run first).
+   * <p>
+   * This will execute after the server has deemed there are no active requests.
+   * @param onShutdown The function to run on shutdown
+   * @param order The relative order to execute with 0 meaning run first
+   */
+  void onShutdown(Runnable onShutdown, int order);
+
+  /**
    * Register the runnable with the Runtime as a shutdown hook.
    */
   void registerShutdownHook(Runnable onShutdown);

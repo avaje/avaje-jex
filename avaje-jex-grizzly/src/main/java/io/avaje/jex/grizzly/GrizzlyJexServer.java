@@ -27,6 +27,11 @@ class GrizzlyJexServer implements Jex.Server {
   }
 
   @Override
+  public void onShutdown(Runnable onShutdown) {
+    lifecycle.onShutdown(onShutdown, Integer.MAX_VALUE);
+  }
+
+  @Override
   public void shutdown() {
     lock.lock();
     try {
@@ -41,6 +46,7 @@ class GrizzlyJexServer implements Jex.Server {
         } catch (InterruptedException |ExecutionException e) {
           log.error("Error during server shutdown", e);
         }
+        log.trace("server http listeners stopped");
         lifecycle.status(AppLifecycle.Status.STOPPED);
         log.info("shutdown complete");
       }
