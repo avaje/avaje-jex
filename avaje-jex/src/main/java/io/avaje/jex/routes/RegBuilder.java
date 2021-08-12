@@ -12,6 +12,7 @@ class RegBuilder {
   private final StringJoiner extract = new StringJoiner("/");
   private boolean trailingSlash;
   private boolean multiSlash;
+  private boolean literal = true;
 
   void add(PathSegment pathSegment, List<String> paramNames) {
     full.add(pathSegment.asRegexString(false));
@@ -19,6 +20,9 @@ class RegBuilder {
     pathSegment.addParamName(paramNames);
     if (!multiSlash) {
       multiSlash = pathSegment.multiSlash();
+    }
+    if (literal && !pathSegment.literal()) {
+      literal = false;
     }
   }
 
@@ -52,5 +56,12 @@ class RegBuilder {
    */
   boolean multiSlash() {
     return multiSlash;
+  }
+
+  /**
+   * Return true if all path segments are literal.
+   */
+  boolean literal() {
+    return literal;
   }
 }

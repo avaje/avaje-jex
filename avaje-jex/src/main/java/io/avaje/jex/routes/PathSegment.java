@@ -10,6 +10,10 @@ abstract class PathSegment {
 
   abstract void addParamName(List<String> paramNames);
 
+  boolean literal() {
+    return false;
+  }
+
   boolean multiSlash() {
     return false;
   }
@@ -94,6 +98,11 @@ abstract class PathSegment {
 
     Literal(String content) {
       this.content = content;
+    }
+
+    @Override
+    boolean literal() {
+      return true;
     }
 
     @Override

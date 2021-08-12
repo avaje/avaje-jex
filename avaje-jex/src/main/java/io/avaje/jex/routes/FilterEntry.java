@@ -69,4 +69,9 @@ class FilterEntry implements SpiRoutes.Entry {
   public boolean multiSlash() {
     return pathParser != null && pathParser.multiSlash();
   }
+
+  @Override
+  public boolean literal() {
+    return pathParser != null && pathParser.literal();
+  }
 }

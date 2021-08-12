@@ -79,7 +79,12 @@ class RouteIndex {
     private final List<SpiRoutes.Entry> list = new ArrayList<>();
 
     void add(SpiRoutes.Entry entry) {
-      list.add(entry);
+      if (entry.literal()) {
+        // add literal paths to the beginning
+        list.add(0, entry);
+      } else {
+        list.add(entry);
+      }
     }
 
     SpiRoutes.Entry match(String pathInfo) {

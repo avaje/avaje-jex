@@ -53,6 +53,20 @@ class ContextTest {
   }
 
   @Test
+  void health_liveness() {
+    HttpResponse<String> res = pair.request().path("health/liveness").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).isEqualTo("ok");
+  }
+
+  @Test
+  void health_readiness() {
+    HttpResponse<String> res = pair.request().path("health/readiness").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).isEqualTo("ok");
+  }
+
+  @Test
   void get() {
     HttpResponse<String> res = pair.request().GET().asString();
     assertThat(res.body()).isEqualTo("ze-get");

@@ -62,9 +62,7 @@ class DefaultLifecycle implements AppLifecycle {
       if (newStatus == Status.STOPPED) {
         fireOnShutdown();
       }
-      if (status != newStatus) {
-        status = newStatus;
-      }
+      status = newStatus;
     } finally {
       lock.unlock();
     }

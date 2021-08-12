@@ -82,6 +82,7 @@ class JettyJexServer implements Jex.Server {
       server.start();
       logOnStart(server);
       lifecycle.registerShutdownHook(this::shutdown);
+      jex.lifecycle().status(AppLifecycle.Status.STARTED);
       return this;
     } catch (Exception e) {
       throw new IllegalStateException("Error starting server", e);

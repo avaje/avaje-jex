@@ -62,4 +62,9 @@ class RouteEntry implements SpiRoutes.Entry {
   public boolean multiSlash() {
     return path.multiSlash();
   }
+
+  @Override
+  public boolean literal() {
+    return path.literal();
+  }
 }

@@ -24,6 +24,7 @@ class GrizzlyJexServer implements Jex.Server {
     this.server = server;
     this.lifecycle = lifecycle;
     lifecycle.registerShutdownHook(this::shutdown);
+    lifecycle.status(AppLifecycle.Status.STARTED);
   }
 
   @Override

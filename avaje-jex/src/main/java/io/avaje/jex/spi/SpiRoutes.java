@@ -81,6 +81,11 @@ public interface SpiRoutes {
     boolean multiSlash();
 
     /**
+     * Return true if all segments are literal.
+     */
+    boolean literal();
+
+    /**
      * Increment active request count for the route.
      */
     void inc();

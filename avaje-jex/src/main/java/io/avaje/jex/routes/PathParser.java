@@ -1,12 +1,6 @@
 package io.avaje.jex.routes;
 
-import io.avaje.jex.spi.SpiRoutes;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +11,7 @@ class PathParser {
   private final Pattern matchRegex;
   private final Pattern pathParamRegex;
   private final boolean multiSlash;
+  private final boolean literal;
   private int segmentCount;
 
   PathParser(String path, boolean ignoreTrailingSlashes) {
@@ -28,15 +23,14 @@ class PathParser {
         regBuilder.add(parseSegment(rawSeg), paramNames);
       }
     }
-
     if (!ignoreTrailingSlashes && path.endsWith("/")) {
       segmentCount++;
       regBuilder.trailingSlash();
     }
-
     this.matchRegex = regBuilder.matchRegex();
     this.pathParamRegex = regBuilder.extractRegex();
     this.multiSlash = regBuilder.multiSlash();
+    this.literal = segmentCount > 1 && regBuilder.literal();
   }
 
   public boolean matches(String url) {
@@ -92,5 +86,12 @@ class PathParser {
    */
   public boolean multiSlash() {
     return multiSlash;
+  }
+
+  /**
+   * Return true if all path segments are literal.
+   */
+  public boolean literal() {
+    return literal;
   }
 }
