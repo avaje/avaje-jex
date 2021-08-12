@@ -17,8 +17,6 @@ class DefaultLifecycle implements AppLifecycle {
 
   private Status status = Status.STARTING;
 
-  private Hook hook;
-
   @Override
   public void onShutdown(Runnable onShutdown) {
     lock.lock();
@@ -31,13 +29,13 @@ class DefaultLifecycle implements AppLifecycle {
 
   @Override
   public void registerShutdownHook(Runnable onShutdown) {
-    hook = new Hook(onShutdown);
+    Hook hook = new Hook(onShutdown);
     Runtime.getRuntime().addShutdownHook(hook);
   }
 
   static class Hook extends Thread {
     Hook(Runnable runnable) {
-      super(runnable);
+      super(runnable, "JexHook");
     }
 
     @Override

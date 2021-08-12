@@ -23,9 +23,11 @@ class JdkJexServer implements Jex.Server {
 
   @Override
   public void shutdown() {
+    log.trace("starting shutdown");
     lifecycle.status(AppLifecycle.Status.STOPPING);
     handler.waitForIdle(30);
     server.stop(0);
+    log.trace("server http listeners stopped");
     lifecycle.status(AppLifecycle.Status.STOPPED);
     log.info("shutdown complete");
   }
