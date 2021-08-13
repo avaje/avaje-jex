@@ -38,14 +38,6 @@ public interface Context {
   <T> T attribute(String key);
 
   /**
-   * Deprecated for removal - not supported by JDK http server.
-   * <p>
-   * Gets a map with all the attribute keys and values on the request.
-   */
-  @Deprecated
-  Map<String, Object> attributeMap();
-
-  /**
    * Return a request cookie by name, or null.
    */
   String cookie(String name);

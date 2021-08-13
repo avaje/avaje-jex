@@ -31,13 +31,6 @@ class ContextAttributeTest {
 
           assert attrUuid == uuid;
           assert attrPair == pair;
-
-          final Map<String, Object> attrMap = ctx.attributeMap();
-          final Object mapUuid = attrMap.get("oneUuid");
-          assert mapUuid == uuid;
-
-          final Object mapPair = attrMap.get(TestPair.class.getName());
-          assert mapPair == pair;
           ctx.text("all-good");
         })
       );

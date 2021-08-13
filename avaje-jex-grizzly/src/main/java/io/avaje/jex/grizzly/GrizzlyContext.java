@@ -10,7 +10,10 @@ import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.http.util.ContentType;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -22,8 +25,8 @@ class GrizzlyContext implements Context, SpiContext {
 
   private static final ContentType JSON = ContentType.newContentType(APPLICATION_JSON);
   private static final ContentType JSON_STREAM = ContentType.newContentType(APPLICATION_X_JSON_STREAM);
-  private static final ContentType HTML_UTF8 = ContentType.newContentType("text/html","utf-8");
-  private static final ContentType PLAIN_UTF8 = ContentType.newContentType("text/plain","utf-8");
+  private static final ContentType HTML_UTF8 = ContentType.newContentType("text/html", "utf-8");
+  private static final ContentType PLAIN_UTF8 = ContentType.newContentType("text/plain", "utf-8");
 
   private static final String UTF8 = "UTF8";
   private static final int SC_MOVED_TEMPORARILY = 302;
@@ -71,11 +74,6 @@ class GrizzlyContext implements Context, SpiContext {
   @SuppressWarnings("unchecked")
   public <T> T attribute(String key) {
     return (T) request.getAttribute(key);
-  }
-
-  @Override
-  public Map<String, Object> attributeMap() {
-    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -152,7 +150,7 @@ class GrizzlyContext implements Context, SpiContext {
 
   @Override
   public byte[] bodyAsBytes() {
-      return ContextUtil.requestBodyAsBytes(request);
+    return ContextUtil.requestBodyAsBytes(request);
   }
 
   private String characterEncoding() {

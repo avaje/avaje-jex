@@ -78,11 +78,6 @@ class JdkContext implements Context, SpiContext {
     return (T) exchange.getAttribute(key);
   }
 
-  @Override
-  public Map<String, Object> attributeMap() {
-    throw new UnsupportedOperationException();
-  }
-
   private Map<String, String> parseCookies() {
     final String cookieHeader = header(exchange.getRequestHeaders(), COOKIE);
     if (cookieHeader == null || cookieHeader.isEmpty()) {

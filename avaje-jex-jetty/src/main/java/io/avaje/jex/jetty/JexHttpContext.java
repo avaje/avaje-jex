@@ -82,17 +82,6 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
-  public Map<String, Object> attributeMap() {
-    final Map<String, Object> map = new LinkedHashMap<>();
-    final Enumeration<String> names = req.getAttributeNames();
-    while (names.hasMoreElements()) {
-      final String name = names.nextElement();
-      map.put(name, req.getAttribute(name));
-    }
-    return map;
-  }
-
-  @Override
   public String cookie(String name) {
     final jakarta.servlet.http.Cookie[] cookies = req.getCookies();
     if (cookies != null) {
