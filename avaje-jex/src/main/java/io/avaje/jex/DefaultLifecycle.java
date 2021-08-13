@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 class DefaultLifecycle implements AppLifecycle {
 
-  private static final Logger log = LoggerFactory.getLogger(AppLifecycle.class);
+  private static final Logger log = LoggerFactory.getLogger(Jex.class);
 
   private final List<Pair> shutdownRunnable = new ArrayList<>();
 
@@ -79,7 +79,7 @@ class DefaultLifecycle implements AppLifecycle {
         e.printStackTrace();
       }
     }
-    log.info("Jex lifecycle shutdown complete");
+    log.info("Jex shutdown complete");
   }
 
   static class Pair implements Comparable<Pair> {
