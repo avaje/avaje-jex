@@ -72,7 +72,6 @@ class JettyJexServer implements Jex.Server {
       server.stop();
       log.trace("server http listeners stopped");
       lifecycle.status(AppLifecycle.Status.STOPPED);
-      log.info("shutdown complete");
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
