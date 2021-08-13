@@ -30,9 +30,11 @@ class JettyJexServer implements Jex.Server {
   private final ServiceManager serviceManager;
   private final JettyServerConfig config;
   private final AppLifecycle lifecycle;
+  private final long startTime;
   private Server server;
 
   JettyJexServer(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
+    this.startTime = System.currentTimeMillis();
     this.jex = jex;
     this.lifecycle = jex.lifecycle();
     this.routes = routes;
@@ -147,14 +149,15 @@ class JettyJexServer implements Jex.Server {
   }
 
   private void logOnStart(org.eclipse.jetty.server.Server server) {
+    long startup = System.currentTimeMillis() - startTime;
     for (Connector c : server.getConnectors()) {
       String virtualThreads = config.virtualThreads() ? "with virtualThreads" : "";
       if (c instanceof ServerConnector) {
         ServerConnector sc = (ServerConnector) c;
         String host = (sc.getHost() == null) ? "0.0.0.0" : sc.getHost();
-        log.info("Listening with {} {}:{} @{}ms {}", sc.getProtocols(), host, sc.getLocalPort(), Uptime.getUptime(), virtualThreads);
+        log.info("Listening with {} {}:{} in {}ms @{}ms {}", sc.getProtocols(), host, sc.getLocalPort(), startup, Uptime.getUptime(), virtualThreads);
       } else {
-        log.info("bind to {} @{}ms {}", c, Uptime.getUptime(), virtualThreads);
+        log.info("bind to {} in {}ms @{}ms {}", c, startup, Uptime.getUptime(), virtualThreads);
       }
     }
   }

@@ -19,7 +19,6 @@ public class JdkServerStart implements SpiStartServer {
 
   @Override
   public Jex.Server start(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
-
     final ServiceManager manager = new ServiceManager(serviceManager, "http", "");
     BaseHandler handler = new BaseHandler(routes, manager);
     try {
@@ -30,10 +29,10 @@ public class JdkServerStart implements SpiStartServer {
         server.setExecutor(executor);
       }
       int port = jex.config.port;
-      log.debug("starting server on port {}", port);
       server.bind(new InetSocketAddress(port), 0);
       server.start();
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
+      log.info("started server on port {}", port);
       return new JdkJexServer(server, jex.lifecycle(), handler);
 
     } catch (IOException e) {
