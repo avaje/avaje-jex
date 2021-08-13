@@ -34,6 +34,5 @@ class JdkJexServer implements Jex.Server {
     server.stop(0);
     log.trace("server http listeners stopped");
     lifecycle.status(AppLifecycle.Status.STOPPED);
-    log.info("shutdown complete");
   }
 }

@@ -49,7 +49,6 @@ class GrizzlyJexServer implements Jex.Server {
         }
         log.trace("server http listeners stopped");
         lifecycle.status(AppLifecycle.Status.STOPPED);
-        log.info("shutdown complete");
       }
     } finally {
       lock.unlock();
