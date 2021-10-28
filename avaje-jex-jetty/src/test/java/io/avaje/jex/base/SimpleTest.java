@@ -25,6 +25,7 @@ class SimpleTest {
         .get("/", ctx -> ctx.text("hello"))
         .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id") + "|match:" + ctx.matchedPath()))
         .get("/one/{id}/{b}", ctx -> ctx.text("path:" + ctx.pathParamMap() + "|query:" + ctx.queryParam("z") + "|match:" + ctx.matchedPath()))
+        .get("/two", ctx -> ctx.text("query:" + ctx.queryParam("z", "defVal")))
         .get("/queryParamMap", ctx -> ctx.text("qpm: "+ctx.queryParamMap()))
         .get("/queryParams", ctx -> ctx.text("qps: "+ctx.queryParams("a")))
         .get("/queryString", ctx -> ctx.text("qs: "+ctx.queryString()))
@@ -87,6 +88,27 @@ class SimpleTest {
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("path:{id=fo, b=ba}|query:42|match:/one/{id}/{b}");
+  }
+
+  @Test
+  void getTwo_withParam() {
+    var res = pair.request()
+      .path("two").queryParam("z", "hello").GET().asString();
+
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).isEqualTo("query:hello");
+
+    res = pair.request()
+      .path("two").GET().asString();
+
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).isEqualTo("query:defVal");
+
+    res = pair.request()
+      .path("two").queryParam("notZ", "hello").GET().asString();
+
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).isEqualTo("query:defVal");
   }
 
   @Test

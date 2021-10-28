@@ -134,6 +134,16 @@ public interface Context {
   String queryParam(String name);
 
   /**
+   * Return the first query parameter value or the default value if it does not exist.
+   *
+   * @param name The query parameter name
+   */
+  default String queryParam(String name, String defaultValue) {
+    String val = queryParam(name);
+    return val != null ? val : defaultValue;
+  }
+
+  /**
    * Return all the query parameters for the given parameter name.
    */
   List<String> queryParams(String name);
