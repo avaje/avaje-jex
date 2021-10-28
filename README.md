@@ -1,5 +1,6 @@
-[![Maven Central](https://img.shields.io/maven-central/v/io.avaje/avaje-jex-parent.svg?label=Maven%20Central)](https://mvnrepository.com/artifact/io.avaje/avaje-jex-parent)
 [![Build](https://github.com/avaje/avaje-jex/actions/workflows/build.yml/badge.svg)](https://github.com/avaje/avaje-jex/actions/workflows/build.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/io.avaje/avaje-jex-parent.svg?label=Maven%20Central)](https://mvnrepository.com/artifact/io.avaje/avaje-jex-parent)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/avaje/avaje-jex/blob/master/LICENSE)
 
 # avaje-jex
 
