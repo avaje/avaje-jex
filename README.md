@@ -1,3 +1,6 @@
+[![Maven Central](https://img.shields.io/maven-central/v/io.avaje/avaje-jex-parent.svg?label=Maven%20Central)](https://mvnrepository.com/artifact/io.avaje/avaje-jex-parent)
+[![Build](https://github.com/avaje/avaje-jex/actions/workflows/build.yml/badge.svg)](https://github.com/avaje/avaje-jex/actions/workflows/build.yml)
+
 # avaje-jex
 
 Java cut down version of https://javalin.io
