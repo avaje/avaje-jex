@@ -7,7 +7,7 @@
   <parent>
     <artifactId>java11-oss</artifactId>
     <groupId>org.avaje</groupId>
-    <version>3.2</version>
+    <version>3.3</version>
   </parent>
 
   <artifactId>avaje-jex-loomjetty</artifactId>
@@ -45,6 +45,25 @@
             --enable-preview
           </compilerArgs>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.8</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>${nexus.staging.autoReleaseAfterClose}</autoReleaseAfterClose>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.15</version> <!-- apparently this needs to be exactly this version -->
+          </dependency>
+        </dependencies>
       </plugin>
 
       <plugin>
