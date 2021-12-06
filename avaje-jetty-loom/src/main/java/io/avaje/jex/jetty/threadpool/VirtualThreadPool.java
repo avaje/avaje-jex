@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
  */
 public class VirtualThreadPool implements ThreadPool {
 
-  private final ExecutorService executorService = Executors.newVirtualThreadExecutor();
+  private final ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
 
   @Override
   public void execute(Runnable command) {
