@@ -1,6 +1,7 @@
 import io.avaje.jex.TemplateRender;
 import io.avaje.jex.core.BootstapServiceManager;
 import io.avaje.jex.routes.BootstrapRoutes;
+import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.SpiRoutesProvider;
 import io.avaje.jex.spi.SpiServiceManagerProvider;
 import io.avaje.jex.spi.SpiStartServer;
@@ -21,6 +22,7 @@ module io.avaje.jex {
   uses SpiRoutesProvider;
   uses SpiServiceManagerProvider;
   uses SpiStartServer;
+  uses JsonService;
 
   provides SpiRoutesProvider with BootstrapRoutes;
   provides SpiServiceManagerProvider with BootstapServiceManager;

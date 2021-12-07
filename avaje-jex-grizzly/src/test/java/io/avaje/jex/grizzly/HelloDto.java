@@ -1,5 +1,8 @@
 package io.avaje.jex.grizzly;
 
+//import io.avaje.jsonb.Json;
+
+//@Json
 public class HelloDto {
 
   public long id;

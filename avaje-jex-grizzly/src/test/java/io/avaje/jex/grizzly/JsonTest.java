@@ -1,6 +1,7 @@
 package io.avaje.jex.grizzly;
 
 import io.avaje.jex.Jex;
+//import io.avaje.jex.core.JsonbJsonService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
@@ -27,6 +28,7 @@ class JsonTest {
 
   static TestPair init() {
     Jex app = Jex.create()
+      //.configure(jex -> jex.jsonService(new JsonbJsonService()))
       .routing(routing -> routing
         .get("/", ctx -> ctx.json(HelloDto.rob())) //.header("x2-foo","asd")
         .get("/iterate", ctx -> ctx.jsonStream(ITERATOR))

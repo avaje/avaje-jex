@@ -147,11 +147,13 @@ class CoreServiceManager implements SpiServiceManager {
       if (jsonService != null) {
         return jsonService;
       }
-      return detectJackson() ? defaultJacksonService() : null;
+      return ServiceLoader.load(JsonService.class)
+        .findFirst()
+        .orElseGet(this::defaultJacksonService);
     }
 
     JsonService defaultJacksonService() {
-      return new JacksonJsonService();
+      return detectJackson() ? new JacksonJsonService() : null;
     }
 
     boolean detectJackson() {

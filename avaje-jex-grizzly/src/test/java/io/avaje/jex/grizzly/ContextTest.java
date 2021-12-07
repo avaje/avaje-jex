@@ -2,6 +2,7 @@ package io.avaje.jex.grizzly;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
+//import io.avaje.jex.core.JsonbJsonService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +21,7 @@ class ContextTest {
     var me = new ContextTest();
 
     final Jex app = Jex.create()
+      //.configure(jex -> jex.jsonService(new JsonbJsonService()))
       .routing(routing -> routing
         .get("/", ctx -> ctx.text("ze-get"))
         .post("/", ctx -> ctx.text("ze-post"))
