@@ -20,12 +20,6 @@
       <groupId>io.avaje</groupId>
       <artifactId>avaje-jex</artifactId>
       <version>2.1-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.avaje</groupId>
-      <artifactId>avaje-jex-jetty</artifactId>
-      <version>2.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
@@ -33,6 +27,14 @@
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
       <version>${freemarker.version}</version>
+    </dependency>
+
+    <!-- test dependencies -->
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-jex-jetty</artifactId>
+      <version>2.1-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -43,19 +45,5 @@
     </dependency>
 
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <argLine>
-            --add-modules io.avaje.jex.jetty
-          </argLine>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

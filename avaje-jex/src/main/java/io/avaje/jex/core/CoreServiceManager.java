@@ -153,7 +153,12 @@ class CoreServiceManager implements SpiServiceManager {
     }
 
     JsonService defaultJacksonService() {
-      return detectJackson() ? new JacksonJsonService() : null;
+      try {
+        return detectJackson() ? new JacksonJsonService() : null;
+      } catch (IllegalAccessError e) {
+        // not in module path
+        return null;
+      }
     }
 
     boolean detectJackson() {

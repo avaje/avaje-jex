@@ -16,7 +16,7 @@ module io.avaje.jex.jetty {
   requires transitive org.eclipse.jetty.io;
   requires transitive org.eclipse.jetty.util;
 
-  requires transitive com.fasterxml.jackson.databind;
+  requires static com.fasterxml.jackson.databind;
 
   provides SpiStartServer with JettyStartServer;
 }
