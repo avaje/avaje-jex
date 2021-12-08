@@ -208,6 +208,20 @@ class PathParserTest {
   }
 
   @Test
+  void withColonLiteral() {
+    final PathParser pathParser = new PathParser("/path/my:action", true);
+    assertThat(pathParser.segmentCount()).isEqualTo(2);
+    assertThat(pathParser.literal()).isTrue();
+  }
+
+  @Test
+  void withColonLiteral2() {
+    final PathParser pathParser = new PathParser("/path/to/my:action", true);
+    assertThat(pathParser.segmentCount()).isEqualTo(3);
+    assertThat(pathParser.literal()).isTrue();
+  }
+
+  @Test
   void matches_splat0() {
 
     final PathParser pathParser = new PathParser("/{a}/*", true);
