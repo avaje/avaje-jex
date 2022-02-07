@@ -38,7 +38,7 @@ class JexHttpContext implements SpiContext {
     this.req = req;
     this.res = res;
     this.matchedPath = matchedPath;
-    this.pathParams = Collections.emptyMap();
+    this.pathParams = emptyMap();
   }
 
   JexHttpContext(ServiceManager mgr, HttpServletRequest req, HttpServletResponse res, String matchedPath, Map<String, String> pathParams) {
@@ -288,13 +288,17 @@ class JexHttpContext implements SpiContext {
   @SuppressWarnings("unchecked")
   @Override
   public <T> T sessionAttribute(String key) {
-    return (T) req.getSession().getAttribute(key);
+    HttpSession session = req.getSession(false);
+    return session == null ? null : (T) session.getAttribute(key);
   }
 
   @Override
   public Map<String, Object> sessionAttributeMap() {
     final Map<String, Object> map = new LinkedHashMap<>();
-    final HttpSession session = req.getSession();
+    final HttpSession session = req.getSession(false);
+    if (session == null) {
+      return emptyMap();
+    }
     final Enumeration<String> names = session.getAttributeNames();
     while (names.hasMoreElements()) {
       final String name = names.nextElement();

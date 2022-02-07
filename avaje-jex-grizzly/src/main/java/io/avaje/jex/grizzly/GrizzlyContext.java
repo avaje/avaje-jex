@@ -8,6 +8,7 @@ import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
+import org.glassfish.grizzly.http.server.Session;
 import org.glassfish.grizzly.http.util.ContentType;
 
 import java.io.IOException;
@@ -295,12 +296,14 @@ class GrizzlyContext implements Context, SpiContext {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T sessionAttribute(String key) {
-    return (T) request.getSession().getAttribute(key);
+    Session session = request.getSession(false);
+    return session == null ? null : (T) session.getAttribute(key);
   }
 
   @Override
   public Map<String, Object> sessionAttributeMap() {
-    return request.getSession().attributes();
+    Session session = request.getSession(false);
+    return session == null ? emptyMap() : session.attributes();
   }
 
   @Override
