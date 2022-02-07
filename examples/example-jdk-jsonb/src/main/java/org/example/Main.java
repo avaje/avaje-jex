@@ -16,7 +16,8 @@ import java.util.Set;
 
 public class Main {
 
-  private static final Logger log = LoggerFactory.getLogger(Main.class);
+  //private static final Logger log = LoggerFactory.getLogger(Main.class);
+  private static final  System.Logger log = System.getLogger("org.example");
 
   public static void main(String[] args) {
 
@@ -27,6 +28,7 @@ public class Main {
       //.attribute(Executor.class, Executors.newVirtualThreadPerTaskExecutor())
       .routing(routing -> routing
         .get("/", ctx -> ctx.text("hello world"))
+        .get("/kevin", Main::version)
         .get("/foo/{id}", Main::fooBean)
         .get("/delay", Main::delay)
         .get("/dump", ctx -> {
@@ -38,6 +40,11 @@ public class Main {
       .start();
   }
 
+  private static void version(Context ctx) {
+    ctx.text("version 1.4");
+    log.log(System.Logger.Level.INFO, "hello version 1.4");
+  }
+
   private static void fooBean(Context ctx) {
     HelloDto bean = new HelloDto();
     bean.id = Integer.parseInt(ctx.pathParam("id"));
@@ -46,7 +53,7 @@ public class Main {
   }
 
   private static void delay(Context ctx) {
-    log.info("delay start");
+    log.log(System.Logger.Level.INFO, "delay start");
     try {
       Thread.sleep(5_000);
     } catch (InterruptedException e) {
@@ -54,7 +61,7 @@ public class Main {
       e.printStackTrace();
     }
     ctx.text("delay done");
-    log.info("delay done");
+    log.log(System.Logger.Level.INFO, "delay done");
   }
 
   private static void dumpThreadCount() {

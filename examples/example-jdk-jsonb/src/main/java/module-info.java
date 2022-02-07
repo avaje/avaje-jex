@@ -4,8 +4,7 @@ module example.jdkTwo {
   requires org.slf4j;
   requires io.avaje.jsonb;
 
-  //requires static io.avaje.jsonb.generator;
-
+  requires io.avaje.logging.slf4j;
   provides io.avaje.jsonb.Jsonb.Component with org.example.jsonb.GeneratedJsonComponent;
-  //exports org.example to com.fasterxml.jackson.databind;
+
 }
