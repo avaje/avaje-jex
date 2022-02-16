@@ -30,7 +30,7 @@ public class JsonbJsonService implements JsonService {
   public void jsonWrite(Object bean, SpiContext ctx) {
     // gzip compression etc ?
     try (JsonWriter writer = jsonb.writer(ctx.outputStream())) {
-      jsonb.type(Object.class).toJson(writer, bean);
+      jsonb.type(Object.class).toJson(bean, writer);
     }
   }
 
@@ -41,11 +41,11 @@ public class JsonbJsonService implements JsonService {
       if (iterator.hasNext()) {
         T first = iterator.next();
         JsonType<T> type = jsonb.typeOf(first);
-        type.toJson(writer, first);
-        writer.writeRaw('\n');
+        type.toJson(first, writer);
+        writer.writeNewLine();
         while (iterator.hasNext()) {
-          type.toJson(writer, iterator.next());
-          writer.writeRaw('\n');
+          type.toJson(iterator.next(), writer);
+          writer.writeNewLine();
         }
       }
     }
