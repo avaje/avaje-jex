@@ -165,10 +165,7 @@ public class Jex {
    */
   public Jex configureWith(BeanScope beanScope) {
     lifecycle.onShutdown(beanScope::close);
-    final AccessManager accessManager = beanScope.get(AccessManager.class);
-    if (accessManager != null) {
-      accessManager(accessManager);
-    }
+    beanScope.getOptional(AccessManager.class).ifPresent(this::accessManager);
     for (Plugin plugin : beanScope.list(Plugin.class)) {
       plugin.apply(this);
     }

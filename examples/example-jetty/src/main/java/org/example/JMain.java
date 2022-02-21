@@ -20,12 +20,17 @@ public class JMain {
       .configureWith(beanScope)
       .routing(routing -> routing
         .get("/foo/{id}", JMain::helloBean)
+        .get("/hi", JMain::hello)
         .get("/delay", JMain::delay)
       )
       .staticFiles().addClasspath("/static", "content")
 //      .staticFiles().addExternal("/", "/tmp/junk")
       .port(7003)
       .start();
+  }
+
+  private static void hello(Context context) {
+    context.text("hello");
   }
 
   private static void helloBean(Context ctx) {
