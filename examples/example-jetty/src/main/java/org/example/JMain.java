@@ -3,8 +3,11 @@ package org.example;
 import io.avaje.inject.BeanScope;
 import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
+import io.avaje.jex.jetty.JettyServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.locks.LockSupport;
 
 public class JMain {
 
@@ -16,11 +19,15 @@ public class JMain {
 
   void start(BeanScope beanScope) {
 
+    var jettyServerConfig = new JettyServerConfig().virtualThreads(false);
     Jex.create()
+      .configure(jx -> {
+        jx.serverConfig(jettyServerConfig);
+      })
       .configureWith(beanScope)
       .routing(routing -> routing
+        .get("/", JMain::hello)
         .get("/foo/{id}", JMain::helloBean)
-        .get("/hi", JMain::hello)
         .get("/delay", JMain::delay)
       )
       .staticFiles().addClasspath("/static", "content")

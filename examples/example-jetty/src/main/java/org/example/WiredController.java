@@ -2,10 +2,12 @@ package org.example;
 
 import io.avaje.http.api.Controller;
 import io.avaje.http.api.Get;
+import io.avaje.http.api.Path;
 import io.avaje.http.api.Produces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Path("/wired")
 @Controller
 public class WiredController implements AutoCloseable {
 

@@ -17,12 +17,12 @@ public class Main {
     Jex.create()
       //.attribute(Executor.class, Executors.newVirtualThreadExecutor())
       .routing(routing -> routing
-        .get("/", ctx -> ctx.text("hello world"))
+        .get("/", ctx -> ctx.text("hello"))
         .get("/foo/{id}", Main::fooBean)
         .get("/delay", Main::delay)
         .get("/dump", ctx -> dumpThreadCount())
       )
-      .port(7003)
+      .port(7004)
       .start();
   }
 
