@@ -149,12 +149,17 @@ class CoreServiceManager implements SpiServiceManager {
       }
       return ServiceLoader.load(JsonService.class)
         .findFirst()
-        .orElseGet(this::defaultJacksonService);
+        .orElseGet(this::defaultJsonService);
     }
 
-    JsonService defaultJacksonService() {
+    /**
+     * Create a reasonable default JsonService if Jackson or avaje-jsonb are present.
+     */
+    JsonService defaultJsonService() {
       try {
-        return detectJackson() ? new JacksonJsonService() : null;
+        return detectJackson() ? new JacksonJsonService()
+          : detectJsonb() ? new JsonbJsonService()
+          : null;
       } catch (IllegalAccessError e) {
         // not in module path
         return null;
@@ -162,8 +167,16 @@ class CoreServiceManager implements SpiServiceManager {
     }
 
     boolean detectJackson() {
+      return detectTypeExists("com.fasterxml.jackson.databind.ObjectMapper");
+    }
+
+    boolean detectJsonb() {
+      return detectTypeExists("io.avaje.jsonb.Jsonb");
+    }
+
+    private boolean detectTypeExists(String className) {
       try {
-        Class.forName("com.fasterxml.jackson.databind.ObjectMapper");
+        Class.forName(className);
         return true;
       } catch (ClassNotFoundException e) {
         return false;
