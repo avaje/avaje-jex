@@ -1,24 +1,18 @@
 package io.avaje.jex.jetty;
 
 import io.avaje.jex.*;
-import io.avaje.jex.spi.SpiServiceManager;
 import io.avaje.jex.spi.SpiRoutes;
+import io.avaje.jex.spi.SpiServiceManager;
 import jakarta.servlet.MultipartConfigElement;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.session.SessionHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.Uptime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.List;
 
 class JettyJexServer implements Jex.Server {
@@ -92,7 +86,7 @@ class JettyJexServer implements Jex.Server {
 
   protected void createServer() {
     server = initServer();
-    server.setHandler(initContextHandler());
+    server.setHandler(initJettyHandler());
     if (server.getStopAtShutdown()) {
       // do not use Jetty ShutdownHook, use the AppLifecycle one instead
       server.setStopAtShutdown(false);
@@ -109,22 +103,14 @@ class JettyJexServer implements Jex.Server {
     return new JettyBuilder(jex, config).build();
   }
 
-  protected ServletContextHandler initContextHandler() {
-    final ServletContextHandler sc = initServletContextHandler();
-    sc.setSessionHandler(initSessionHandler());
-    sc.addServlet(initServletHolder(), "/*");
-    config.contextHandler(sc);
-    return sc;
-  }
-
-  protected ServletHolder initServletHolder() {
-    final StaticHandler staticHandler = initStaticHandler();
-    return new ServletHolder(new JexHttpServlet(jex, routes, serviceManager, staticHandler));
-  }
-
-  protected ServletContextHandler initServletContextHandler() {
-    final ServletContextHandler ch = config.contextHandler();
-    return ch != null ? ch : new ContextHandler(jex.config.contextPath, config.sessions(), config.security());
+  protected Handler initJettyHandler() {
+    var baseHandler = new JexHandler(jex, routes, serviceManager, initStaticHandler());
+    if (!config.sessions()) {
+      return baseHandler;
+    }
+    var sessionHandler = initSessionHandler();
+    sessionHandler.setHandler(baseHandler);
+    return sessionHandler;
   }
 
   protected SessionHandler initSessionHandler() {
@@ -161,18 +147,5 @@ class JettyJexServer implements Jex.Server {
     }
   }
 
-  private static class ContextHandler extends ServletContextHandler {
 
-    ContextHandler(String contextPath, boolean sessions, boolean security) {
-      super(null, contextPath, sessions, security);
-    }
-
-    @Override
-    public void doHandle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-      request.setAttribute("jetty-target", target);
-      request.setAttribute("jetty-request", baseRequest);
-      nextHandle(target, baseRequest, request, response);
-      //super.doHandle(target, baseRequest,request, response);
-    }
-  }
 }

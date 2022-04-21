@@ -70,9 +70,7 @@ class StaticHandler {
     return "Static resource directory with path: '" + config.getPath() + "' does not exist.";
   }
 
-  boolean handle(HttpServletRequest req, HttpServletResponse res) {
-    final String target = (String) req.getAttribute("jetty-target");
-    final Request baseRequest = (Request) req.getAttribute("jetty-request");
+  boolean handle(String target, Request baseRequest, HttpServletRequest req, HttpServletResponse res) {
     for (ResourceHandler handler : handlers) {
       try {
         var resource = handler.getResource(target);

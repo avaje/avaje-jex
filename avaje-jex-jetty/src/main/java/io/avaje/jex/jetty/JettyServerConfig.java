@@ -1,9 +1,9 @@
 package io.avaje.jex.jetty;
 
 import io.avaje.jex.ServerConfig;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.session.SessionHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class JettyServerConfig implements ServerConfig {
    */
   private int maxThreads;
   private SessionHandler sessionHandler;
-  private ServletContextHandler contextHandler;
+  private Handler contextHandler;
   private Server server;
   private final List<Consumer<JettyServerConfig>> configureCallback = new ArrayList<>();
 
@@ -78,14 +78,14 @@ public class JettyServerConfig implements ServerConfig {
     return this;
   }
 
-  public ServletContextHandler contextHandler() {
+  public Handler contextHandler() {
     return contextHandler;
   }
 
   /**
-   * Set the ServletContextHandler to use. When not set the one is created automatically.
+   * Set the Jetty Handler to use. When not set one is created automatically.
    */
-  public JettyServerConfig contextHandler(ServletContextHandler contextHandler) {
+  public JettyServerConfig contextHandler(Handler contextHandler) {
     this.contextHandler = contextHandler;
     return this;
   }

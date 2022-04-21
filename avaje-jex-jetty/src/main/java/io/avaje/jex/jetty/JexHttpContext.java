@@ -321,7 +321,8 @@ class JexHttpContext implements SpiContext {
 
   @Override
   public String contextPath() {
-    return req.getContextPath();
+    String path = req.getContextPath();
+    return path == null ? "" : path;
   }
 
   @Override

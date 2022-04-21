@@ -11,7 +11,6 @@ module io.avaje.jex.jetty {
   requires transitive jetty.servlet.api;
   requires transitive org.slf4j;
   requires transitive org.eclipse.jetty.http;
-  requires transitive org.eclipse.jetty.servlet;
   requires transitive org.eclipse.jetty.server;
   requires transitive org.eclipse.jetty.io;
   requires transitive org.eclipse.jetty.util;
