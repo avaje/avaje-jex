@@ -8,6 +8,7 @@ module io.avaje.jex.jdk {
   requires transitive jdk.httpserver;
   requires transitive org.slf4j;
 
+  requires static com.fasterxml.jackson.core;
   requires static com.fasterxml.jackson.databind;
 
   provides SpiStartServer with JdkServerStart;
