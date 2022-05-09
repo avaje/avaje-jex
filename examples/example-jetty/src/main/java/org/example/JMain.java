@@ -21,6 +21,7 @@ public class JMain {
 
     var jettyServerConfig = new JettyServerConfig().virtualThreads(false);
     Jex.create()
+      .serverConfig(jettyServerConfig)
       .configure(jx -> {
         jx.serverConfig(jettyServerConfig);
       })
