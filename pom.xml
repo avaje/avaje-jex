@@ -30,7 +30,6 @@
     <module>avaje-jex-jetty</module>
     <module>avaje-jex-jdk</module>
     <module>avaje-jex-grizzly</module>
-    <module>examples</module>
       <!-- <module>avaje-jex-websockets</module> -->
   </modules>
 
