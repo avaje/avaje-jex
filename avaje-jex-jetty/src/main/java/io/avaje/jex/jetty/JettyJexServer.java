@@ -25,11 +25,13 @@ class JettyJexServer implements Jex.Server {
   private final JettyServerConfig config;
   private final AppLifecycle lifecycle;
   private final long startTime;
+  private final JexConfig jexConfig;
   private Server server;
 
   JettyJexServer(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
     this.startTime = System.currentTimeMillis();
     this.jex = jex;
+    this.jexConfig = jex.config();
     this.lifecycle = jex.lifecycle();
     this.routes = routes;
     this.serviceManager = new ServiceManager(serviceManager, initMultiPart());
@@ -41,12 +43,12 @@ class JettyJexServer implements Jex.Server {
   }
 
   MultipartUtil initMultiPart() {
-    return new MultipartUtil(initMultipartConfigElement(jex.config.multipartConfig));
+    return new MultipartUtil(initMultipartConfigElement(jexConfig.multipartConfig()));
   }
 
   MultipartConfigElement initMultipartConfigElement(UploadConfig uploadConfig) {
     if (uploadConfig == null) {
-      final int fileThreshold = jex.config.multipartFileThreshold;
+      final int fileThreshold = jexConfig.multipartFileThreshold();
       return new MultipartConfigElement(System.getProperty("java.io.tmpdir"), -1, -1, fileThreshold);
     }
     return new MultipartConfigElement(uploadConfig.location(), uploadConfig.maxFileSize(), uploadConfig.maxRequestSize(), uploadConfig.fileSizeThreshold());
@@ -77,7 +79,7 @@ class JettyJexServer implements Jex.Server {
       server.start();
       logOnStart(server);
       lifecycle.registerShutdownHook(this::shutdown);
-      jex.lifecycle().status(AppLifecycle.Status.STARTED);
+      lifecycle.status(AppLifecycle.Status.STARTED);
       return this;
     } catch (Exception e) {
       throw new IllegalStateException("Error starting server", e);

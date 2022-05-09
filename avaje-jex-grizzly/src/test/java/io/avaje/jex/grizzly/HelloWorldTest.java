@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.net.http.HttpResponse;
-import java.util.Map;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

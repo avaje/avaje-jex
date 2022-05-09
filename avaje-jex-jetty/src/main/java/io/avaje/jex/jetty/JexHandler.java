@@ -6,13 +6,11 @@ import io.avaje.jex.Routing;
 import io.avaje.jex.http.NotFoundResponse;
 import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
-import java.io.IOException;
 import java.util.Map;
 
 class JexHandler extends AbstractHandler {
@@ -21,17 +19,15 @@ class JexHandler extends AbstractHandler {
   private final SpiRoutes routes;
   private final ServiceManager manager;
   private final StaticHandler staticHandler;
-  private final boolean prefer405;
 
   JexHandler(Jex jex, SpiRoutes routes, ServiceManager manager, StaticHandler staticHandler) {
     this.routes = routes;
     this.manager = manager;
     this.staticHandler = staticHandler;
-    this.prefer405 = jex.config.prefer405;
   }
 
   @Override
-  public void handle(String target, Request baseRequest, HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
+  public void handle(String target, Request baseRequest, HttpServletRequest req, HttpServletResponse res) {
     try {
       final Routing.Type routeType = method(req);
       final String uri = req.getRequestURI();

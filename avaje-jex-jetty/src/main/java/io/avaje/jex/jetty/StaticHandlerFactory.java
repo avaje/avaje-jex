@@ -9,7 +9,7 @@ import java.util.List;
 class StaticHandlerFactory {
 
   StaticHandler build(Server server, Jex jex, List<StaticFileSource> sourceList) {
-    StaticHandler handler = new StaticHandler(jex.config.preCompressStaticFiles, server);
+    StaticHandler handler = new StaticHandler(jex.config().preCompressStaticFiles(), server);
     for (StaticFileSource source : sourceList) {
       handler.addStaticFileConfig(source);
     }

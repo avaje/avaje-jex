@@ -21,7 +21,7 @@ public class GrizzlyServerStart implements SpiStartServer {
     final ServiceManager manager = new ServiceManager(serviceManager, "http", "");
     RouteHandler handler = new RouteHandler(routes, manager);
 
-    final int port = jex.config.port;
+    final int port = jex.config().port();
     final HttpServer httpServer = new HttpServerBuilder()
       //.addHandler(clStaticHttpHandler, "cl")
       //.addHandler(staticHttpHandler, "static")

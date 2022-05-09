@@ -1,5 +1,6 @@
 package io.avaje.jex.jetty;
 
+import io.avaje.jex.JexConfig;
 import io.avaje.jex.Jex;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -18,30 +19,30 @@ class JettyBuilder {
 
   private static final Logger log = LoggerFactory.getLogger(JettyBuilder.class);
 
-  private final Jex.Config inner;
-  private final JettyServerConfig config;
+  private final JexConfig jexConfig;
+  private final JettyServerConfig jettyConfig;
 
-  JettyBuilder(Jex jex, JettyServerConfig config) {
-    this.inner = jex.config;
-    this.config = config;
+  JettyBuilder(Jex jex, JettyServerConfig jettyConfig) {
+    this.jexConfig = jex.config();
+    this.jettyConfig = jettyConfig;
   }
 
   Server build() {
     Server jetty = new Server(pool());
     ServerConnector connector = new ServerConnector(jetty);
-    connector.setPort(inner.port);
-    if (inner.host != null ) {
-      connector.setHost(inner.host);
+    connector.setPort(jexConfig.port());
+    if (jexConfig.host() != null ) {
+      connector.setHost(jexConfig.host());
     }
     jetty.setConnectors(new Connector[]{connector});
     return jetty;
   }
 
   private ThreadPool pool() {
-    if (config.virtualThreads()) {
+    if (jettyConfig.virtualThreads()) {
       return virtualThreadBasePool();
     } else {
-      return config.maxThreads() == 0 ? new QueuedThreadPool() : new QueuedThreadPool(config.maxThreads());
+      return jettyConfig.maxThreads() == 0 ? new QueuedThreadPool() : new QueuedThreadPool(jettyConfig.maxThreads());
     }
   }
 

@@ -1,10 +1,7 @@
 package io.avaje.jex.core;
 
 import io.avaje.jex.*;
-import io.avaje.jex.spi.HeaderKeys;
-import io.avaje.jex.spi.JsonService;
-import io.avaje.jex.spi.SpiContext;
-import io.avaje.jex.spi.SpiServiceManager;
+import io.avaje.jex.spi.*;
 
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
@@ -143,7 +140,7 @@ class CoreServiceManager implements SpiServiceManager {
     }
 
     JsonService initJsonService() {
-      final JsonService jsonService = jex.config.jsonService;
+      final JsonService jsonService = jex.config().jsonService();
       if (jsonService != null) {
         return jsonService;
       }
@@ -185,7 +182,7 @@ class CoreServiceManager implements SpiServiceManager {
 
     TemplateManager initTemplateMgr() {
       TemplateManager mgr = new TemplateManager();
-      mgr.register(jex.config.renderers);
+      mgr.register(jex.config().renderers());
       for (TemplateRender render : ServiceLoader.load(TemplateRender.class)) {
         mgr.registerDefault(render);
       }
