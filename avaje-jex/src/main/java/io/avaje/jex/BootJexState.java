@@ -1,9 +1,7 @@
-package boot;
+package io.avaje.jex;
 
 import io.avaje.config.Config;
 import io.avaje.inject.BeanScope;
-import io.avaje.jex.Jex;
-import io.avaje.jex.JexConfig;
 
 class BootJexState {
 

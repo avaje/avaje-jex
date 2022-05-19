@@ -18,15 +18,15 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.avaje.kate</groupId>
-      <artifactId>avaje-kate</artifactId>
-      <version>0.9.2</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.avaje</groupId>
       <artifactId>logback</artifactId>
       <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.avaje.kate</groupId>
+      <artifactId>avaje-kate</artifactId>
+      <version>0.9.3</version>
     </dependency>
 
     <!-- Not normally here, just for some testing here-->
@@ -46,15 +46,14 @@
     <dependency>
       <groupId>io.avaje.kate</groupId>
       <artifactId>avaje-kate-test</artifactId>
-      <version>0.9.2</version>
+      <version>0.9.3</version>
       <scope>test</scope>
     </dependency>
-
 
     <dependency>
       <groupId>io.avaje.kate</groupId>
       <artifactId>avaje-kate-apt</artifactId>
-      <version>0.9.2</version>
+      <version>0.9.3</version>
       <scope>provided</scope>
     </dependency>
 

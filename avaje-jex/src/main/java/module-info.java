@@ -19,6 +19,7 @@ module io.avaje.jex {
   requires static com.fasterxml.jackson.databind;
   requires static io.avaje.jsonb;
   requires static io.avaje.inject;
+  requires static io.avaje.config;
 
   uses TemplateRender;
   uses SpiRoutesProvider;
