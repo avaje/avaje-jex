@@ -68,7 +68,7 @@ public final class JexInjectPlugin implements Plugin {
         .port(0);
 
       // get a HttpClientContext.Builder provided by dependency injection test scope or new one up
-      this.httpClientBuilder = beanScope.getOptional(HttpClientContext.Builder.class).orElse(HttpClientContext.newBuilder());
+      this.httpClientBuilder = beanScope.getOptional(HttpClientContext.Builder.class).orElse(HttpClientContext.builder());
       this.server = jex.start();
       this.port = server.port();
     }

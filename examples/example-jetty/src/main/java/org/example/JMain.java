@@ -14,7 +14,7 @@ public class JMain {
   private static final Logger log = LoggerFactory.getLogger(JMain.class);
 
   public static void main(String[] args) {
-    new JMain().start(BeanScope.newBuilder().build());
+    new JMain().start(BeanScope.builder().build());
   }
 
   void start(BeanScope beanScope) {

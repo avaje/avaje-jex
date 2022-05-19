@@ -28,7 +28,7 @@ class JdkJexServerTest {
       .port(8093)
       .start();
 
-    final HttpClientContext client = HttpClientContext.newBuilder()
+    final HttpClientContext client = HttpClientContext.builder()
       .baseUrl("http://localhost:8093")
       .bodyAdapter(new JacksonBodyAdapter())
       .build();

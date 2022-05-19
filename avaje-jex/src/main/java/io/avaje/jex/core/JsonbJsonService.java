@@ -19,7 +19,7 @@ public class JsonbJsonService implements JsonService {
    * Create with defaults for Jsonb.
    */
   public JsonbJsonService() {
-    this.jsonb = Jsonb.newBuilder().build();
+    this.jsonb = Jsonb.builder().build();
   }
 
   /**

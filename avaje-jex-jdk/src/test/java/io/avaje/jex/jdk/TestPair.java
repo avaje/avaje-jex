@@ -54,7 +54,7 @@ public class TestPair {
     var jexServer = app.port(port).start();
 
     var url = "http://localhost:" + port;
-    var client = HttpClientContext.newBuilder()
+    var client = HttpClientContext.builder()
       .baseUrl(url)
       .bodyAdapter(new JacksonBodyAdapter())
       .requestTimeout(Duration.ofMinutes(2))

@@ -21,7 +21,7 @@ public class Main {
 
   public static void main(String[] args) {
 
-    Jsonb jsonb = Jsonb.newBuilder().build();//.add(new GeneratedJsonComponent()).build();
+    Jsonb jsonb = Jsonb.builder().build();//.add(new GeneratedJsonComponent()).build();
 
     Jex.create()
       .configure(config -> config.jsonService(new JsonbJsonService(jsonb)))

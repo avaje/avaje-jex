@@ -33,7 +33,7 @@ class HeadersTest {
       .port(port)
       .start();
 
-    client = HttpClientContext.newBuilder()
+    client = HttpClientContext.builder()
       .baseUrl("http://localhost:"+port)
       .bodyAdapter(new JacksonBodyAdapter())
       .build();

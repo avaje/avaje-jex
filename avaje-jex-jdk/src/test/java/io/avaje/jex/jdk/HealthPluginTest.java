@@ -37,7 +37,7 @@ class HealthPluginTest {
       .port(port);
 
     server =  jex.start();
-    client = HttpClientContext.newBuilder()
+    client = HttpClientContext.builder()
       .baseUrl("http://localhost:"+port)
       .bodyAdapter(new JacksonBodyAdapter())
       .build();

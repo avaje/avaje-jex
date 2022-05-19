@@ -11,7 +11,7 @@ public class ClientMain {
 
   public static void main(String[] args) {
 
-    final HttpClientContext ctx = HttpClientContext.newBuilder()
+    final HttpClientContext ctx = HttpClientContext.builder()
       .baseUrl("http://localhost:7003")
       .bodyAdapter(new JacksonBodyAdapter())
       .version(HttpClient.Version.HTTP_1_1)

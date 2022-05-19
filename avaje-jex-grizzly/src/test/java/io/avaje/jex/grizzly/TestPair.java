@@ -53,7 +53,7 @@ public class TestPair {
     var jexServer = app.port(port).start();
 
     var url = "http://localhost:" + port;
-    var client = HttpClientContext.newBuilder()
+    var client = HttpClientContext.builder()
       .baseUrl(url)
       .bodyAdapter(new JacksonBodyAdapter())
       .version(HttpClient.Version.HTTP_1_1)
