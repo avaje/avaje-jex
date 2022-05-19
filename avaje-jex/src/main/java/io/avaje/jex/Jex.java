@@ -112,9 +112,9 @@ public interface Jex {
   Jex configureWith(BeanScope beanScope);
 
   /**
-   * Configure via a lambda taking the jex instance.
+   * Configure via a lambda taking the JexConfig instance.
    */
-  Jex configure(Consumer<Jex> configure);
+  Jex configure(Consumer<JexConfig> configure);
 
   /**
    * Add an exception handler for the given exception type.

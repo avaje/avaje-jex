@@ -108,8 +108,8 @@ final class DJex implements Jex {
   }
 
   @Override
-  public Jex configure(Consumer<Jex> configure) {
-    configure.accept(this);
+  public Jex configure(Consumer<JexConfig> configure) {
+    configure.accept(config);
     return this;
   }
 

@@ -20,7 +20,7 @@ public class JMain {
   void start(BeanScope beanScope) {
 
     Jex.create()
-      .configure(jex -> jex.config().virtualThreads(true))
+      .configure(config -> config.virtualThreads(true))
       .configureWith(beanScope)
       .routing(routing -> routing
         .get("/", JMain::hello)
