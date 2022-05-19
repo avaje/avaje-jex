@@ -13,6 +13,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <jetty.version>11.0.9</jetty.version>
+    <surefire.useModulePath>false</surefire.useModulePath>
   </properties>
 
   <dependencies>
@@ -27,26 +28,22 @@
       <artifactId>jetty-server</artifactId>
       <version>${jetty.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.mashape.unirest</groupId>
+      <artifactId>unirest-java</artifactId>
+      <version>1.4.9</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.13.2.2</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <argLine>
-            --add-modules com.fasterxml.jackson.databind
-            --add-opens io.avaje.jex.jetty/io.avaje.jex.base=com.fasterxml.jackson.databind
-            --add-opens io.avaje.jex.jetty/io.avaje.jex=ALL-UNNAMED
-            --add-opens io.avaje.jex.jetty/io.avaje.jex.base=ALL-UNNAMED
-            --add-opens io.avaje.jex.jetty/io.avaje.jex.core=ALL-UNNAMED
-            --add-opens io.avaje.jex.jetty/io.avaje.jex.routes=ALL-UNNAMED
-            --add-opens io.avaje.jex.jetty/io.avaje.jex.jetty=ALL-UNNAMED
-          </argLine>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
