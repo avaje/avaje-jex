@@ -24,5 +24,10 @@ public class ClientMain {
     final HttpHeaders headers = res.headers();
     System.out.println("got " + res.body());
 
+    HelloDto bean = ctx.request()
+      .GET()
+      .bean(HelloDto.class);
+
+    System.out.println("bean " + bean);
   }
 }
