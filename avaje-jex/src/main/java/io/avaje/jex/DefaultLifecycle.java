@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 class DefaultLifecycle implements AppLifecycle {
@@ -13,14 +14,14 @@ class DefaultLifecycle implements AppLifecycle {
   private static final Logger log = LoggerFactory.getLogger(Jex.class);
 
   private final List<Pair> shutdownRunnable = new ArrayList<>();
-
   private final ReentrantLock lock = new ReentrantLock();
-
+  private final AtomicInteger next = new AtomicInteger(1000);
   private Status status = Status.STARTING;
+  private Hook shutdownHook;
 
   @Override
   public void onShutdown(Runnable onShutdown) {
-    onShutdown(onShutdown, 1000);
+    onShutdown(onShutdown, next.getAndIncrement());
   }
 
   @Override
@@ -35,8 +36,15 @@ class DefaultLifecycle implements AppLifecycle {
 
   @Override
   public void registerShutdownHook(Runnable onShutdown) {
-    Hook hook = new Hook(onShutdown);
-    Runtime.getRuntime().addShutdownHook(hook);
+    lock.lock();
+    try {
+      if (shutdownHook == null) {
+        shutdownHook = new Hook(onShutdown);
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
+      }
+    } finally {
+      lock.unlock();
+    }
   }
 
   static class Hook extends Thread {
@@ -79,7 +87,14 @@ class DefaultLifecycle implements AppLifecycle {
         e.printStackTrace();
       }
     }
+    removeShutdownHook();
     log.info("Jex shutdown complete");
+  }
+
+  private void removeShutdownHook() {
+    if (shutdownHook != null) {
+      Runtime.getRuntime().removeShutdownHook(shutdownHook);
+    }
   }
 
   static class Pair implements Comparable<Pair> {
