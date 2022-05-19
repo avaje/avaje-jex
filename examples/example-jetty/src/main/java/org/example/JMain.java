@@ -19,12 +19,8 @@ public class JMain {
 
   void start(BeanScope beanScope) {
 
-    var jettyServerConfig = new JettyServerConfig().virtualThreads(false);
     Jex.create()
-      .serverConfig(jettyServerConfig)
-      .configure(jx -> {
-        jx.serverConfig(jettyServerConfig);
-      })
+      .configure(jex -> jex.config().virtualThreads(true))
       .configureWith(beanScope)
       .routing(routing -> routing
         .get("/", JMain::hello)

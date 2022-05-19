@@ -68,6 +68,16 @@ public interface JexConfig {
   JexConfig renderer(String extension, TemplateRender renderer);
 
   /**
+   * Set to true to use virtual threads if supported. Defaults to false.
+   */
+  JexConfig virtualThreads(boolean virtualThreads);
+
+  /**
+   * Return true if virtual threads should be used.
+   */
+  boolean virtualThreads();
+
+  /**
    * Return the port to use.
    */
   int port();

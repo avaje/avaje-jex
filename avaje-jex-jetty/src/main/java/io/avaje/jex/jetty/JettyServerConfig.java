@@ -13,11 +13,7 @@ public class JettyServerConfig implements ServerConfig {
 
   private boolean sessions = true;
   private boolean security = true;
-  /**
-   * Set true to use Loom virtual threads for ThreadPool.
-   * This requires JDK 17 with Loom included.
-   */
-  private boolean virtualThreads;
+
   /**
    * Set maxThreads when using default QueuedThreadPool. Defaults to 200.
    */
@@ -42,18 +38,6 @@ public class JettyServerConfig implements ServerConfig {
 
   public JettyServerConfig security(boolean security) {
     this.security = security;
-    return this;
-  }
-
-  public boolean virtualThreads() {
-    return virtualThreads;
-  }
-
-  /**
-   * Set to true to use Loom virtual threads for the Jetty worker pool.
-   */
-  public JettyServerConfig virtualThreads(boolean virtualThreads) {
-    this.virtualThreads = virtualThreads;
     return this;
   }
 

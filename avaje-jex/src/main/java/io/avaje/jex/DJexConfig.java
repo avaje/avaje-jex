@@ -12,6 +12,7 @@ class DJexConfig implements JexConfig {
   private String contextPath = "/";
   private boolean health = true;
   private boolean ignoreTrailingSlashes = true;
+  private boolean virtualThreads;
 
   private boolean preCompressStaticFiles;
   private JsonService jsonService;
@@ -83,6 +84,17 @@ class DJexConfig implements JexConfig {
   @Override
   public JexConfig renderer(String extension, TemplateRender renderer) {
     renderers.put(extension, renderer);
+    return this;
+  }
+
+  @Override
+  public boolean virtualThreads() {
+    return virtualThreads;
+  }
+
+  @Override
+  public JexConfig virtualThreads(boolean virtualThreads) {
+    this.virtualThreads = virtualThreads;
     return this;
   }
 
