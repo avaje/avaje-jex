@@ -69,22 +69,16 @@ public final class JexInjectPlugin implements Plugin {
 
       // get a HttpClientContext.Builder provided by dependency injection test scope or new one up
       this.httpClientBuilder = beanScope.getOptional(HttpClientContext.Builder.class).orElse(HttpClientContext.newBuilder());
-      jex.lifecycle().onShutdown(beanScope::close);
       this.server = jex.start();
       this.port = server.port();
     }
 
     @Override
     public Object create(Class<?> type) {
-      try {
-        if (HttpClientContext.class.equals(type)) {
-          return clientContext();
-        }
-        return apiClient(type);
-      } catch (Throwable e) {
-        e.printStackTrace();
-        throw new RuntimeException(e);
+      if (HttpClientContext.class.equals(type)) {
+        return clientContext();
       }
+      return apiClient(type);
     }
 
     private Object apiClient(Class<?> clientInterface) {

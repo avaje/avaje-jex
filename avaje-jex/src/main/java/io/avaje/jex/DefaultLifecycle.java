@@ -6,10 +6,11 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
-class DefaultLifecycle implements AppLifecycle {
+final class DefaultLifecycle implements AppLifecycle {
 
   private static final Logger log = LoggerFactory.getLogger(Jex.class);
 
@@ -18,6 +19,7 @@ class DefaultLifecycle implements AppLifecycle {
   private final AtomicInteger next = new AtomicInteger(1000);
   private Status status = Status.STARTING;
   private Hook shutdownHook;
+  private final AtomicBoolean jvmStop = new AtomicBoolean();
 
   @Override
   public void onShutdown(Runnable onShutdown) {
@@ -39,7 +41,7 @@ class DefaultLifecycle implements AppLifecycle {
     lock.lock();
     try {
       if (shutdownHook == null) {
-        shutdownHook = new Hook(onShutdown);
+        shutdownHook = new Hook(onShutdown, jvmStop);
         Runtime.getRuntime().addShutdownHook(shutdownHook);
       }
     } finally {
@@ -48,12 +50,16 @@ class DefaultLifecycle implements AppLifecycle {
   }
 
   static class Hook extends Thread {
-    Hook(Runnable runnable) {
+    private final AtomicBoolean jvmStop;
+
+    Hook(Runnable runnable, AtomicBoolean jvmStop) {
       super(runnable, "JexHook");
+      this.jvmStop = jvmStop;
     }
 
     @Override
     public void run() {
+      jvmStop.set(true);
       super.run();
     }
   }
@@ -87,7 +93,9 @@ class DefaultLifecycle implements AppLifecycle {
         e.printStackTrace();
       }
     }
-    removeShutdownHook();
+    if (!jvmStop.get()) {
+      removeShutdownHook();
+    }
     log.info("Jex shutdown complete");
   }
 
