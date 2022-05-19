@@ -1,25 +1,15 @@
-import io.avaje.inject.BeanScope;
-import io.avaje.jex.Jex;
+import boot.BootJex;
 
 public class Main {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws InterruptedException {
+    BootJex.start();
 
-    BeanScope beanScope = BeanScope.builder()
-      .build();
+    Thread.sleep(5000);
+    BootJex.stop();
 
-    Jex jex = beanScope.getOptional(Jex.class)
-      .orElse(Jex.create());
-    jex.configureWith(beanScope)
-    //.routing(routes)
-    //.port(8001)
-    ;
-
-
-    jex.lifecycle().onShutdown(beanScope::close);
-
-    Jex.Server server = jex.start();
-
+    Thread.sleep(5000);
+    BootJex.restart();
   }
 
 }

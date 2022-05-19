@@ -185,7 +185,11 @@ public interface Jex {
      * Return the port the server is using.
      */
     default int port() {
-      return 0;
+      throw new IllegalStateException("not supported");
+    }
+
+    default void restart() {
+      throw new IllegalStateException("not supported");
     }
   }
 }

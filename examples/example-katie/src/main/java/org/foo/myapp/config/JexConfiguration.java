@@ -16,6 +16,6 @@ public class JexConfiguration {
 
   @PostConstruct
   void post() {
-    System.out.println("post");
+    // System.out.println("PostConstruct");
   }
 }

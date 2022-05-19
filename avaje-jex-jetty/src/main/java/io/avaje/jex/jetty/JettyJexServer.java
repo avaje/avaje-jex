@@ -60,6 +60,17 @@ class JettyJexServer implements Jex.Server {
   }
 
   @Override
+  public void restart() {
+    try {
+      server.start();
+      logOnStart(server);
+      lifecycle.status(AppLifecycle.Status.STARTED);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
   public void shutdown() {
     try {
       log.trace("starting shutdown");
