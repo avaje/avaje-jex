@@ -16,6 +16,7 @@
     <module>example-jdk</module>
     <module>example-jetty</module>
     <module>example-grizzly</module>
+    <module>example-katie</module>
 
   </modules>
 
