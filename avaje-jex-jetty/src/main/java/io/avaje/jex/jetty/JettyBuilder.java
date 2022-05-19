@@ -39,7 +39,7 @@ class JettyBuilder {
   }
 
   private ThreadPool pool() {
-    if (jettyConfig.virtualThreads()) {
+    if (jexConfig.virtualThreads()) {
       return virtualThreadBasePool();
     } else {
       return jettyConfig.maxThreads() == 0 ? new QueuedThreadPool() : new QueuedThreadPool(jettyConfig.maxThreads());

@@ -180,5 +180,12 @@ public interface Jex {
      * Shutdown the server.
      */
     void shutdown();
+
+    /**
+     * Return the port the server is using.
+     */
+    default int port() {
+      return 0;
+    }
   }
 }

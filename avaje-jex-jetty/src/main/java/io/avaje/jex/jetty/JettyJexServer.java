@@ -73,6 +73,11 @@ class JettyJexServer implements Jex.Server {
     }
   }
 
+  @Override
+  public int port() {
+    return server.getURI().getPort();
+  }
+
   protected Jex.Server start() {
     try {
       createServer();
@@ -138,7 +143,7 @@ class JettyJexServer implements Jex.Server {
   private void logOnStart(org.eclipse.jetty.server.Server server) {
     long startup = System.currentTimeMillis() - startTime;
     for (Connector c : server.getConnectors()) {
-      String virtualThreads = config.virtualThreads() ? "with virtualThreads" : "";
+      String virtualThreads = jexConfig.virtualThreads() ? "with virtualThreads" : "";
       if (c instanceof ServerConnector) {
         ServerConnector sc = (ServerConnector) c;
         String host = (sc.getHost() == null) ? "0.0.0.0" : sc.getHost();
