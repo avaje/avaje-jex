@@ -7,12 +7,12 @@ import io.avaje.jex.http.InternalServerErrorResponse;
 import io.avaje.jex.http.RedirectResponse;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.lang.System.Logger.Level;
 
 class ExceptionManager {
 
-  private static final Logger log = LoggerFactory.getLogger(ExceptionManager.class);
+  private static final System.Logger log = System.getLogger("io.avaje.jex");
 
   private final ErrorHandling errorHandling;
 
@@ -34,7 +34,7 @@ class ExceptionManager {
   }
 
   private void unhandledException(SpiContext ctx, Exception e) {
-    log.warn("Uncaught exception", e);
+    log.log(Level.WARNING, "Uncaught exception", e);
     defaultHandling(ctx, new InternalServerErrorResponse());
   }
 

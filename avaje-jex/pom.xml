@@ -10,15 +10,10 @@
   <artifactId>avaje-jex</artifactId>
 
   <properties>
-    <jetty.version>11.0.8</jetty.version>
+    <jetty.version>11.0.9</jetty.version>
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.36</version>
-    </dependency>
 
     <dependency>
       <groupId>io.avaje</groupId>

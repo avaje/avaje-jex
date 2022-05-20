@@ -3,12 +3,12 @@ package io.avaje.jex.jdk;
 import com.sun.net.httpserver.HttpServer;
 import io.avaje.jex.AppLifecycle;
 import io.avaje.jex.Jex;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.lang.System.Logger.Level;
 
 class JdkJexServer implements Jex.Server {
 
-  private static final Logger log = LoggerFactory.getLogger(JdkJexServer.class);
+  private static final System.Logger log = System.getLogger("io.avaje.jex");
 
   private final HttpServer server;
   private final AppLifecycle lifecycle;
@@ -28,11 +28,11 @@ class JdkJexServer implements Jex.Server {
 
   @Override
   public void shutdown() {
-    log.trace("starting shutdown");
+    log.log(Level.TRACE, "starting shutdown");
     lifecycle.status(AppLifecycle.Status.STOPPING);
     handler.waitForIdle(30);
     server.stop(0);
-    log.trace("server http listeners stopped");
+    log.log(Level.TRACE, "server http listeners stopped");
     lifecycle.status(AppLifecycle.Status.STOPPED);
   }
 }

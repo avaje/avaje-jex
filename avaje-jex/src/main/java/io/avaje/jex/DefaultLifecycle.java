@@ -1,8 +1,6 @@
 package io.avaje.jex;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.lang.System.Logger.Level;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 final class DefaultLifecycle implements AppLifecycle {
 
-  private static final Logger log = LoggerFactory.getLogger(Jex.class);
+  private static final System.Logger log = System.getLogger("io.avaje.jex");
 
   private final List<Pair> shutdownRunnable = new ArrayList<>();
   private final ReentrantLock lock = new ReentrantLock();
@@ -88,7 +86,7 @@ final class DefaultLifecycle implements AppLifecycle {
       try {
         pair.callback.run();
       } catch (Exception e) {
-        log.error("Error running shutdown runnable", e);
+        log.log(Level.ERROR, "Error running shutdown runnable", e);
         // maybe logging has stopped so also do ...
         e.printStackTrace();
       }
@@ -96,7 +94,7 @@ final class DefaultLifecycle implements AppLifecycle {
     if (!jvmStop.get()) {
       removeShutdownHook();
     }
-    log.info("Jex shutdown complete");
+    log.log(Level.INFO, "Jex shutdown complete");
   }
 
   private void removeShutdownHook() {

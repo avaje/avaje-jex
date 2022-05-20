@@ -6,16 +6,15 @@ import io.avaje.jex.Jex;
 import io.avaje.jex.spi.SpiRoutes;
 import io.avaje.jex.spi.SpiServiceManager;
 import io.avaje.jex.spi.SpiStartServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.System.Logger.Level;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executor;
 
 public class JdkServerStart implements SpiStartServer {
 
-  private static final Logger log = LoggerFactory.getLogger(JdkServerStart.class);
+  private static final System.Logger log = System.getLogger("io.avaje.jex");
 
   @Override
   public Jex.Server start(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
@@ -32,7 +31,7 @@ public class JdkServerStart implements SpiStartServer {
       server.bind(new InetSocketAddress(port), 0);
       server.start();
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
-      log.info("started server on port {}", port);
+      log.log(Level.INFO, "started server on port {0}", port);
       return new JdkJexServer(server, jex.lifecycle(), handler);
 
     } catch (IOException e) {

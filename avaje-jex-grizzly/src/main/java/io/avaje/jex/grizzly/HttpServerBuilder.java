@@ -3,12 +3,12 @@ package io.avaje.jex.grizzly;
 import org.glassfish.grizzly.http.server.*;
 import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
 import org.glassfish.grizzly.utils.Charsets;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.lang.System.Logger.Level;
 
 public class HttpServerBuilder {
 
-  private static final Logger log = LoggerFactory.getLogger(GrizzlyJexServer.class);
+  private static final System.Logger log = System.getLogger("io.avaje.jex");
 
   private int port = -1;
   private String host = "0.0.0.0";
@@ -87,7 +87,7 @@ public class HttpServerBuilder {
       Class.forName("org.glassfish.grizzly.http2.Http2AddOn");
 //      listener.registerAddOn(new org.glassfish.grizzly.http2.Http2AddOn());
     } catch (Throwable e) {
-      log.trace("Http2AddOn was not registered");
+      log.log(Level.TRACE, "Http2AddOn was not registered");
     }
   }
 

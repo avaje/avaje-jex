@@ -5,15 +5,14 @@ import io.avaje.jex.spi.SpiRoutes;
 import io.avaje.jex.spi.SpiServiceManager;
 import io.avaje.jex.spi.SpiStartServer;
 import org.glassfish.grizzly.http.server.HttpServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.lang.System.Logger.Level;
 
 public class GrizzlyServerStart implements SpiStartServer {
 
-  private static final Logger log = LoggerFactory.getLogger(GrizzlyJexServer.class);
+  private static final System.Logger log = System.getLogger("io.avaje.jex");
 
   @Override
   public Jex.Server start(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
@@ -30,9 +29,9 @@ public class GrizzlyServerStart implements SpiStartServer {
       .build();
 
     try {
-      log.debug("starting server on port {}", port);
+      log.log(Level.DEBUG, "starting server on port {0}", port);
       httpServer.start();
-      log.info("server started on port {}", port);
+      log.log(Level.INFO, "server started on port {0}", port);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
