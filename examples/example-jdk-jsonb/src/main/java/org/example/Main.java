@@ -4,24 +4,17 @@ import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
 import io.avaje.jex.core.JsonbJsonService;
 import io.avaje.jsonb.Jsonb;
-//import org.example.jsonb.GeneratedJsonComponent;
-//import org.example.jsonb.GeneratedJsonComponent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Set;
-//import java.util.concurrent.Executor;
-//import java.util.concurrent.Executors;
 
 public class Main {
 
-  //private static final Logger log = LoggerFactory.getLogger(Main.class);
   private static final  System.Logger log = System.getLogger("org.example");
 
   public static void main(String[] args) {
 
-    Jsonb jsonb = Jsonb.builder().build();//.add(new GeneratedJsonComponent()).build();
+    Jsonb jsonb = Jsonb.builder().build();
 
     Jex.create()
       .configure(config -> config.jsonService(new JsonbJsonService(jsonb)))
