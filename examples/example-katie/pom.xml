@@ -14,6 +14,7 @@
   <properties>
     <maven.compiler.source>18</maven.compiler.source>
     <maven.compiler.target>18</maven.compiler.target>
+<!--    <surefire.useModulePath>false</surefire.useModulePath>-->
   </properties>
 
   <dependencies>
@@ -23,24 +24,29 @@
       <version>1.0</version>
     </dependency>
 
+<!--    <dependency>-->
+<!--      <groupId>io.avaje</groupId>-->
+<!--      <artifactId>avaje-jsonb</artifactId>-->
+<!--      <version>0.16</version>-->
+<!--    </dependency>-->
+
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-jex-jetty</artifactId>
       <version>2.3-SNAPSHOT</version>
-      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>io.avaje.kate</groupId>
       <artifactId>avaje-kate</artifactId>
-      <version>0.9.3</version>
+      <version>0.9.7</version>
     </dependency>
 
     <!-- Not normally here, just for some testing here-->
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-http-client</artifactId>
-      <version>1.16</version>
+      <version>1.17</version>
     </dependency>
 
     <dependency>
@@ -53,17 +59,48 @@
     <dependency>
       <groupId>io.avaje.kate</groupId>
       <artifactId>avaje-kate-test</artifactId>
-      <version>0.9.3</version>
+      <version>0.9.7</version>
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>io.avaje.kate</groupId>
-      <artifactId>avaje-kate-apt</artifactId>
-      <version>0.9.3</version>
-      <scope>provided</scope>
-    </dependency>
+
+    <!--    <dependency>-->
+<!--      <groupId>io.avaje.kate</groupId>-->
+<!--      <artifactId>avaje-kate-apt</artifactId>-->
+<!--      <version>0.9.7</version>-->
+<!--      <scope>provided</scope>-->
+<!--    </dependency>-->
 
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.10.1</version>
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>io.avaje.kate</groupId>
+              <artifactId>avaje-kate-apt</artifactId>
+              <version>0.9.7</version>
+            </path>
+<!--            <path>-->
+<!--              <groupId>io.avaje</groupId>-->
+<!--              <artifactId>avaje-jsonb-generator</artifactId>-->
+<!--              <version>0.16</version>-->
+<!--            </path>-->
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

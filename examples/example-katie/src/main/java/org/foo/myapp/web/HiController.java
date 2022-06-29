@@ -12,6 +12,10 @@ public class HiController implements HiApi {
 
   @Override
   public Hello hello() {
-    return new Hello();
+    Hello hello = new Hello();
+    hello.id2 = 42;
+    hello.msg = "hello";
+    hello.other = "other";
+    return hello;
   }
 }

@@ -1,10 +1,14 @@
 package io.avaje.jex.core;
 
 import io.avaje.jex.*;
-import io.avaje.jex.spi.*;
+import io.avaje.jex.spi.HeaderKeys;
+import io.avaje.jex.spi.JsonService;
+import io.avaje.jex.spi.SpiContext;
+import io.avaje.jex.spi.SpiServiceManager;
 
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.System.Logger.Level;
 import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Stream;
@@ -14,14 +18,12 @@ import java.util.stream.Stream;
  */
 class CoreServiceManager implements SpiServiceManager {
 
+  private static final System.Logger log = System.getLogger("io.avaje.jex.Jex");
   public static final String UTF_8 = "UTF-8";
 
   private final HttpMethodMap methodMap = new HttpMethodMap();
-
   private final JsonService jsonService;
-
   private final ExceptionManager exceptionHandler;
-
   private final TemplateManager templateManager;
 
   static SpiServiceManager create(Jex jex) {
@@ -153,14 +155,15 @@ class CoreServiceManager implements SpiServiceManager {
      * Create a reasonable default JsonService if Jackson or avaje-jsonb are present.
      */
     JsonService defaultJsonService() {
-      try {
-        return detectJackson() ? new JacksonJsonService()
-          : detectJsonb() ? new JsonbJsonService()
-          : null;
-      } catch (IllegalAccessError e) {
-        // not in module path
-        return null;
+      if (detectJackson()) {
+        try {
+          return new JacksonJsonService();
+        } catch (IllegalAccessError errorNotInModulePath) {
+          // not in module path
+          log.log(Level.DEBUG, "Not using Jackson due to module path {0}", errorNotInModulePath.getMessage());
+        }
       }
+      return detectJsonb() ? new JsonbJsonService() : null;
     }
 
     boolean detectJackson() {

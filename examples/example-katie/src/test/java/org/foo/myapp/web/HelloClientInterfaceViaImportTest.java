@@ -37,7 +37,7 @@ class HelloClientInterfaceViaImportTest {
   @Test
   void hello2() {
     var hello = client.hello();
-    assertThat(hello.msg).isNull();
+    assertThat(hello.msg).isEqualTo("hello");
   }
 
   @Test

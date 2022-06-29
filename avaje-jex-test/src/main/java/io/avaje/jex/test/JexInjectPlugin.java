@@ -56,10 +56,8 @@ public final class JexInjectPlugin implements Plugin {
 
   private static class LocalScope implements Plugin.Scope {
 
-    private final int port;
     private final Jex.Server server;
-    private final HttpClientContext.Builder httpClientBuilder;
-    private HttpClientContext httpClient;
+    private final HttpClientContext httpClient;
 
     LocalScope(BeanScope beanScope) {
       Jex jex = beanScope.getOptional(Jex.class)
@@ -68,30 +66,25 @@ public final class JexInjectPlugin implements Plugin {
         .port(0);
 
       // get a HttpClientContext.Builder provided by dependency injection test scope or new one up
-      this.httpClientBuilder = beanScope.getOptional(HttpClientContext.Builder.class).orElse(HttpClientContext.builder());
       this.server = jex.start();
-      this.port = server.port();
+      int port = server.port();
+      this.httpClient = beanScope.getOptional(HttpClientContext.Builder.class)
+        .orElse(HttpClientContext.builder())
+        .configureWith(beanScope)
+        .baseUrl("http://localhost:" + port)
+        .build();
     }
 
     @Override
     public Object create(Class<?> type) {
       if (HttpClientContext.class.equals(type)) {
-        return clientContext();
+        return httpClient;
       }
       return apiClient(type);
     }
 
     private Object apiClient(Class<?> clientInterface) {
-      return clientContext().create(clientInterface);
-    }
-
-    private HttpClientContext clientContext() {
-      if (httpClient == null) {
-        httpClient = httpClientBuilder
-          .baseUrl("http://localhost:" + port)
-          .build();
-      }
-      return httpClient;
+      return httpClient.create(clientInterface);
     }
 
     @Override

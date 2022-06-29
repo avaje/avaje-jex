@@ -99,11 +99,15 @@ final class DJex implements Jex {
   @Override
   public Jex configureWith(BeanScope beanScope) {
     lifecycle.onShutdown(beanScope::close);
-    beanScope.getOptional(AccessManager.class).ifPresent(this::accessManager);
     for (Plugin plugin : beanScope.list(Plugin.class)) {
       plugin.apply(this);
     }
+    for (ErrorHandling.Service service : beanScope.list(ErrorHandling.Service.class)) {
+      service.add(errorHandling);
+    }
     routing.addAll(beanScope.list(Routing.Service.class));
+    beanScope.getOptional(JsonService.class).ifPresent(this::jsonService);
+    beanScope.getOptional(AccessManager.class).ifPresent(this::accessManager);
     return this;
   }
 
