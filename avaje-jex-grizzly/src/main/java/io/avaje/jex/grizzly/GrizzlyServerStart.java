@@ -29,9 +29,9 @@ public class GrizzlyServerStart implements SpiStartServer {
       .build();
 
     try {
-      log.log(Level.DEBUG, "starting server on port {0}", port);
+      log.log(Level.DEBUG, "starting server on port {0,number,#}", port);
       httpServer.start();
-      log.log(Level.INFO, "server started on port {0}", port);
+      log.log(Level.INFO, "server started on port {0,number,#}", port);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

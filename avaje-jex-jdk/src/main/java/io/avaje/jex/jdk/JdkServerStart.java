@@ -31,7 +31,8 @@ public class JdkServerStart implements SpiStartServer {
       server.bind(new InetSocketAddress(port), 0);
       server.start();
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
-      log.log(Level.INFO, "started server on port {0}", port);
+      String jexVersion = Jex.class.getPackage().getImplementationVersion();
+      log.log(Level.INFO, "started server on port {0,number,#} version {1}", port, jexVersion);
       return new JdkJexServer(server, jex.lifecycle(), handler);
 
     } catch (IOException e) {
