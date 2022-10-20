@@ -1,5 +1,6 @@
 package io.avaje.jex.grizzly;
 
+import io.avaje.applog.AppLog;
 import io.avaje.jex.AppLifecycle;
 import io.avaje.jex.Jex;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -11,7 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 class GrizzlyJexServer implements Jex.Server {
 
-  private static final System.Logger log = System.getLogger("io.avaje.jex");
+  private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
   private final HttpServer server;
   private final AppLifecycle lifecycle;

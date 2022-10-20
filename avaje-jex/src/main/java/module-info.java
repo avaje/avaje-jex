@@ -14,6 +14,7 @@ module io.avaje.jex {
   exports io.avaje.jex.core;
 
   requires transitive java.net.http;
+  requires transitive io.avaje.applog;
   requires static com.fasterxml.jackson.core;
   requires static com.fasterxml.jackson.databind;
   requires static io.avaje.jsonb;

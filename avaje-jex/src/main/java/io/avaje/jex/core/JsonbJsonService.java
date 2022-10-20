@@ -38,9 +38,7 @@ public class JsonbJsonService implements JsonService {
   @Override
   public void jsonWrite(Object bean, SpiContext ctx) {
     // gzip compression etc ?
-    try (JsonWriter writer = jsonb.writer(ctx.outputStream())) {
-      jsonb.type(Object.class).toJson(bean, writer);
-    }
+    jsonb.toJson(bean, ctx.outputStream());
   }
 
   @Override

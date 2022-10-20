@@ -1,5 +1,6 @@
 package io.avaje.jex.grizzly;
 
+import io.avaje.applog.AppLog;
 import org.glassfish.grizzly.http.server.*;
 import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
 import org.glassfish.grizzly.utils.Charsets;
@@ -8,7 +9,7 @@ import java.lang.System.Logger.Level;
 
 public class HttpServerBuilder {
 
-  private static final System.Logger log = System.getLogger("io.avaje.jex");
+  private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
   private int port = -1;
   private String host = "0.0.0.0";

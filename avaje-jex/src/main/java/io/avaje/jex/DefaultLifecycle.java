@@ -1,5 +1,7 @@
 package io.avaje.jex;
 
+import io.avaje.applog.AppLog;
+
 import java.lang.System.Logger.Level;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 final class DefaultLifecycle implements AppLifecycle {
 
-  private static final System.Logger log = System.getLogger("io.avaje.jex");
+  private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
   private final List<Pair> shutdownRunnable = new ArrayList<>();
   private final ReentrantLock lock = new ReentrantLock();

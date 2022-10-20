@@ -1,5 +1,6 @@
 package io.avaje.jex.core;
 
+import io.avaje.applog.AppLog;
 import io.avaje.jex.*;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.JsonService;
@@ -18,7 +19,7 @@ import java.util.stream.Stream;
  */
 class CoreServiceManager implements SpiServiceManager {
 
-  private static final System.Logger log = System.getLogger("io.avaje.jex.Jex");
+  private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
   public static final String UTF_8 = "UTF-8";
 
   private final HttpMethodMap methodMap = new HttpMethodMap();

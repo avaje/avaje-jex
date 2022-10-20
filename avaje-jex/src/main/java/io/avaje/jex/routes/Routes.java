@@ -1,5 +1,6 @@
 package io.avaje.jex.routes;
 
+import io.avaje.applog.AppLog;
 import io.avaje.jex.Routing;
 import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
@@ -12,7 +13,7 @@ import java.util.concurrent.locks.LockSupport;
 
 class Routes implements SpiRoutes {
 
-  private static final System.Logger log = System.getLogger("io.avaje.jex");
+  private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
   /**
    * The "real" handlers by http method.

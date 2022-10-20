@@ -1,5 +1,6 @@
 package io.avaje.jex.grizzly;
 
+import io.avaje.applog.AppLog;
 import io.avaje.jex.Jex;
 import io.avaje.jex.spi.SpiRoutes;
 import io.avaje.jex.spi.SpiServiceManager;
@@ -12,7 +13,7 @@ import java.lang.System.Logger.Level;
 
 public class GrizzlyServerStart implements SpiStartServer {
 
-  private static final System.Logger log = System.getLogger("io.avaje.jex");
+  private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
   @Override
   public Jex.Server start(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {

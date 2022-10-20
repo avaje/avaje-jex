@@ -1,5 +1,6 @@
 package io.avaje.jex.core;
 
+import io.avaje.applog.AppLog;
 import io.avaje.jex.ErrorHandling;
 import io.avaje.jex.ExceptionHandler;
 import io.avaje.jex.http.HttpResponseException;
@@ -12,7 +13,7 @@ import java.lang.System.Logger.Level;
 
 class ExceptionManager {
 
-  private static final System.Logger log = System.getLogger("io.avaje.jex");
+  private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
   private final ErrorHandling errorHandling;
 
