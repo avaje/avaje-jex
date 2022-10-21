@@ -16,7 +16,7 @@ To Run:
 
 # produces
 # Oct 21, 2022 1:39:36 PM io.avaje.jex.jdk.JdkServerStart start
-# INFO: started server on port 7003 version 2.4-SNAPSHOT
+# INFO: started server on port 7003 version 2.5-SNAPSHOT
 ```
 
 To Play:
