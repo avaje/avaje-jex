@@ -1,0 +1,6 @@
+[
+  {
+    "name": "io.avaje.jex.jdk.JdkServerStart",
+    "methods": [ { "name": "<init>", "parameterTypes": [ ] } ]
+  }
+]

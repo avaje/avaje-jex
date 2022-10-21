@@ -136,8 +136,12 @@
               <imageName>mytest</imageName>
               <mainClass>org.example.Main</mainClass>
               <buildArgs>
+                <!-- needed for jdk.httpserver module -->
+                <buildArg>-J--add-modules</buildArg>
+                <buildArg>-JALL-SYSTEM</buildArg>
                 <buildArg>--no-fallback</buildArg>
                 <buildArg>--allow-incomplete-classpath</buildArg>
+                <buildArg>-H:ReflectionConfigurationFiles=graalvm-meta/reflection.json</buildArg>
 <!--                <buildArg>&#45;&#45;initialize-at-build-time=org.slf4j.simple.SimpleLogger</buildArg>-->
 <!--                <buildArg>&#45;&#45;initialize-at-build-time=org.slf4j.simple.SimpleLogger$1</buildArg>-->
 <!--                <buildArg>&#45;&#45;trace-object-instantiation=org.slf4j.simple.SimpleLogger</buildArg>-->
