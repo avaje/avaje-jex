@@ -20,16 +20,16 @@ public class JMain {
   void start(BeanScope beanScope) {
 
     Jex.create()
-      .configure(config -> config.virtualThreads(true))
+      //.configure(config -> config.virtualThreads(true))
       .configureWith(beanScope)
       .routing(routing -> routing
         .get("/", JMain::hello)
         .get("/foo/{id}", JMain::helloBean)
         .get("/delay", JMain::delay)
       )
-      .staticFiles().addClasspath("/static", "content")
+//      .staticFiles().addClasspath("/static", "content")
 //      .staticFiles().addExternal("/", "/tmp/junk")
-      .port(7003)
+      .port(7004)
       .start();
   }
 

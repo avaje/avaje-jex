@@ -1,0 +1,6 @@
+[
+  {
+    "name": "io.avaje.jex.jetty.JettyStartServer",
+    "methods": [ { "name": "<init>", "parameterTypes": [ ] } ]
+  }
+]
