@@ -10,7 +10,7 @@
   <artifactId>avaje-jex-freemarker</artifactId>
 
   <properties>
-    <freemarker.version>2.3.30</freemarker.version>
+    <freemarker.version>2.3.31</freemarker.version>
   </properties>
 
   <dependencies>
