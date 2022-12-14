@@ -9,7 +9,7 @@ import io.avaje.jex.http.RedirectResponse;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
 
-import java.lang.System.Logger.Level;
+import static java.lang.System.Logger.Level.WARNING;
 
 class ExceptionManager {
 
@@ -22,6 +22,15 @@ class ExceptionManager {
   }
 
   void handle(SpiContext ctx, Exception e) {
+    if (!isRedirect(e)) {
+      if (ctx.isCommitted()) {
+        log.log(WARNING, "Response is already committed when handling exception", e);
+        throw new InternalServerErrorResponse("Response already committed on error " + e);
+      } else {
+        // reset the status, headers and buffers in order to write the error content
+        ctx.reset();
+      }
+    }
     final ExceptionHandler<Exception> handler = errorHandling.find(e.getClass());
     if (handler != null) {
       handler.handle(e, ctx);
@@ -35,7 +44,7 @@ class ExceptionManager {
   }
 
   private void unhandledException(SpiContext ctx, Exception e) {
-    log.log(Level.WARNING, "Uncaught exception", e);
+    log.log(WARNING, "Uncaught exception", e);
     defaultHandling(ctx, new InternalServerErrorResponse());
   }
 

@@ -7,6 +7,7 @@ import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.SpiContext;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.util.Iterator;
 
@@ -39,8 +40,17 @@ public class JacksonJsonService implements JsonService {
   public void jsonWrite(Object bean, SpiContext ctx) {
     try {
       // gzip compression etc ?
-      // write direct
-      mapper.writeValue(ctx.outputStream(), bean);
+      OutputStream os = ctx.outputStream();
+      try (JsonGenerator generator = mapper.createGenerator(os)) {
+        // only flush to underlying OutputStream on success
+        generator.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+        generator.disable(JsonGenerator.Feature.FLUSH_PASSED_TO_STREAM);
+        generator.disable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT);
+        mapper.writeValue(generator, bean);
+        generator.flush();
+      }
+      os.flush();
+      os.close();
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

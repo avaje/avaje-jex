@@ -327,6 +327,14 @@ class GrizzlyContext implements Context, SpiContext {
     return response.getStatus();
   }
 
+  @Override
+  public boolean isCommitted() {
+    return response.isCommitted();
+  }
+
+  public void reset() {
+    response.reset();
+  }
 
   @Override
   public Context json(Object bean) {

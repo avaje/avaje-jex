@@ -298,6 +298,16 @@ public interface Context {
   Context render(String name, Map<String, Object> model);
 
   /**
+   * Return true if content has already been written to the underlying server outputStream.
+   */
+  boolean isCommitted();
+
+  /**
+   * If not committed reset the underlying response status, headers and buffer.
+   */
+  void reset();
+
+  /**
    * Return all the request headers as a map.
    */
   Map<String, String> headerMap();
