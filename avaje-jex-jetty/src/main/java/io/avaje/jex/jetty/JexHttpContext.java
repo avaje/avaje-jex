@@ -70,6 +70,16 @@ class JexHttpContext implements SpiContext {
   }
 
   @Override
+  public boolean isCommitted() {
+    return res.isCommitted();
+  }
+
+  @Override
+  public void reset() {
+    res.reset();
+  }
+
+  @Override
   public Context attribute(String key, Object value) {
     req.setAttribute(key, value);
     return this;

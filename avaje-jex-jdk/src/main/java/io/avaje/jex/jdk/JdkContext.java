@@ -362,6 +362,17 @@ class JdkContext implements Context, SpiContext {
     os.close();
   }
 
+  @Override
+  public boolean isCommitted() {
+    // no support for this
+    return false;
+  }
+
+  @Override
+  public void reset() {
+    // do nothing
+  }
+
   int statusCode() {
     return statusCode == 0 ? 200 : statusCode;
   }
