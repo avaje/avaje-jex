@@ -12,7 +12,7 @@
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
-    <jetty.version>11.0.13</jetty.version>
+    <jetty.version>11.0.15</jetty.version>
     <surefire.useModulePath>false</surefire.useModulePath>
   </properties>
 
