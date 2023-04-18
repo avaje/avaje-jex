@@ -1,6 +1,6 @@
 package io.avaje.jex.base;
 
-import io.avaje.http.client.HttpClientContext;
+import io.avaje.http.client.HttpClient;
 import io.avaje.http.client.HttpClientRequest;
 import io.avaje.http.client.JacksonBodyAdapter;
 import io.avaje.jex.Jex;
@@ -16,9 +16,9 @@ public class TestPair {
 
   private final Jex.Server server;
 
-  private final HttpClientContext client;
+  private final HttpClient client;
 
-  public TestPair(int port, Jex.Server server, HttpClientContext client) {
+  public TestPair(int port, Jex.Server server, HttpClient client) {
     this.port = port;
     this.server = server;
     this.client = client;
@@ -52,7 +52,7 @@ public class TestPair {
     var jexServer = app.port(port).start();
 
     var url = "http://localhost:" + port;
-    var client = HttpClientContext.builder()
+    var client = HttpClient.builder()
       .baseUrl(url)
       .bodyAdapter(new JacksonBodyAdapter())
       .build();
