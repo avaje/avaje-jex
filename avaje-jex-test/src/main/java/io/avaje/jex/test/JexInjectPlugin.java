@@ -1,6 +1,6 @@
 package io.avaje.jex.test;
 
-import io.avaje.http.client.HttpClientContext;
+import io.avaje.http.client.HttpClient;
 import io.avaje.inject.BeanScope;
 import io.avaje.inject.test.Plugin;
 import io.avaje.jex.Jex;
@@ -25,7 +25,7 @@ public final class JexInjectPlugin implements Plugin {
    */
   @Override
   public boolean forType(Class<?> type) {
-    return HttpClientContext.class.equals(type) || isHttpClientApi(type);
+    return HttpClient.class.equals(type) || isHttpClientApi(type);
   }
 
   private boolean isHttpClientApi(Class<?> type) {
@@ -57,7 +57,7 @@ public final class JexInjectPlugin implements Plugin {
   private static class LocalScope implements Plugin.Scope {
 
     private final Jex.Server server;
-    private final HttpClientContext httpClient;
+    private final HttpClient httpClient;
 
     LocalScope(BeanScope beanScope) {
       Jex jex = beanScope.getOptional(Jex.class)
@@ -68,8 +68,8 @@ public final class JexInjectPlugin implements Plugin {
       // get a HttpClientContext.Builder provided by dependency injection test scope or new one up
       this.server = jex.start();
       int port = server.port();
-      this.httpClient = beanScope.getOptional(HttpClientContext.Builder.class)
-        .orElse(HttpClientContext.builder())
+      this.httpClient = beanScope.getOptional(HttpClient.Builder.class)
+        .orElse(HttpClient.builder())
         .configureWith(beanScope)
         .baseUrl("http://localhost:" + port)
         .build();
@@ -77,7 +77,7 @@ public final class JexInjectPlugin implements Plugin {
 
     @Override
     public Object create(Class<?> type) {
-      if (HttpClientContext.class.equals(type)) {
+      if (HttpClient.class.equals(type)) {
         return httpClient;
       }
       return apiClient(type);

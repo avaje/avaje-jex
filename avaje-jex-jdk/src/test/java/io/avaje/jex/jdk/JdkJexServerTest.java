@@ -1,6 +1,6 @@
 package io.avaje.jex.jdk;
 
-import io.avaje.http.client.HttpClientContext;
+import io.avaje.http.client.HttpClient;
 import io.avaje.http.client.JacksonBodyAdapter;
 import io.avaje.jex.Jex;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class JdkJexServerTest {
       .port(8093)
       .start();
 
-    final HttpClientContext client = HttpClientContext.builder()
+    final HttpClient client = HttpClient.builder()
       .baseUrl("http://localhost:8093")
       .bodyAdapter(new JacksonBodyAdapter())
       .build();

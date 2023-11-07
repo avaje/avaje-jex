@@ -1,6 +1,6 @@
 package io.avaje.jex.jdk;
 
-import io.avaje.http.client.HttpClientContext;
+import io.avaje.http.client.HttpClient;
 import io.avaje.http.client.JacksonBodyAdapter;
 import io.avaje.jex.Jex;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,7 +17,7 @@ class HeadersTest {
 
   static final int port = new Random().nextInt(1000) + 10_000;
   static Jex.Server server;
-  static HttpClientContext client;
+  static HttpClient client;
 
   @BeforeAll
   static void setup() {
@@ -33,7 +33,7 @@ class HeadersTest {
       .port(port)
       .start();
 
-    client = HttpClientContext.builder()
+    client = HttpClient.builder()
       .baseUrl("http://localhost:"+port)
       .bodyAdapter(new JacksonBodyAdapter())
       .build();
