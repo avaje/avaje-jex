@@ -1,10 +1,9 @@
 package io.avaje.jex.jdk;
 
-import io.avaje.http.client.HttpClientContext;
+import io.avaje.http.client.HttpClient;
 import io.avaje.http.client.JacksonBodyAdapter;
 import io.avaje.jex.AppLifecycle;
 import io.avaje.jex.Jex;
-import io.avaje.jex.core.HealthPlugin;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,7 @@ class HealthPluginTest {
   static final int port = new Random().nextInt(1000) + 10_000;
   static Jex jex;
   static Jex.Server server;
-  static HttpClientContext client;
+  static HttpClient client;
 
   @BeforeAll
   static void setup() {
@@ -37,7 +36,7 @@ class HealthPluginTest {
       .port(port);
 
     server =  jex.start();
-    client = HttpClientContext.builder()
+    client = HttpClient.builder()
       .baseUrl("http://localhost:"+port)
       .bodyAdapter(new JacksonBodyAdapter())
       .build();

@@ -20,6 +20,7 @@
   <properties>
     <nexus.staging.autoReleaseAfterClose>true</nexus.staging.autoReleaseAfterClose>
     <jackson.version>2.15.0</jackson.version>
+    <surefire.useModulePath>false</surefire.useModulePath>
   </properties>
 
   <modules>
