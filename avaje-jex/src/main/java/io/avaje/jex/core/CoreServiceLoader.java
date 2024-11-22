@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 /**
  * Core implementation of SpiServiceManager provided to specific implementations like jetty etc.
  */
-class CoreServiceManager implements SpiServiceManager {
+class CoreServiceLoader implements SpiServiceManager {
 
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
   public static final String UTF_8 = "UTF-8";
@@ -31,7 +31,7 @@ class CoreServiceManager implements SpiServiceManager {
     return new Builder(jex).build();
   }
 
-  CoreServiceManager(JsonService jsonService, ErrorHandling errorHandling, TemplateManager templateManager) {
+  CoreServiceLoader(JsonService jsonService, ErrorHandling errorHandling, TemplateManager templateManager) {
     this.jsonService = jsonService;
     this.exceptionHandler = new ExceptionManager(errorHandling);
     this.templateManager = templateManager;
@@ -139,7 +139,7 @@ class CoreServiceManager implements SpiServiceManager {
     }
 
     SpiServiceManager build() {
-      return new CoreServiceManager(initJsonService(), jex.errorHandling(), initTemplateMgr());
+      return new CoreServiceLoader(initJsonService(), jex.errorHandling(), initTemplateMgr());
     }
 
     JsonService initJsonService() {

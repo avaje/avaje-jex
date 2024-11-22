@@ -1,8 +1,10 @@
 package io.avaje.jex;
 
-import io.avaje.jex.spi.JsonService;
-
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
+import io.avaje.jex.spi.JsonService;
 
 /**
  * Jex configuration.
@@ -68,14 +70,14 @@ public interface JexConfig {
   JexConfig renderer(String extension, TemplateRender renderer);
 
   /**
-   * Set to true to use virtual threads if supported. Defaults to false.
+   * Executor for serving requests. Defaults to {@link Executors#newVirtualThreadPerTaskExecutor()}
    */
-  JexConfig virtualThreads(boolean virtualThreads);
+  JexConfig executor(Executor executor);
 
   /**
-   * Return true if virtual threads should be used.
+   * Executor for serving requests. Defaults to {@link Executors#newVirtualThreadPerTaskExecutor()}
    */
-  boolean virtualThreads();
+  Executor executor();
 
   /**
    * Return the port to use.

@@ -3,15 +3,16 @@ package io.avaje.jex.core;
 import io.avaje.applog.AppLog;
 import io.avaje.jex.ErrorHandling;
 import io.avaje.jex.ExceptionHandler;
+import io.avaje.jex.http.ErrorCode;
 import io.avaje.jex.http.HttpResponseException;
-import io.avaje.jex.http.InternalServerErrorResponse;
-import io.avaje.jex.http.RedirectResponse;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
 
 import static java.lang.System.Logger.Level.WARNING;
 
 class ExceptionManager {
+
+  private static final String APPLICATION_JSON = "application/json";
 
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
@@ -22,81 +23,49 @@ class ExceptionManager {
   }
 
   void handle(SpiContext ctx, Exception e) {
-    if (!isRedirect(e)) {
-      if (ctx.isCommitted()) {
-        log.log(WARNING, "Response is already committed when handling exception", e);
-        throw new InternalServerErrorResponse("Response already committed on error " + e);
-      } else {
-        // reset the status, headers and buffers in order to write the error content
-        ctx.reset();
-      }
-    }
     final ExceptionHandler<Exception> handler = errorHandling.find(e.getClass());
     if (handler != null) {
       handler.handle(e, ctx);
+    } else if (e instanceof HttpResponseException ex) {
+      defaultHandling(ctx, ex);
     } else {
-      if (canHandle(e)) {
-        defaultHandling(ctx, e);
-      } else {
-        unhandledException(ctx, e);
-      }
+      unhandledException(ctx, e);
     }
   }
 
   private void unhandledException(SpiContext ctx, Exception e) {
     log.log(WARNING, "Uncaught exception", e);
-    defaultHandling(ctx, new InternalServerErrorResponse());
+    defaultHandling(ctx, new HttpResponseException(ErrorCode.INTERNAL_SERVER_ERROR));
   }
 
-  private boolean canHandle(Exception e) {
-    return HttpResponseException.class.isAssignableFrom(e.getClass());
-  }
+  private void defaultHandling(SpiContext ctx, HttpResponseException exception) {
 
-  private boolean isRedirect(Exception e) {
-    return RedirectResponse.class.isAssignableFrom(e.getClass());
-  }
-
-  private void defaultHandling(SpiContext ctx, Exception exception) {
-    final HttpResponseException e = unwrap(exception);
-    ctx.status(e.getStatus());
-    if (isRedirect(e)) {
+    ctx.status(exception.getStatus());
+    if (exception.getStatus() == ErrorCode.REDIRECT.status()) {
       ctx.performRedirect();
     } else if (useJson(ctx)) {
-      ctx.contentType("application/json").write(asJsonContent(e));
+      ctx.contentType(APPLICATION_JSON).write(asJsonContent(exception));
     } else {
-      ctx.text(asTextContent(e));
+      ctx.text(exception.getMessage());
     }
   }
 
-  private String asTextContent(HttpResponseException e) {
-    return e.getMessage();
-    // + "\n" details
-  }
-
   private String asJsonContent(HttpResponseException e) {
-    return "{\"title\": " + jsonEscape(e.getMessage()) + ", " +
-      "\"status\": " + e.getStatus() +
-      //+ ", "  "\"type\": " + ", " +
-      jsonDetails(e) + "}";
+    return "{\"title\": "
+        + jsonEscape(e.getMessage())
+        + ", "
+        + "\"status\": "
+        + e.getStatus()
+        + "}";
   }
 
   private String jsonEscape(String message) {
     return message;
   }
 
-  private String jsonDetails(HttpResponseException e) {
-    return "";
-  }
-
-  private HttpResponseException unwrap(Exception e) {
-    return (HttpResponseException) e;
-    //(if (e is CompletionException) e.cause else e) as HttpResponseException
-  }
-
   private boolean useJson(SpiContext ctx) {
     final String acceptHeader = ctx.header(HeaderKeys.ACCEPT);
-    return (acceptHeader != null && acceptHeader.contains("application/json")
-      || "application/json".equals(ctx.responseHeader(HeaderKeys.CONTENT_TYPE)));
+    return (acceptHeader != null && acceptHeader.contains(APPLICATION_JSON)
+        || APPLICATION_JSON.equals(ctx.responseHeader(HeaderKeys.CONTENT_TYPE)));
   }
-
 }

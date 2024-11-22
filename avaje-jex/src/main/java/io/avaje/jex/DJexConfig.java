@@ -4,15 +4,17 @@ import io.avaje.jex.spi.JsonService;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 class DJexConfig implements JexConfig {
 
-  private int port = 7001;
+  private int port = 8080;
   private String host;
   private String contextPath = "/";
   private boolean health = true;
   private boolean ignoreTrailingSlashes = true;
-  private boolean virtualThreads;
+  private Executor executor;
 
   private boolean preCompressStaticFiles;
   private JsonService jsonService;
@@ -88,13 +90,19 @@ class DJexConfig implements JexConfig {
   }
 
   @Override
-  public boolean virtualThreads() {
-    return virtualThreads;
+  public Executor executor() {
+
+    if (executor == null) {
+      executor =
+          Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("jex-http-", 0).factory());
+    }
+
+    return executor;
   }
 
   @Override
-  public JexConfig virtualThreads(boolean virtualThreads) {
-    this.virtualThreads = virtualThreads;
+  public JexConfig executor(Executor executor) {
+    this.executor = executor;
     return this;
   }
 

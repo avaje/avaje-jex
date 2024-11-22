@@ -158,17 +158,19 @@ final class DJex implements Jex {
     if (config.health()) {
       plugin(new HealthPlugin());
     }
-    final SpiRoutes routes = ServiceLoader.load(SpiRoutesProvider.class)
-      .findFirst().get()
-      .create(this.routing, this.config.accessManager(), this.config.ignoreTrailingSlashes());
+    final SpiRoutes routes =
+        ServiceLoader.load(SpiRoutesProvider.class)
+            .findFirst()
+            .orElseThrow()
+            .create(this.routing, this.config.accessManager(), this.config.ignoreTrailingSlashes());
 
-    final SpiServiceManager serviceManager = ServiceLoader.load(SpiServiceManagerProvider.class)
-      .findFirst().get()
-      .create(this);
+    final SpiServiceManager serviceManager =
+        ServiceLoader.load(SpiServiceManagerProvider.class).findFirst().orElseThrow().create(this);
 
     final Optional<SpiStartServer> start = ServiceLoader.load(SpiStartServer.class).findFirst();
     if (start.isEmpty()) {
-      throw new IllegalStateException("There is no SpiStartServer? Missing dependency on jex-jetty?");
+      throw new IllegalStateException(
+          "There is no SpiStartServer? Missing dependency on jex-jetty?");
     }
     return start.get().start(this, routes, serviceManager);
   }

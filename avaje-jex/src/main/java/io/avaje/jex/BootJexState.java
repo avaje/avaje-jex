@@ -27,22 +27,18 @@ class BootJexState {
 
     JexConfig config = jex.config();
     int port = config.port();
-    if (port == 7001) {
-      config.port(Config.getInt("jex.port", port));
-    }
+    config.port(Config.getInt("jex.port", port));
 
     jex.lifecycle().onShutdown(beanScope::close);
-    return new State(jex.start(), beanScope);
+    return new State(jex.start());
   }
 
   private static class State {
 
     private final Jex.Server server;
-    private final BeanScope beanScope;
 
-    State(Jex.Server server, BeanScope beanScope) {
+    State(Jex.Server server) {
       this.server = server;
-      this.beanScope = beanScope;
     }
 
     void stop() {
@@ -50,8 +46,6 @@ class BootJexState {
     }
 
     public void restart() {
-      // CRaC based startup ...
-      //beanScope.restart();
       server.restart();
     }
   }

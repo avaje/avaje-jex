@@ -22,15 +22,4 @@ public interface BootJex {
   static void start() {
     BootJexState.start();
   }
-
-//  /**
-//   * Stop the Jex server (for CRaC).
-//   */
-//  static void stop() {
-//    BootJexState.stop();
-//  }
-//
-//  static void restart() {
-//    BootJexState.restart();
-//  }
 }

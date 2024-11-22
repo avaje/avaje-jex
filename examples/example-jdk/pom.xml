@@ -23,7 +23,7 @@
 
     <dependency>
       <groupId>io.avaje</groupId>
-      <artifactId>avaje-jex-jdk</artifactId>
+      <artifactId>avaje-jex</artifactId>
       <version>2.6-SNAPSHOT</version>
     </dependency>
 
