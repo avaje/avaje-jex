@@ -3,7 +3,6 @@ package io.avaje.jex.routes;
 import io.avaje.applog.AppLog;
 import io.avaje.jex.Routing;
 import io.avaje.jex.spi.SpiContext;
-import io.avaje.jex.spi.SpiRoutes;
 
 import java.lang.System.Logger.Level;
 import java.util.EnumMap;
@@ -11,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
 
-class Routes implements SpiRoutes {
+final class Routes implements SpiRoutes {
 
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 

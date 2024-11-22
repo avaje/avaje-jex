@@ -3,7 +3,6 @@ package io.avaje.jex.routes;
 import io.avaje.jex.Context;
 import io.avaje.jex.Handler;
 import io.avaje.jex.Routing;
-import io.avaje.jex.spi.SpiRoutes;
 
 import java.util.Map;
 

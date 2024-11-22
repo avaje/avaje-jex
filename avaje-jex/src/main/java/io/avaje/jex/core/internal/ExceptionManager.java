@@ -1,4 +1,4 @@
-package io.avaje.jex.core;
+package io.avaje.jex.core.internal;
 
 import io.avaje.applog.AppLog;
 import io.avaje.jex.ErrorHandling;

@@ -18,7 +18,7 @@ public abstract class ProxyServiceManager implements SpiServiceManager {
 
   protected final SpiServiceManager delegate;
 
-  public ProxyServiceManager(SpiServiceManager delegate) {
+  protected ProxyServiceManager(SpiServiceManager delegate) {
     this.delegate = delegate;
   }
 

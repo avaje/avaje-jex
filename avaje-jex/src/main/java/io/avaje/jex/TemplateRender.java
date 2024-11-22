@@ -7,7 +7,7 @@ import io.avaje.jex.spi.JexExtension;
 /**
  * Template rendering typically of html.
  */
-public interface TemplateRender extends JexExtension {
+public non-sealed interface TemplateRender extends JexExtension {
 
   /**
    * Return the extensions this template renders for by default.

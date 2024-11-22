@@ -10,15 +10,13 @@ import com.sun.net.httpserver.HttpServer;
 import io.avaje.applog.AppLog;
 import io.avaje.jex.AppLifecycle;
 import io.avaje.jex.Jex;
-import io.avaje.jex.spi.SpiRoutes;
+import io.avaje.jex.routes.SpiRoutes;
 import io.avaje.jex.spi.SpiServiceManager;
-import io.avaje.jex.spi.SpiStartServer;
 
-public class JdkServerStart implements SpiStartServer {
+public class JdkServerStart {
 
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
-  @Override
   public Jex.Server start(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
     final ServiceManager manager = new ServiceManager(serviceManager, "http", "");
     BaseHandler handler = new BaseHandler(routes, manager);

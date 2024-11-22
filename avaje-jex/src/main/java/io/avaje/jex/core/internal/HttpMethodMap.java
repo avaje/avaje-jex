@@ -1,4 +1,4 @@
-package io.avaje.jex.core;
+package io.avaje.jex.core.internal;
 
 import io.avaje.jex.Routing;
 

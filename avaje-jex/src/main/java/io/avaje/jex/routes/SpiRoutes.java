@@ -1,14 +1,15 @@
-package io.avaje.jex.spi;
+package io.avaje.jex.routes;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
+import io.avaje.jex.spi.SpiContext;
 
 import java.util.Map;
 
 /**
  * Route matching and filter handling.
  */
-public interface SpiRoutes {
+public sealed interface SpiRoutes permits Routes {
 
   /**
    * Find the matching handler entry given the type and request URI.

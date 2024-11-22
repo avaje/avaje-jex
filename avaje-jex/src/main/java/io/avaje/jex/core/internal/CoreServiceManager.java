@@ -1,7 +1,10 @@
-package io.avaje.jex.core;
+package io.avaje.jex.core.internal;
 
 import io.avaje.applog.AppLog;
 import io.avaje.jex.*;
+import io.avaje.jex.core.JacksonJsonService;
+import io.avaje.jex.core.JsonbJsonService;
+import io.avaje.jex.core.TemplateManager;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.SpiContext;
@@ -17,7 +20,7 @@ import java.util.stream.Stream;
 /**
  * Core implementation of SpiServiceManager provided to specific implementations like jetty etc.
  */
-class CoreServiceManager implements SpiServiceManager {
+public class CoreServiceManager implements SpiServiceManager {
 
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
   public static final String UTF_8 = "UTF-8";
@@ -27,11 +30,11 @@ class CoreServiceManager implements SpiServiceManager {
   private final ExceptionManager exceptionHandler;
   private final TemplateManager templateManager;
 
-  static SpiServiceManager create(Jex jex) {
+  public static SpiServiceManager create(Jex jex) {
     return new Builder(jex).build();
   }
 
-  CoreServiceManager(JsonService jsonService, ErrorHandling errorHandling, TemplateManager templateManager) {
+  public CoreServiceManager(JsonService jsonService, ErrorHandling errorHandling, TemplateManager templateManager) {
     this.jsonService = jsonService;
     this.exceptionHandler = new ExceptionManager(errorHandling);
     this.templateManager = templateManager;
@@ -65,9 +68,9 @@ class CoreServiceManager implements SpiServiceManager {
 
   @Override
   public void maybeClose(Object iterator) {
-    if (iterator instanceof AutoCloseable) {
-      try {
-        ((AutoCloseable) iterator).close();
+    if (iterator instanceof AutoCloseable closeable) {
+      try (closeable) {
+        // nothing
       } catch (Exception e) {
         throw new RuntimeException("Error closing iterator " + iterator, e);
       }

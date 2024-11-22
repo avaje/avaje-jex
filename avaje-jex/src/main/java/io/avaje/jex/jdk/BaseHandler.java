@@ -4,8 +4,8 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import io.avaje.jex.Routing;
 import io.avaje.jex.http.HttpResponseException;
+import io.avaje.jex.routes.SpiRoutes;
 import io.avaje.jex.spi.SpiContext;
-import io.avaje.jex.spi.SpiRoutes;
 
 import java.util.Map;
 
