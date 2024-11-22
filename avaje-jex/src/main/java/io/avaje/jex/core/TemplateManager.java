@@ -31,9 +31,7 @@ public class TemplateManager {
   public void registerDefault(TemplateRender render) {
     if (!renderTypes.contains(render.getClass())) {
       for (String extension : render.defaultExtensions()) {
-        if (!map.containsKey(extension)) {
-          map.put(extension, render);
-        }
+        map.computeIfAbsent(extension, k->render);
       }
     }
   }

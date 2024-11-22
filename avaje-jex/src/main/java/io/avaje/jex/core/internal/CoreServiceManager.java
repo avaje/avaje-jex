@@ -150,7 +150,7 @@ public class CoreServiceManager implements SpiServiceManager {
       if (jsonService != null) {
         return jsonService;
       }
-      return CoreServiceLoader.get().getJsonService()
+      return CoreServiceLoader.getJsonService()
         .orElseGet(this::defaultJsonService);
     }
 
@@ -189,7 +189,7 @@ public class CoreServiceManager implements SpiServiceManager {
     TemplateManager initTemplateMgr() {
       TemplateManager mgr = new TemplateManager();
       mgr.register(jex.config().renderers());
-      for (TemplateRender render : CoreServiceLoader.get().getRenders()) {
+      for (TemplateRender render : CoreServiceLoader.getRenders()) {
         mgr.registerDefault(render);
       }
       return mgr;

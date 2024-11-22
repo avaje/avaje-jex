@@ -44,8 +44,8 @@ class ExceptionManagerTest {
   @Test
   void get() {
     HttpResponse<String> res = pair.request().GET().asString();
-    assertThat(res.statusCode()).isEqualTo(223);
-    assertThat(res.body()).isEqualTo("Handled ForbiddenResponse|Forbidden");
+    assertThat(res.statusCode()).isEqualTo(403);
+    assertThat(res.body()).isEqualTo("Forbidden");
   }
 
   @Test

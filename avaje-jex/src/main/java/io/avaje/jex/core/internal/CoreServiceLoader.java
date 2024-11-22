@@ -14,10 +14,6 @@ class CoreServiceLoader {
 
   private static final CoreServiceLoader INSTANCE = new CoreServiceLoader();
 
-  static CoreServiceLoader get() {
-    return INSTANCE;
-  }
-
   private final JsonService jsonService;
   private final List<TemplateRender> renders = new ArrayList<>();
 
@@ -34,11 +30,11 @@ class CoreServiceLoader {
     jsonService = spiJsonService;
   }
 
-  public Optional<JsonService> getJsonService() {
-    return Optional.ofNullable(jsonService);
+  public static Optional<JsonService> getJsonService() {
+    return Optional.ofNullable(INSTANCE.jsonService);
   }
 
-  public List<TemplateRender> getRenders() {
-    return renders;
+  public static List<TemplateRender> getRenders() {
+    return INSTANCE.renders;
   }
 }
