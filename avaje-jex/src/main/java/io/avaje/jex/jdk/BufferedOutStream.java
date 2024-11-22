@@ -53,7 +53,7 @@ class BufferedOutStream extends OutputStream {
     exchange.sendResponseHeaders(context.statusCode(), 0);
     stream = exchange.getResponseBody();
     // empty the existing buffer
-    stream.write(buffer.toByteArray());
+    buffer.writeTo(stream);
     buffer = null;
   }
 

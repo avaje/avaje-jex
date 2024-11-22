@@ -75,6 +75,6 @@ class ExceptionManagerTest {
   void expect_fallback_to_internalServerError() {
     HttpResponse<String> res = pair.request().path("fiveHundred").GET().asString();
     assertThat(res.statusCode()).isEqualTo(500);
-    assertThat(res.body()).isEqualTo("Internal server error");
+    assertThat(res.body()).isEqualTo("Internal Server Error");
   }
 }
