@@ -47,7 +47,7 @@
       <version>2.0</version>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-spi-service</artifactId>
@@ -72,4 +72,3 @@
     </profile>
   </profiles>
 </project>
-
