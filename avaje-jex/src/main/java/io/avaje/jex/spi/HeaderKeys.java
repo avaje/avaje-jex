@@ -2,6 +2,8 @@ package io.avaje.jex.spi;
 
 public class HeaderKeys {
 
+  private HeaderKeys() {}
+
   public static final String ACCEPT = "Accept";
   public static final String CONTENT_ENCODING = "Content-Encoding";
   public static final String CONTENT_DISPOSITION = "Content-Disposition";

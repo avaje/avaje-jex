@@ -1,11 +1,10 @@
 package io.avaje.jex;
 
-import io.avaje.jex.spi.JsonService;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+
+import io.avaje.jex.spi.JsonService;
 
 class DJexConfig implements JexConfig {
 
@@ -14,7 +13,7 @@ class DJexConfig implements JexConfig {
   private String contextPath = "/";
   private boolean health = true;
   private boolean ignoreTrailingSlashes = true;
-  private Executor executor;
+  private ThreadFactory factory;
 
   private boolean preCompressStaticFiles;
   private JsonService jsonService;
@@ -90,19 +89,19 @@ class DJexConfig implements JexConfig {
   }
 
   @Override
-  public Executor executor() {
+  public ThreadFactory threadFactory() {
 
-    if (executor == null) {
-      executor =
-          Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("jex-http-", 0).factory());
+    if (factory == null) {
+      factory =
+          Thread.ofVirtual().name("jex-http-", 0).factory();
     }
 
-    return executor;
+    return factory;
   }
 
   @Override
-  public JexConfig executor(Executor executor) {
-    this.executor = executor;
+  public JexConfig threadFactory(ThreadFactory factory) {
+    this.factory = factory;
     return this;
   }
 

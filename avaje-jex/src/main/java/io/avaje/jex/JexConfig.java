@@ -1,8 +1,8 @@
 package io.avaje.jex;
 
 import java.util.Map;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import io.avaje.jex.spi.JsonService;
 
@@ -70,14 +70,14 @@ public interface JexConfig {
   JexConfig renderer(String extension, TemplateRender renderer);
 
   /**
-   * Executor for serving requests. Defaults to {@link Executors#newVirtualThreadPerTaskExecutor()}
+   * ThreadFactory for serving requests. Defaults to a {@link Thread#ofVirtual()} factory
    */
-  JexConfig executor(Executor executor);
+  JexConfig threadFactory(ThreadFactory executor);
 
   /**
    * Executor for serving requests. Defaults to {@link Executors#newVirtualThreadPerTaskExecutor()}
    */
-  Executor executor();
+  ThreadFactory threadFactory();
 
   /**
    * Return the port to use.

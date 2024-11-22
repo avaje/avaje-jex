@@ -57,10 +57,7 @@ class CookieParser {
         int eqInd = token.indexOf('=');
         if (eqInd > 0) {
           String name = token.substring(0, eqInd).trim();
-          if (name.isEmpty()) {
-            continue; // Name MOST NOT be empty;
-          }
-          if (isRfc2965 && name.charAt(0) == '$' && ignore(name)) {
+          if (name.isEmpty() || (isRfc2965 && name.charAt(0) == '$' && ignore(name))) {
             continue; // Skip RFC2965 attributes
           }
           final String value = unwrap(token.substring(eqInd + 1).trim());
@@ -104,22 +101,20 @@ class CookieParser {
           quoted = false;
         }
         token.append(ch);
-      } else {
-        if (ch == separator) {
-          if (token.length() > 0) {
-            result.add(token.toString());
-          }
-          token.setLength(0);
-        } else {
-          for (char quote : CookieParser.QUOTE_CHARS) {
-            if (ch == quote) {
-              quoted = true;
-              lastQuoteCharacter = ch;
-              break;
-            }
-          }
-          token.append(ch);
+      } else if (ch == separator) {
+        if (token.length() > 0) {
+          result.add(token.toString());
         }
+        token.setLength(0);
+      } else {
+        for (char quote : CookieParser.QUOTE_CHARS) {
+          if (ch == quote) {
+            quoted = true;
+            lastQuoteCharacter = ch;
+            break;
+          }
+        }
+        token.append(ch);
       }
     }
     if (token.length() > 0) {

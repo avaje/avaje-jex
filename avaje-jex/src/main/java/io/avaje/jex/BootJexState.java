@@ -7,8 +7,8 @@ class BootJexState {
 
   private static State state;
 
-  static void start() {
-    state = new BootJexState().create();
+  static void start(BeanScope beanScope) {
+    state = new BootJexState().create(beanScope);
   }
 
   static void stop() {
@@ -19,8 +19,7 @@ class BootJexState {
     state.restart();
   }
 
-  State create() {
-    BeanScope beanScope = BeanScope.builder().build();
+  State create(BeanScope beanScope) {
 
     Jex jex = beanScope.getOptional(Jex.class).orElse(Jex.create());
     jex.configureWith(beanScope);

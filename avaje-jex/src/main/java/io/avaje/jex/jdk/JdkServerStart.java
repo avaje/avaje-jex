@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.System.Logger.Level;
 import java.net.InetSocketAddress;
+import java.util.concurrent.Executors;
 
 import com.sun.net.httpserver.HttpServer;
 
@@ -26,7 +27,7 @@ public class JdkServerStart {
       final HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
       server.createContext("/", handler);
-      server.setExecutor(jex.config().executor());
+      server.setExecutor(Executors.newThreadPerTaskExecutor(jex.config().threadFactory()));
 
       server.start();
       jex.lifecycle().status(AppLifecycle.Status.STARTED);

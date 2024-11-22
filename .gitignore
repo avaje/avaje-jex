@@ -5,7 +5,5 @@ build/
 .gradle
 .project
 *.prefs
-avaje-jex-freemarker/.classpath
-avaje-jex-jdk/.classpath
-avaje-jex-jetty/.classpath
-avaje-jex/.classpath
+*.classpath
+*.prefs

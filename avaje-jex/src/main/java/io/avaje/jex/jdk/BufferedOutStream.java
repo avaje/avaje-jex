@@ -1,24 +1,25 @@
 package io.avaje.jex.jdk;
 
-import com.sun.net.httpserver.HttpExchange;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Objects;
+
+import com.sun.net.httpserver.HttpExchange;
 
 class BufferedOutStream extends OutputStream {
 
+  private static final long MAX = Long.getLong("jex.outputBuffer.max", 1024);
+  private static final int INITIAL =
+      Integer.getInteger("jex.outputBuffer.initial", 256);
+
   private final JdkContext context;
-  private final long max;
   private ByteArrayOutputStream buffer;
   private OutputStream stream;
   private long count;
 
-  BufferedOutStream(JdkContext context, long max, int bufferSize) {
+  BufferedOutStream(JdkContext context) {
     this.context = context;
-    this.max = max;
-    this.buffer = new ByteArrayOutputStream(bufferSize);
+    this.buffer = new ByteArrayOutputStream(INITIAL);
   }
 
   @Override
@@ -27,7 +28,7 @@ class BufferedOutStream extends OutputStream {
       stream.write(b);
     } else {
       buffer.write(b);
-      if (count++ > max) {
+      if (count++ > MAX) {
         initialiseChunked();
       }
     }
@@ -40,15 +41,13 @@ class BufferedOutStream extends OutputStream {
     } else {
       count += len;
       buffer.write(b, off, len);
-      if (count > max) {
+      if (count > MAX) {
         initialiseChunked();
       }
     }
   }
 
-  /**
-   * Use responseLength 0 and chunked response.
-   */
+  /** Use responseLength 0 and chunked response. */
   private void initialiseChunked() throws IOException {
     final HttpExchange exchange = context.exchange();
     exchange.sendResponseHeaders(context.statusCode(), 0);
