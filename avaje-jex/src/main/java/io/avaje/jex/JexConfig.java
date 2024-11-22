@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
+import javax.net.ssl.SSLContext;
+
 import io.avaje.jex.spi.JsonService;
 
 /**
@@ -118,6 +120,12 @@ public interface JexConfig {
    * Return the access manager.
    */
   AccessManager accessManager();
+
+  /** Return the ssl context if https is enabled. */
+  SSLContext sslContext();
+
+  /** Enable https with the provided SSLContext. */
+  JexConfig sslContext(SSLContext ssl);
 
   /**
    * Return the multipartConfig.

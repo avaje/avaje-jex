@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadFactory;
 
+import javax.net.ssl.SSLContext;
+
 import io.avaje.jex.spi.JsonService;
 
 class DJexConfig implements JexConfig {
@@ -21,6 +23,7 @@ class DJexConfig implements JexConfig {
   private UploadConfig multipartConfig;
   private int multipartFileThreshold = 8 * 1024;
   private final Map<String, TemplateRender> renderers = new HashMap<>();
+  private SSLContext sslContext;
 
   @Override
   public JexConfig port(int port) {
@@ -160,4 +163,15 @@ class DJexConfig implements JexConfig {
     return renderers;
   }
 
+  @Override
+  public SSLContext sslContext() {
+
+    return this.sslContext;
+  }
+
+  @Override
+  public JexConfig sslContext(SSLContext ssl) {
+    this.sslContext = ssl;
+    return this;
+  }
 }

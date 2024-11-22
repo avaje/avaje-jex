@@ -7,6 +7,8 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
 import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.HttpsServer;
 
 import io.avaje.applog.AppLog;
 import io.avaje.jex.AppLifecycle;
@@ -24,12 +26,21 @@ public class JdkServerStart {
     try {
 
       int port = jex.config().port();
-      final HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+      final HttpServer server;
 
+      final var sslContext = jex.config().sslContext();
+      if (sslContext != null) {
+
+        var httpsServer = HttpsServer.create(new InetSocketAddress(port), 0);
+        httpsServer.setHttpsConfigurator(new HttpsConfigurator(sslContext));
+        server = httpsServer;
+      } else {
+        server = HttpServer.create(new InetSocketAddress(port), 0);
+      }
       server.createContext("/", handler);
       server.setExecutor(Executors.newThreadPerTaskExecutor(jex.config().threadFactory()));
-
       server.start();
+
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
       String jexVersion = Jex.class.getPackage().getImplementationVersion();
       log.log(Level.INFO, "started server on port {0,number,#} version {1}", port, jexVersion);
