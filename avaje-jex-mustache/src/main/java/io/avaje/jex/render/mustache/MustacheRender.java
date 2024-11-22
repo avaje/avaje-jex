@@ -4,12 +4,14 @@ import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
 import io.avaje.jex.Context;
 import io.avaje.jex.TemplateRender;
+import io.avaje.spi.ServiceProvider;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.util.Map;
 
+@ServiceProvider
 public class MustacheRender implements TemplateRender {
 
   private final MustacheFactory mustacheFactory;

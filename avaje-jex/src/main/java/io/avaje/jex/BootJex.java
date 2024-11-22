@@ -1,5 +1,7 @@
 package io.avaje.jex;
 
+import io.avaje.inject.BeanScope;
+
 /**
  * Start Jex using {@code @Controller} and avaje-inject, avaje-http, avaje-config.
  * <p>
@@ -13,24 +15,27 @@ public interface BootJex {
    * Start Jex server using {@code @Controller} with avaje-inject, avaje-http, avaje-config.
    *
    * <pre>{@code
-   *   public static void main(String[] args) {
+   * public static void main(String[] args) {
    *
-   *     BootJex.start();
-   *   }
+   *   BootJex.start();
+   * }
    * }</pre>
    */
   static void start() {
-    BootJexState.start();
+    BootJexState.start(BeanScope.builder().build());
   }
 
-//  /**
-//   * Stop the Jex server (for CRaC).
-//   */
-//  static void stop() {
-//    BootJexState.stop();
-//  }
-//
-//  static void restart() {
-//    BootJexState.restart();
-//  }
+  /**
+   * Start Jex server using {@code @Controller} with avaje-inject, avaje-http, avaje-config.
+   *
+   * <pre>{@code
+   * public static void main(String[] args) {
+   *
+   *   BootJex.start();
+   * }
+   * }</pre>
+   */
+  static void start(BeanScope beanScope) {
+    BootJexState.start(beanScope);
+  }
 }

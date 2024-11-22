@@ -1,7 +1,7 @@
 package io.avaje.jex.routes;
 
 import io.avaje.jex.Routing;
-import io.avaje.jex.spi.SpiRoutes;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 

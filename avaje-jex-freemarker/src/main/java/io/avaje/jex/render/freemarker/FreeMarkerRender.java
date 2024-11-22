@@ -1,5 +1,9 @@
 package io.avaje.jex.render.freemarker;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UncheckedIOException;
+import java.util.Map;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -7,12 +11,9 @@ import freemarker.template.TemplateException;
 import freemarker.template.Version;
 import io.avaje.jex.Context;
 import io.avaje.jex.TemplateRender;
+import io.avaje.spi.ServiceProvider;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UncheckedIOException;
-import java.util.Map;
-
+@ServiceProvider
 public class FreeMarkerRender implements TemplateRender {
 
   private final Configuration configuration;

@@ -32,8 +32,12 @@ public class StaticFileSource {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     StaticFileSource that = (StaticFileSource) o;
     return urlPathPrefix.equals(that.urlPathPrefix) &&
       path.equals(that.path) &&

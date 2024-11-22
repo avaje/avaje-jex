@@ -5,7 +5,7 @@ import java.util.Iterator;
 /**
  * Service used to convert request/response bodies to beans.
  */
-public interface JsonService {
+public non-sealed interface JsonService extends JexExtension {
 
   /**
    * Read the request body as a bean and return the bean.

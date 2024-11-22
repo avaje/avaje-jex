@@ -1,8 +1,12 @@
 package io.avaje.jex;
 
-import io.avaje.jex.spi.JsonService;
-
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+
+import javax.net.ssl.SSLContext;
+
+import io.avaje.jex.spi.JsonService;
 
 /**
  * Jex configuration.
@@ -68,14 +72,14 @@ public interface JexConfig {
   JexConfig renderer(String extension, TemplateRender renderer);
 
   /**
-   * Set to true to use virtual threads if supported. Defaults to false.
+   * ThreadFactory for serving requests. Defaults to a {@link Thread#ofVirtual()} factory
    */
-  JexConfig virtualThreads(boolean virtualThreads);
+  JexConfig threadFactory(ThreadFactory executor);
 
   /**
-   * Return true if virtual threads should be used.
+   * Executor for serving requests. Defaults to {@link Executors#newVirtualThreadPerTaskExecutor()}
    */
-  boolean virtualThreads();
+  ThreadFactory threadFactory();
 
   /**
    * Return the port to use.
@@ -116,6 +120,12 @@ public interface JexConfig {
    * Return the access manager.
    */
   AccessManager accessManager();
+
+  /** Return the ssl context if https is enabled. */
+  SSLContext sslContext();
+
+  /** Enable https with the provided SSLContext. */
+  JexConfig sslContext(SSLContext ssl);
 
   /**
    * Return the multipartConfig.

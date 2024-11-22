@@ -23,6 +23,7 @@ class DefaultErrorHandling implements ErrorHandling {
     return null;
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public <T extends Exception> ExceptionHandler<Exception> find(Class<T> exceptionType) {
     Class<?> type = exceptionType;

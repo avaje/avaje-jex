@@ -2,6 +2,10 @@ package io.avaje.jex;
 
 import io.avaje.inject.BeanScope;
 import io.avaje.jex.core.HealthPlugin;
+import io.avaje.jex.core.internal.CoreServiceManager;
+import io.avaje.jex.jdk.JdkServerStart;
+import io.avaje.jex.routes.RoutesBuilder;
+import io.avaje.jex.routes.SpiRoutes;
 import io.avaje.jex.spi.*;
 
 import java.util.*;
@@ -158,19 +162,11 @@ final class DJex implements Jex {
     if (config.health()) {
       plugin(new HealthPlugin());
     }
-    final SpiRoutes routes = ServiceLoader.load(SpiRoutesProvider.class)
-      .findFirst().get()
-      .create(this.routing, this.config.accessManager(), this.config.ignoreTrailingSlashes());
+    final SpiRoutes routes =
+        new RoutesBuilder(
+                this.routing, this.config.accessManager(), this.config.ignoreTrailingSlashes())
+            .build();
 
-    final SpiServiceManager serviceManager = ServiceLoader.load(SpiServiceManagerProvider.class)
-      .findFirst().get()
-      .create(this);
-
-    final Optional<SpiStartServer> start = ServiceLoader.load(SpiStartServer.class).findFirst();
-    if (start.isEmpty()) {
-      throw new IllegalStateException("There is no SpiStartServer? Missing dependency on jex-jetty?");
-    }
-    return start.get().start(this, routes, serviceManager);
+    return new JdkServerStart().start(this, routes, CoreServiceManager.create(this));
   }
-
 }

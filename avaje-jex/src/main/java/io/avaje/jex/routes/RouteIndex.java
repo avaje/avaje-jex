@@ -1,7 +1,5 @@
 package io.avaje.jex.routes;
 
-import io.avaje.jex.spi.SpiRoutes;
-
 import java.util.ArrayList;
 import java.util.List;
 

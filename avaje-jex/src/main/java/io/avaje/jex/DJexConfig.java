@@ -1,18 +1,21 @@
 package io.avaje.jex;
 
-import io.avaje.jex.spi.JsonService;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadFactory;
+
+import javax.net.ssl.SSLContext;
+
+import io.avaje.jex.spi.JsonService;
 
 class DJexConfig implements JexConfig {
 
-  private int port = 7001;
+  private int port = 8080;
   private String host;
   private String contextPath = "/";
   private boolean health = true;
   private boolean ignoreTrailingSlashes = true;
-  private boolean virtualThreads;
+  private ThreadFactory factory;
 
   private boolean preCompressStaticFiles;
   private JsonService jsonService;
@@ -20,6 +23,7 @@ class DJexConfig implements JexConfig {
   private UploadConfig multipartConfig;
   private int multipartFileThreshold = 8 * 1024;
   private final Map<String, TemplateRender> renderers = new HashMap<>();
+  private SSLContext sslContext;
 
   @Override
   public JexConfig port(int port) {
@@ -88,13 +92,19 @@ class DJexConfig implements JexConfig {
   }
 
   @Override
-  public boolean virtualThreads() {
-    return virtualThreads;
+  public ThreadFactory threadFactory() {
+
+    if (factory == null) {
+      factory =
+          Thread.ofVirtual().name("jex-http-", 0).factory();
+    }
+
+    return factory;
   }
 
   @Override
-  public JexConfig virtualThreads(boolean virtualThreads) {
-    this.virtualThreads = virtualThreads;
+  public JexConfig threadFactory(ThreadFactory factory) {
+    this.factory = factory;
     return this;
   }
 
@@ -153,4 +163,15 @@ class DJexConfig implements JexConfig {
     return renderers;
   }
 
+  @Override
+  public SSLContext sslContext() {
+
+    return this.sslContext;
+  }
+
+  @Override
+  public JexConfig sslContext(SSLContext ssl) {
+    this.sslContext = ssl;
+    return this;
+  }
 }

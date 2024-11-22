@@ -194,21 +194,6 @@ public interface Context {
   String scheme();
 
   /**
-   * Sets an attribute for the user session.
-   */
-  Context sessionAttribute(String key, Object value);
-
-  /**
-   * Gets specified attribute from the user session, or null.
-   */
-  <T> T sessionAttribute(String key);
-
-  /**
-   * Return a map of all the attributes in the user session.
-   */
-  Map<String, Object> sessionAttributeMap();
-
-  /**
    * Return the request url.
    */
   String url();
@@ -298,16 +283,6 @@ public interface Context {
   Context render(String name, Map<String, Object> model);
 
   /**
-   * Return true if content has already been written to the underlying server outputStream.
-   */
-  boolean isCommitted();
-
-  /**
-   * If not committed reset the underlying response status, headers and buffer.
-   */
-  void reset();
-
-  /**
    * Return all the request headers as a map.
    */
   Map<String, String> headerMap();
@@ -341,16 +316,6 @@ public interface Context {
    * Returns the request IP.
    */
   String ip();
-
-  /**
-   * Returns true if request is multipart.
-   */
-  boolean isMultipart();
-
-  /**
-   * Returns true if request is multipart/form-data.
-   */
-  boolean isMultipartFormData();
 
   /**
    * Returns the request method.
