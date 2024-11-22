@@ -6,13 +6,10 @@ import io.avaje.jex.Routing;
 import io.avaje.jex.http.NotFoundResponse;
 import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.SpiRoutes;
-//import jakarta.servlet.http.HttpServletRequest;
-//import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.http.HttpURI;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
-import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.util.Callback;
 
 import java.util.Map;

@@ -31,7 +31,8 @@
     <module>avaje-jex-jetty</module>
     <module>avaje-jex-jdk</module>
     <module>avaje-jex-grizzly</module>
-      <!-- <module>avaje-jex-websockets</module> -->
+    <module>avaje-j12</module>
+    <!-- <module>avaje-jex-websockets</module> -->
   </modules>
 
   <dependencies>

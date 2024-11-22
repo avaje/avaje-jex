@@ -1,14 +1,11 @@
 package io.avaje.jex.jetty;
 
-import io.avaje.jex.*;
 import io.avaje.jex.spi.SpiRoutes;
 import io.avaje.jex.spi.SpiServiceManager;
-//import jakarta.servlet.MultipartConfigElement;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-//import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.util.Uptime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

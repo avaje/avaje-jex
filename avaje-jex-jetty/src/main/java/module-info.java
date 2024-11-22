@@ -8,7 +8,7 @@ module io.avaje.jex.jetty {
   requires transitive io.avaje.jex;
   //requires io.avaje.jex.jettyx;
   requires java.net.http;
-  requires transitive jetty.servlet.api;
+  //requires transitive jetty.servlet.api;
   requires transitive org.slf4j;
   requires transitive org.eclipse.jetty.http;
   requires transitive org.eclipse.jetty.server;
