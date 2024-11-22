@@ -28,10 +28,7 @@
     <module>avaje-jex-test</module>
     <module>avaje-jex-freemarker</module>
     <module>avaje-jex-mustache</module>
-    <module>avaje-jex-jetty</module>
     <module>avaje-jex-jdk</module>
-    <module>avaje-jex-grizzly</module>
-      <!-- <module>avaje-jex-websockets</module> -->
   </modules>
 
   <dependencies>
