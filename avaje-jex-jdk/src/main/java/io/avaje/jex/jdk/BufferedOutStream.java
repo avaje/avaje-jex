@@ -32,6 +32,19 @@ class BufferedOutStream extends OutputStream {
     }
   }
 
+  @Override
+  public void write(byte[] b, int off, int len) throws IOException {
+    if (stream != null) {
+      stream.write(b, off, len);
+    } else {
+      count += len;
+      buffer.write(b, off, len);
+      if (count > max) {
+        initialiseChunked();
+      }
+    }
+  }
+
   /**
    * Use responseLength 0 and chunked response.
    */
