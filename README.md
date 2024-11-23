@@ -7,14 +7,19 @@
 
 # avaje-jex
 
-Javalin style Wrapper over the JDK's `jdk.httpserver` server.
+Javalin style wrapper over the JDK's [`jdk.httpserver`](https://docs.oracle.com/en/java/javase/23/docs/api/jdk.httpserver/module-summary.html) `HttpServer` classes.
 
 ```java
 var app = Jex.create()
   .routing(routing -> routing
     .get("/", ctx -> ctx.text("hello"))
     .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id")))
-  )
+    .filter(
+        (ctx, chain) -> {
+          System.out.println("before request");
+          chain.proceed();
+          System.out.println("after request");
+        }))
   .port(8080)
   .start();
 ```
