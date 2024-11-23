@@ -13,7 +13,7 @@ import com.sun.net.httpserver.HttpsServer;
 import io.avaje.applog.AppLog;
 import io.avaje.jex.AppLifecycle;
 import io.avaje.jex.Jex;
-import io.avaje.jex.core.internal.SpiServiceManager;
+import io.avaje.jex.core.SpiServiceManager;
 import io.avaje.jex.routes.SpiRoutes;
 
 public class JdkServerStart {

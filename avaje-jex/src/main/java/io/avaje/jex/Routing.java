@@ -2,12 +2,13 @@ package io.avaje.jex;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
 import io.avaje.jex.security.Role;
 
-public interface Routing {
+public sealed interface Routing permits DefaultRouting {
 
   /**
    * Add the routes provided by the Routing Service.
@@ -48,6 +49,11 @@ public interface Routing {
    * @param permittedRoles The permitted roles required for the last handler
    */
   Routing withRoles(Role... permittedRoles);
+
+  /**
+   * Register an exception handler for the given exception type.
+   */
+  <T extends Exception> Routing exception(Class<T> exceptionClass, ExceptionHandler<T> handler);
 
   /**
    * Add a group of route handlers with a common path prefix.
@@ -141,7 +147,7 @@ public interface Routing {
 
   /** Add a post-processing filter for all requests. */
   default Routing after(Consumer<Context> handler) {
-    
+
     return filter(
         (ctx, chain) -> {
           chain.proceed();
@@ -158,6 +164,11 @@ public interface Routing {
    * Return all the registered filters.
    */
   List<HttpFilter> filters();
+
+  /**
+   * Return all the registered Exception Handlers.
+   */
+  Map<Class<?>, ExceptionHandler<?>> errorHandlers();
 
   /**
    * A group of routing entries prefixed by a common path.

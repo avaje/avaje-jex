@@ -1,8 +1,8 @@
 package io.avaje.jex;
 
 import io.avaje.inject.BeanScope;
+import io.avaje.jex.core.CoreServiceManager;
 import io.avaje.jex.core.HealthPlugin;
-import io.avaje.jex.core.internal.CoreServiceManager;
 import io.avaje.jex.jdk.JdkServerStart;
 import io.avaje.jex.routes.RoutesBuilder;
 import io.avaje.jex.routes.SpiRoutes;
@@ -14,12 +14,10 @@ import java.util.function.Consumer;
 final class DJex implements Jex {
 
   private final Routing routing = new DefaultRouting();
-  private final ErrorHandling errorHandling = new DefaultErrorHandling();
   private final AppLifecycle lifecycle = new DefaultLifecycle();
   private final StaticFileConfig staticFiles;
   private final Map<Class<?>, Object> attributes = new HashMap<>();
   private final DJexConfig config = new DJexConfig();
-  private ServerConfig serverConfig;
 
   DJex() {
     this.staticFiles = new DefaultStaticFileConfig(this);
@@ -41,28 +39,6 @@ final class DJex implements Jex {
   @SuppressWarnings("unchecked")
   public <T> T attribute(Class<T> cls) {
     return (T) attributes.get(cls);
-  }
-
-  @Override
-  public Jex errorHandling(ErrorHandling.Service service) {
-    service.add(errorHandling);
-    return this;
-  }
-
-  @Override
-  public ErrorHandling errorHandling() {
-    return errorHandling;
-  }
-
-  @Override
-  public ServerConfig serverConfig() {
-    return serverConfig;
-  }
-
-  @Override
-  public Jex serverConfig(ServerConfig serverConfig) {
-    this.serverConfig = serverConfig;
-    return this;
   }
 
   @Override
@@ -100,9 +76,6 @@ final class DJex implements Jex {
     for (JexPlugin plugin : beanScope.list(JexPlugin.class)) {
       plugin.apply(this);
     }
-    for (ErrorHandling.Service service : beanScope.list(ErrorHandling.Service.class)) {
-      service.add(errorHandling);
-    }
     routing.addAll(beanScope.list(Routing.Service.class));
     beanScope.getOptional(JsonService.class).ifPresent(this::jsonService);
     return this;
@@ -116,7 +89,7 @@ final class DJex implements Jex {
 
   @Override
   public <T extends Exception> Jex exception(Class<T> exceptionClass, ExceptionHandler<T> handler) {
-    errorHandling.exception(exceptionClass, handler);
+    routing.exception(exceptionClass, handler);
     return this;
   }
 

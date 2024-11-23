@@ -1,17 +1,18 @@
 package io.avaje.jex.jdk;
 
-import io.avaje.jex.Jex;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.http.HttpHeaders;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
+
+import io.avaje.jex.Jex;
 
 class JsonTest {
 

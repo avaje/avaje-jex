@@ -1,10 +1,12 @@
 package io.avaje.jex;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.DirectoryIteratorException;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+
+import io.avaje.jex.core.ExceptionManager;
 
 class DefaultErrorHandlingTest {
 
@@ -14,8 +16,10 @@ class DefaultErrorHandlingTest {
   @Test
   void exception() {
 
-    DefaultErrorHandling handling = new DefaultErrorHandling();
-    handling.exception(RuntimeException.class, rt);
+    Routing router = new DefaultRouting();
+    router.exception(RuntimeException.class, rt);
+
+    var handling = new ExceptionManager(router.errorHandlers());
 
     assertThat(handling.find(RuntimeException.class)).isSameAs(rt);
     assertThat(handling.find(IllegalStateException.class)).isSameAs(rt);
@@ -24,10 +28,11 @@ class DefaultErrorHandlingTest {
 
   @Test
   void exception_expect_highestMatch() {
+    Routing router = new DefaultRouting();
+    router.exception(RuntimeException.class, rt);
+    router.exception(IllegalStateException.class, ise);
 
-    DefaultErrorHandling handling = new DefaultErrorHandling();
-    handling.exception(RuntimeException.class, rt);
-    handling.exception(IllegalStateException.class, ise);
+    var handling = new ExceptionManager(router.errorHandlers());
 
     assertThat(handling.find(IllegalStateException.class)).isSameAs(ise);
     assertThat(handling.find(RuntimeException.class)).isSameAs(rt);
@@ -37,14 +42,12 @@ class DefaultErrorHandlingTest {
   private static class RT implements ExceptionHandler<RuntimeException> {
 
     @Override
-    public void handle(RuntimeException exception, Context ctx) {
-    }
+    public void handle(RuntimeException exception, Context ctx) {}
   }
 
   private static class ISE implements ExceptionHandler<IllegalStateException> {
 
     @Override
-    public void handle(IllegalStateException exception, Context ctx) {
-    }
+    public void handle(IllegalStateException exception, Context ctx) {}
   }
 }

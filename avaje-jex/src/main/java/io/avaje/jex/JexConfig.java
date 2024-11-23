@@ -12,7 +12,7 @@ import io.avaje.jex.spi.TemplateRender;
 /**
  * Jex configuration.
  */
-public interface JexConfig {
+public sealed interface JexConfig permits DJexConfig {
 
   /**
    * Set the port to use. Defaults to 7001.

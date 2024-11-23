@@ -1,8 +1,8 @@
-package io.avaje.jex.core.internal;
+package io.avaje.jex.core;
 
 import org.junit.jupiter.api.Test;
 
-import io.avaje.jex.core.internal.CoreServiceManager;
+import io.avaje.jex.core.CoreServiceManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

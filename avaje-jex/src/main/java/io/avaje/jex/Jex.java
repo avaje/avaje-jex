@@ -23,7 +23,7 @@ import java.util.function.Consumer;
  *
  * }</pre>
  */
-public interface Jex {
+public sealed interface Jex permits DJex {
 
   /**
    * Create Jex.
@@ -54,26 +54,6 @@ public interface Jex {
    * Return a custom attribute.
    */
   <T> T attribute(Class<T> cls);
-
-  /**
-   * Configure error handlers.
-   */
-  Jex errorHandling(ErrorHandling.Service service);
-
-  /**
-   * Return the Error handler to add error handlers.
-   */
-  ErrorHandling errorHandling();
-
-  /**
-   * Return the server specific configuration.
-   */
-  ServerConfig serverConfig();
-
-  /**
-   * Set the server specific configuration.
-   */
-  Jex serverConfig(ServerConfig serverConfig);
 
   /**
    * Add routes and handlers to the routing.

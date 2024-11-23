@@ -1,13 +1,14 @@
 package io.avaje.jex.jdk;
 
-import io.avaje.http.client.HttpClient;
-import io.avaje.http.client.JacksonBodyAdapter;
-import io.avaje.jex.Jex;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.http.HttpResponse;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+
+import io.avaje.http.client.HttpClient;
+import io.avaje.http.client.JacksonBodyAdapter;
+import io.avaje.jex.Jex;
 
 class JdkJexServerTest {
 

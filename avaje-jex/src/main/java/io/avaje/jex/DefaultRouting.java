@@ -5,17 +5,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
+import io.avaje.jex.Routing.Entry;
+import io.avaje.jex.Routing.Group;
+import io.avaje.jex.Routing.Service;
+import io.avaje.jex.Routing.Type;
 import io.avaje.jex.security.Role;
 
-class DefaultRouting implements Routing {
+final class DefaultRouting implements Routing {
 
   private final List<Routing.Entry> handlers = new ArrayList<>();
   private final List<HttpFilter> filters = new ArrayList<>();
   private final Deque<String> pathDeque = new ArrayDeque<>();
+  private final Map<Class<?>, ExceptionHandler<?>> exceptionHandlers = new HashMap<>();
 
   /**
    * Last entry that we can add permitted roles to.
@@ -30,6 +36,11 @@ class DefaultRouting implements Routing {
   @Override
   public List<HttpFilter> filters() {
     return filters;
+  }
+
+  @Override
+  public Map<Class<?>, ExceptionHandler<?>> errorHandlers() {
+    return exceptionHandlers;
   }
 
   private String path(String path) {
@@ -54,6 +65,12 @@ class DefaultRouting implements Routing {
     for (Service route : routes) {
       route.add(this);
     }
+    return this;
+  }
+
+  @Override
+  public <T extends Exception> Routing exception(Class<T> type, ExceptionHandler<T> handler) {
+    exceptionHandlers.put(type, handler);
     return this;
   }
 

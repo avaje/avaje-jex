@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Render templates typically as html.
  */
-public class TemplateManager {
+public final class TemplateManager {
 
   private final Map<String, TemplateRender> map = new HashMap<>();
 
