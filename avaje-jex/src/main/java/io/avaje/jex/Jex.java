@@ -93,11 +93,6 @@ public sealed interface Jex permits DJex {
   Jex configure(Consumer<JexConfig> configure);
 
   /**
-   * Add an exception handler for the given exception type.
-   */
-  <T extends Exception> Jex exception(Class<T> exceptionClass, ExceptionHandler<T> handler);
-
-  /**
    * Set the port to use.
    */
   Jex port(int port);

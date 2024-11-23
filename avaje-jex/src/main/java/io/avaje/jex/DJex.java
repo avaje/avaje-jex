@@ -23,7 +23,6 @@ final class DJex implements Jex {
     return config;
   }
 
-
   @Override
   public <T> Jex attribute(Class<T> cls, T instance) {
     attributes.put(cls, instance);
@@ -79,12 +78,6 @@ final class DJex implements Jex {
   @Override
   public Jex configure(Consumer<JexConfig> configure) {
     configure.accept(config);
-    return this;
-  }
-
-  @Override
-  public <T extends Exception> Jex exception(Class<T> exceptionClass, ExceptionHandler<T> handler) {
-    routing.exception(exceptionClass, handler);
     return this;
   }
 
