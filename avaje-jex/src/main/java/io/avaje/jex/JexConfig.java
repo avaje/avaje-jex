@@ -49,11 +49,6 @@ public interface JexConfig {
   JexConfig jsonService(JsonService jsonService);
 
   /**
-   * Set the AccessManager to use.
-   */
-  JexConfig accessManager(AccessManager accessManager);
-
-  /**
    * Set the upload configuration.
    */
   JexConfig multipartConfig(UploadConfig multipartConfig);
@@ -115,11 +110,6 @@ public interface JexConfig {
    * Return the JsonService.
    */
   JsonService jsonService();
-
-  /**
-   * Return the access manager.
-   */
-  AccessManager accessManager();
 
   /** Return the ssl context if https is enabled. */
   SSLContext sslContext();

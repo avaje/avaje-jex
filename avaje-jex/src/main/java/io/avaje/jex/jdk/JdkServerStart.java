@@ -6,7 +6,7 @@ import java.lang.System.Logger.Level;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
-import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.*;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsServer;
 
@@ -22,9 +22,8 @@ public class JdkServerStart {
 
   public Jex.Server start(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
     final ServiceManager manager = new ServiceManager(serviceManager, "http", "");
-    BaseHandler handler = new BaseHandler(routes, manager);
-    try {
 
+    try {
       int port = jex.config().port();
       final HttpServer server;
 
@@ -37,7 +36,10 @@ public class JdkServerStart {
       } else {
         server = HttpServer.create(new InetSocketAddress(port), 0);
       }
-      server.createContext("/", handler);
+      var handler = new BaseHandler(routes);
+      var context = server.createContext("/", handler);
+      context.getFilters().add(new BaseFilter(routes, manager));
+      context.getFilters().addAll(routes.filters());
       server.setExecutor(Executors.newThreadPerTaskExecutor(jex.config().threadFactory()));
       server.start();
 

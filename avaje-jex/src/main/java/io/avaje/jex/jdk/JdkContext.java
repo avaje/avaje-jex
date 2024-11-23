@@ -139,7 +139,7 @@ class JdkContext implements Context, SpiContext {
   public void redirect(String location, int statusCode) {
     header(HeaderKeys.LOCATION, location);
     status(statusCode);
-    if (mode == Routing.Type.BEFORE) {
+    if (mode == Routing.Type.FILTER) {
       throw new HttpResponseException(ErrorCode.REDIRECT);
     } else {
       performRedirect();
@@ -450,4 +450,8 @@ class JdkContext implements Context, SpiContext {
     return exchange;
   }
 
+  @Override
+  public HttpExchange jdkExchange() {
+    return exchange;
+  }
 }

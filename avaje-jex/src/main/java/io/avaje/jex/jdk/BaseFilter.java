@@ -1,0 +1,89 @@
+package io.avaje.jex.jdk;
+
+import java.util.Map;
+import java.util.function.Consumer;
+
+import com.sun.net.httpserver.Filter;
+import com.sun.net.httpserver.HttpExchange;
+
+import io.avaje.jex.Context;
+import io.avaje.jex.Routing;
+import io.avaje.jex.Routing.Type;
+import io.avaje.jex.http.HttpResponseException;
+import io.avaje.jex.routes.SpiRoutes;
+import io.avaje.jex.spi.SpiContext;
+
+class BaseFilter extends Filter {
+
+  private final SpiRoutes routes;
+  private final ServiceManager mgr;
+
+  BaseFilter(SpiRoutes routes, ServiceManager mgr) {
+    this.mgr = mgr;
+    this.routes = routes;
+  }
+
+  void waitForIdle(long maxSeconds) {
+    routes.waitForIdle(maxSeconds);
+  }
+
+  @Override
+  public void doFilter(HttpExchange exchange, Filter.Chain chain) {
+
+    final String uri = exchange.getRequestURI().getPath();
+    final Routing.Type routeType = mgr.lookupRoutingType(exchange.getRequestMethod());
+    final SpiRoutes.Entry route = routes.match(routeType, uri);
+
+    if (route == null) {
+      var ctx = new JdkContext(mgr, exchange, uri);
+      routes.inc();
+      try {
+        processNoRoute(ctx, uri, routeType);
+        exchange.setAttribute("JdkContext", ctx);
+        chain.doFilter(exchange);
+      } catch (Exception e) {
+        handleException(ctx, e);
+      } finally {
+        routes.dec();
+      }
+    } else {
+      route.inc();
+      try {
+        final Map<String, String> params = route.pathParams(uri);
+        JdkContext ctx = new JdkContext(mgr, exchange, route.matchPath(), params);
+        try {
+          ctx.setMode(Type.FILTER);
+          exchange.setAttribute("JdkContext", ctx);
+          Consumer<Context> handlerConsumer = route::handle;
+          exchange.setAttribute("SpiRoutes.Entry.Handler", handlerConsumer);
+          chain.doFilter(exchange);
+        } catch (Exception e) {
+          handleException(ctx, e);
+        }
+      } finally {
+        route.dec();
+      }
+    }
+  }
+
+  private void handleException(SpiContext ctx, Exception e) {
+    mgr.handleException(ctx, e);
+  }
+
+  private void processNoRoute(JdkContext ctx, String uri, Routing.Type routeType) {
+    if (routeType == Routing.Type.HEAD && hasGetHandler(uri)) {
+      ctx.status(200);
+      return;
+    }
+    throw new HttpResponseException(404, "uri: " + uri);
+  }
+
+  private boolean hasGetHandler(String uri) {
+    return routes.match(Routing.Type.GET, uri) != null;
+  }
+
+  @Override
+  public String description() {
+    return "Routing Filter";
+  }
+}

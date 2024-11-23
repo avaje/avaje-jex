@@ -90,11 +90,6 @@ public interface Jex {
   Routing routing();
 
   /**
-   * Set the AccessManager.
-   */
-  Jex accessManager(AccessManager accessManager);
-
-  /**
    * Set the JsonService.
    */
   Jex jsonService(JsonService jsonService);

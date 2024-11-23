@@ -19,28 +19,36 @@ class ContextAttributeTest {
   static UUID attrUuid;
 
   static TestPair init() {
-    var app = Jex.create()
-      .routing(routing -> routing
-        .before(ctx -> {
-          ctx.attribute("oneUuid", uuid).attribute(TestPair.class.getName(), pair);
-        })
-        .get("/", ctx -> {
-          attrUuid = ctx.attribute("oneUuid");
-          attrPair = ctx.attribute(TestPair.class.getName());
+    var app =
+        Jex.create()
+            .routing(
+                routing ->
+                    routing
+                        .filter(
+                            (ctx, chain) -> {
+                              ctx.attribute("oneUuid", uuid)
+                                  .attribute(TestPair.class.getName(), pair);
+                              chain.proceed();
+                            })
+                        .get(
+                            "/",
+                            ctx -> {
+                              attrUuid = ctx.attribute("oneUuid");
+                              attrPair = ctx.attribute(TestPair.class.getName());
 
-          assert attrUuid == uuid;
-          assert attrPair == pair;
+                              assert attrUuid == uuid;
+                              assert attrPair == pair;
 
-//          ctx.attributeMap() is not supported
-//          final Map<String, Object> attrMap = ctx.attributeMap();
-//          final Object mapUuid = attrMap.get("oneUuid");
-//          assert mapUuid == uuid;
-//
-//          final Object mapPair = attrMap.get(TestPair.class.getName());
-//          assert mapPair == pair;
-          ctx.text("all-good");
-        })
-      );
+                              //          ctx.attributeMap() is not supported
+                              //          final Map<String, Object> attrMap = ctx.attributeMap();
+                              //          final Object mapUuid = attrMap.get("oneUuid");
+                              //          assert mapUuid == uuid;
+                              //
+                              //          final Object mapPair =
+                              // attrMap.get(TestPair.class.getName());
+                              //          assert mapPair == pair;
+                              ctx.text("all-good");
+                            }));
     return TestPair.create(app);
   }
 
@@ -58,6 +66,4 @@ class ContextAttributeTest {
     assertThat(attrPair).isSameAs(pair);
     assertThat(attrUuid).isSameAs(uuid);
   }
-
-
 }

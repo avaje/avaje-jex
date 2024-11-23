@@ -1,10 +1,19 @@
 package io.avaje.jex;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.List;
+import java.util.Set;
+
+import io.avaje.jex.jdk.JdkFilter;
 
 class DefaultRouting implements Routing {
 
   private final List<Routing.Entry> handlers = new ArrayList<>();
+  private final List<HttpFilter> filters = new ArrayList<>();
   private final Deque<String> pathDeque = new ArrayDeque<>();
 
   /**
@@ -13,8 +22,13 @@ class DefaultRouting implements Routing {
   private Entry lastEntry;
 
   @Override
-  public List<Routing.Entry> all() {
+  public List<Routing.Entry> handlers() {
     return handlers;
+  }
+
+  @Override
+  public List<HttpFilter> filters() {
+    return filters;
   }
 
   private String path(String path) {
@@ -65,14 +79,6 @@ class DefaultRouting implements Routing {
   private void add(Type verb, String path, Handler handler) {
     lastEntry = new Entry(verb, path(path), handler);
     handlers.add(lastEntry);
-  }
-
-  private void addBefore(String path, Handler handler) {
-    add(Type.BEFORE, path(path), handler);
-  }
-
-  private void addAfter(String path, Handler handler) {
-    add(Type.AFTER, path(path), handler);
   }
 
   // ********************************************************************************************
@@ -164,31 +170,15 @@ class DefaultRouting implements Routing {
   }
 
   // ********************************************************************************************
-  // Before/after handlers (filters)
+  // Filters
   // ********************************************************************************************
+
   @Override
-  public Routing before(String path, Handler handler) {
-    addBefore(path, handler);
+  public Routing filter(HttpFilter handler) {
+    filters.add(handler);
     return this;
   }
 
-  @Override
-  public Routing before(Handler handler) {
-    before("/*", handler);
-    return this;
-  }
-
-  @Override
-  public Routing after(String path, Handler handler) {
-    addAfter(path, handler);
-    return this;
-  }
-
-  @Override
-  public Routing after(Handler handler) {
-    after("/*", handler);
-    return this;
-  }
 
   private static class Entry implements Routing.Entry {
 

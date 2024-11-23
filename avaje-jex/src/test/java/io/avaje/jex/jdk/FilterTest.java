@@ -17,22 +17,41 @@ class FilterTest {
   static AtomicReference<String> afterTwo = new AtomicReference<>();
 
   static TestPair init() {
-    final Jex app = Jex.create()
-      .routing(routing -> routing
-        .get("/", ctx -> ctx.text("roo"))
-        .get("/one", ctx -> ctx.text("one"))
-        .get("/two", ctx -> ctx.text("two"))
-        .get("/two/{id}", ctx -> ctx.text("two-id"))
-        .before(ctx -> {
-          ctx.header("before-all", "set");
-        })
-        .before("/two/*", ctx -> ctx.header("before-two", "set"))
-        .after(ctx -> {
-          afterAll.set("set");
-        })
-        .after("/two/*", ctx -> afterTwo.set("set"))
-        .get("/dummy", ctx -> ctx.text("dummy"))
-      );
+    final Jex app =
+        Jex.create()
+            .routing(
+                routing ->
+                    routing
+                        .get("/", ctx -> ctx.text("roo"))
+                        .get("/one", ctx -> ctx.text("one"))
+                        .get("/two", ctx -> ctx.text("two"))
+                        .get("/two/{id}", ctx -> ctx.text("two-id"))
+                        .filter(
+                            (ctx, chain) -> {
+                              ctx.header("before-all", "set");
+                              chain.proceed();
+                            })
+                        .filter(
+                            (ctx, chain) -> {
+                              if (ctx.url().contains("/two/")) {
+                                ctx.header("before-two", "set");
+                              }
+                              chain.proceed();
+                            })
+                        .filter(
+                            (ctx, chain) -> {
+                              chain.proceed();
+                              afterAll.set("set");
+                            })
+                        .filter(
+                            (ctx, chain) -> {
+                              chain.proceed();
+                              if (ctx.url().contains("/two/")) {
+
+                                afterTwo.set("set");
+                              }
+                            })
+                        .get("/dummy", ctx -> ctx.text("dummy")));
 
     return TestPair.create(app);
   }
@@ -64,7 +83,6 @@ class FilterTest {
     assertHasBeforeAfterAll(res);
     assertNoBeforeAfterTwo(res);
   }
-
 
   @Test
   void get_two_expect_extraFilters() {

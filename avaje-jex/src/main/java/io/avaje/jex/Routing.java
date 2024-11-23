@@ -122,29 +122,19 @@ public interface Routing {
   Routing trace(Handler handler);
 
   /**
-   * Add a before filter for the given path.
+   * Add a filter for all requests.
    */
-  Routing before(String path, Handler handler);
-
-  /**
-   * Add a before filter for all requests.
-   */
-  Routing before(Handler handler);
-
-  /**
-   * Add a after filter for the given path.
-   */
-  Routing after(String path, Handler handler);
-
-  /**
-   * Add an after filter for all requests.
-   */
-  Routing after(Handler handler);
+  Routing filter(HttpFilter handler);
 
   /**
    * Return all the registered handlers.
    */
-  List<Entry> all();
+  List<Entry> handlers();
+
+  /**
+   * Return all the registered filters.
+   */
+  List<HttpFilter> filters();
 
   /**
    * A group of routing entries prefixed by a common path.
@@ -203,13 +193,9 @@ public interface Routing {
    */
   enum Type {
     /**
-     * Before filter.
+     * Http Filter.
      */
-    BEFORE,
-    /**
-     * After filter.
-     */
-    AFTER,
+    FILTER,
     /**
      * Http GET.
      */
@@ -239,4 +225,5 @@ public interface Routing {
      */
     TRACE//, CONNECT, OPTIONS, INVALID;
   }
+
 }
