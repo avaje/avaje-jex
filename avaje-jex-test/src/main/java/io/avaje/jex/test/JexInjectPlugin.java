@@ -1,11 +1,12 @@
 package io.avaje.jex.test;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+
 import io.avaje.http.client.HttpClient;
 import io.avaje.inject.BeanScope;
 import io.avaje.inject.test.Plugin;
 import io.avaje.jex.Jex;
-
-import java.lang.annotation.Annotation;
 
 /**
  * avaje-inject-test plugin that:
@@ -20,12 +21,13 @@ public final class JexInjectPlugin implements Plugin {
   private static final String AVAJE_HTTP_CLIENT = "io.avaje.http.api.Client";
   private static final String AVAJE_HTTP_PATH = "io.avaje.http.api.Path";
 
-  /**
-   * Return true if it's a http client this plugin supports.
-   */
+  /** Return true if it's a http client this plugin supports. */
   @Override
-  public boolean forType(Class<?> type) {
-    return HttpClient.class.equals(type) || isHttpClientApi(type);
+  public boolean forType(Type type) {
+
+    if (!(type instanceof Class<?> clazz)) return false;
+
+    return HttpClient.class.equals(clazz) || isHttpClientApi(clazz);
   }
 
   private boolean isHttpClientApi(Class<?> type) {
@@ -34,10 +36,7 @@ public final class JexInjectPlugin implements Plugin {
     }
     for (Annotation annotation : type.getAnnotations()) {
       String name = annotation.annotationType().getName();
-      if (AVAJE_HTTP_CLIENT.equals(name)) {
-        return true;
-      }
-      if (AVAJE_HTTP_PATH.equals(name)) {
+      if (AVAJE_HTTP_CLIENT.equals(name) || AVAJE_HTTP_PATH.equals(name)) {
         return true;
       }
     }
@@ -76,11 +75,12 @@ public final class JexInjectPlugin implements Plugin {
     }
 
     @Override
-    public Object create(Class<?> type) {
+    public Object create(Type type) {
+
       if (HttpClient.class.equals(type)) {
         return httpClient;
       }
-      return apiClient(type);
+      return apiClient((Class<?>) type);
     }
 
     private Object apiClient(Class<?> clientInterface) {
