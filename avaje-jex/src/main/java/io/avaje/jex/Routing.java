@@ -11,14 +11,14 @@ import io.avaje.jex.security.Role;
 public sealed interface Routing permits DefaultRouting {
 
   /**
-   * Add the routes provided by the Routing Service.
+   * Add the routes provided by the Routing HttpService.
    */
-  Routing add(Routing.Service routes);
+  Routing add(Routing.HttpService routes);
 
   /**
    * Add all the routes provided by the Routing Services.
    */
-  Routing addAll(Collection<Routing.Service> routes);
+  Routing addAll(Collection<Routing.HttpService> routes);
 
   /**
    * Specify permittedRoles for the last added handler.
@@ -186,7 +186,7 @@ public sealed interface Routing permits DefaultRouting {
    * Adds to the Routing.
    */
   @FunctionalInterface
-  interface Service {
+  interface HttpService {
 
     /**
      * Add to the routing.

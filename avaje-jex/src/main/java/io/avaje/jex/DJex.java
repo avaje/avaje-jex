@@ -36,13 +36,13 @@ final class DJex implements Jex {
   }
 
   @Override
-  public Jex routing(Routing.Service routes) {
+  public Jex routing(Routing.HttpService routes) {
     routing.add(routes);
     return this;
   }
 
   @Override
-  public Jex routing(Collection<Routing.Service> routes) {
+  public Jex routing(Collection<Routing.HttpService> routes) {
     routing.addAll(routes);
     return this;
   }
@@ -70,7 +70,7 @@ final class DJex implements Jex {
     for (JexPlugin plugin : beanScope.list(JexPlugin.class)) {
       plugin.apply(this);
     }
-    routing.addAll(beanScope.list(Routing.Service.class));
+    routing.addAll(beanScope.list(Routing.HttpService.class));
     beanScope.getOptional(JsonService.class).ifPresent(this::jsonService);
     return this;
   }

@@ -58,12 +58,12 @@ public sealed interface Jex permits DJex {
   /**
    * Add routes and handlers to the routing.
    */
-  Jex routing(Routing.Service routes);
+  Jex routing(Routing.HttpService routes);
 
   /**
    * Add many routes and handlers to the routing.
    */
-  Jex routing(Collection<Routing.Service> routes);
+  Jex routing(Collection<Routing.HttpService> routes);
 
   /**
    * Return the Routing to configure.

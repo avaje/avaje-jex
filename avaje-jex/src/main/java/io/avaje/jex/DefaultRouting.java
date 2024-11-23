@@ -12,7 +12,7 @@ import java.util.Set;
 
 import io.avaje.jex.Routing.Entry;
 import io.avaje.jex.Routing.Group;
-import io.avaje.jex.Routing.Service;
+import io.avaje.jex.Routing.HttpService;
 import io.avaje.jex.Routing.Type;
 import io.avaje.jex.security.Role;
 
@@ -55,14 +55,14 @@ final class DefaultRouting implements Routing {
   }
 
   @Override
-  public Routing add(Routing.Service routes) {
+  public Routing add(Routing.HttpService routes) {
     routes.add(this);
     return this;
   }
 
   @Override
-  public Routing addAll(Collection<Routing.Service> routes) {
-    for (Service route : routes) {
+  public Routing addAll(Collection<Routing.HttpService> routes) {
+    for (HttpService route : routes) {
       route.add(this);
     }
     return this;
