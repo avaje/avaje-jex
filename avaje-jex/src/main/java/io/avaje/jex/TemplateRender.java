@@ -11,10 +11,9 @@ public non-sealed interface TemplateRender extends JexExtension {
 
   /**
    * Return the extensions this template renders for by default.
-   * <p>
-   * When the template render is not explicitly registered it can be
-   * automatically registered via ServiceLoader and these are the extensions
-   * it will register for by default.
+   *
+   * <p>When the template render is not explicitly registered, it can be automatically registered
+   * via ServiceLoader with the provided extensions by default.
    */
   String[] defaultExtensions();
 

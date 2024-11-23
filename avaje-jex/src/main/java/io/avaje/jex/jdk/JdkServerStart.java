@@ -24,21 +24,22 @@ public class JdkServerStart {
     final ServiceManager manager = new ServiceManager(serviceManager, "http", "");
 
     try {
-      int port = jex.config().port();
       final HttpServer server;
 
+      var port = new InetSocketAddress(jex.config().port());
       final var sslContext = jex.config().sslContext();
-      if (sslContext != null) {
 
-        var httpsServer = HttpsServer.create(new InetSocketAddress(port), 0);
+      if (sslContext != null) {
+        var httpsServer = HttpsServer.create(port, 0);
         httpsServer.setHttpsConfigurator(new HttpsConfigurator(sslContext));
         server = httpsServer;
       } else {
-        server = HttpServer.create(new InetSocketAddress(port), 0);
+        server = HttpServer.create(port, 0);
       }
+
       var handler = new BaseHandler(routes);
       var context = server.createContext("/", handler);
-      context.getFilters().add(new BaseFilter(routes, manager));
+      context.getFilters().add(new RoutingFilter(routes, manager));
       context.getFilters().addAll(routes.filters());
       server.setExecutor(Executors.newThreadPerTaskExecutor(jex.config().threadFactory()));
       server.start();

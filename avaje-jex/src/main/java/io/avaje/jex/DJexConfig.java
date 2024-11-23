@@ -89,7 +89,7 @@ class DJexConfig implements JexConfig {
 
     if (factory == null) {
       factory =
-          Thread.ofVirtual().name("jex-http-", 0).factory();
+          Thread.ofVirtual().name("avaje-jex-http-", 0).factory();
     }
 
     return factory;

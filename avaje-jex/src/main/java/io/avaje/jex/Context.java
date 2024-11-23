@@ -3,6 +3,7 @@ package io.avaje.jex;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
+import java.io.InputStream;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -277,6 +278,16 @@ public interface Context {
    * Write raw content to the response.
    */
   Context write(String content);
+
+  /**
+   * Write raw bytes to the response.
+   */
+  Context write(byte[] bytes);
+
+  /**
+   * Write raw inputStream to the response.
+   */
+  Context write(InputStream is);
 
   /**
    * Render a template typically as html.
