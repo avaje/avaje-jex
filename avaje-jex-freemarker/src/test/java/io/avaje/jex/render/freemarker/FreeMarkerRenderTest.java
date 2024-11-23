@@ -17,21 +17,21 @@ class FreeMarkerRenderTest {
   static TestPair pair = init();
 
   static TestPair init() {
-    final List<Routing.Service> services = List.of(new NoModel(), new WithModel());
+    final List<Routing.HttpService> services = List.of(new NoModel(), new WithModel());
     var app = Jex.create()
       .routing(services)
       .register(new FreeMarkerRender(), "ftl");
     return TestPair.create(app);
   }
 
-  static class NoModel implements Routing.Service {
+  static class NoModel implements Routing.HttpService {
     @Override
     public void add(Routing routing) {
       routing.get("/noModel", ctx -> ctx.render("one.ftl"));
     }
   }
 
-  static class WithModel implements Routing.Service {
+  static class WithModel implements Routing.HttpService {
     @Override
     public void add(Routing routing) {
       routing.get("/withModel", ctx -> ctx.render("two.ftl", Map.of("message", "hello")));

@@ -12,7 +12,7 @@ import java.util.Set;
 
 import io.avaje.jex.Routing.Entry;
 import io.avaje.jex.Routing.Group;
-import io.avaje.jex.Routing.Service;
+import io.avaje.jex.Routing.HttpService;
 import io.avaje.jex.Routing.Type;
 import io.avaje.jex.security.Role;
 
@@ -55,14 +55,14 @@ final class DefaultRouting implements Routing {
   }
 
   @Override
-  public Routing add(Routing.Service routes) {
+  public Routing add(Routing.HttpService routes) {
     routes.add(this);
     return this;
   }
 
   @Override
-  public Routing addAll(Collection<Routing.Service> routes) {
-    for (Service route : routes) {
+  public Routing addAll(Collection<Routing.HttpService> routes) {
+    for (HttpService route : routes) {
       route.add(this);
     }
     return this;
@@ -94,7 +94,7 @@ final class DefaultRouting implements Routing {
     return withRoles(Set.of(permittedRoles));
   }
 
-  private void add(Type verb, String path, Handler handler) {
+  private void add(Type verb, String path, ExchangeHandler handler) {
     lastEntry = new Entry(verb, path(path), handler);
     handlers.add(lastEntry);
   }
@@ -104,85 +104,85 @@ final class DefaultRouting implements Routing {
   // ********************************************************************************************
 
   @Override
-  public Routing get(String path, Handler handler) {
+  public Routing get(String path, ExchangeHandler handler) {
     add(Type.GET, path, handler);
     return this;
   }
 
   @Override
-  public Routing get(Handler handler) {
+  public Routing get(ExchangeHandler handler) {
     get("", handler);
     return this;
   }
 
   @Override
-  public Routing post(String path, Handler handler) {
+  public Routing post(String path, ExchangeHandler handler) {
     add(Type.POST, path, handler);
     return this;
   }
 
   @Override
-  public Routing post(Handler handler) {
+  public Routing post(ExchangeHandler handler) {
     post("", handler);
     return this;
   }
 
   @Override
-  public Routing put(String path, Handler handler) {
+  public Routing put(String path, ExchangeHandler handler) {
     add(Type.PUT, path, handler);
     return this;
   }
 
   @Override
-  public Routing put(Handler handler) {
+  public Routing put(ExchangeHandler handler) {
     put("", handler);
     return this;
   }
 
   @Override
-  public Routing patch(String path, Handler handler) {
+  public Routing patch(String path, ExchangeHandler handler) {
     add(Type.PATCH, path, handler);
     return this;
   }
 
   @Override
-  public Routing patch(Handler handler) {
+  public Routing patch(ExchangeHandler handler) {
     patch("", handler);
     return this;
   }
 
   @Override
-  public Routing delete(String path, Handler handler) {
+  public Routing delete(String path, ExchangeHandler handler) {
     add(Type.DELETE, path, handler);
     return this;
   }
 
   @Override
-  public Routing delete(Handler handler) {
+  public Routing delete(ExchangeHandler handler) {
     delete("", handler);
     return this;
   }
 
   @Override
-  public Routing head(String path, Handler handler) {
+  public Routing head(String path, ExchangeHandler handler) {
     add(Type.HEAD, path, handler);
     return this;
   }
 
   @Override
-  public Routing head(Handler handler) {
+  public Routing head(ExchangeHandler handler) {
     head("", handler);
     return this;
   }
 
   @Override
-  public Routing trace(String path, Handler handler) {
+  public Routing trace(String path, ExchangeHandler handler) {
     add(Type.TRACE, path, handler);
     return this;
   }
 
   @Override
-  public Routing trace(Handler handler) {
+  public Routing trace(ExchangeHandler handler) {
     trace("", handler);
     return this;
   }
@@ -201,10 +201,10 @@ final class DefaultRouting implements Routing {
 
     private final Type type;
     private final String path;
-    private final Handler handler;
+    private final ExchangeHandler handler;
     private Set<Role> roles = Collections.emptySet();
 
-    Entry(Type type, String path, Handler handler) {
+    Entry(Type type, String path, ExchangeHandler handler) {
       this.type = type;
       this.path = path;
       this.handler = handler;
@@ -225,7 +225,7 @@ final class DefaultRouting implements Routing {
     }
 
     @Override
-    public Handler getHandler() {
+    public ExchangeHandler getHandler() {
       return handler;
     }
 

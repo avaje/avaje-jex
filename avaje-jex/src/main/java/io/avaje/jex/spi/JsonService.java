@@ -3,7 +3,7 @@ package io.avaje.jex.spi;
 import java.util.Iterator;
 
 /**
- * Service used to convert request/response bodies to beans.
+ * HttpService used to convert request/response bodies to beans.
  */
 public non-sealed interface JsonService extends JexExtension {
 
