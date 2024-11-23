@@ -361,21 +361,6 @@ public interface Context {
    */
   String protocol();
 
-  /**
-   * Return the first UploadedFile for the specified name or null.
-   */
-  UploadedFile uploadedFile(String name);
-
-  /**
-   * Return a list of UploadedFiles for the specified name, or empty list.
-   */
-  List<UploadedFile> uploadedFiles(String name);
-
-  /**
-   * Return a list of all UploadedFiles.
-   */
-  List<UploadedFile> uploadedFiles();
-
   class Cookie {
     private static final ZonedDateTime EXPIRED = ZonedDateTime.of(LocalDateTime.of(2000, 1, 1, 0, 0, 0), ZoneId.of("GMT"));
     private static final DateTimeFormatter RFC_1123_DATE_TIME = DateTimeFormatter.RFC_1123_DATE_TIME;

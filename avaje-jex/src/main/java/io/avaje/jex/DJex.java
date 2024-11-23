@@ -15,13 +15,8 @@ final class DJex implements Jex {
 
   private final Routing routing = new DefaultRouting();
   private final AppLifecycle lifecycle = new DefaultLifecycle();
-  private final StaticFileConfig staticFiles;
   private final Map<Class<?>, Object> attributes = new HashMap<>();
   private final DJexConfig config = new DJexConfig();
-
-  DJex() {
-    this.staticFiles = new DefaultStaticFileConfig(this);
-  }
 
   @Override
   public DJexConfig config() {
@@ -103,11 +98,6 @@ final class DJex implements Jex {
   public Jex context(String contextPath) {
     this.config.contextPath(contextPath);
     return this;
-  }
-
-  @Override
-  public StaticFileConfig staticFiles() {
-    return staticFiles;
   }
 
   @Override

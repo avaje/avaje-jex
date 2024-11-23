@@ -108,11 +108,6 @@ public sealed interface Jex permits DJex {
   Jex context(String contextPath);
 
   /**
-   * Return the static file configuration.
-   */
-  StaticFileConfig staticFiles();
-
-  /**
    * Explicitly register a template renderer.
    * <p>
    * Note that if not explicitly registered TemplateRender's can be

@@ -20,8 +20,6 @@ final class DJexConfig implements JexConfig {
 
   private boolean preCompressStaticFiles;
   private JsonService jsonService;
-  private UploadConfig multipartConfig;
-  private int multipartFileThreshold = 8 * 1024;
   private final Map<String, TemplateRender> renderers = new HashMap<>();
   private SSLContext sslContext;
 
@@ -64,18 +62,6 @@ final class DJexConfig implements JexConfig {
   @Override
   public JexConfig jsonService(JsonService jsonService) {
     this.jsonService = jsonService;
-    return this;
-  }
-
-  @Override
-  public JexConfig multipartConfig(UploadConfig multipartConfig) {
-    this.multipartConfig = multipartConfig;
-    return this;
-  }
-
-  @Override
-  public JexConfig multipartFileThreshold(int multipartFileThreshold) {
-    this.multipartFileThreshold = multipartFileThreshold;
     return this;
   }
 
@@ -135,16 +121,6 @@ final class DJexConfig implements JexConfig {
   @Override
   public JsonService jsonService() {
     return jsonService;
-  }
-
-  @Override
-  public UploadConfig multipartConfig() {
-    return multipartConfig;
-  }
-
-  @Override
-  public int multipartFileThreshold() {
-    return multipartFileThreshold;
   }
 
   @Override

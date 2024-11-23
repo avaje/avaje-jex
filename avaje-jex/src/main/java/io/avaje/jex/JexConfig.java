@@ -50,16 +50,6 @@ public sealed interface JexConfig permits DJexConfig {
   JexConfig jsonService(JsonService jsonService);
 
   /**
-   * Set the upload configuration.
-   */
-  JexConfig multipartConfig(UploadConfig multipartConfig);
-
-  /**
-   * Set the multipartFileThreshold.
-   */
-  JexConfig multipartFileThreshold(int multipartFileThreshold);
-
-  /**
    * Register a template renderer explicitly.
    *
    * @param extension The extension the renderer applies to.
@@ -117,16 +107,6 @@ public sealed interface JexConfig permits DJexConfig {
 
   /** Enable https with the provided SSLContext. */
   JexConfig sslContext(SSLContext ssl);
-
-  /**
-   * Return the multipartConfig.
-   */
-  UploadConfig multipartConfig();
-
-  /**
-   * Return the multipartFileThreshold.
-   */
-  int multipartFileThreshold();
 
   /**
    * Return the template renderers registered by extension.

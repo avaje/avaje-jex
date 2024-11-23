@@ -7,7 +7,7 @@
 
 # avaje-jex
 
-Java cut down version of https://javalin.io
+Javalin style Wrapper over the JDK's `jdk.httpserver` server.
 
 ```java
 var app = Jex.create()
@@ -15,54 +15,9 @@ var app = Jex.create()
     .get("/", ctx -> ctx.text("hello"))
     .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id")))
   )
-  .staticFiles().addClasspath("/static", "content")
-  .staticFiles().addExternal("/other", "/external")
   .port(8080)
   .start();
-
 ```
 
-### Goals / intention
-
-- Help progress converting Javalin internals from Kotlin to Java
-    - Convert bits of Javalin internals to Java
-    - Maybe get feedback from David if there is design impact
-    - Prepare small PR's to Javalin (this is going to take time)
-
-- Another goal is to explore some options for Javalin along the lines of
-    - matching routes (making use of path segment count)
-    - organisation of internals to reduce some statics (JavalinJson)
-    - modularisation of internals using ServiceLoader (for templating implementation, websockets and sse - make these all optional dependencies keeping core small)
-
-### Design Notes (different to Javalin):
-- Context is an interface
-- Routing, ErrorHandling, StaticFileConfig are interfaces
-- PathParser - Has segment count which we use with RouteIndex
-- RouteIndex - matching paths by method + number of segments
-- Immutable routes on startup - no adding/removing routes after start()
-- Context json() - call through to "ServiceManager" which has the JsonService (no static JavalinJson)
-
-### Differences to Javalin
-- Uses `{}` rather than `:` for defining path parameters
-- Supports use of regex in path segments e.g `{id:[0-9]+}` (provides tighter path matching)
-- Added ctx.text(...) for plain text response
-- Method name change to use ctx.write(...) rather than ctx.result(...)
-
 ### TODO
-- cookie store
-- app attributes
-- basicAuthCredentials/basicAuthCredentialsExist
-- plugin api
-- render in progress - FreeMarker and Mustache done
-- web sockets
-- sse
-
-### Intentionally excluded features
--
-
-
-### To Review
-- Javalin uses int getContentLength() rather than long getContentLengthLong()
-- Javalin removeCookie should set null path to "/"
-- endpointHandlerPath()
-- bodyValidator
+- static file configuration
