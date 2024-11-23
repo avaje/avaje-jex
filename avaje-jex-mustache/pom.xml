@@ -10,7 +10,7 @@
   <artifactId>avaje-jex-mustache</artifactId>
 
   <properties>
-    <mustache.version>0.9.10</mustache.version>
+    <mustache.version>0.9.14</mustache.version>
   </properties>
 
   <dependencies>
