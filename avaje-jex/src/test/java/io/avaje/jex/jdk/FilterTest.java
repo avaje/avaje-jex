@@ -26,11 +26,7 @@ class FilterTest {
                         .get("/one", ctx -> ctx.text("one"))
                         .get("/two", ctx -> ctx.text("two"))
                         .get("/two/{id}", ctx -> ctx.text("two-id"))
-                        .filter(
-                            (ctx, chain) -> {
-                              ctx.header("before-all", "set");
-                              chain.proceed();
-                            })
+                        .before(ctx -> ctx.header("before-all", "set"))
                         .filter(
                             (ctx, chain) -> {
                               if (ctx.url().contains("/two/")) {
@@ -38,11 +34,7 @@ class FilterTest {
                               }
                               chain.proceed();
                             })
-                        .filter(
-                            (ctx, chain) -> {
-                              chain.proceed();
-                              afterAll.set("set");
-                            })
+                        .after(ctx -> afterAll.set("set"))
                         .filter(
                             (ctx, chain) -> {
                               chain.proceed();

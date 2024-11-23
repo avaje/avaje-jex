@@ -46,6 +46,7 @@ final class RoutingFilter extends Filter {
         handleException(ctx, e);
       } finally {
         routes.dec();
+        exchange.close();
       }
     } else {
       route.inc();
@@ -63,6 +64,7 @@ final class RoutingFilter extends Filter {
         }
       } finally {
         route.dec();
+        exchange.close();
       }
     }
   }
