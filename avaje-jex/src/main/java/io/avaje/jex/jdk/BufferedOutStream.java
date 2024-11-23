@@ -63,7 +63,7 @@ class BufferedOutStream extends OutputStream {
       stream.flush();
       stream.close();
     } else {
-      context.writeBytes(buffer.toByteArray());
+      context.write(buffer.toByteArray());
     }
   }
 }

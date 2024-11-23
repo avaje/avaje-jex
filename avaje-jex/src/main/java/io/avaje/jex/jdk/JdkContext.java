@@ -343,20 +343,36 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public Context write(String content) {
-    try {
-      writeBytes(content.getBytes(StandardCharsets.UTF_8));
-      return this;
+
+    write(content.getBytes(StandardCharsets.UTF_8));
+    return this;
+  }
+
+  @Override
+  public Context write(byte[] bytes) {
+
+    try (var os = exchange.getResponseBody()) {
+      exchange.sendResponseHeaders(statusCode(), bytes.length);
+
+      os.write(bytes);
+      os.flush();
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+    return this;
   }
 
-  void writeBytes(byte[] bytes) throws IOException {
-    exchange.sendResponseHeaders(statusCode(), bytes.length);
-    final OutputStream os = exchange.getResponseBody();
-    os.write(bytes);
-    os.flush();
-    os.close();
+  @Override
+  public Context write(InputStream is) {
+
+    try (is; var os = exchange.getResponseBody()) {
+      exchange.sendResponseHeaders(statusCode(), 0);
+      is.transferTo(os);
+      os.flush();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+    return this;
   }
 
   int statusCode() {

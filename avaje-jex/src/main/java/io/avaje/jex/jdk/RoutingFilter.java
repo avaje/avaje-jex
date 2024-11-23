@@ -14,12 +14,12 @@ import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.routes.SpiRoutes;
 import io.avaje.jex.spi.SpiContext;
 
-class BaseFilter extends Filter {
+final class RoutingFilter extends Filter {
 
   private final SpiRoutes routes;
   private final ServiceManager mgr;
 
-  BaseFilter(SpiRoutes routes, ServiceManager mgr) {
+  RoutingFilter(SpiRoutes routes, ServiceManager mgr) {
     this.mgr = mgr;
     this.routes = routes;
   }
