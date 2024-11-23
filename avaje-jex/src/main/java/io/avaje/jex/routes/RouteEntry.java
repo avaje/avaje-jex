@@ -1,20 +1,24 @@
 package io.avaje.jex.routes;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
+
 import io.avaje.jex.Context;
 import io.avaje.jex.Handler;
-
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
+import io.avaje.jex.security.Role;
 
 class RouteEntry implements SpiRoutes.Entry {
 
   private final AtomicLong active = new AtomicLong();
   private final PathParser path;
   private final Handler handler;
+  private final Set<Role> roles;
 
-  RouteEntry(PathParser path, Handler handler) {
+  RouteEntry(PathParser path, Handler handler, Set<Role> roles) {
     this.path = path;
     this.handler = handler;
+    this.roles = roles;
   }
 
   @Override
@@ -65,5 +69,10 @@ class RouteEntry implements SpiRoutes.Entry {
   @Override
   public boolean literal() {
     return path.literal();
+  }
+
+  @Override
+  public Set<Role> roles() {
+    return roles;
   }
 }

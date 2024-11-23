@@ -11,10 +11,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import com.sun.net.httpserver.HttpExchange;
 
+import io.avaje.jex.security.BasicAuthCredentials;
+import io.avaje.jex.security.Role;
 import io.avaje.jex.spi.HeaderKeys;
 
 /**
@@ -83,6 +86,9 @@ public interface Context {
    * Redirect to the location specifying the response status code.
    */
   void redirect(String location, int httpStatusCode);
+
+  /** Roles attached to this route */
+  Set<Role> routeRoles();
 
   /**
    * Return the request body as bytes.
@@ -489,4 +495,13 @@ public interface Context {
       return result.toString();
     }
   }
+
+  /**
+   * Gets basic-auth credentials from the request, or throws.
+   *
+   * <p>Returns a wrapper object containing the Base64 decoded username
+   * and password from the Authorization header, or null if basic-auth is not properly configured
+   */
+  BasicAuthCredentials basicAuthCredentials();
+
 }

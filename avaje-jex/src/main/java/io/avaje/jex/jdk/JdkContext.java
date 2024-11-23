@@ -1,14 +1,7 @@
 package io.avaje.jex.jdk;
 
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpExchange;
-import io.avaje.jex.Context;
-import io.avaje.jex.Routing;
-import io.avaje.jex.UploadedFile;
-import io.avaje.jex.http.ErrorCode;
-import io.avaje.jex.http.HttpResponseException;
-import io.avaje.jex.spi.HeaderKeys;
-import io.avaje.jex.spi.SpiContext;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,14 +12,26 @@ import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Base64;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+
+import io.avaje.jex.Context;
+import io.avaje.jex.Routing;
+import io.avaje.jex.UploadedFile;
+import io.avaje.jex.http.ErrorCode;
+import io.avaje.jex.http.HttpResponseException;
+import io.avaje.jex.security.BasicAuthCredentials;
+import io.avaje.jex.security.Role;
+import io.avaje.jex.spi.HeaderKeys;
+import io.avaje.jex.spi.SpiContext;
 
 class JdkContext implements Context, SpiContext {
 
@@ -37,6 +42,7 @@ class JdkContext implements Context, SpiContext {
   private final ServiceManager mgr;
   private final String path;
   private final Map<String, String> pathParams;
+  private final Set<Role> roles;
   private final HttpExchange exchange;
   private Routing.Type mode;
   private Map<String, List<String>> formParams;
@@ -45,18 +51,23 @@ class JdkContext implements Context, SpiContext {
   private int statusCode;
   private String characterEncoding;
 
-  JdkContext(ServiceManager mgr, HttpExchange exchange, String path, Map<String, String> pathParams) {
+  JdkContext(
+      ServiceManager mgr,
+      HttpExchange exchange,
+      String path,
+      Map<String, String> pathParams,
+      Set<Role> roles) {
     this.mgr = mgr;
+    this.roles = roles;
     this.exchange = exchange;
     this.path = path;
     this.pathParams = pathParams;
   }
 
-  /**
-   * Create when no route matched.
-   */
-  JdkContext(ServiceManager mgr, HttpExchange exchange, String path) {
+  /** Create when no route matched. */
+  JdkContext(ServiceManager mgr, HttpExchange exchange, String path, Set<Role> roles) {
     this.mgr = mgr;
+    this.roles = roles;
     this.exchange = exchange;
     this.path = path;
     this.pathParams = null;
@@ -453,5 +464,32 @@ class JdkContext implements Context, SpiContext {
   @Override
   public HttpExchange jdkExchange() {
     return exchange;
+  }
+
+  @Override
+  public Set<Role> routeRoles() {
+    return roles;
+  }
+
+  @Override
+  public BasicAuthCredentials basicAuthCredentials() {
+    return getBasicAuthCredentials(header("Authorization"));
+  }
+
+  private static BasicAuthCredentials getBasicAuthCredentials(String authorizationHeader) {
+    if (authorizationHeader == null || !authorizationHeader.startsWith("Basic ")) {
+      return null;
+    }
+
+    String base64Credentials = authorizationHeader.substring("Basic ".length());
+    byte[] decodedCredentials = Base64.getDecoder().decode(base64Credentials);
+    String credentialsString = new String(decodedCredentials);
+
+    String[] credentials = credentialsString.split(":", 2);
+    if (credentials.length != 2) {
+      throw new IllegalStateException("Invalid Basic Auth header");
+    }
+
+    return new BasicAuthCredentials(credentials[0], credentials[1]);
   }
 }

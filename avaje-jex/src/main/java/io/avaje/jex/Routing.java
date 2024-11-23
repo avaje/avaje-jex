@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import io.avaje.jex.security.Role;
+
 public interface Routing {
 
   /**

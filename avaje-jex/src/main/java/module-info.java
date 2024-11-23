@@ -4,8 +4,9 @@ module io.avaje.jex {
 
   exports io.avaje.jex;
   exports io.avaje.jex.http;
-  exports io.avaje.jex.spi;
   exports io.avaje.jex.core;
+  exports io.avaje.jex.security;
+  exports io.avaje.jex.spi;
 
   requires transitive java.net.http;
   requires transitive jdk.httpserver;

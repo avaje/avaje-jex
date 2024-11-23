@@ -1,11 +1,13 @@
 package io.avaje.jex.routes;
 
-import io.avaje.jex.Routing;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import io.avaje.jex.Routing;
 
 class RouteIndexTest {
 
@@ -66,6 +68,6 @@ class RouteIndexTest {
   }
 
   private SpiRoutes.Entry entry(String path) {
-    return new RouteEntry(new PathParser(path, true), routingEntry.getHandler());
+    return new RouteEntry(new PathParser(path, true), routingEntry.getHandler(), Set.of());
   }
 }
