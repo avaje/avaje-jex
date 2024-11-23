@@ -24,7 +24,7 @@ public final class ExceptionManager {
   }
 
   @SuppressWarnings("unchecked")
-  private <T extends Exception> ExceptionHandler<Exception> find(Class<T> exceptionType) {
+  public <T extends Exception> ExceptionHandler<Exception> find(Class<T> exceptionType) {
     Class<?> type = exceptionType;
     do {
       final ExceptionHandler<?> handler = handlers.get(type);
