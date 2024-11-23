@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import io.avaje.jex.security.Role;
 
@@ -178,7 +179,6 @@ class DefaultRouting implements Routing {
     filters.add(handler);
     return this;
   }
-
 
   private static class Entry implements Routing.Entry {
 

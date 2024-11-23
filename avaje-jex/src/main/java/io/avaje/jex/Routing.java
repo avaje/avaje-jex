@@ -3,6 +3,7 @@ package io.avaje.jex;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import io.avaje.jex.security.Role;
 
@@ -127,6 +128,26 @@ public interface Routing {
    * Add a filter for all requests.
    */
   Routing filter(HttpFilter handler);
+
+  /** Add a preprocessing filter for all requests. */
+  default Routing before(Consumer<Context> handler) {
+
+    return filter(
+        (ctx, chain) -> {
+          handler.accept(ctx);
+          chain.proceed();
+        });
+  }
+
+  /** Add a post-processing filter for all requests. */
+  default Routing after(Consumer<Context> handler) {
+    
+    return filter(
+        (ctx, chain) -> {
+          chain.proceed();
+          handler.accept(ctx);
+        });
+  }
 
   /**
    * Return all the registered handlers.
