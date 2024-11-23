@@ -63,72 +63,72 @@ public sealed interface Routing permits DefaultRouting {
   /**
    * Add a HEAD handler.
    */
-  Routing head(String path, Handler handler);
+  Routing head(String path, ExchangeHandler handler);
 
   /**
    * Add a HEAD handler for "/".
    */
-  Routing head(Handler handler);
+  Routing head(ExchangeHandler handler);
 
   /**
    * Add a GET handler.
    */
-  Routing get(String path, Handler handler);
+  Routing get(String path, ExchangeHandler handler);
 
   /**
    * Add a GET handler for "/".
    */
-  Routing get(Handler handler);
+  Routing get(ExchangeHandler handler);
 
   /**
    * Add a POST handler.
    */
-  Routing post(String path, Handler handler);
+  Routing post(String path, ExchangeHandler handler);
 
   /**
    * Add a POST handler for "/".
    */
-  Routing post(Handler handler);
+  Routing post(ExchangeHandler handler);
 
   /**
    * Add a PUT handler.
    */
-  Routing put(String path, Handler handler);
+  Routing put(String path, ExchangeHandler handler);
 
   /**
    * Add a PUT handler for "/".
    */
-  Routing put(Handler handler);
+  Routing put(ExchangeHandler handler);
 
   /**
    * Add a PATCH handler.
    */
-  Routing patch(String path, Handler handler);
+  Routing patch(String path, ExchangeHandler handler);
 
   /**
    * Add a PATCH handler for "/".
    */
-  Routing patch(Handler handler);
+  Routing patch(ExchangeHandler handler);
 
   /**
    * Add a DELETE handler.
    */
-  Routing delete(String path, Handler handler);
+  Routing delete(String path, ExchangeHandler handler);
 
   /**
    * Add a DELETE handler for "/".
    */
-  Routing delete(Handler handler);
+  Routing delete(ExchangeHandler handler);
 
   /**
    * Add a TRACE handler.
    */
-  Routing trace(String path, Handler handler);
+  Routing trace(String path, ExchangeHandler handler);
 
   /**
    * Add a TRACE handler for "/".
    */
-  Routing trace(Handler handler);
+  Routing trace(ExchangeHandler handler);
 
   /**
    * Add a filter for all requests.
@@ -214,7 +214,7 @@ public sealed interface Routing permits DefaultRouting {
     /**
      * Return the handler.
      */
-    Handler getHandler();
+    ExchangeHandler getHandler();
 
     /**
      * Return the roles.

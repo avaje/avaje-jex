@@ -2,12 +2,11 @@ package io.avaje.jex.jdk;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpExchange;
 
-import io.avaje.jex.Context;
+import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.Routing;
 import io.avaje.jex.Routing.Type;
 import io.avaje.jex.http.HttpResponseException;
@@ -56,7 +55,7 @@ final class RoutingFilter extends Filter {
         try {
           ctx.setMode(Type.FILTER);
           exchange.setAttribute("JdkContext", ctx);
-          Consumer<Context> handlerConsumer = route::handle;
+          ExchangeHandler handlerConsumer = route::handle;
           exchange.setAttribute("SpiRoutes.Entry.Handler", handlerConsumer);
           chain.doFilter(exchange);
         } catch (Exception e) {

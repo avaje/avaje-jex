@@ -5,17 +5,17 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import io.avaje.jex.Context;
-import io.avaje.jex.Handler;
+import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.security.Role;
 
 class RouteEntry implements SpiRoutes.Entry {
 
   private final AtomicLong active = new AtomicLong();
   private final PathParser path;
-  private final Handler handler;
+  private final ExchangeHandler handler;
   private final Set<Role> roles;
 
-  RouteEntry(PathParser path, Handler handler, Set<Role> roles) {
+  RouteEntry(PathParser path, ExchangeHandler handler, Set<Role> roles) {
     this.path = path;
     this.handler = handler;
     this.roles = roles;

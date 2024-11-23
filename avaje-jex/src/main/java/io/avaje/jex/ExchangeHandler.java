@@ -5,7 +5,7 @@ package io.avaje.jex;
  * these handlers.
  */
 @FunctionalInterface
-public interface Handler {
+public interface ExchangeHandler {
 
   /**
    * Handle the given request and generate an appropriate response. See {@link Context} for a

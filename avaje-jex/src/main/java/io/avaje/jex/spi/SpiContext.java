@@ -29,7 +29,7 @@ public interface SpiContext extends Context {
   InputStream inputStream();
 
   /**
-   * Set to indicate BEFORE, Handler and AFTER modes of the request.
+   * Set to indicate BEFORE, ExchangeHandler and AFTER modes of the request.
    */
   void setMode(Routing.Type type);
 
