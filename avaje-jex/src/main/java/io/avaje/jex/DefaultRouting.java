@@ -8,7 +8,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Set;
 
-import io.avaje.jex.jdk.JdkFilter;
+import io.avaje.jex.security.Role;
 
 class DefaultRouting implements Routing {
 

@@ -25,7 +25,7 @@ public class RoutesBuilder {
 
   private SpiRoutes.Entry convert(Routing.Entry handler) {
     final PathParser pathParser = new PathParser(handler.getPath(), ignoreTrailingSlashes);
-    return new RouteEntry(pathParser, handler.getHandler());
+    return new RouteEntry(pathParser, handler.getHandler(), handler.getRoles());
   }
 
   public SpiRoutes build() {

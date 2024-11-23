@@ -1,12 +1,13 @@
 package io.avaje.jex.routes;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
 import io.avaje.jex.jdk.JdkFilter;
-import io.avaje.jex.spi.SpiContext;
-
-import java.util.List;
-import java.util.Map;
+import io.avaje.jex.security.Role;
 
 /**
  * Route matching and filter handling.
@@ -97,6 +98,9 @@ public sealed interface SpiRoutes permits Routes {
      * Return the active request count for the route.
      */
     long activeRequests();
+
+    /** Return the authentication roles for the route. */
+    Set<Role> roles();
   }
 
 }

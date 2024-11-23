@@ -1,6 +1,7 @@
 package io.avaje.jex.jdk;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import com.sun.net.httpserver.Filter;
@@ -35,7 +36,7 @@ class BaseFilter extends Filter {
     final SpiRoutes.Entry route = routes.match(routeType, uri);
 
     if (route == null) {
-      var ctx = new JdkContext(mgr, exchange, uri);
+      var ctx = new JdkContext(mgr, exchange, uri, Set.of());
       routes.inc();
       try {
         processNoRoute(ctx, uri, routeType);
@@ -50,7 +51,7 @@ class BaseFilter extends Filter {
       route.inc();
       try {
         final Map<String, String> params = route.pathParams(uri);
-        JdkContext ctx = new JdkContext(mgr, exchange, route.matchPath(), params);
+        JdkContext ctx = new JdkContext(mgr, exchange, route.matchPath(), params, route.roles());
         try {
           ctx.setMode(Type.FILTER);
           exchange.setAttribute("JdkContext", ctx);
