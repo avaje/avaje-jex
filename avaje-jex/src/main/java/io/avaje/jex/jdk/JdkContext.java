@@ -25,7 +25,6 @@ import com.sun.net.httpserver.HttpExchange;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
-import io.avaje.jex.UploadedFile;
 import io.avaje.jex.http.ErrorCode;
 import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.security.BasicAuthCredentials;
@@ -439,21 +438,6 @@ class JdkContext implements Context, SpiContext {
   @Override
   public String protocol() {
     return exchange.getProtocol();
-  }
-
-  @Override
-  public UploadedFile uploadedFile(String name) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public List<UploadedFile> uploadedFiles(String name) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public List<UploadedFile> uploadedFiles() {
-    throw new UnsupportedOperationException();
   }
 
   @Override
