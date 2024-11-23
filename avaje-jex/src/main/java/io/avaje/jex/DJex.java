@@ -83,12 +83,6 @@ final class DJex implements Jex {
   }
 
   @Override
-  public Jex accessManager(AccessManager accessManager) {
-    this.config.accessManager(accessManager);
-    return this;
-  }
-
-  @Override
   public Jex jsonService(JsonService jsonService) {
     this.config.jsonService(jsonService);
     return this;
@@ -111,7 +105,6 @@ final class DJex implements Jex {
     }
     routing.addAll(beanScope.list(Routing.Service.class));
     beanScope.getOptional(JsonService.class).ifPresent(this::jsonService);
-    beanScope.getOptional(AccessManager.class).ifPresent(this::accessManager);
     return this;
   }
 
@@ -164,7 +157,7 @@ final class DJex implements Jex {
     }
     final SpiRoutes routes =
         new RoutesBuilder(
-                this.routing, this.config.accessManager(), this.config.ignoreTrailingSlashes())
+                this.routing, this.config.ignoreTrailingSlashes())
             .build();
 
     return new JdkServerStart().start(this, routes, CoreServiceManager.create(this));

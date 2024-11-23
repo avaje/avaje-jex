@@ -1,6 +1,7 @@
 package io.avaje.jex;
 
-import io.avaje.jex.spi.HeaderKeys;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -12,8 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
+import com.sun.net.httpserver.HttpExchange;
+
+import io.avaje.jex.spi.HeaderKeys;
 
 /**
  * Provides access to functions for handling the request and response.
@@ -187,6 +189,11 @@ public interface Context {
    * Returns a map with all the form param keys and values.
    */
   Map<String, List<String>> formParamMap();
+
+  /**
+   * Return the underlying JDK {@link HttpExchange} object backing the context
+   */
+  HttpExchange jdkExchange();
 
   /**
    * Return the request scheme.

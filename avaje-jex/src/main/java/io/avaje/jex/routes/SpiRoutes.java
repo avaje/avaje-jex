@@ -2,8 +2,10 @@ package io.avaje.jex.routes;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
+import io.avaje.jex.jdk.JdkFilter;
 import io.avaje.jex.spi.SpiContext;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,16 +17,6 @@ public sealed interface SpiRoutes permits Routes {
    * Find the matching handler entry given the type and request URI.
    */
   Entry match(Routing.Type type, String pathInfo);
-
-  /**
-   * Execute all appropriate before filters for the given request URI.
-   */
-  void before(String pathInfo, SpiContext ctx);
-
-  /**
-   * Execute all appropriate after filters for the given request URI.
-   */
-  void after(String pathInfo, SpiContext ctx);
 
   /**
    * Increment active request count for no route match.
@@ -45,6 +37,11 @@ public sealed interface SpiRoutes permits Routes {
    * Wait for no active requests.
    */
   void waitForIdle(long maxSeconds);
+
+  /**
+   * Get filters
+   */
+  List<JdkFilter> filters();
 
   /**
    * A route entry.
@@ -101,4 +98,5 @@ public sealed interface SpiRoutes permits Routes {
      */
     long activeRequests();
   }
+
 }

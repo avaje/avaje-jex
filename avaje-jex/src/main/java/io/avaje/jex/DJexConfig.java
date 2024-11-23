@@ -19,7 +19,6 @@ class DJexConfig implements JexConfig {
 
   private boolean preCompressStaticFiles;
   private JsonService jsonService;
-  private AccessManager accessManager;
   private UploadConfig multipartConfig;
   private int multipartFileThreshold = 8 * 1024;
   private final Map<String, TemplateRender> renderers = new HashMap<>();
@@ -64,12 +63,6 @@ class DJexConfig implements JexConfig {
   @Override
   public JexConfig jsonService(JsonService jsonService) {
     this.jsonService = jsonService;
-    return this;
-  }
-
-  @Override
-  public JexConfig accessManager(AccessManager accessManager) {
-    this.accessManager = accessManager;
     return this;
   }
 
@@ -141,11 +134,6 @@ class DJexConfig implements JexConfig {
   @Override
   public JsonService jsonService() {
     return jsonService;
-  }
-
-  @Override
-  public AccessManager accessManager() {
-    return accessManager;
   }
 
   @Override
