@@ -7,6 +7,7 @@ import java.util.concurrent.ThreadFactory;
 import javax.net.ssl.SSLContext;
 
 import io.avaje.jex.spi.JsonService;
+import io.avaje.jex.spi.TemplateRender;
 
 class DJexConfig implements JexConfig {
 

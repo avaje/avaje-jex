@@ -17,9 +17,9 @@ import io.avaje.jex.spi.SpiContext;
 final class RoutingFilter extends Filter {
 
   private final SpiRoutes routes;
-  private final ServiceManager mgr;
+  private final CtxServiceManager mgr;
 
-  RoutingFilter(SpiRoutes routes, ServiceManager mgr) {
+  RoutingFilter(SpiRoutes routes, CtxServiceManager mgr) {
     this.mgr = mgr;
     this.routes = routes;
   }

@@ -8,7 +8,7 @@ import io.avaje.jex.core.TemplateManager;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.SpiContext;
-import io.avaje.jex.spi.SpiServiceManager;
+import io.avaje.jex.spi.TemplateRender;
 
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 /**
  * Core implementation of SpiServiceManager provided to specific implementations like jetty etc.
  */
-public class CoreServiceManager implements SpiServiceManager {
+final class CoreServiceManager implements SpiServiceManager {
 
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
   public static final String UTF_8 = "UTF-8";

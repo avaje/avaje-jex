@@ -3,7 +3,7 @@ package io.avaje.jex;
 /**
  * A plugin that can register things like routes, exception handlers etc.
  */
-public interface Plugin {
+public interface JexPlugin {
 
   /**
    * Register the plugin features with jex.

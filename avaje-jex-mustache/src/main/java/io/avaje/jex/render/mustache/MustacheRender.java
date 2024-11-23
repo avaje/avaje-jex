@@ -3,7 +3,7 @@ package io.avaje.jex.render.mustache;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
 import io.avaje.jex.Context;
-import io.avaje.jex.TemplateRender;
+import io.avaje.jex.spi.TemplateRender;
 import io.avaje.spi.ServiceProvider;
 
 import java.io.IOException;

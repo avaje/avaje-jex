@@ -7,4 +7,5 @@ build/
 *.prefs
 *.classpath
 *.prefs
+*.factorypath
 bin/
