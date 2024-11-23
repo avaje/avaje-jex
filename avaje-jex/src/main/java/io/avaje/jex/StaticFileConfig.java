@@ -2,7 +2,7 @@ package io.avaje.jex;
 
 import java.util.List;
 
-public interface StaticFileConfig {
+public sealed interface StaticFileConfig permits DefaultStaticFileConfig {
 
   Jex addClasspath(String path);
 

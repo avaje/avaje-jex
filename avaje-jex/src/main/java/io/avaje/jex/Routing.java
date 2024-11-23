@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 import io.avaje.jex.security.Role;
 
-public interface Routing {
+public sealed interface Routing permits DefaultRouting {
 
   /**
    * Add the routes provided by the Routing Service.

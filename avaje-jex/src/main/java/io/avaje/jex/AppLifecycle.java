@@ -3,7 +3,7 @@ package io.avaje.jex;
 /**
  * Application lifecycle support.
  */
-public interface AppLifecycle {
+public sealed interface AppLifecycle permits DefaultLifecycle {
 
   enum Status {
     STARTING,

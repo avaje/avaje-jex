@@ -23,7 +23,7 @@ import java.util.function.Consumer;
  *
  * }</pre>
  */
-public interface Jex {
+public sealed interface Jex permits DJex {
 
   /**
    * Create Jex.

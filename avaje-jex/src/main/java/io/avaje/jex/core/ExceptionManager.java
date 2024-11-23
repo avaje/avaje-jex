@@ -11,7 +11,7 @@ import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
 
-public class ExceptionManager {
+public final class ExceptionManager {
 
   private static final String APPLICATION_JSON = "application/json";
 
@@ -24,7 +24,7 @@ public class ExceptionManager {
   }
 
   @SuppressWarnings("unchecked")
-  public <T extends Exception> ExceptionHandler<Exception> find(Class<T> exceptionType) {
+  private <T extends Exception> ExceptionHandler<Exception> find(Class<T> exceptionType) {
     Class<?> type = exceptionType;
     do {
       final ExceptionHandler<?> handler = handlers.get(type);

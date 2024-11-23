@@ -3,7 +3,7 @@ package io.avaje.jex;
 import io.avaje.config.Config;
 import io.avaje.inject.BeanScope;
 
-class BootJexState {
+final class BootJexState {
 
   private static State state;
 
@@ -32,7 +32,7 @@ class BootJexState {
     return new State(jex.start());
   }
 
-  private static class State {
+  private static final class State {
 
     private final Jex.Server server;
 

@@ -9,7 +9,7 @@ import javax.net.ssl.SSLContext;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
-class DJexConfig implements JexConfig {
+final class DJexConfig implements JexConfig {
 
   private int port = 8080;
   private String host;

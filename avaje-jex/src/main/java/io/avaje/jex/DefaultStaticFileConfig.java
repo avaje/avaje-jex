@@ -3,7 +3,7 @@ package io.avaje.jex;
 import java.util.ArrayList;
 import java.util.List;
 
-class DefaultStaticFileConfig implements StaticFileConfig {
+final class DefaultStaticFileConfig implements StaticFileConfig {
 
   private final List<StaticFileSource> sources = new ArrayList<>();
   private final Jex jex;

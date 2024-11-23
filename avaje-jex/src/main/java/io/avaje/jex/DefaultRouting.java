@@ -16,7 +16,7 @@ import io.avaje.jex.Routing.Service;
 import io.avaje.jex.Routing.Type;
 import io.avaje.jex.security.Role;
 
-class DefaultRouting implements Routing {
+final class DefaultRouting implements Routing {
 
   private final List<Routing.Entry> handlers = new ArrayList<>();
   private final List<HttpFilter> filters = new ArrayList<>();
