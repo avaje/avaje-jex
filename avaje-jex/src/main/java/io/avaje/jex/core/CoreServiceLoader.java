@@ -1,4 +1,4 @@
-package io.avaje.jex.core.internal;
+package io.avaje.jex.core;
 
 import java.util.ArrayList;
 import java.util.List;

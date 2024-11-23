@@ -56,26 +56,6 @@ public interface Jex {
   <T> T attribute(Class<T> cls);
 
   /**
-   * Configure error handlers.
-   */
-  Jex errorHandling(ErrorHandling.Service service);
-
-  /**
-   * Return the Error handler to add error handlers.
-   */
-  ErrorHandling errorHandling();
-
-  /**
-   * Return the server specific configuration.
-   */
-  ServerConfig serverConfig();
-
-  /**
-   * Set the server specific configuration.
-   */
-  Jex serverConfig(ServerConfig serverConfig);
-
-  /**
    * Add routes and handlers to the routing.
    */
   Jex routing(Routing.Service routes);

@@ -1,4 +1,4 @@
-package io.avaje.jex.core;
+package io.avaje.jex.core.json;
 
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.SpiContext;

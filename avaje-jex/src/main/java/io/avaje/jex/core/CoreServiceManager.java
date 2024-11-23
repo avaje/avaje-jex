@@ -1,21 +1,27 @@
-package io.avaje.jex.core.internal;
-
-import io.avaje.applog.AppLog;
-import io.avaje.jex.*;
-import io.avaje.jex.core.JacksonJsonService;
-import io.avaje.jex.core.JsonbJsonService;
-import io.avaje.jex.core.TemplateManager;
-import io.avaje.jex.spi.HeaderKeys;
-import io.avaje.jex.spi.JsonService;
-import io.avaje.jex.spi.SpiContext;
-import io.avaje.jex.spi.TemplateRender;
+package io.avaje.jex.core;
 
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.System.Logger.Level;
 import java.net.URLDecoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
+
+import io.avaje.applog.AppLog;
+import io.avaje.jex.Context;
+import io.avaje.jex.Jex;
+import io.avaje.jex.Routing;
+import io.avaje.jex.core.json.JacksonJsonService;
+import io.avaje.jex.core.json.JsonbJsonService;
+import io.avaje.jex.spi.HeaderKeys;
+import io.avaje.jex.spi.JsonService;
+import io.avaje.jex.spi.SpiContext;
+import io.avaje.jex.spi.TemplateRender;
 
 /**
  * Core implementation of SpiServiceManager provided to specific implementations like jetty etc.
@@ -34,9 +40,9 @@ public final class CoreServiceManager implements SpiServiceManager {
     return new Builder(jex).build();
   }
 
-  public CoreServiceManager(JsonService jsonService, ErrorHandling errorHandling, TemplateManager templateManager) {
+   CoreServiceManager(JsonService jsonService, ExceptionManager manager, TemplateManager templateManager) {
     this.jsonService = jsonService;
-    this.exceptionHandler = new ExceptionManager(errorHandling);
+    this.exceptionHandler = manager;
     this.templateManager = templateManager;
   }
 
@@ -142,7 +148,10 @@ public final class CoreServiceManager implements SpiServiceManager {
     }
 
     SpiServiceManager build() {
-      return new CoreServiceManager(initJsonService(), jex.errorHandling(), initTemplateMgr());
+      return new CoreServiceManager(
+          initJsonService(),
+          new ExceptionManager(jex.routing().errorHandlers()),
+          initTemplateMgr());
     }
 
     JsonService initJsonService() {

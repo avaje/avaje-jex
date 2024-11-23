@@ -2,7 +2,7 @@ package io.avaje.jex.jdk;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
-import io.avaje.jex.core.internal.SpiServiceManager;
+import io.avaje.jex.core.SpiServiceManager;
 import io.avaje.jex.spi.SpiContext;
 
 import java.io.OutputStream;

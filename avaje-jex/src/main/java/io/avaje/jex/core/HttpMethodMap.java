@@ -1,9 +1,9 @@
-package io.avaje.jex.core.internal;
-
-import io.avaje.jex.Routing;
+package io.avaje.jex.core;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.avaje.jex.Routing;
 
 final class HttpMethodMap {
 

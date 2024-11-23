@@ -1,29 +1,43 @@
-package io.avaje.jex.core.internal;
+package io.avaje.jex.core;
+
+import static java.lang.System.Logger.Level.WARNING;
+
+import java.util.Map;
 
 import io.avaje.applog.AppLog;
-import io.avaje.jex.ErrorHandling;
 import io.avaje.jex.ExceptionHandler;
 import io.avaje.jex.http.ErrorCode;
 import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
 
-import static java.lang.System.Logger.Level.WARNING;
-
-class ExceptionManager {
+public class ExceptionManager {
 
   private static final String APPLICATION_JSON = "application/json";
 
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
-  private final ErrorHandling errorHandling;
+  private final Map<Class<?>, ExceptionHandler<?>> handlers;
 
-  ExceptionManager(ErrorHandling errorHandling) {
-    this.errorHandling = errorHandling;
+  public ExceptionManager(Map<Class<?>, ExceptionHandler<?>> handlers) {
+    this.handlers = handlers;
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T extends Exception> ExceptionHandler<Exception> find(Class<T> exceptionType) {
+    Class<?> type = exceptionType;
+    do {
+      final ExceptionHandler<?> handler = handlers.get(type);
+      if (handler != null) {
+        return (ExceptionHandler<Exception>) handler;
+      }
+      type = type.getSuperclass();
+    } while (type != null);
+    return null;
   }
 
   void handle(SpiContext ctx, Exception e) {
-    final ExceptionHandler<Exception> handler = errorHandling.find(e.getClass());
+    final ExceptionHandler<Exception> handler = find(e.getClass());
     if (handler != null) {
       handler.handle(e, ctx);
     } else if (e instanceof HttpResponseException ex) {

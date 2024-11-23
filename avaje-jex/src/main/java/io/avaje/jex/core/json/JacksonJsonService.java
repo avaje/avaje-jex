@@ -1,4 +1,4 @@
-package io.avaje.jex.core;
+package io.avaje.jex.core.json;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.DeserializationFeature;
