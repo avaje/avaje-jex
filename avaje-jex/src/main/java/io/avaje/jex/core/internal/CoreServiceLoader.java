@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
 
-import io.avaje.jex.TemplateRender;
 import io.avaje.jex.spi.JexExtension;
 import io.avaje.jex.spi.JsonService;
+import io.avaje.jex.spi.TemplateRender;
 
 /** Core implementation of SpiServiceManager provided to specific implementations like jetty etc. */
 class CoreServiceLoader {

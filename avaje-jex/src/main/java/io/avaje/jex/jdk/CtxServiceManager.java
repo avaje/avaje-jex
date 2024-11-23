@@ -1,25 +1,43 @@
-package io.avaje.jex.spi;
+package io.avaje.jex.jdk;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
+import io.avaje.jex.core.internal.SpiServiceManager;
+import io.avaje.jex.spi.SpiContext;
 
+import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-/**
- * Provides a delegating proxy to a SpiServiceManager.
- * <p>
- * Can be used by specific implementations like Jetty and JDK Http Server to add core functionality
- * to provide to the specific context implementation.
- */
-public abstract class ProxyServiceManager implements SpiServiceManager {
+public final class CtxServiceManager implements SpiServiceManager {
 
-  protected final SpiServiceManager delegate;
+  private final String scheme;
+  private final String contextPath;
 
-  protected ProxyServiceManager(SpiServiceManager delegate) {
+  private final SpiServiceManager delegate;
+
+  CtxServiceManager(SpiServiceManager delegate, String scheme, String contextPath) {
     this.delegate = delegate;
+    this.scheme = scheme;
+    this.contextPath = contextPath;
+  }
+
+  OutputStream createOutputStream(JdkContext jdkContext) {
+    return new BufferedOutStream(jdkContext);
+  }
+
+  String scheme() {
+    return scheme;
+  }
+
+  public String url() {
+    return scheme + "://";
+  }
+
+  public String contextPath() {
+    return contextPath;
   }
 
   @Override

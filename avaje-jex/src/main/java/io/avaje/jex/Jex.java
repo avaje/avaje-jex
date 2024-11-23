@@ -2,6 +2,7 @@ package io.avaje.jex;
 
 import io.avaje.inject.BeanScope;
 import io.avaje.jex.spi.JsonService;
+import io.avaje.jex.spi.TemplateRender;
 
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -97,7 +98,7 @@ public interface Jex {
   /**
    * Add Plugin functionality.
    */
-  Jex plugin(Plugin plugin);
+  Jex plugin(JexPlugin plugin);
 
   /**
    * Configure given the dependency injection scope from <em>avaje-inject</em>.

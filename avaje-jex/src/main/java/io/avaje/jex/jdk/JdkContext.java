@@ -39,7 +39,7 @@ class JdkContext implements Context, SpiContext {
   private static final int SC_MOVED_TEMPORARILY = 302;
   private static final String SET_COOKIE = "Set-Cookie";
   private static final String COOKIE = "Cookie";
-  private final ServiceManager mgr;
+  private final CtxServiceManager mgr;
   private final String path;
   private final Map<String, String> pathParams;
   private final Set<Role> roles;
@@ -52,7 +52,7 @@ class JdkContext implements Context, SpiContext {
   private String characterEncoding;
 
   JdkContext(
-      ServiceManager mgr,
+      CtxServiceManager mgr,
       HttpExchange exchange,
       String path,
       Map<String, String> pathParams,
@@ -65,7 +65,7 @@ class JdkContext implements Context, SpiContext {
   }
 
   /** Create when no route matched. */
-  JdkContext(ServiceManager mgr, HttpExchange exchange, String path, Set<Role> roles) {
+  JdkContext(CtxServiceManager mgr, HttpExchange exchange, String path, Set<Role> roles) {
     this.mgr = mgr;
     this.roles = roles;
     this.exchange = exchange;
@@ -365,10 +365,8 @@ class JdkContext implements Context, SpiContext {
   @Override
   public Context write(InputStream is) {
 
-    try (is; var os = exchange.getResponseBody()) {
-      exchange.sendResponseHeaders(statusCode(), 0);
+    try (is; var os = outputStream()) {
       is.transferTo(os);
-      os.flush();
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

@@ -6,22 +6,21 @@ import java.lang.System.Logger.Level;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
-import com.sun.net.httpserver.*;
+import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsServer;
 
 import io.avaje.applog.AppLog;
 import io.avaje.jex.AppLifecycle;
 import io.avaje.jex.Jex;
+import io.avaje.jex.core.internal.SpiServiceManager;
 import io.avaje.jex.routes.SpiRoutes;
-import io.avaje.jex.spi.SpiServiceManager;
 
 public class JdkServerStart {
 
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
   public Jex.Server start(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
-    final ServiceManager manager = new ServiceManager(serviceManager, "http", "");
 
     try {
       final HttpServer server;
@@ -29,13 +28,18 @@ public class JdkServerStart {
       var port = new InetSocketAddress(jex.config().port());
       final var sslContext = jex.config().sslContext();
 
+      final String scheme;
       if (sslContext != null) {
         var httpsServer = HttpsServer.create(port, 0);
         httpsServer.setHttpsConfigurator(new HttpsConfigurator(sslContext));
         server = httpsServer;
+        scheme = "https";
       } else {
+        scheme = "http";
         server = HttpServer.create(port, 0);
       }
+
+      final var manager = new CtxServiceManager(serviceManager, scheme, "");
 
       var handler = new BaseHandler(routes);
       var context = server.createContext("/", handler);

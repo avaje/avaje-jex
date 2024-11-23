@@ -1,7 +1,9 @@
-package io.avaje.jex.spi;
+package io.avaje.jex.core.internal;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
+import io.avaje.jex.jdk.CtxServiceManager;
+import io.avaje.jex.spi.SpiContext;
 
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.stream.Stream;
 /**
  * Core service methods available to Context implementations.
  */
-public interface SpiServiceManager {
+public sealed interface SpiServiceManager permits CoreServiceManager, CtxServiceManager {
 
   /**
    * Read and return the type from json request content.

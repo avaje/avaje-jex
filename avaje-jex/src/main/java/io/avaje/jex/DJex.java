@@ -89,7 +89,7 @@ final class DJex implements Jex {
   }
 
   @Override
-  public Jex plugin(Plugin plugin) {
+  public Jex plugin(JexPlugin plugin) {
     plugin.apply(this);
     return this;
   }
@@ -97,7 +97,7 @@ final class DJex implements Jex {
   @Override
   public Jex configureWith(BeanScope beanScope) {
     lifecycle.onShutdown(beanScope::close);
-    for (Plugin plugin : beanScope.list(Plugin.class)) {
+    for (JexPlugin plugin : beanScope.list(JexPlugin.class)) {
       plugin.apply(this);
     }
     for (ErrorHandling.Service service : beanScope.list(ErrorHandling.Service.class)) {
