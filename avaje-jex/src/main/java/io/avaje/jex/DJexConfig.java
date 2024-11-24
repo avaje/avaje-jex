@@ -73,12 +73,10 @@ final class DJexConfig implements JexConfig {
 
   @Override
   public ThreadFactory threadFactory() {
-
     if (factory == null) {
       factory =
           Thread.ofVirtual().name("avaje-jex-http-", 0).factory();
     }
-
     return factory;
   }
 
@@ -130,7 +128,6 @@ final class DJexConfig implements JexConfig {
 
   @Override
   public SSLContext sslContext() {
-
     return this.sslContext;
   }
 
