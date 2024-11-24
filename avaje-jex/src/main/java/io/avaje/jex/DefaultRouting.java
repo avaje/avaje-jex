@@ -10,10 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.avaje.jex.Routing.Entry;
-import io.avaje.jex.Routing.Group;
-import io.avaje.jex.Routing.HttpService;
-import io.avaje.jex.Routing.Type;
 import io.avaje.jex.security.Role;
 
 final class DefaultRouting implements Routing {

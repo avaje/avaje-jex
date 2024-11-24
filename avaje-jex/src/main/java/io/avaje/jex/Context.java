@@ -361,7 +361,15 @@ public interface Context {
    */
   String protocol();
 
-  class Cookie {
+  /**
+   * Gets basic-auth credentials from the request, or throws.
+   *
+   * <p>Returns a wrapper object containing the Base64 decoded username
+   * and password from the Authorization header, or null if basic-auth is not properly configured
+   */
+  BasicAuthCredentials basicAuthCredentials();
+
+  final class Cookie {
     private static final ZonedDateTime EXPIRED = ZonedDateTime.of(LocalDateTime.of(2000, 1, 1, 0, 0, 0), ZoneId.of("GMT"));
     private static final DateTimeFormatter RFC_1123_DATE_TIME = DateTimeFormatter.RFC_1123_DATE_TIME;
     private static final String PARAM_SEPARATOR = "; ";
@@ -375,7 +383,7 @@ public interface Context {
     private boolean httpOnly;
 
     private Cookie(String name, String value) {
-      if (name == null || name.length() == 0) {
+      if (name == null || name.isEmpty()) {
         throw new IllegalArgumentException("name required");
       }
       this.name = name;
@@ -491,13 +499,5 @@ public interface Context {
       return result.toString();
     }
   }
-
-  /**
-   * Gets basic-auth credentials from the request, or throws.
-   *
-   * <p>Returns a wrapper object containing the Base64 decoded username
-   * and password from the Authorization header, or null if basic-auth is not properly configured
-   */
-  BasicAuthCredentials basicAuthCredentials();
 
 }
