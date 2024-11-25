@@ -125,10 +125,6 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
     return s.endsWith("/") ? s : s + "/";
   }
 
-  private boolean nonFilePath(URI uri) {
-    return !uri.getScheme().startsWith("file");
-  }
-
   private ExchangeHandler fileLoader(Function<String, File> fileLoader) {
     String fsRoot;
     File dirIndex = null;
@@ -179,7 +175,7 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
       } catch (Exception e) {
 
         throw new IllegalStateException(
-            "Failed to locate Directory Index Resource: %s"
+            "Failed to locate Directory Index Resource: "
                 + root.transform(this::appendSlash)
                 + directoryIndex,
             e);
@@ -195,7 +191,7 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
       } catch (Exception e) {
 
         throw new IllegalStateException(
-            "Failed to locate Directory Index Resource: %s"
+            "Failed to locate Directory Index Resource: "
                 + root.transform(this::appendSlash)
                 + directoryIndex,
             e);
