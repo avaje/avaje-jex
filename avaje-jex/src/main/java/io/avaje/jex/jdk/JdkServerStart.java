@@ -49,8 +49,7 @@ public class JdkServerStart {
       server.start();
 
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
-      String jexVersion = Jex.class.getPackage().getImplementationVersion();
-      log.log(Level.INFO, "started server on port %s version %s".formatted(port, jexVersion));
+      log.log(Level.INFO, "started com.sun.net.httpserver.HttpServer server on port %s".formatted(port));
       return new JdkJexServer(server, jex.lifecycle(), handler);
     } catch (IOException e) {
       throw new UncheckedIOException(e);

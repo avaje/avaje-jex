@@ -1,56 +1,93 @@
 package io.avaje.jex;
 
-import java.lang.module.ModuleDescriptor.Builder;
-import java.net.URL;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import io.avaje.jex.spi.StaticResourceLoader;
 
-/**
- * Builder for a static resource exchange handler.
- *
- * @param root the root where your files are located (default: "/public")
- * @param directoryIndex The "file" which will be returned if a root is requested.
- * @param location Location.CLASSPATH (jar) or Location.FILE (file system) (default: CLASSPATH)
- * @param headers headers that will be set for response
- * @param skipFilePredicate predicate to skip certain files in the root based on the request
- *     (default: CLASSPATH)
- * @param mimeTypes configuration for file extension based Mime Types
- */
+/** Builder for a static resource exchange handler. */
 public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder {
 
   static StaticContentConfig create() {
     return StaticResourceHandlerBuilder.builder();
   }
 
-  /** Return a new ExchangeHandler that will serve the resource builder */
+  /** Return a new ExchangeHandler that will serve the resources */
   ExchangeHandler createHandler();
 
-  /** The HttpServer path of the handler */
-  StaticContentConfig httpPath(String urlPrefix);
+  /**
+   * Sets the HTTP path for the static resource handler.
+   *
+   * @param path the HTTP path prefix
+   * @return the updated configuration
+   */
+  StaticContentConfig httpPath(String path);
 
-  /** Retrieve the set path. */
+  /**
+   * Gets the current HTTP path .
+   *
+   * @return the current HTTP path
+   */
   String httpPath();
 
-  /** The file or the folder your files are located (default: "/public/") */
-  StaticContentConfig resource(String root);
+  /**
+   * Sets the file to serve, or the folder your files are located in. (default: "/public/")
+   *
+   * @param root the root directory
+   * @return the updated configuration
+   */
+  StaticContentConfig resource(String resource);
 
-  /** Set a new value for {@code directoryIndex }. */
+  /**
+   * Sets the index file to be served for directories.
+   *
+   * @param directoryIndex the index file
+   * @return the updated configuration
+   */
   StaticContentConfig directoryIndex(String directoryIndex);
 
-  /** Set a new value for {@code classPathResourceFunction }. */
+  /**
+   * Sets a custom resource loader for loading class/module path resources. This is normally used
+   * when running the application on the module path and files cannot be discovered.
+   *
+   * <p>Example usage: {@code config.resourceLoader(getClass()::getResource) }
+   *
+   * @param resourceLoader the custom resource loader
+   * @return the updated configuration
+   */
   StaticContentConfig resourceLoader(StaticResourceLoader resourceLoader);
 
-  /** Add new key/value pair to the {@code mimeTypes } map. */
-  StaticContentConfig putMimeTypeMapping(String key, String value);
+  /**
+   * Adds a new MIME type mapping to the configuration.
+   *
+   * @param ext the file extension (e.g., "html", "css", "js")
+   * @param mimeType the corresponding MIME type (e.g., "text/html", "text/css",
+   *     "application/javascript")
+   * @return the updated configuration
+   */
+  StaticContentConfig putMimeTypeMapping(String ext, String mimeType);
 
-  /** Add new key/value pair to the {@code headers } map. */
+  /**
+   * Adds a new response header to the configuration.
+   *
+   * @param key the header name
+   * @param value the header value
+   * @return the updated configuration
+   */
   StaticContentConfig putResponseHeader(String key, String value);
 
-  /** Set a new value for {@code skipFilePredicate }. */
+  /**
+   * Sets a predicate to filter files based on the request context.
+   *
+   * @param skipFilePredicate the predicate to use
+   * @return the updated configuration
+   */
   StaticContentConfig skipFilePredicate(Predicate<Context> skipFilePredicate);
 
-  /** Set a new value for {@code location }. Defaults to CLASSPATH */
+  /**
+   * Sets the resource location (CLASSPATH or FILE).
+   *
+   * @param location the resource location
+   * @return the updated configuration
+   */
   StaticContentConfig location(ResourceLocation location);
 }

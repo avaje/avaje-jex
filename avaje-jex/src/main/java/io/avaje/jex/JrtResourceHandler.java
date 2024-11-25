@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.function.Predicate;
 
+/** Need an entirely separate impl if using stuff like jlink */
 final class JrtResourceHandler extends AbstractStaticHandler implements ExchangeHandler {
 
   private final Path indexFile;

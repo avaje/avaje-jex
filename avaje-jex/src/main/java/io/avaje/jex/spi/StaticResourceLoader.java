@@ -15,4 +15,5 @@ public non-sealed interface StaticResourceLoader extends JexExtension {
 
   /** Return the URI for the given resource or null if it can not be found. */
   URL getResourceURI(String resourcePath);
+
 }
