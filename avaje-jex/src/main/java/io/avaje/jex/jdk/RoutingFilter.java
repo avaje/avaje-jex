@@ -10,6 +10,7 @@ import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.Routing;
 import io.avaje.jex.Routing.Type;
 import io.avaje.jex.http.HttpResponseException;
+import io.avaje.jex.http.NotFoundException;
 import io.avaje.jex.routes.SpiRoutes;
 import io.avaje.jex.spi.SpiContext;
 
@@ -77,7 +78,7 @@ final class RoutingFilter extends Filter {
       ctx.status(200);
       return;
     }
-    throw new HttpResponseException(404, "uri: " + uri);
+    throw new NotFoundException("uri: " + uri);
   }
 
   private boolean hasGetHandler(String uri) {

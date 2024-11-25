@@ -27,6 +27,7 @@ import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
 import io.avaje.jex.http.ErrorCode;
 import io.avaje.jex.http.HttpResponseException;
+import io.avaje.jex.http.RedirectException;
 import io.avaje.jex.security.BasicAuthCredentials;
 import io.avaje.jex.security.Role;
 import io.avaje.jex.spi.HeaderKeys;
@@ -150,7 +151,7 @@ class JdkContext implements Context, SpiContext {
     header(HeaderKeys.LOCATION, location);
     status(statusCode);
     if (mode == Routing.Type.FILTER) {
-      throw new HttpResponseException(ErrorCode.REDIRECT);
+      throw new RedirectException(ErrorCode.REDIRECT.message());
     } else {
       performRedirect();
     }

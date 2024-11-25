@@ -323,6 +323,12 @@ public interface Context {
    */
   Context header(String key, String value);
 
+  /** Set the response headers using the provided map. */
+  default Context headers(Map<String, String> headers) {
+    headers.forEach(this::header);
+    return this;
+  }
+
   /**
    * Return the response header.
    */

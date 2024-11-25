@@ -155,6 +155,15 @@ public sealed interface Routing permits DefaultRouting {
         });
   }
 
+  /** Add a static resource using a builder */
+  default Routing staticResource(String path, Consumer<StaticFileHandlerBuilder> consumer) {
+    var builder = StaticFileHandlerBuilder.builder();
+    builder.urlPrefix(path);
+    consumer.accept(builder);
+
+    return get(path, builder.build());
+  }
+
   /**
    * Return all the registered handlers.
    */

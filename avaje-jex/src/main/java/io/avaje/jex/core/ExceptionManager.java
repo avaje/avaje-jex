@@ -8,6 +8,7 @@ import io.avaje.applog.AppLog;
 import io.avaje.jex.ExceptionHandler;
 import io.avaje.jex.http.ErrorCode;
 import io.avaje.jex.http.HttpResponseException;
+import io.avaje.jex.http.InternalServerErrorException;
 import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
 
@@ -49,7 +50,7 @@ public final class ExceptionManager {
 
   private void unhandledException(SpiContext ctx, Exception e) {
     log.log(WARNING, "Uncaught exception", e);
-    defaultHandling(ctx, new HttpResponseException(ErrorCode.INTERNAL_SERVER_ERROR));
+    defaultHandling(ctx, new InternalServerErrorException(ErrorCode.INTERNAL_SERVER_ERROR.message()));
   }
 
   private void defaultHandling(SpiContext ctx, HttpResponseException exception) {
