@@ -12,18 +12,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import static io.avaje.jex.ResourceLocation.CLASS_PATH;
 
-/**
- * Builder for a static resource exchange handler.
- *
- * @param root the root where your files are located (default: "/public")
- * @param directoryIndex The "file" which will be returned if a root is requested.
- * @param location Location.CLASSPATH (jar) or Location.FILE (file system) (default: CLASSPATH)
- * @param headers headers that will be set for response
- * @param skipFilePredicate predicate to skip certain files in the root based on the request
- *     (default: CLASSPATH)
- * @param mimeTypes configuration for file extension based Mime Types
- */
-public class StaticFileHandlerBuilder {
+final class StaticFileHandlerBuilder implements StaticContentConfig {
 
   static final Predicate<Context> NO_OP_PREDICATE = ctx -> false;
   private static final String TEXT_PLAIN = "text/plain";
@@ -47,7 +36,7 @@ public class StaticFileHandlerBuilder {
           entry("txt", TEXT_PLAIN),
           entry("php", TEXT_PLAIN));
 
-  private String urlPrefix = "/";
+  private String path = "/";
   private String root = "/public/";
   private String directoryIndex = null;
   private Function<String, URL> classPathResourceFunction =
@@ -59,16 +48,15 @@ public class StaticFileHandlerBuilder {
 
   private StaticFileHandlerBuilder() {}
 
-  /** Return a new builder with all fields set to default Java values */
   public static StaticFileHandlerBuilder builder() {
     return new StaticFileHandlerBuilder();
   }
 
-  /** Return a new ExchangeHandler that will serve the resource builder */
-  public ExchangeHandler build() {
+  @Override
+  public ExchangeHandler createHandler() {
 
-    urlPrefix =
-        Objects.requireNonNullElse(urlPrefix, root)
+    path =
+        Objects.requireNonNullElse(path, root)
             .transform(this::prependSlash)
             .transform(s -> s.endsWith("/*") ? s.substring(0, s.length() - 2) : s);
 
@@ -118,7 +106,7 @@ public class StaticFileHandlerBuilder {
     }
 
     return new StaticFileHandler(
-        urlPrefix, fsRoot, mimeTypes, headers, skipFilePredicate, welcomeFile, singleFile);
+        path, fsRoot, mimeTypes, headers, skipFilePredicate, welcomeFile, singleFile);
   }
 
   private static File getFile(URL t) {
@@ -138,50 +126,55 @@ public class StaticFileHandlerBuilder {
     return s.endsWith("/") ? s : s + "/";
   }
 
-  /** Set a new value for {@code root }. */
-  public StaticFileHandlerBuilder urlPrefix(String urlPrefix) {
-    this.urlPrefix = urlPrefix;
+  @Override
+  public StaticFileHandlerBuilder httpPath(String path) {
+    this.path = path;
     return this;
   }
 
-  /** Set a new value for {@code root }. */
-  public StaticFileHandlerBuilder root(String directory) {
+  @Override
+  public String httpPath() {
+    return path;
+  }
+
+  @Override
+  public StaticFileHandlerBuilder resource(String directory) {
     this.root = directory;
     return this;
   }
 
-  /** Set a new value for {@code directoryIndex }. */
+  @Override
   public StaticFileHandlerBuilder directoryIndex(String directoryIndex) {
     this.directoryIndex = directoryIndex;
     return this;
   }
 
-  /** Set a new value for {@code classPathResourceFunction }. */
+  @Override
   public StaticFileHandlerBuilder classPathResourceFunction(
       Function<String, URL> classPathResourceFunction) {
     this.classPathResourceFunction = classPathResourceFunction;
     return this;
   }
 
-  /** Add new key/value pair to the {@code mimeTypes } map. */
+  @Override
   public StaticFileHandlerBuilder putMimeTypeMapping(String key, String value) {
     this.mimeTypes.put(key, value);
     return this;
   }
 
-  /** Add new key/value pair to the {@code headers } map. */
-  public StaticFileHandlerBuilder putHeaders(String key, String value) {
+  @Override
+  public StaticFileHandlerBuilder putResponseHeader(String key, String value) {
     this.headers.put(key, value);
     return this;
   }
 
-  /** Set a new value for {@code skipFilePredicate }. */
+  @Override
   public StaticFileHandlerBuilder skipFilePredicate(Predicate<Context> skipFilePredicate) {
     this.skipFilePredicate = skipFilePredicate;
     return this;
   }
 
-  /** Set a new value for {@code location }. Defaults to CLASSPATH */
+  @Override
   public StaticFileHandlerBuilder location(ResourceLocation location) {
     this.location = location;
     return this;

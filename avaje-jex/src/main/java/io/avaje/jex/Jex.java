@@ -70,6 +70,20 @@ public sealed interface Jex permits DJex {
    */
   Routing routing();
 
+  /** Add a static resource route */
+  default Jex staticResource(StaticContentConfig config) {
+    routing().get(config.httpPath(), config.createHandler());
+    return this;
+  }
+
+  /** Add a static resource route using a consumer */
+  default Jex staticResource(Consumer<StaticContentConfig> consumer) {
+    var builder = StaticFileHandlerBuilder.builder();
+    consumer.accept(builder);
+
+    return staticResource(builder);
+  }
+
   /**
    * Set the JsonService.
    */

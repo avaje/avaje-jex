@@ -16,7 +16,7 @@ final class StaticFileHandler implements ExchangeHandler {
   private final Map<String, String> mimeTypes;
   private final String filesystemRoot;
   private final String urlPrefix;
-  private final File welcomeFile;
+  private final File indexFile;
   private final File singleFile;
   private final Predicate<Context> skipFilePredicate;
   private final Map<String, String> headers;
@@ -32,7 +32,7 @@ final class StaticFileHandler implements ExchangeHandler {
 
     this.filesystemRoot = filesystemRoot;
     this.urlPrefix = urlPrefix;
-    this.welcomeFile = welcomeFile;
+    this.indexFile = welcomeFile;
     this.singleFile = singleFile;
     this.skipFilePredicate = skipFilePredicate;
     this.headers = headers;
@@ -56,7 +56,7 @@ final class StaticFileHandler implements ExchangeHandler {
     final String wholeUrlPath = jdkExchange.getRequestURI().getPath();
 
     if (wholeUrlPath.endsWith("/") || wholeUrlPath.equals(urlPrefix)) {
-      sendFile(ctx, jdkExchange, welcomeFile.getPath(), welcomeFile);
+      sendFile(ctx, jdkExchange, indexFile.getPath(), indexFile);
 
       return;
     }
@@ -82,12 +82,11 @@ final class StaticFileHandler implements ExchangeHandler {
     sendFile(ctx, jdkExchange, urlPath, canonicalFile);
   }
 
-  private void throw404(final HttpExchange jdkExchange) {
+  private void throw404(HttpExchange jdkExchange) {
     throw new NotFoundException("File Not Found for request: " + jdkExchange.getRequestURI());
   }
 
-  private void sendFile(
-      Context ctx, final HttpExchange jdkExchange, final String urlPath, File canonicalFile)
+  private void sendFile(Context ctx, HttpExchange jdkExchange, String urlPath, File canonicalFile)
       throws IOException {
     try (var fis = new FileInputStream(canonicalFile)) {
 

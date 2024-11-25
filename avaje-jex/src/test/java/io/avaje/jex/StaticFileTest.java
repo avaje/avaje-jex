@@ -18,33 +18,30 @@ class StaticFileTest {
 
     final Jex app =
         Jex.create()
-            .routing(
-                routing ->
-                    routing
-                        .staticResource("/index", StaticFileTest::defaultCP)
-                        .staticResource("/indexFile", StaticFileTest::defaultFile)
-                        .staticResource("/indexWild/*", StaticFileTest::defaultCP)
-                        .staticResource("/indexFileWild/*", StaticFileTest::defaultFile)
-                        .staticResource("/sus/*", StaticFileTest::defaultCP)
-                        .staticResource("/susFile/*", StaticFileTest::defaultFile)
-                        .staticResource("/single", b -> b.root("/logback.xml"))
-                        .staticResource(
-                            "/singleFile",
-                            b ->
-                                b.location(ResourceLocation.FILE)
-                                    .root("src/test/resources/logback.xml")));
+            .staticResource(b -> defaultCP(b.httpPath("/index")))
+            .staticResource(b -> defaultFile(b.httpPath("/indexFile")))
+            .staticResource(b -> defaultCP(b.httpPath("/indexWild/*")))
+            .staticResource(b -> defaultFile(b.httpPath("/indexFileWild/*")))
+            .staticResource(b -> defaultCP(b.httpPath("/sus/*")))
+            .staticResource(b -> defaultFile(b.httpPath("/susFile/*")))
+            .staticResource(b -> b.httpPath("/single").resource("/logback.xml"))
+            .staticResource(
+                b ->
+                    b.location(ResourceLocation.FILE)
+                        .httpPath("/singleFile")
+                        .resource("src/test/resources/logback.xml"));
 
     return TestPair.create(app);
   }
 
-  private static StaticFileHandlerBuilder defaultFile(StaticFileHandlerBuilder b) {
+  private static StaticContentConfig defaultFile(StaticContentConfig b) {
     return b.location(ResourceLocation.FILE)
-        .root("src/test/resources/public")
+        .resource("src/test/resources/public")
         .directoryIndex("index.html");
   }
 
-  private static StaticFileHandlerBuilder defaultCP(StaticFileHandlerBuilder b) {
-    return b.root("/public").directoryIndex("index.html");
+  private static StaticContentConfig defaultCP(StaticContentConfig b) {
+    return b.resource("/public").directoryIndex("index.html");
   }
 
   @AfterAll
