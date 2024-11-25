@@ -62,7 +62,7 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
     }
 
     if (location == ResourceLocation.FILE) {
-      return fileLoader(File::new);
+      return fileLoader();
     }
 
     return classPathHandler();
@@ -129,15 +129,14 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
     return s.endsWith("/") ? s : s + "/";
   }
 
-  private ExchangeHandler fileLoader(Function<String, File> fileLoader) {
+  private ExchangeHandler fileLoader() {
     String fsRoot;
     File dirIndex = null;
     File singleFile = null;
     if (directoryIndex != null) {
       try {
 
-        dirIndex =
-            fileLoader.apply(root.transform(this::appendSlash) + directoryIndex).getCanonicalFile();
+        dirIndex = new File(root.transform(this::appendSlash) + directoryIndex).getCanonicalFile();
 
         fsRoot = dirIndex.getParentFile().getPath();
       } catch (Exception e) {
@@ -150,7 +149,7 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
     } else {
       try {
 
-        singleFile = fileLoader.apply(root).getCanonicalFile();
+        singleFile = new File(root).getCanonicalFile();
 
         fsRoot = singleFile.getParentFile().getPath();
       } catch (Exception e) {
