@@ -9,12 +9,12 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 /** Need an entirely separate impl if using stuff like jlink */
-final class JrtResourceHandler extends AbstractStaticHandler implements ExchangeHandler {
+final class ClassPathResourceHandler extends AbstractStaticHandler implements ExchangeHandler {
 
   private final Path indexFile;
   private final Path singleFile;
 
-  JrtResourceHandler(
+  ClassPathResourceHandler(
       String urlPrefix,
       String filesystemRoot,
       Map<String, String> mimeTypes,
@@ -72,13 +72,13 @@ final class JrtResourceHandler extends AbstractStaticHandler implements Exchange
 
   private void sendPathIS(Context ctx, String urlPath, Path path) throws IOException {
     var exchange = ctx.jdkExchange();
+    String mimeType = lookupMime(urlPath);
+    ctx.header("Content-Type", mimeType);
+    ctx.headers(headers);
     exchange.sendResponseHeaders(200, Files.size(path));
     try (InputStream fis = Files.newInputStream(path);
         OutputStream os = exchange.getResponseBody()) {
 
-      String mimeType = lookupMime(urlPath);
-      ctx.header("Content-Type", mimeType);
-      ctx.headers(headers);
       fis.transferTo(os);
     } catch (Exception e) {
       throw404(ctx.jdkExchange());
