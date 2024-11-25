@@ -145,8 +145,8 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
     return s.endsWith("/") ? s : s + "/";
   }
 
-  private boolean isJrtPath(URI uri) {
-    return uri.getScheme().startsWith("jrt");
+  private boolean nonFilePath(URI uri) {
+    return !uri.getScheme().startsWith("file");
   }
 
   private ExchangeHandler fileLoader(Function<String, File> fileLoader) {
@@ -190,7 +190,7 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
     if (directoryIndex != null) {
       try {
         var uri = loaderFunc.apply(root.transform(this::appendSlash) + directoryIndex);
-        if (isJrtPath(uri)) {
+        if (nonFilePath(uri)) {
           var dirIndex = Paths.get(uri).toRealPath();
           return new JrtResourceHandler(
               path,
@@ -215,7 +215,7 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
     try {
       var uri = loaderFunc.apply(root);
 
-      if (isJrtPath(uri)) {
+      if (nonFilePath(uri)) {
         var singleFile = Paths.get(uri).toRealPath();
         return new JrtResourceHandler(
             path,
