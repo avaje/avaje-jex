@@ -1,16 +1,21 @@
 package io.avaje.jex;
 
+import static io.avaje.jex.ResourceLocation.CLASS_PATH;
 import static java.util.Map.entry;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import static io.avaje.jex.ResourceLocation.CLASS_PATH;
+
+import io.avaje.jex.core.CoreServiceLoader;
+import io.avaje.jex.spi.StaticResourceLoader;
 
 final class StaticResourceHandlerBuilder implements StaticContentConfig {
 
@@ -39,8 +44,7 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
   private String path = "/";
   private String root = "/public/";
   private String directoryIndex = null;
-  private Function<String, URL> classPathResourceFunction =
-      StaticResourceHandlerBuilder.class::getResource;
+  private StaticResourceLoader resourceLoader = CoreServiceLoader.resourceLoader();
   private final Map<String, String> mimeTypes = new HashMap<>(MIME_MAP);
   private final Map<String, String> headers = new HashMap<>();
   private Predicate<Context> skipFilePredicate = NO_OP_PREDICATE;
@@ -56,7 +60,7 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
   public ExchangeHandler createHandler() {
 
     path =
-        Objects.requireNonNullElse(path, root)
+        Objects.requireNonNull(path)
             .transform(this::prependSlash)
             .transform(s -> s.endsWith("/*") ? s.substring(0, s.length() - 2) : s);
 
@@ -73,57 +77,11 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
           "Directory Index file is required when serving directories");
     }
 
-    Function<String, File> fileLoader =
-        isClasspath
-            ? classPathResourceFunction.andThen(StaticResourceHandlerBuilder::getFile)
-            : File::new;
-    String fsRoot;
-    File welcomeFile = null;
-    File singleFile = null;
-    if (directoryIndex != null) {
-      try {
-
-        welcomeFile =
-            fileLoader.apply(root.transform(this::appendSlash) + directoryIndex).getCanonicalFile();
-
-        fsRoot = welcomeFile.getParentFile().getPath();
-      } catch (Exception e) {
-        throw new IllegalStateException(
-            "Failed to locate Directory Index Resource: %s"
-                + root.transform(this::appendSlash)
-                + directoryIndex,
-            e);
-      }
-    } else {
-      try {
-
-        singleFile = fileLoader.apply(root).getCanonicalFile();
-
-        fsRoot = singleFile.getParentFile().getPath();
-      } catch (Exception e) {
-        throw new IllegalStateException("Failed to locate Root File: " + root, e);
-      }
+    if (location == ResourceLocation.FILE) {
+      return fileLoader(File::new);
     }
 
-    return new StaticResourceHandler(
-        path, fsRoot, mimeTypes, headers, skipFilePredicate, welcomeFile, singleFile);
-  }
-
-  private static File getFile(URL t) {
-
-    try {
-      return new File(t.toURI());
-    } catch (URISyntaxException e) {
-      throw new IllegalStateException(e);
-    }
-  }
-
-  private String prependSlash(String s) {
-    return s.startsWith("/") ? s : "/" + s;
-  }
-
-  private String appendSlash(String s) {
-    return s.endsWith("/") ? s : s + "/";
+    return classPathHandler();
   }
 
   @Override
@@ -150,9 +108,8 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
   }
 
   @Override
-  public StaticResourceHandlerBuilder classPathResourceFunction(
-      Function<String, URL> classPathResourceFunction) {
-    this.classPathResourceFunction = classPathResourceFunction;
+  public StaticResourceHandlerBuilder resourceLoader(StaticResourceLoader resourceLoader) {
+    this.resourceLoader = resourceLoader;
     return this;
   }
 
@@ -178,5 +135,115 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
   public StaticResourceHandlerBuilder location(ResourceLocation location) {
     this.location = location;
     return this;
+  }
+
+  private String prependSlash(String s) {
+    return s.startsWith("/") ? s : "/" + s;
+  }
+
+  private String appendSlash(String s) {
+    return s.endsWith("/") ? s : s + "/";
+  }
+
+  private boolean isJrtPath(URI uri) {
+    return uri.getScheme().startsWith("jrt");
+  }
+
+  private ExchangeHandler fileLoader(Function<String, File> fileLoader) {
+    String fsRoot;
+    File welcomeFile = null;
+    File singleFile = null;
+    if (directoryIndex != null) {
+      try {
+
+        welcomeFile =
+            fileLoader.apply(root.transform(this::appendSlash) + directoryIndex).getCanonicalFile();
+
+        fsRoot = welcomeFile.getParentFile().getPath();
+      } catch (Exception e) {
+        throw new IllegalStateException(
+            "Failed to locate Directory Index Resource: "
+                + root.transform(this::appendSlash)
+                + directoryIndex,
+            e);
+      }
+    } else {
+      try {
+
+        singleFile = fileLoader.apply(root).getCanonicalFile();
+
+        fsRoot = singleFile.getParentFile().getPath();
+      } catch (Exception e) {
+        throw new IllegalStateException("Failed to locate File: " + root, e);
+      }
+    }
+
+    return new StaticFileHandler(
+        path, fsRoot, mimeTypes, headers, skipFilePredicate, welcomeFile, singleFile);
+  }
+
+  private ExchangeHandler classPathHandler() {
+    Function<String, URL> urlFunc = resourceLoader::getResourceURI;
+
+    Function<String, URI> loaderFunc = urlFunc.andThen(this::toURI);
+
+    if (directoryIndex != null) {
+      try {
+        var uri = loaderFunc.apply(root.transform(this::appendSlash) + directoryIndex);
+        if (isJrtPath(uri)) {
+          var dirIndex = Paths.get(uri).toRealPath();
+          return new JrtResourceHandler(
+              path,
+              dirIndex.getParent().toString(),
+              mimeTypes,
+              headers,
+              skipFilePredicate,
+              dirIndex,
+              null);
+        }
+        return fileLoader(loaderFunc.andThen(File::new));
+      } catch (Exception e) {
+
+        throw new IllegalStateException(
+            "Failed to locate Directory Index Resource: %s"
+                + root.transform(this::appendSlash)
+                + directoryIndex,
+            e);
+      }
+    }
+
+    try {
+      var uri = loaderFunc.apply(root);
+
+      if (isJrtPath(uri)) {
+        var singleFile = Paths.get(uri).toRealPath();
+        return new JrtResourceHandler(
+            path,
+            singleFile.getParent().toString(),
+            mimeTypes,
+            headers,
+            skipFilePredicate,
+            null,
+            singleFile);
+      }
+
+      return fileLoader(loaderFunc.andThen(File::new));
+    } catch (Exception e) {
+
+      throw new IllegalStateException(
+          "Failed to locate Directory Index Resource: %s"
+              + root.transform(this::appendSlash)
+              + directoryIndex,
+          e);
+    }
+  }
+
+  private URI toURI(URL url) {
+
+    try {
+      return url.toURI();
+    } catch (URISyntaxException e) {
+      throw new IllegalStateException(e);
+    }
   }
 }

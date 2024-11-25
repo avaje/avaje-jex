@@ -1,11 +1,11 @@
 package io.avaje.jex;
 
+import java.util.Collection;
+import java.util.function.Consumer;
+
 import io.avaje.inject.BeanScope;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
-
-import java.util.Collection;
-import java.util.function.Consumer;
 
 /**
  * Create configure and start Jex.

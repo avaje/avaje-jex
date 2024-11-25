@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import io.avaje.jex.spi.StaticResourceLoader;
+
 /**
  * Builder for a static resource exchange handler.
  *
@@ -25,10 +27,10 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
   /** Return a new ExchangeHandler that will serve the resource builder */
   ExchangeHandler createHandler();
 
-  /** The HttpServer route where the handler will be activate. */
+  /** The HttpServer path of the handler */
   StaticContentConfig httpPath(String urlPrefix);
 
-  /** Set a new value for {@code root }. */
+  /** Retrieve the set path. */
   String httpPath();
 
   /** The file or the folder your files are located (default: "/public/") */
@@ -38,7 +40,7 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
   StaticContentConfig directoryIndex(String directoryIndex);
 
   /** Set a new value for {@code classPathResourceFunction }. */
-  StaticContentConfig classPathResourceFunction(Function<String, URL> classPathResourceFunction);
+  StaticContentConfig resourceLoader(StaticResourceLoader resourceLoader);
 
   /** Add new key/value pair to the {@code mimeTypes } map. */
   StaticContentConfig putMimeTypeMapping(String key, String value);
