@@ -23,6 +23,3 @@ var app = Jex.create()
   .port(8080)
   .start();
 ```
-
-### TODO
-- static file configuration
