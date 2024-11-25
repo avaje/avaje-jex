@@ -17,11 +17,11 @@ class NestedRoutesTest {
       .routing(routing -> routing
         .get("/", ctx -> ctx.text("hello"))
         .path("api", () -> {
-          routing.get(ctx -> ctx.text("apiRoot"));
+          routing.get("/", ctx -> ctx.text("apiRoot"));
           routing.get("{id}", ctx -> ctx.text("api-" + ctx.pathParam("id")));
         })
         .path("extra", () -> {
-          routing.get(ctx -> ctx.text("extraRoot"));
+          routing.get("/", ctx -> ctx.text("extraRoot"));
           routing.get("{id}", ctx -> ctx.text("extra-id-" + ctx.pathParam("id")));
           routing.get("more/{id}", ctx -> ctx.text("extraMore-" + ctx.pathParam("id")));
         }));
