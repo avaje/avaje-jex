@@ -159,7 +159,7 @@ public final class CoreServiceManager implements SpiServiceManager {
       if (jsonService != null) {
         return jsonService;
       }
-      return CoreServiceLoader.getJsonService()
+      return CoreServiceLoader.jsonService()
         .orElseGet(this::defaultJsonService);
     }
 

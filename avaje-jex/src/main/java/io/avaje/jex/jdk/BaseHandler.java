@@ -1,5 +1,7 @@
 package io.avaje.jex.jdk;
 
+import java.io.IOException;
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -20,7 +22,7 @@ class BaseHandler implements HttpHandler {
   }
 
   @Override
-  public void handle(HttpExchange exchange) {
+  public void handle(HttpExchange exchange) throws IOException {
 
     JdkContext ctx = (JdkContext) exchange.getAttribute("JdkContext");
     ExchangeHandler handlerConsumer =

@@ -19,7 +19,7 @@ class ExceptionManagerTest {
     final Jex app = Jex.create()
       .routing(routing -> routing
         .get("/", ctx -> {
-          throw new HttpResponseException(ErrorCode.FORBIDDEN);
+          throw new HttpResponseException(ErrorCode.FORBIDDEN.status(), ErrorCode.FORBIDDEN.message());
         })
         .post("/", ctx -> {
           throw new IllegalStateException("foo");
