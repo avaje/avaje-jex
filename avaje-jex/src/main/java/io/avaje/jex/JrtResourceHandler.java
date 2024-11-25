@@ -1,6 +1,9 @@
 package io.avaje.jex;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -67,13 +70,16 @@ final class JrtResourceHandler extends AbstractStaticHandler implements Exchange
     sendPathIS(ctx, urlPath, path);
   }
 
-  private void sendPathIS(Context ctx, String urlPath, Path canonicalFile) throws IOException {
-    try (var is = canonicalFile.toUri().toURL().openStream()) {
+  private void sendPathIS(Context ctx, String urlPath, Path path) throws IOException {
+    var exchange = ctx.jdkExchange();
+    exchange.sendResponseHeaders(200, Files.size(path));
+    try (InputStream fis = Files.newInputStream(path);
+        OutputStream os = exchange.getResponseBody()) {
 
       String mimeType = lookupMime(urlPath);
       ctx.header("Content-Type", mimeType);
       ctx.headers(headers);
-      ctx.write(is);
+      fis.transferTo(os);
     } catch (Exception e) {
       throw404(ctx.jdkExchange());
     }
