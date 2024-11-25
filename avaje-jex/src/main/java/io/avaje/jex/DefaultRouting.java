@@ -106,20 +106,8 @@ final class DefaultRouting implements Routing {
   }
 
   @Override
-  public Routing get(ExchangeHandler handler) {
-    get("", handler);
-    return this;
-  }
-
-  @Override
   public Routing post(String path, ExchangeHandler handler) {
     add(Type.POST, path, handler);
-    return this;
-  }
-
-  @Override
-  public Routing post(ExchangeHandler handler) {
-    post("", handler);
     return this;
   }
 
@@ -130,20 +118,8 @@ final class DefaultRouting implements Routing {
   }
 
   @Override
-  public Routing put(ExchangeHandler handler) {
-    put("", handler);
-    return this;
-  }
-
-  @Override
   public Routing patch(String path, ExchangeHandler handler) {
     add(Type.PATCH, path, handler);
-    return this;
-  }
-
-  @Override
-  public Routing patch(ExchangeHandler handler) {
-    patch("", handler);
     return this;
   }
 
@@ -154,20 +130,8 @@ final class DefaultRouting implements Routing {
   }
 
   @Override
-  public Routing delete(ExchangeHandler handler) {
-    delete("", handler);
-    return this;
-  }
-
-  @Override
   public Routing head(String path, ExchangeHandler handler) {
     add(Type.HEAD, path, handler);
-    return this;
-  }
-
-  @Override
-  public Routing head(ExchangeHandler handler) {
-    head("", handler);
     return this;
   }
 
@@ -178,8 +142,8 @@ final class DefaultRouting implements Routing {
   }
 
   @Override
-  public Routing trace(ExchangeHandler handler) {
-    trace("", handler);
+  public Routing options(String path, ExchangeHandler handler) {
+    add(Type.OPTIONS, path, handler);
     return this;
   }
 

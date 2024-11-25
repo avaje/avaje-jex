@@ -10,24 +10,20 @@ import io.avaje.jex.security.Role;
 
 public sealed interface Routing permits DefaultRouting {
 
-  /**
-   * Add the routes provided by the Routing HttpService.
-   */
+  /** Add the routes provided by the Routing HttpService. */
   Routing add(Routing.HttpService routes);
 
-  /**
-   * Add all the routes provided by the Routing Services.
-   */
+  /** Add all the routes provided by the Routing Services. */
   Routing addAll(Collection<Routing.HttpService> routes);
 
   /**
    * Specify permittedRoles for the last added handler.
-   * <pre>{@code
    *
-   *  routing
-   *  .get("/customers", getHandler).withRoles(readRoles)
-   *  .post("/customers", postHandler).withRoles(writeRoles)
-   *  ...
+   * <pre>{@code
+   * routing
+   * .get("/customers", getHandler).withRoles(readRoles)
+   * .post("/customers", postHandler).withRoles(writeRoles)
+   * ...
    *
    * }</pre>
    *
@@ -37,12 +33,12 @@ public sealed interface Routing permits DefaultRouting {
 
   /**
    * Specify permittedRoles for the last added handler using varargs.
-   * <pre>{@code
    *
-   *  routing
-   *  .get("/customers", getHandler).withRoles(ADMIN, USER)
-   *  .post("/customers", postHandler).withRoles(ADMIN)
-   *  ...
+   * <pre>{@code
+   * routing
+   * .get("/customers", getHandler).withRoles(ADMIN, USER)
+   * .post("/customers", postHandler).withRoles(ADMIN)
+   * ...
    *
    * }</pre>
    *
@@ -50,89 +46,37 @@ public sealed interface Routing permits DefaultRouting {
    */
   Routing withRoles(Role... permittedRoles);
 
-  /**
-   * Register an exception handler for the given exception type.
-   */
+  /** Register an exception handler for the given exception type. */
   <T extends Exception> Routing exception(Class<T> exceptionClass, ExceptionHandler<T> handler);
 
-  /**
-   * Add a group of route handlers with a common path prefix.
-   */
+  /** Add a group of route handlers with a common path prefix. */
   Routing path(String path, Group group);
 
-  /**
-   * Add a HEAD handler.
-   */
+  /** Add a HEAD handler. */
   Routing head(String path, ExchangeHandler handler);
 
-  /**
-   * Add a HEAD handler for "/".
-   */
-  Routing head(ExchangeHandler handler);
-
-  /**
-   * Add a GET handler.
-   */
+  /** Add a GET handler. */
   Routing get(String path, ExchangeHandler handler);
 
-  /**
-   * Add a GET handler for "/".
-   */
-  Routing get(ExchangeHandler handler);
-
-  /**
-   * Add a POST handler.
-   */
+  /** Add a POST handler. */
   Routing post(String path, ExchangeHandler handler);
 
-  /**
-   * Add a POST handler for "/".
-   */
-  Routing post(ExchangeHandler handler);
-
-  /**
-   * Add a PUT handler.
-   */
+  /** Add a PUT handler. */
   Routing put(String path, ExchangeHandler handler);
 
-  /**
-   * Add a PUT handler for "/".
-   */
-  Routing put(ExchangeHandler handler);
-
-  /**
-   * Add a PATCH handler.
-   */
+  /** Add a PATCH handler. */
   Routing patch(String path, ExchangeHandler handler);
 
-  /**
-   * Add a PATCH handler for "/".
-   */
-  Routing patch(ExchangeHandler handler);
-
-  /**
-   * Add a DELETE handler.
-   */
+  /** Add a DELETE handler. */
   Routing delete(String path, ExchangeHandler handler);
 
-  /**
-   * Add a DELETE handler for "/".
-   */
-  Routing delete(ExchangeHandler handler);
-
-  /**
-   * Add a TRACE handler.
-   */
+  /** Add a TRACE handler. */
   Routing trace(String path, ExchangeHandler handler);
 
-  /**
-   * Add a TRACE handler for "/".
-   */
-  Routing trace(ExchangeHandler handler);
+  /** Add an OPTIONS handler. */
+  Routing options(String path, ExchangeHandler handler);
 
-  /**
-   * Add a filter for all requests.
-   */
+  /** Add a filter for all requests. */
   Routing filter(HttpFilter handler);
 
   /** Add a preprocessing filter for all requests. */
@@ -155,36 +99,24 @@ public sealed interface Routing permits DefaultRouting {
         });
   }
 
-  /**
-   * Return all the registered handlers.
-   */
+  /** Return all the registered handlers. */
   List<Entry> handlers();
 
-  /**
-   * Return all the registered filters.
-   */
+  /** Return all the registered filters. */
   List<HttpFilter> filters();
 
-  /**
-   * Return all the registered Exception Handlers.
-   */
+  /** Return all the registered Exception Handlers. */
   Map<Class<?>, ExceptionHandler<?>> errorHandlers();
 
-  /**
-   * A group of routing entries prefixed by a common path.
-   */
+  /** A group of routing entries prefixed by a common path. */
   @FunctionalInterface
   interface Group {
 
-    /**
-     * Add the group of entries with a common prefix.
-     */
+    /** Add the group of entries with a common prefix. */
     void addGroup();
   }
 
-  /**
-   * Adds to the Routing.
-   */
+  /** Adds to the Routing. */
   @FunctionalInterface
   interface HttpService {
 
@@ -196,68 +128,41 @@ public sealed interface Routing permits DefaultRouting {
     void add(Routing routing);
   }
 
-  /**
-   * A routing entry.
-   */
+  /** A routing entry. */
   interface Entry {
 
-    /**
-     * Return the type of entry.
-     */
+    /** Return the type of entry. */
     Type getType();
 
-    /**
-     * Return the full path of the entry.
-     */
+    /** Return the full path of the entry. */
     String getPath();
 
-    /**
-     * Return the handler.
-     */
+    /** Return the handler. */
     ExchangeHandler getHandler();
 
-    /**
-     * Return the roles.
-     */
+    /** Return the roles. */
     Set<Role> getRoles();
   }
 
-  /**
-   * The type of route entry.
-   */
+  /** The type of route entry. */
   enum Type {
-    /**
-     * Http Filter.
-     */
+    /** Http Filter. */
     FILTER,
-    /**
-     * Http GET.
-     */
+    /** Http GET. */
     GET,
-    /**
-     * Http POST.
-     */
+    /** Http POST. */
     POST,
-    /**
-     * HTTP PUT.
-     */
+    /** HTTP PUT. */
     PUT,
-    /**
-     * HTTP PATCH.
-     */
+    /** HTTP PATCH. */
     PATCH,
-    /**
-     * HTTP DELETE.
-     */
+    /** HTTP DELETE. */
     DELETE,
-    /**
-     * HTTP HEAD.
-     */
+    /** HTTP HEAD. */
     HEAD,
-    /**
-     * HTTP TRACE.
-     */
-    TRACE//, CONNECT, OPTIONS, INVALID;
+    /** HTTP TRACE. */
+    TRACE,
+    /** HTTP OPTIONS. */
+    OPTIONS;
   }
-
 }
