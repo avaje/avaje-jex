@@ -73,7 +73,7 @@ class StaticFileTest {
     HttpResponse<String> res =
         pair.request().requestTimeout(Duration.ofHours(1)).path("sus/sus.txt").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.body()).contains("Amogus");
+    assertThat(res.body()).contains("ඞ");
   }
 
   @Test
@@ -95,7 +95,7 @@ class StaticFileTest {
     HttpResponse<String> res =
         pair.request().requestTimeout(Duration.ofHours(1)).path("susFile/sus.txt").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.headers().firstValue("Content-Type").orElseThrow()).contains("text");
+    assertThat(res.body()).contains("ඞ");
   }
 
   @Test
