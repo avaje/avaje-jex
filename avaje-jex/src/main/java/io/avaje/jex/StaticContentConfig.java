@@ -16,10 +16,10 @@ import java.util.function.Predicate;
  *     (default: CLASSPATH)
  * @param mimeTypes configuration for file extension based Mime Types
  */
-public sealed interface StaticContentConfig permits StaticFileHandlerBuilder {
+public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder {
 
   static StaticContentConfig create() {
-    return StaticFileHandlerBuilder.builder();
+    return StaticResourceHandlerBuilder.builder();
   }
 
   /** Return a new ExchangeHandler that will serve the resource builder */

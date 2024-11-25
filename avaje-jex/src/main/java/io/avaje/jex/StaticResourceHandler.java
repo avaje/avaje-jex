@@ -12,7 +12,7 @@ import com.sun.net.httpserver.HttpExchange;
 import io.avaje.jex.http.BadRequestException;
 import io.avaje.jex.http.NotFoundException;
 
-final class StaticFileHandler implements ExchangeHandler {
+final class StaticResourceHandler implements ExchangeHandler {
   private final Map<String, String> mimeTypes;
   private final String filesystemRoot;
   private final String urlPrefix;
@@ -21,7 +21,7 @@ final class StaticFileHandler implements ExchangeHandler {
   private final Predicate<Context> skipFilePredicate;
   private final Map<String, String> headers;
 
-  StaticFileHandler(
+  StaticResourceHandler(
       String urlPrefix,
       String filesystemRoot,
       Map<String, String> mimeTypes,

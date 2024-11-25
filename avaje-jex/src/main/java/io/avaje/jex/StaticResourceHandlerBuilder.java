@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import static io.avaje.jex.ResourceLocation.CLASS_PATH;
 
-final class StaticFileHandlerBuilder implements StaticContentConfig {
+final class StaticResourceHandlerBuilder implements StaticContentConfig {
 
   static final Predicate<Context> NO_OP_PREDICATE = ctx -> false;
   private static final String TEXT_PLAIN = "text/plain";
@@ -40,16 +40,16 @@ final class StaticFileHandlerBuilder implements StaticContentConfig {
   private String root = "/public/";
   private String directoryIndex = null;
   private Function<String, URL> classPathResourceFunction =
-      StaticFileHandlerBuilder.class::getResource;
+      StaticResourceHandlerBuilder.class::getResource;
   private final Map<String, String> mimeTypes = new HashMap<>(MIME_MAP);
   private final Map<String, String> headers = new HashMap<>();
   private Predicate<Context> skipFilePredicate = NO_OP_PREDICATE;
   private ResourceLocation location = CLASS_PATH;
 
-  private StaticFileHandlerBuilder() {}
+  private StaticResourceHandlerBuilder() {}
 
-  public static StaticFileHandlerBuilder builder() {
-    return new StaticFileHandlerBuilder();
+  public static StaticResourceHandlerBuilder builder() {
+    return new StaticResourceHandlerBuilder();
   }
 
   @Override
@@ -75,7 +75,7 @@ final class StaticFileHandlerBuilder implements StaticContentConfig {
 
     Function<String, File> fileLoader =
         isClasspath
-            ? classPathResourceFunction.andThen(StaticFileHandlerBuilder::getFile)
+            ? classPathResourceFunction.andThen(StaticResourceHandlerBuilder::getFile)
             : File::new;
     String fsRoot;
     File welcomeFile = null;
@@ -105,7 +105,7 @@ final class StaticFileHandlerBuilder implements StaticContentConfig {
       }
     }
 
-    return new StaticFileHandler(
+    return new StaticResourceHandler(
         path, fsRoot, mimeTypes, headers, skipFilePredicate, welcomeFile, singleFile);
   }
 
@@ -127,7 +127,7 @@ final class StaticFileHandlerBuilder implements StaticContentConfig {
   }
 
   @Override
-  public StaticFileHandlerBuilder httpPath(String path) {
+  public StaticResourceHandlerBuilder httpPath(String path) {
     this.path = path;
     return this;
   }
@@ -138,44 +138,44 @@ final class StaticFileHandlerBuilder implements StaticContentConfig {
   }
 
   @Override
-  public StaticFileHandlerBuilder resource(String directory) {
+  public StaticResourceHandlerBuilder resource(String directory) {
     this.root = directory;
     return this;
   }
 
   @Override
-  public StaticFileHandlerBuilder directoryIndex(String directoryIndex) {
+  public StaticResourceHandlerBuilder directoryIndex(String directoryIndex) {
     this.directoryIndex = directoryIndex;
     return this;
   }
 
   @Override
-  public StaticFileHandlerBuilder classPathResourceFunction(
+  public StaticResourceHandlerBuilder classPathResourceFunction(
       Function<String, URL> classPathResourceFunction) {
     this.classPathResourceFunction = classPathResourceFunction;
     return this;
   }
 
   @Override
-  public StaticFileHandlerBuilder putMimeTypeMapping(String key, String value) {
+  public StaticResourceHandlerBuilder putMimeTypeMapping(String key, String value) {
     this.mimeTypes.put(key, value);
     return this;
   }
 
   @Override
-  public StaticFileHandlerBuilder putResponseHeader(String key, String value) {
+  public StaticResourceHandlerBuilder putResponseHeader(String key, String value) {
     this.headers.put(key, value);
     return this;
   }
 
   @Override
-  public StaticFileHandlerBuilder skipFilePredicate(Predicate<Context> skipFilePredicate) {
+  public StaticResourceHandlerBuilder skipFilePredicate(Predicate<Context> skipFilePredicate) {
     this.skipFilePredicate = skipFilePredicate;
     return this;
   }
 
   @Override
-  public StaticFileHandlerBuilder location(ResourceLocation location) {
+  public StaticResourceHandlerBuilder location(ResourceLocation location) {
     this.location = location;
     return this;
   }

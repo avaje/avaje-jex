@@ -78,7 +78,7 @@ public sealed interface Jex permits DJex {
 
   /** Add a static resource route using a consumer */
   default Jex staticResource(Consumer<StaticContentConfig> consumer) {
-    var builder = StaticFileHandlerBuilder.builder();
+    var builder = StaticResourceHandlerBuilder.builder();
     consumer.accept(builder);
 
     return staticResource(builder);
