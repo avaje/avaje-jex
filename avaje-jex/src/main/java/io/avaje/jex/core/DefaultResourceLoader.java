@@ -10,6 +10,12 @@ final class DefaultResourceLoader implements StaticResourceLoader {
 
   @Override
   public URL getResourceURI(String resourcePath) {
+
+    System.err.println(resourcePath );
+    System.err.println(resourcePath );
+    System.err.println(resourcePath );
+    System.err.println(resourcePath );
+
     var url = getClass().getResource(resourcePath);
     if (url == null) {
       // search the module path for top level resource

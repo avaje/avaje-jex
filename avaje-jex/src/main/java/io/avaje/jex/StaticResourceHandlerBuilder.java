@@ -3,11 +3,15 @@ package io.avaje.jex;
 import static io.avaje.jex.ResourceLocation.CLASS_PATH;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.spi.FileSystemProvider;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -169,6 +173,8 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
       try {
         var uri = loaderFunc.apply(root.transform(this::appendSlash) + directoryIndex);
 
+        initJarFS(uri);
+
         dirIndex = Paths.get(uri).toRealPath();
         fsRoot = Paths.get(uri).getParent().toString();
 
@@ -183,6 +189,8 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
     } else {
       try {
         var uri = loaderFunc.apply(root);
+
+        initJarFS(uri);
 
         singleFile = Paths.get(uri).toRealPath();
 
@@ -200,6 +208,21 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
 
     return new ClassPathResourceHandler(
         path, fsRoot, mimeTypes, headers, skipFilePredicate, dirIndex, singleFile);
+  }
+
+  private void initJarFS(URI uri) throws IOException {
+    if ("jar".equals(uri.getScheme())) {
+      for (var provider : FileSystemProvider.installedProviders()) {
+        if ("jar".equalsIgnoreCase(provider.getScheme())) {
+          try {
+            provider.getFileSystem(uri);
+          } catch (FileSystemNotFoundException e) {
+            // in this case we need to initialize it first:
+            provider.newFileSystem(uri, Collections.emptyMap());
+          }
+        }
+      }
+    }
   }
 
   private URI toURI(URL url) {
