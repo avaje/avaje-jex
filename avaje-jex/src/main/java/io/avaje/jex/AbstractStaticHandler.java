@@ -1,6 +1,9 @@
 package io.avaje.jex;
 
+import java.net.FileNameMap;
+import java.net.URLConnection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -8,12 +11,15 @@ import com.sun.net.httpserver.HttpExchange;
 import io.avaje.jex.http.BadRequestException;
 import io.avaje.jex.http.NotFoundException;
 
-abstract sealed class AbstractStaticHandler implements ExchangeHandler permits StaticFileHandler, JrtResourceHandler {
+abstract sealed class AbstractStaticHandler implements ExchangeHandler
+    permits StaticFileHandler, JrtResourceHandler {
+
   protected final Map<String, String> mimeTypes;
   protected final String filesystemRoot;
   protected final String urlPrefix;
   protected final Predicate<Context> skipFilePredicate;
   protected final Map<String, String> headers;
+  private static final FileNameMap mimeMap = URLConnection.getFileNameMap();
 
   protected AbstractStaticHandler(
       String urlPrefix,
@@ -50,7 +56,14 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler permits S
   }
 
   protected String lookupMime(String path) {
-    String ext = getExt(path).toLowerCase();
-    return mimeTypes.getOrDefault(ext, "application/octet-stream");
+    var lower = path.toLowerCase();
+
+    return Objects.requireNonNullElseGet(
+        mimeMap.getContentTypeFor(path),
+        () -> {
+          String ext = getExt(lower);
+
+          return mimeTypes.getOrDefault(ext, "application/octet-stream");
+        });
   }
 }

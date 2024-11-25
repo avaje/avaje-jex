@@ -21,31 +21,12 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
 
   static final Predicate<Context> NO_OP_PREDICATE = ctx -> false;
   private static final String TEXT_PLAIN = "text/plain";
-  private static final Map<String, String> MIME_MAP =
-      Map.ofEntries(
-          entry("css", "text/css"),
-          entry("gif", "image/gif"),
-          entry("html", "text/html"),
-          entry("js", "application/javascript"),
-          entry("json", "application/json"),
-          entry("jpg", "image/jpeg"),
-          entry("jpeg", "image/jpeg"),
-          entry("mp4", "video/mp4"),
-          entry("pdf", "application/pdf"),
-          entry("png", "image/png"),
-          entry("svg", "image/svg+xml"),
-          entry("xlsm", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
-          entry("xml", "application/xml"),
-          entry("zip", "application/zip"),
-          entry("md", TEXT_PLAIN),
-          entry("txt", TEXT_PLAIN),
-          entry("php", TEXT_PLAIN));
 
   private String path = "/";
   private String root = "/public/";
   private String directoryIndex = null;
   private StaticResourceLoader resourceLoader = CoreServiceLoader.resourceLoader();
-  private final Map<String, String> mimeTypes = new HashMap<>(MIME_MAP);
+  private final Map<String, String> mimeTypes = new HashMap<>();
   private final Map<String, String> headers = new HashMap<>();
   private Predicate<Context> skipFilePredicate = NO_OP_PREDICATE;
   private ResourceLocation location = CLASS_PATH;
