@@ -10,7 +10,7 @@ import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
 /** Core implementation of SpiServiceManager provided to specific implementations like jetty etc. */
-final class CoreServiceLoader {
+public final class CoreServiceLoader {
 
   private static final CoreServiceLoader INSTANCE = new CoreServiceLoader();
 
@@ -30,7 +30,7 @@ final class CoreServiceLoader {
     jsonService = spiJsonService;
   }
 
-  public static Optional<JsonService> getJsonService() {
+  public static Optional<JsonService> jsonService() {
     return Optional.ofNullable(INSTANCE.jsonService);
   }
 

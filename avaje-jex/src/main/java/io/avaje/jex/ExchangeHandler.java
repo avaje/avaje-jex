@@ -1,5 +1,7 @@
 package io.avaje.jex;
 
+import java.io.IOException;
+
 /**
  * A handler which is invoked to process HTTP exchanges. Each HTTP exchange is handled by one of
  * these handlers.
@@ -14,5 +16,5 @@ public interface ExchangeHandler {
    * @param ctx the request context containing the request from the client and used to send the
    *     response
    */
-  void handle(Context ctx);
+  void handle(Context ctx) throws IOException;
 }

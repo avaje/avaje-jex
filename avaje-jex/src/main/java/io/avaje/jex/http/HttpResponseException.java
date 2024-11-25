@@ -22,14 +22,6 @@ public class HttpResponseException extends RuntimeException {
     this(status, message, Collections.emptyMap());
   }
 
-  public HttpResponseException(ErrorCode code) {
-    this(code.status(), code.message());
-  }
-
-  public HttpResponseException(ErrorCode code, Map<String, String> details) {
-    this(code.status(), code.message(), details);
-  }
-
   public int getStatus() {
     return status;
   }

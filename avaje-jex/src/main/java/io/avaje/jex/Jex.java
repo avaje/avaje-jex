@@ -1,11 +1,11 @@
 package io.avaje.jex;
 
+import java.util.Collection;
+import java.util.function.Consumer;
+
 import io.avaje.inject.BeanScope;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
-
-import java.util.Collection;
-import java.util.function.Consumer;
 
 /**
  * Create configure and start Jex.
@@ -69,6 +69,20 @@ public sealed interface Jex permits DJex {
    * Return the Routing to configure.
    */
   Routing routing();
+
+  /** Add a static resource route */
+  default Jex staticResource(StaticContentConfig config) {
+    routing().get(config.httpPath(), config.createHandler());
+    return this;
+  }
+
+  /** Add a static resource route using a consumer */
+  default Jex staticResource(Consumer<StaticContentConfig> consumer) {
+    var builder = StaticResourceHandlerBuilder.builder();
+    consumer.accept(builder);
+
+    return staticResource(builder);
+  }
 
   /**
    * Set the JsonService.

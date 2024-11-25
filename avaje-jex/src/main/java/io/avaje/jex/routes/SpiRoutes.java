@@ -1,5 +1,6 @@
 package io.avaje.jex.routes;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,7 +58,7 @@ public sealed interface SpiRoutes permits Routes {
     /**
      * Handle the request.
      */
-    void handle(Context ctx);
+    void handle(Context ctx) throws IOException;
 
     /**
      * Return the path parameter map given the uri.
