@@ -4,6 +4,6 @@ package io.avaje.jex.http;
 public class BadRequestException extends HttpResponseException {
 
   public BadRequestException(String message) {
-    super(404, message);
+    super(400, message);
   }
 }

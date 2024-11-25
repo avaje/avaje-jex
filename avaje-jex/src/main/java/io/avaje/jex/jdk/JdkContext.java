@@ -352,7 +352,7 @@ class JdkContext implements Context, SpiContext {
   public Context write(byte[] bytes) {
 
     try (var os = exchange.getResponseBody()) {
-      exchange.sendResponseHeaders(statusCode(), bytes.length);
+      exchange.sendResponseHeaders(statusCode(), bytes.length == 0 ? -1 : bytes.length);
 
       os.write(bytes);
       os.flush();

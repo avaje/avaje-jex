@@ -1,20 +1,17 @@
 package io.avaje.jex;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.function.Predicate;
 
-/** Need an entirely separate impl if using stuff like jlink */
-final class ClassPathResourceHandler extends AbstractStaticHandler implements ExchangeHandler {
+final class PathResourceHandler extends AbstractStaticHandler implements ExchangeHandler {
 
   private final Path indexFile;
   private final Path singleFile;
 
-  ClassPathResourceHandler(
+  PathResourceHandler(
       String urlPrefix,
       String filesystemRoot,
       Map<String, String> mimeTypes,
@@ -55,14 +52,14 @@ final class ClassPathResourceHandler extends AbstractStaticHandler implements Ex
     try {
       path = Path.of(filesystemRoot, urlPath).toRealPath();
 
-    } catch (IOException e) {
+    } catch (final IOException e) {
       // This may be more benign (i.e. not an attack, just a 403),
       // but we don't want an attacker to be able to discern the difference.
       reportPathTraversal();
       return;
     }
 
-    String canonicalPath = path.toString();
+    final String canonicalPath = path.toString();
     if (!canonicalPath.startsWith(filesystemRoot)) {
       reportPathTraversal();
     }
@@ -71,16 +68,16 @@ final class ClassPathResourceHandler extends AbstractStaticHandler implements Ex
   }
 
   private void sendPathIS(Context ctx, String urlPath, Path path) throws IOException {
-    var exchange = ctx.jdkExchange();
-    String mimeType = lookupMime(urlPath);
+    final var exchange = ctx.jdkExchange();
+    final String mimeType = lookupMime(urlPath);
     ctx.header("Content-Type", mimeType);
     ctx.headers(headers);
     exchange.sendResponseHeaders(200, Files.size(path));
-    try (InputStream fis = Files.newInputStream(path);
-        OutputStream os = exchange.getResponseBody()) {
+    try (var fis = Files.newInputStream(path);
+        var os = exchange.getResponseBody()) {
 
       fis.transferTo(os);
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw404(ctx.jdkExchange());
     }
   }

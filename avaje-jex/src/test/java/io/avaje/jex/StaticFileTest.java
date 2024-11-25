@@ -21,7 +21,7 @@ class StaticFileTest {
             .staticResource(b -> defaultCP(b.httpPath("/index")))
             .staticResource(b -> defaultFile(b.httpPath("/indexFile")))
             .staticResource(b -> defaultCP(b.httpPath("/indexWild/*")))
-            .staticResource(b -> defaultFile(b.httpPath("/indexFileWild/*")))
+            .staticResource(b -> defaultFile(b.httpPath("/indexWildFile/*")))
             .staticResource(b -> defaultCP(b.httpPath("/sus/*")))
             .staticResource(b -> defaultFile(b.httpPath("/susFile/*")))
             .staticResource(b -> b.httpPath("/single").resource("/logback.xml"))
@@ -53,6 +53,12 @@ class StaticFileTest {
   void testGet() {
     HttpResponse<String> res = pair.request().path("index").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
+  }
+
+  @Test
+  void testTraversal() {
+    HttpResponse<String> res = pair.request().path("indexWild/../hmm").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(400);
   }
 
   @Test
@@ -103,5 +109,18 @@ class StaticFileTest {
     HttpResponse<String> res = pair.request().path("singleFile").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().firstValue("Content-Type").orElseThrow()).contains("xml");
+  }
+
+  @Test
+  void getIndexWildFile() {
+    HttpResponse<String> res = pair.request().path("indexWildFile/").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.headers().firstValue("Content-Type").orElseThrow()).contains("html");
+  }
+
+  @Test
+  void testFileTraversal() {
+    HttpResponse<String> res = pair.request().path("indexWildFile/../traverse").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(400);
   }
 }

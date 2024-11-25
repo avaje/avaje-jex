@@ -1,8 +1,7 @@
 package io.avaje.jex;
 
+import java.net.URLConnection;
 import java.util.function.Predicate;
-
-import io.avaje.jex.spi.StaticResourceLoader;
 
 /** Builder for a static resource exchange handler. */
 public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder {
@@ -23,7 +22,7 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
   StaticContentConfig httpPath(String path);
 
   /**
-   * Gets the current HTTP path .
+   * Gets the current HTTP path.
    *
    * @return the current HTTP path
    */
@@ -38,7 +37,7 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
   StaticContentConfig resource(String resource);
 
   /**
-   * Sets the index file to be served for directories.
+   * Sets the index file to be served when a directory is requests.
    *
    * @param directoryIndex the index file
    * @return the updated configuration
@@ -47,17 +46,18 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
 
   /**
    * Sets a custom resource loader for loading class/module path resources. This is normally used
-   * when running the application on the module path and files cannot be discovered.
+   * when running the application on the module path when files cannot be discovered.
    *
-   * <p>Example usage: {@code config.resourceLoader(getClass()::getResource) }
+   * <p>Example usage: {@code config.resourceLoader(ClassResourceLoader.create(getClass())) }
    *
    * @param resourceLoader the custom resource loader
    * @return the updated configuration
    */
-  StaticContentConfig resourceLoader(StaticResourceLoader resourceLoader);
+  StaticContentConfig resourceLoader(ClassResourceLoader resourceLoader);
 
   /**
-   * Adds a new MIME type mapping to the configuration.
+   * Adds a new MIME type mapping to the configuration. (Default: uses {@link
+   * URLConnection#getFileNameMap()}
    *
    * @param ext the file extension (e.g., "html", "css", "js")
    * @param mimeType the corresponding MIME type (e.g., "text/html", "text/css",

@@ -12,14 +12,14 @@ import io.avaje.jex.http.BadRequestException;
 import io.avaje.jex.http.NotFoundException;
 
 abstract sealed class AbstractStaticHandler implements ExchangeHandler
-    permits StaticFileHandler, ClassPathResourceHandler {
+    permits StaticFileHandler, PathResourceHandler, JarResourceHandler {
 
   protected final Map<String, String> mimeTypes;
   protected final String filesystemRoot;
   protected final String urlPrefix;
   protected final Predicate<Context> skipFilePredicate;
   protected final Map<String, String> headers;
-  private static final FileNameMap mimeMap = URLConnection.getFileNameMap();
+  private static final FileNameMap MIME_MAP = URLConnection.getFileNameMap();
 
   protected AbstractStaticHandler(
       String urlPrefix,
@@ -59,7 +59,7 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
     var lower = path.toLowerCase();
 
     return Objects.requireNonNullElseGet(
-        mimeMap.getContentTypeFor(path),
+        MIME_MAP.getContentTypeFor(path),
         () -> {
           String ext = getExt(lower);
 
