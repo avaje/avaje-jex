@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.avaje.jex.spi.JsonService;
 
-public class JacksonJsonService implements JsonService {
+public final class JacksonJsonService implements JsonService {
 
   private final ObjectMapper mapper;
 

@@ -41,7 +41,7 @@ public final class CoreServiceManager implements SpiServiceManager {
     return new Builder(jex).build();
   }
 
-   CoreServiceManager(JsonService jsonService, ExceptionManager manager, TemplateManager templateManager) {
+  CoreServiceManager(JsonService jsonService, ExceptionManager manager, TemplateManager templateManager) {
     this.jsonService = jsonService;
     this.exceptionHandler = manager;
     this.templateManager = templateManager;
