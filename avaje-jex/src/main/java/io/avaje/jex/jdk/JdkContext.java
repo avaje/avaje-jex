@@ -25,12 +25,11 @@ import com.sun.net.httpserver.HttpExchange;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
+import io.avaje.jex.core.HeaderKeys;
 import io.avaje.jex.http.ErrorCode;
-import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.http.RedirectException;
 import io.avaje.jex.security.BasicAuthCredentials;
 import io.avaje.jex.security.Role;
-import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
 
 class JdkContext implements Context, SpiContext {
@@ -169,7 +168,7 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public <T> T bodyAsClass(Class<T> beanType) {
-    return mgr.jsonRead(beanType, this);
+    return mgr.jsonRead(beanType, inputStream());
   }
 
   @Override
@@ -316,21 +315,21 @@ class JdkContext implements Context, SpiContext {
   @Override
   public Context json(Object bean) {
     contentType(APPLICATION_JSON);
-    mgr.jsonWrite(bean, this);
+    mgr.jsonWrite(bean, outputStream());
     return this;
   }
 
   @Override
   public <E> Context jsonStream(Stream<E> stream) {
     contentType(APPLICATION_X_JSON_STREAM);
-    mgr.jsonWriteStream(stream, this);
+    mgr.jsonWriteStream(stream, outputStream());
     return this;
   }
 
   @Override
   public <E> Context jsonStream(Iterator<E> iterator) {
     contentType(APPLICATION_X_JSON_STREAM);
-    mgr.jsonWriteStream(iterator, this);
+    mgr.jsonWriteStream(iterator, outputStream());
     return this;
   }
 

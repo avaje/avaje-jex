@@ -6,6 +6,8 @@ import io.avaje.jsonb.JsonType;
 import io.avaje.jsonb.JsonWriter;
 import io.avaje.jsonb.Jsonb;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Iterator;
 
 /**
@@ -30,20 +32,20 @@ public class JsonbJsonService implements JsonService {
   }
 
   @Override
-  public <T> T jsonRead(Class<T> clazz, SpiContext ctx) {
-    // TODO: Handle gzipped content
-    return jsonb.type(clazz).fromJson(ctx.inputStream());
+  public <T> T jsonRead(Class<T> clazz, InputStream is) {
+
+    return jsonb.type(clazz).fromJson(is);
   }
 
   @Override
-  public void jsonWrite(Object bean, SpiContext ctx) {
-    // gzip compression etc ?
-    jsonb.toJson(bean, ctx.outputStream());
+  public void jsonWrite(Object bean, OutputStream os) {
+
+    jsonb.toJson(bean, os);
   }
 
   @Override
-  public <T> void jsonWriteStream(Iterator<T> iterator, SpiContext ctx) {
-    try (JsonWriter writer = jsonb.writer(ctx.outputStream())) {
+  public <T> void jsonWriteStream(Iterator<T> iterator, OutputStream os) {
+    try (JsonWriter writer = jsonb.writer(os)) {
       writer.pretty(false);
       if (iterator.hasNext()) {
         T first = iterator.next();

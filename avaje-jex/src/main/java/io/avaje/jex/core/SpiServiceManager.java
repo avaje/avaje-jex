@@ -5,6 +5,8 @@ import io.avaje.jex.Routing;
 import io.avaje.jex.jdk.CtxServiceManager;
 import io.avaje.jex.spi.SpiContext;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -18,22 +20,22 @@ public sealed interface SpiServiceManager permits CoreServiceManager, CtxService
   /**
    * Read and return the type from json request content.
    */
-  <T> T jsonRead(Class<T> clazz, SpiContext ctx);
+  <T> T jsonRead(Class<T> clazz, InputStream ctx);
 
   /**
    * Write as json to response content.
    */
-  void jsonWrite(Object bean, SpiContext ctx);
+  void jsonWrite(Object bean, OutputStream ctx);
 
   /**
    * Write as json stream to response content.
    */
-  <E> void jsonWriteStream(Stream<E> stream, SpiContext ctx);
+  <E> void jsonWriteStream(Stream<E> stream, OutputStream ctx);
 
   /**
    * Write as json stream to response content.
    */
-  <E> void jsonWriteStream(Iterator<E> iterator, SpiContext ctx);
+  <E> void jsonWriteStream(Iterator<E> iterator, OutputStream ctx);
 
   /**
    * Maybe close if iterator is a AutoClosable.
