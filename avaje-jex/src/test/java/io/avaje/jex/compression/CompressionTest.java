@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import io.avaje.jex.Jex;
 import io.avaje.jex.ResourceLocation;
+import io.avaje.jex.core.HeaderKeys;
 import io.avaje.jex.jdk.TestPair;
-import io.avaje.jex.spi.HeaderKeys;
 
 class CompressionTest {
 
