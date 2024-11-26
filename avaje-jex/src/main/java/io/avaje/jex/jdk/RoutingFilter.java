@@ -10,7 +10,6 @@ import com.sun.net.httpserver.HttpExchange;
 import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.Routing;
 import io.avaje.jex.Routing.Type;
-import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.http.NotFoundException;
 import io.avaje.jex.routes.SpiRoutes;
 import io.avaje.jex.spi.SpiContext;
@@ -31,7 +30,6 @@ final class RoutingFilter extends Filter {
 
   @Override
   public void doFilter(HttpExchange exchange, Filter.Chain chain) {
-
     final String uri = exchange.getRequestURI().getPath();
     final Routing.Type routeType = mgr.lookupRoutingType(exchange.getRequestMethod());
     final SpiRoutes.Entry route = routes.match(routeType, uri);
@@ -39,7 +37,7 @@ final class RoutingFilter extends Filter {
     if (route == null) {
       var ctx = new JdkContext(mgr, exchange, uri, Set.of());
       routes.inc();
-      try {
+      try (exchange) {
         processNoRoute(ctx, uri, routeType);
         exchange.setAttribute("JdkContext", ctx);
         chain.doFilter(exchange);
@@ -48,11 +46,10 @@ final class RoutingFilter extends Filter {
         handleException(ctx, e);
       } finally {
         routes.dec();
-        exchange.close();
       }
     } else {
       route.inc();
-      try {
+      try (exchange) {
         final Map<String, String> params = route.pathParams(uri);
         JdkContext ctx = new JdkContext(mgr, exchange, route.matchPath(), params, route.roles());
         try {
@@ -67,13 +64,11 @@ final class RoutingFilter extends Filter {
         }
       } finally {
         route.dec();
-        exchange.close();
       }
     }
   }
 
   private void handleNoResponse(HttpExchange exchange) throws IOException {
-
     if (exchange.getResponseCode() == -1) {
       exchange.sendResponseHeaders(204, -1);
     }

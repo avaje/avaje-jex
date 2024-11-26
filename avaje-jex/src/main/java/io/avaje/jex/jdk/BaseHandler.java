@@ -9,7 +9,7 @@ import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.Routing.Type;
 import io.avaje.jex.routes.SpiRoutes;
 
-class BaseHandler implements HttpHandler {
+final class BaseHandler implements HttpHandler {
 
   private final SpiRoutes routes;
 
@@ -23,7 +23,6 @@ class BaseHandler implements HttpHandler {
 
   @Override
   public void handle(HttpExchange exchange) throws IOException {
-
     JdkContext ctx = (JdkContext) exchange.getAttribute("JdkContext");
     ExchangeHandler handlerConsumer =
         (ExchangeHandler) exchange.getAttribute("SpiRoutes.Entry.Handler");

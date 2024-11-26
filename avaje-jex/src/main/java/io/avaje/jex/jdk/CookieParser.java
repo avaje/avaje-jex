@@ -10,7 +10,7 @@ import static java.util.Collections.emptyMap;
 /**
  * Parse cookies based on RFC6265 skipping parameters.
  */
-class CookieParser {
+final class CookieParser {
 
   private static final String QUOTE = "\"";
   private static final char[] QUOTE_CHARS = QUOTE.toCharArray();
@@ -30,7 +30,7 @@ class CookieParser {
    *
    * @param rawHeader a value of '{@code Cookie:}' header.
    */
-  public static Map<String, String> parse(String rawHeader) {
+  static Map<String, String> parse(String rawHeader) {
     if (rawHeader == null) {
       return emptyMap();
     }
@@ -102,7 +102,7 @@ class CookieParser {
         }
         token.append(ch);
       } else if (ch == separator) {
-        if (token.length() > 0) {
+        if (!token.isEmpty()) {
           result.add(token.toString());
         }
         token.setLength(0);
@@ -117,7 +117,7 @@ class CookieParser {
         token.append(ch);
       }
     }
-    if (token.length() > 0) {
+    if (!token.isEmpty()) {
       result.add(token.toString());
     }
     return result;
