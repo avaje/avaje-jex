@@ -12,7 +12,7 @@ import io.avaje.jex.http.BadRequestException;
 import io.avaje.jex.http.NotFoundException;
 
 abstract sealed class AbstractStaticHandler implements ExchangeHandler
-    permits StaticFileHandler, PathResourceHandler, JarResourceHandler {
+    permits StaticFileHandler, StaticClassResourceHandler {
 
   protected final Map<String, String> mimeTypes;
   protected final String filesystemRoot;

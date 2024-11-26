@@ -10,6 +10,7 @@ import com.sun.net.httpserver.HttpExchange;
 import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.Routing;
 import io.avaje.jex.Routing.Type;
+import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.http.NotFoundException;
 import io.avaje.jex.routes.SpiRoutes;
 import io.avaje.jex.spi.SpiContext;
@@ -18,10 +19,12 @@ final class RoutingFilter extends Filter {
 
   private final SpiRoutes routes;
   private final CtxServiceManager mgr;
+  private final CompressionConfig compressionConfig;
 
-  RoutingFilter(SpiRoutes routes, CtxServiceManager mgr) {
+  RoutingFilter(SpiRoutes routes, CtxServiceManager mgr, CompressionConfig compressionConfig) {
     this.mgr = mgr;
     this.routes = routes;
+    this.compressionConfig = compressionConfig;
   }
 
   void waitForIdle(long maxSeconds) {
@@ -35,7 +38,7 @@ final class RoutingFilter extends Filter {
     final SpiRoutes.Entry route = routes.match(routeType, uri);
 
     if (route == null) {
-      var ctx = new JdkContext(mgr, exchange, uri, Set.of());
+      var ctx = new JdkContext(mgr, compressionConfig, exchange, uri, Set.of());
       routes.inc();
       try {
         processNoRoute(ctx, uri, routeType);
@@ -52,7 +55,9 @@ final class RoutingFilter extends Filter {
       route.inc();
       try {
         final Map<String, String> params = route.pathParams(uri);
-        JdkContext ctx = new JdkContext(mgr, exchange, route.matchPath(), params, route.roles());
+        JdkContext ctx =
+            new JdkContext(
+                mgr, compressionConfig, exchange, route.matchPath(), params, route.roles());
         try {
           ctx.setMode(Type.FILTER);
           exchange.setAttribute("JdkContext", ctx);
