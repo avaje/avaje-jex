@@ -65,7 +65,7 @@ final class DefaultRouting implements Routing {
   }
 
   @Override
-  public <T extends Exception> Routing exception(Class<T> type, ExceptionHandler<T> handler) {
+  public <T extends Exception> Routing error(Class<T> type, ExceptionHandler<T> handler) {
     exceptionHandlers.put(type, handler);
     return this;
   }
