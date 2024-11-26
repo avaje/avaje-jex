@@ -1,11 +1,14 @@
 package io.avaje.jex;
 
 import java.util.Map;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.function.Consumer;
 
 import javax.net.ssl.SSLContext;
 
+import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
@@ -58,14 +61,14 @@ public sealed interface JexConfig permits DJexConfig {
   JexConfig renderer(String extension, TemplateRender renderer);
 
   /**
-   * ThreadFactory for serving requests. Defaults to a {@link Thread#ofVirtual()} factory
+   * Set executor for serving requests.
    */
-  JexConfig threadFactory(ThreadFactory executor);
+  JexConfig executor(Executor executor);
 
   /**
-   * Executor for serving requests. Defaults to {@link Executors#newVirtualThreadPerTaskExecutor()}
+   * Executor for serving requests. Defaults to a {@link Executors#newVirtualThreadPerTaskExecutor()}
    */
-  ThreadFactory threadFactory();
+  Executor executor();
 
   /**
    * Return the port to use.
@@ -112,5 +115,9 @@ public sealed interface JexConfig permits DJexConfig {
    * Return the template renderers registered by extension.
    */
   Map<String, TemplateRender> renderers();
+
+  JexConfig compression(Consumer<CompressionConfig> consumer);
+
+  CompressionConfig compression();
 
 }

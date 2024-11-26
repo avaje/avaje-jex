@@ -2,10 +2,15 @@ package io.avaje.jex;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.function.Consumer;
 
 import javax.net.ssl.SSLContext;
 
+import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
@@ -16,12 +21,13 @@ final class DJexConfig implements JexConfig {
   private String contextPath = "/";
   private boolean health = true;
   private boolean ignoreTrailingSlashes = true;
-  private ThreadFactory factory;
+  private Executor executor;
 
   private boolean preCompressStaticFiles;
   private JsonService jsonService;
   private final Map<String, TemplateRender> renderers = new HashMap<>();
   private SSLContext sslContext;
+  private final CompressionConfig compression= new CompressionConfig();
 
   @Override
   public JexConfig port(int port) {
@@ -72,17 +78,18 @@ final class DJexConfig implements JexConfig {
   }
 
   @Override
-  public ThreadFactory threadFactory() {
-    if (factory == null) {
-      factory =
-          Thread.ofVirtual().name("avaje-jex-http-", 0).factory();
+  public Executor executor() {
+    if (executor == null) {
+      executor =
+          Executors.newThreadPerTaskExecutor(
+              Thread.ofVirtual().name("avaje-jex-http-", 0).factory());
     }
-    return factory;
+    return executor;
   }
 
   @Override
-  public JexConfig threadFactory(ThreadFactory factory) {
-    this.factory = factory;
+  public JexConfig executor(Executor factory) {
+    this.executor = factory;
     return this;
   }
 
@@ -135,5 +142,16 @@ final class DJexConfig implements JexConfig {
   public JexConfig sslContext(SSLContext ssl) {
     this.sslContext = ssl;
     return this;
+  }
+
+  @Override
+  public JexConfig compression(Consumer<CompressionConfig> consumer) {
+    consumer.accept(compression);
+    return this;
+  }
+
+  @Override
+  public CompressionConfig compression() {
+    return compression;
   }
 }

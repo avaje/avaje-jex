@@ -30,7 +30,7 @@ final class StaticFileHandler extends AbstractStaticHandler implements ExchangeH
   @Override
   public void handle(Context ctx) throws IOException {
 
-    final var jdkExchange = ctx.jdkExchange();
+    final var jdkExchange = ctx.exchange();
 
     if (singleFile != null) {
       sendFile(ctx, jdkExchange, singleFile.getPath(), singleFile);
@@ -77,8 +77,7 @@ final class StaticFileHandler extends AbstractStaticHandler implements ExchangeH
       String mimeType = lookupMime(urlPath);
       ctx.header("Content-Type", mimeType);
       ctx.headers(headers);
-      jdkExchange.sendResponseHeaders(200, canonicalFile.length());
-      fis.transferTo(jdkExchange.getResponseBody());
+      ctx.write(fis);
     } catch (FileNotFoundException e) {
       throw404(jdkExchange);
     }

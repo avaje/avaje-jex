@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.System.Logger.Level;
 import java.net.InetSocketAddress;
-import java.util.concurrent.Executors;
 
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
@@ -41,9 +40,9 @@ public final class JdkServerStart {
 
       var handler = new BaseHandler(routes);
       var context = server.createContext("/", handler);
-      context.getFilters().add(new RoutingFilter(routes, manager));
+      context.getFilters().add(new RoutingFilter(routes, manager, jex.config().compression()));
       context.getFilters().addAll(routes.filters());
-      server.setExecutor(Executors.newThreadPerTaskExecutor(jex.config().threadFactory()));
+      server.setExecutor(jex.config().executor());
       server.start();
 
       jex.lifecycle().status(AppLifecycle.Status.STARTED);

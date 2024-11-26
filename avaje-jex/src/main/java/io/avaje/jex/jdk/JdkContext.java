@@ -25,6 +25,8 @@ import com.sun.net.httpserver.HttpExchange;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
+import io.avaje.jex.compression.CompressedOutputStream;
+import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.core.HeaderKeys;
 import io.avaje.jex.http.ErrorCode;
 import io.avaje.jex.http.RedirectException;
@@ -39,6 +41,7 @@ final class JdkContext implements Context, SpiContext {
   private static final String SET_COOKIE = "Set-Cookie";
   private static final String COOKIE = "Cookie";
   private final CtxServiceManager mgr;
+  private final CompressionConfig compressionConfig;
   private final String path;
   private final Map<String, String> pathParams;
   private final Set<Role> roles;
@@ -52,11 +55,13 @@ final class JdkContext implements Context, SpiContext {
 
   JdkContext(
       CtxServiceManager mgr,
+      CompressionConfig compressionConfig,
       HttpExchange exchange,
       String path,
       Map<String, String> pathParams,
       Set<Role> roles) {
     this.mgr = mgr;
+    this.compressionConfig = compressionConfig;
     this.roles = roles;
     this.exchange = exchange;
     this.path = path;
@@ -64,8 +69,14 @@ final class JdkContext implements Context, SpiContext {
   }
 
   /** Create when no route matched. */
-  JdkContext(CtxServiceManager mgr, HttpExchange exchange, String path, Set<Role> roles) {
+  JdkContext(
+      CtxServiceManager mgr,
+      CompressionConfig compressionConfig,
+      HttpExchange exchange,
+      String path,
+      Set<Role> roles) {
     this.mgr = mgr;
+    this.compressionConfig = compressionConfig;
     this.roles = roles;
     this.exchange = exchange;
     this.path = path;
@@ -443,7 +454,11 @@ final class JdkContext implements Context, SpiContext {
 
   @Override
   public OutputStream outputStream() {
-    return mgr.createOutputStream(this);
+    var out = mgr.createOutputStream(this);
+    if (compressionConfig.compressionEnabled()) {
+      return new CompressedOutputStream(compressionConfig, this,out);
+    }
+    return out;
   }
 
   @Override
@@ -456,12 +471,8 @@ final class JdkContext implements Context, SpiContext {
     this.mode = type;
   }
 
-  HttpExchange exchange() {
-    return exchange;
-  }
-
   @Override
-  public HttpExchange jdkExchange() {
+  public HttpExchange exchange() {
     return exchange;
   }
 

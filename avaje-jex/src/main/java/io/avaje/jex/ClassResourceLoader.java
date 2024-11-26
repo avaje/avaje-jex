@@ -19,7 +19,7 @@ public interface ClassResourceLoader {
   }
 
   /** Return the URL for the given resource or return null if it cannot be found. */
-  URL getResource(String resourcePath);
+  URL loadResource(String resourcePath);
 
-  InputStream getResourceAsStream(String resourcePath);
+  InputStream loadResourceAsStream(String resourcePath);
 }
