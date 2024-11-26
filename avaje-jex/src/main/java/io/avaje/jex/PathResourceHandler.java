@@ -1,44 +1,41 @@
 package io.avaje.jex;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import com.sun.net.httpserver.HttpExchange;
-
 import io.avaje.jex.spi.SpiContext;
 
-final class StaticFileHandler extends AbstractStaticHandler implements ExchangeHandler {
+final class PathResourceHandler extends AbstractStaticHandler implements ExchangeHandler {
 
-  private final File indexFile;
-  private final File singleFile;
+  private final Path indexFile;
+  private final Path singleFile;
 
-  StaticFileHandler(
+  PathResourceHandler(
       String urlPrefix,
       String filesystemRoot,
       Map<String, String> mimeTypes,
       Map<String, String> headers,
       Predicate<Context> skipFilePredicate,
-      File welcomeFile,
-      File singleFile) {
+      Path indexFile,
+      Path singleFile) {
     super(urlPrefix, filesystemRoot, mimeTypes, headers, skipFilePredicate);
-    this.indexFile = welcomeFile;
+
+    this.indexFile = indexFile;
     this.singleFile = singleFile;
   }
 
   @Override
   public void handle(Context ctx) throws IOException {
 
-    final var jdkExchange = ctx.exchange();
-
     if (singleFile != null) {
-      sendFile(ctx, jdkExchange, singleFile.getPath(), singleFile);
+      sendPathIS(ctx, singleFile.toString(), singleFile);
       return;
     }
 
+    final var jdkExchange = ctx.exchange();
     if (skipFilePredicate.test(ctx)) {
       throw404(jdkExchange);
     }
@@ -46,50 +43,50 @@ final class StaticFileHandler extends AbstractStaticHandler implements ExchangeH
     final String wholeUrlPath = jdkExchange.getRequestURI().getPath();
 
     if (wholeUrlPath.endsWith("/") || wholeUrlPath.equals(urlPrefix)) {
-      sendFile(ctx, jdkExchange, indexFile.getPath(), indexFile);
+      sendPathIS(ctx, indexFile.toString(), indexFile);
 
       return;
     }
 
     final String urlPath = wholeUrlPath.substring(urlPrefix.length());
 
-    File canonicalFile;
+    Path path;
     try {
-      canonicalFile = new File(filesystemRoot, urlPath).getCanonicalFile();
+      path = Path.of(filesystemRoot, urlPath).toRealPath();
 
-    } catch (IOException e) {
+    } catch (final IOException e) {
       // This may be more benign (i.e. not an attack, just a 403),
       // but we don't want an attacker to be able to discern the difference.
       reportPathTraversal();
       return;
     }
 
-    String canonicalPath = canonicalFile.getPath();
+    final String canonicalPath = path.toString();
     if (!canonicalPath.startsWith(filesystemRoot)) {
       reportPathTraversal();
     }
 
-    sendFile(ctx, jdkExchange, urlPath, canonicalFile);
+    sendPathIS(ctx, urlPath, path);
   }
 
-  private void sendFile(Context ctx, HttpExchange jdkExchange, String urlPath, File canonicalFile)
-      throws IOException {
-    try (var fis = new FileInputStream(canonicalFile)) {
+  private void sendPathIS(Context ctx, String urlPath, Path path) throws IOException {
+    final var exchange = ctx.exchange();
+    final String mimeType = lookupMime(urlPath);
+    ctx.header("Content-Type", mimeType);
+    ctx.headers(headers);
 
-      String mimeType = lookupMime(urlPath);
-      ctx.header("Content-Type", mimeType);
-      ctx.headers(headers);
+    try (var fis = Files.newInputStream(path);
+        var os = exchange.getResponseBody()) {
       var spiCtx = (SpiContext) ctx;
 
       if (!spiCtx.compressionEnabled()) {
-        jdkExchange.sendResponseHeaders(200, canonicalFile.length());
-        fis.transferTo(jdkExchange.getResponseBody());
+        exchange.sendResponseHeaders(200, Files.size(path));
+        fis.transferTo(os);
       } else {
         spiCtx.write(fis);
       }
-
-    } catch (FileNotFoundException e) {
-      throw404(jdkExchange);
+    } catch (final Exception e) {
+      throw404(ctx.exchange());
     }
   }
 }

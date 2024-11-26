@@ -3,7 +3,11 @@ package io.avaje.jex;
 import static io.avaje.jex.ResourceLocation.CLASS_PATH;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -16,12 +20,13 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
   private static final String DIRECTORY_INDEX_FAILURE =
       "Failed to locate Directory Index Resource: ";
   private static final Predicate<Context> NO_OP_PREDICATE = ctx -> false;
-  private static final ClassResourceLoader DEFAULT_LOADER = new DefaultResourceLoader();
+  private static final ClassResourceLoader DEFALT_LOADER =
+      ClassResourceLoader.fromClass(StaticResourceHandlerBuilder.class);
 
   private String path = "/";
   private String root = "/public/";
   private String directoryIndex = null;
-  private ClassResourceLoader resourceLoader = DEFAULT_LOADER;
+  private ClassResourceLoader resourceLoader = DEFALT_LOADER;
   private final Map<String, String> mimeTypes = new HashMap<>();
   private final Map<String, String> headers = new HashMap<>();
   private Predicate<Context> skipFilePredicate = NO_OP_PREDICATE;
@@ -153,17 +158,71 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
   }
 
   private ExchangeHandler classPathHandler() {
+    Function<String, URL> urlFunc = resourceLoader::loadResource;
 
-    URL dirIndex = null;
-    URL singleFile = null;
+    Function<String, URI> loaderFunc = urlFunc.andThen(this::toURI);
+    String fsRoot;
+    Path dirIndex = null;
+    Path singleFile = null;
     if (directoryIndex != null) {
-      dirIndex = resourceLoader.loadResource(root.transform(this::appendSlash) + directoryIndex);
+      try {
+        var uri = loaderFunc.apply(root.transform(this::appendSlash) + directoryIndex);
 
+        if ("jar".equals(uri.getScheme())) {
+
+          var url = uri.toURL();
+          return jarLoader(url.toString().transform(this::getJARRoot), url, null);
+        }
+        dirIndex = Paths.get(uri).toRealPath();
+        fsRoot = Paths.get(uri).getParent().toString();
+
+      } catch (Exception e) {
+
+        throw new IllegalStateException(
+            DIRECTORY_INDEX_FAILURE + root.transform(this::appendSlash) + directoryIndex, e);
+      }
     } else {
-      singleFile = resourceLoader.loadResource(root);
+      try {
+        var uri = loaderFunc.apply(root);
+
+        if ("jar".equals(uri.getScheme())) {
+
+          var url = uri.toURL();
+
+          return jarLoader(url.toString().transform(this::getJARRoot), null, uri.toURL());
+        }
+
+        singleFile = Paths.get(uri).toRealPath();
+
+        fsRoot = singleFile.getParent().toString();
+
+      } catch (Exception e) {
+
+        throw new IllegalStateException(FAILED_TO_LOCATE_FILE + root, e);
+      }
     }
 
-    return new StaticClassResourceHandler(
-        path, root, mimeTypes, headers, skipFilePredicate, resourceLoader, dirIndex, singleFile);
+    return new PathResourceHandler(
+        path, fsRoot, mimeTypes, headers, skipFilePredicate, dirIndex, singleFile);
+  }
+
+  private String getJARRoot(String s) {
+    return s.substring(0, s.lastIndexOf("/")).substring(s.indexOf("jar!") + 4);
+  }
+
+  private ExchangeHandler jarLoader(String fsRoot, URL dirIndex, URL singleFile) {
+
+    return new JarResourceHandler(
+        path, fsRoot, mimeTypes, headers, skipFilePredicate, resourceLoader, dirIndex, singleFile);
+  }
+
+  private URI toURI(URL url) {
+
+    try {
+
+      return url.toURI();
+    } catch (URISyntaxException e) {
+      throw new IllegalStateException(e);
+    }
   }
 }
