@@ -9,13 +9,18 @@ final class DefaultResourceLoader implements ClassResourceLoader {
 
   private final Class<?> clazz;
 
+  DefaultResourceLoader() {
+
+    this.clazz = DefaultResourceLoader.class;
+  }
+
   DefaultResourceLoader(Class<?> clazz) {
 
     this.clazz = clazz;
   }
 
   @Override
-  public URL getResource(String resourcePath) {
+  public URL loadResource(String resourcePath) {
 
     var url = clazz.getResource(resourcePath);
     if (url == null) {
@@ -29,7 +34,7 @@ final class DefaultResourceLoader implements ClassResourceLoader {
   }
 
   @Override
-  public InputStream getResourceAsStream(String resourcePath) {
+  public InputStream loadResourceAsStream(String resourcePath) {
 
     var url = clazz.getResourceAsStream(resourcePath);
     if (url == null) {

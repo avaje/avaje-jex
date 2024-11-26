@@ -202,7 +202,7 @@ public interface Context {
   /**
    * Return the underlying JDK {@link HttpExchange} object backing the context
    */
-  HttpExchange jdkExchange();
+  HttpExchange exchange();
 
   /**
    * Return the request scheme.

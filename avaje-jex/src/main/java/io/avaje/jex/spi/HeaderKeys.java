@@ -15,4 +15,5 @@ public class HeaderKeys {
   public static final String LOCATION = "Location";
   public static final String HOST = "Host";
   public static final String USER_AGENT = "User-Agent";
+  public static final String ACCEPT_ENCODING = "Accept-Encoding";
 }

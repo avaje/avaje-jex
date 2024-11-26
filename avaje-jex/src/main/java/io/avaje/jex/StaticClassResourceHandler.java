@@ -6,13 +6,13 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.function.Predicate;
 
-final class JarResourceHandler extends AbstractStaticHandler implements ExchangeHandler {
+final class StaticClassResourceHandler extends AbstractStaticHandler implements ExchangeHandler {
 
   private final URL indexFile;
   private final URL singleFile;
   private final ClassResourceLoader resourceLoader;
 
-  JarResourceHandler(
+  StaticClassResourceHandler(
       String urlPrefix,
       String filesystemRoot,
       Map<String, String> mimeTypes,
@@ -31,7 +31,7 @@ final class JarResourceHandler extends AbstractStaticHandler implements Exchange
   @Override
   public void handle(Context ctx) throws IOException {
 
-    final var jdkExchange = ctx.jdkExchange();
+    final var jdkExchange = ctx.exchange();
 
     if (singleFile != null) {
       sendURL(ctx, singleFile.getPath(), singleFile);
@@ -58,12 +58,12 @@ final class JarResourceHandler extends AbstractStaticHandler implements Exchange
       reportPathTraversal();
     }
 
-    try (var fis = resourceLoader.getResourceAsStream(normalizedPath)) {
+    try (var fis = resourceLoader.loadResourceAsStream(normalizedPath)) {
       ctx.header("Content-Type", lookupMime(normalizedPath));
       ctx.headers(headers);
       ctx.write(fis);
     } catch (final Exception e) {
-      throw404(ctx.jdkExchange());
+      throw404(ctx.exchange());
     }
   }
 
@@ -74,7 +74,7 @@ final class JarResourceHandler extends AbstractStaticHandler implements Exchange
       ctx.headers(headers);
       ctx.write(fis);
     } catch (final Exception e) {
-      throw404(ctx.jdkExchange());
+      throw404(ctx.exchange());
     }
   }
 }

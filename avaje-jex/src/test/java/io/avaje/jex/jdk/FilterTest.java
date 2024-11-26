@@ -33,7 +33,7 @@ class FilterTest {
                               if (ctx.url().contains("/two/")) {
                                 ctx.header("before-two", "set");
                               }
-                              ctx.jdkExchange().getRequestURI().getPath();
+                              ctx.exchange().getRequestURI().getPath();
                               chain.proceed();
                             })
                         .after(ctx -> afterAll.set("set"))
