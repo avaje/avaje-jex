@@ -10,7 +10,6 @@ import com.sun.net.httpserver.HttpExchange;
 import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.Routing;
 import io.avaje.jex.Routing.Type;
-import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.http.NotFoundException;
 import io.avaje.jex.routes.SpiRoutes;
 import io.avaje.jex.spi.SpiContext;
@@ -31,7 +30,6 @@ final class RoutingFilter extends Filter {
 
   @Override
   public void doFilter(HttpExchange exchange, Filter.Chain chain) {
-
     final String uri = exchange.getRequestURI().getPath();
     final Routing.Type routeType = mgr.lookupRoutingType(exchange.getRequestMethod());
     final SpiRoutes.Entry route = routes.match(routeType, uri);
@@ -73,7 +71,6 @@ final class RoutingFilter extends Filter {
   }
 
   private void handleNoResponse(HttpExchange exchange) throws IOException {
-
     if (exchange.getResponseCode() == -1) {
       exchange.sendResponseHeaders(204, -1);
     }

@@ -17,9 +17,7 @@ public class JdkFilter extends Filter {
 
   @Override
   public void doFilter(HttpExchange exchange, Chain chain) throws IOException {
-
     var ctx = (JdkContext) exchange.getAttribute("JdkContext");
-
     handler.filter(ctx, () -> chain.doFilter(exchange));
   }
 

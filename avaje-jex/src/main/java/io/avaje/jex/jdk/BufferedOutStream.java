@@ -6,7 +6,7 @@ import java.io.OutputStream;
 
 import com.sun.net.httpserver.HttpExchange;
 
-class BufferedOutStream extends OutputStream {
+final class BufferedOutStream extends OutputStream {
 
   private static final long MAX = Long.getLong("jex.outputBuffer.max", 1024);
   private static final int INITIAL =
