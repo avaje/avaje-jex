@@ -19,9 +19,7 @@ public final class CoreServiceLoader {
 
   CoreServiceLoader() {
     JsonService spiJsonService = null;
-
     for (var spi : ServiceLoader.load(JexExtension.class)) {
-
       switch (spi) {
         case JsonService s -> spiJsonService = s;
         case TemplateRender r -> renders.add(r);

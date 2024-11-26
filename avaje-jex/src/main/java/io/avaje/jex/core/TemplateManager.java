@@ -22,7 +22,7 @@ public final class TemplateManager {
    */
   public void register(Map<String, TemplateRender> source) {
     map.putAll(source);
-    map.values().stream().forEach(templateRender -> renderTypes.add(templateRender.getClass()));
+    map.values().forEach(templateRender -> renderTypes.add(templateRender.getClass()));
   }
 
   /**

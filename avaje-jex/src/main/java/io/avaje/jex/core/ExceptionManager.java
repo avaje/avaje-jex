@@ -53,7 +53,6 @@ public final class ExceptionManager {
   }
 
   private void defaultHandling(SpiContext ctx, HttpResponseException exception) {
-
     ctx.status(exception.getStatus());
     if (exception.getStatus() == ErrorCode.REDIRECT.status()) {
       ctx.performRedirect();
