@@ -6,15 +6,17 @@ import org.junit.jupiter.api.Test;
 
 import java.net.http.HttpHeaders;
 import java.net.http.HttpResponse;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.LockSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class FilterTest {
 
-  static TestPair pair = init();
-  static AtomicReference<String> afterAll = new AtomicReference<>();
-  static AtomicReference<String> afterTwo = new AtomicReference<>();
+  static final TestPair pair = init();
+  static final AtomicReference<String> afterAll = new AtomicReference<>();
+  static final AtomicReference<String> afterTwo = new AtomicReference<>();
 
   static TestPair init() {
     final Jex app =
@@ -33,7 +35,7 @@ class FilterTest {
                               if (ctx.url().contains("/two/")) {
                                 ctx.header("before-two", "set");
                               }
-                              ctx.jdkExchange().getRequestURI().getPath();
+                              // ctx.jdkExchange().getRequestURI().getPath();
                               chain.proceed();
                             })
                         .after(ctx -> afterAll.set("set"))
@@ -41,7 +43,6 @@ class FilterTest {
                             (ctx, chain) -> {
                               chain.proceed();
                               if (ctx.url().contains("/two/")) {
-
                                 afterTwo.set("set");
                               }
                             })
@@ -74,6 +75,7 @@ class FilterTest {
 
     clearAfter();
     res = pair.request().path("two").GET().asString();
+    LockSupport.parkNanos(TimeUnit.NANOSECONDS.toMillis(10));
     assertHasBeforeAfterAll(res);
     assertNoBeforeAfterTwo(res);
   }
