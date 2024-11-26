@@ -502,9 +502,4 @@ final class JdkContext implements Context, SpiContext {
 
     return new BasicAuthCredentials(credentials[0], credentials[1]);
   }
-
-  @Override
-  public boolean compressionEnabled() {
-    return compressionConfig.compressionEnabled();
-  }
 }

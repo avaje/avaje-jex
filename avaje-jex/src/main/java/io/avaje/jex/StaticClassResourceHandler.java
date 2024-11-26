@@ -6,13 +6,13 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.function.Predicate;
 
-final class JarResourceHandler extends AbstractStaticHandler implements ExchangeHandler {
+final class StaticClassResourceHandler extends AbstractStaticHandler implements ExchangeHandler {
 
   private final URL indexFile;
   private final URL singleFile;
   private final ClassResourceLoader resourceLoader;
 
-  JarResourceHandler(
+  StaticClassResourceHandler(
       String urlPrefix,
       String filesystemRoot,
       Map<String, String> mimeTypes,

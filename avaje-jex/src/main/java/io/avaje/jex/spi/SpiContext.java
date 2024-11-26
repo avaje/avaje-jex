@@ -2,7 +2,6 @@ package io.avaje.jex.spi;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
-import io.avaje.jex.compression.CompressionConfig;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,9 +17,6 @@ public interface SpiContext extends Context {
   String TEXT_PLAIN_UTF8 = "text/plain;charset=utf-8";
   String APPLICATION_JSON = "application/json";
   String APPLICATION_X_JSON_STREAM = "application/x-json-stream";
-
-  /** Return whether compression is enabled. */
-  boolean compressionEnabled();
 
   /**
    * Return the response outputStream to write content to.

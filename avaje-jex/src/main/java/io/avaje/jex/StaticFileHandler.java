@@ -9,8 +9,6 @@ import java.util.function.Predicate;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import io.avaje.jex.spi.SpiContext;
-
 final class StaticFileHandler extends AbstractStaticHandler implements ExchangeHandler {
 
   private final File indexFile;
@@ -79,15 +77,7 @@ final class StaticFileHandler extends AbstractStaticHandler implements ExchangeH
       String mimeType = lookupMime(urlPath);
       ctx.header("Content-Type", mimeType);
       ctx.headers(headers);
-      var spiCtx = (SpiContext) ctx;
-
-      if (!spiCtx.compressionEnabled()) {
-        jdkExchange.sendResponseHeaders(200, canonicalFile.length());
-        fis.transferTo(jdkExchange.getResponseBody());
-      } else {
-        spiCtx.write(fis);
-      }
-
+      ctx.write(fis);
     } catch (FileNotFoundException e) {
       throw404(jdkExchange);
     }
