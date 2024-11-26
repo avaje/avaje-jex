@@ -17,7 +17,7 @@ class DefaultErrorHandlingTest {
   void exception() {
 
     Routing router = new DefaultRouting();
-    router.exception(RuntimeException.class, rt);
+    router.error(RuntimeException.class, rt);
 
     var handling = new ExceptionManager(router.errorHandlers());
 
@@ -29,8 +29,8 @@ class DefaultErrorHandlingTest {
   @Test
   void exception_expect_highestMatch() {
     Routing router = new DefaultRouting();
-    router.exception(RuntimeException.class, rt);
-    router.exception(IllegalStateException.class, ise);
+    router.error(RuntimeException.class, rt);
+    router.error(IllegalStateException.class, ise);
 
     var handling = new ExceptionManager(router.errorHandlers());
 

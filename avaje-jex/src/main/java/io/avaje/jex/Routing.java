@@ -47,7 +47,7 @@ public sealed interface Routing permits DefaultRouting {
   Routing withRoles(Role... permittedRoles);
 
   /** Register an exception handler for the given exception type. */
-  <T extends Exception> Routing exception(Class<T> exceptionClass, ExceptionHandler<T> handler);
+  <T extends Exception> Routing error(Class<T> exceptionClass, ExceptionHandler<T> handler);
 
   /** Add a group of route handlers with a common path prefix. */
   Routing path(String path, Group group);

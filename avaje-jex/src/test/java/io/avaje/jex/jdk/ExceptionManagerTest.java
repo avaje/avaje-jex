@@ -30,8 +30,8 @@ class ExceptionManagerTest {
         .get("/fiveHundred", ctx -> {
           throw new IllegalArgumentException("Bar");
         })
-        .exception(NullPointerException.class, (exception, ctx) -> ctx.text("npe"))
-        .exception(IllegalStateException.class, (exception, ctx) -> ctx.status(222).text("Handled IllegalStateException|" + exception.getMessage())));
+        .error(NullPointerException.class, (exception, ctx) -> ctx.text("npe"))
+        .error(IllegalStateException.class, (exception, ctx) -> ctx.status(222).text("Handled IllegalStateException|" + exception.getMessage())));
 
     return TestPair.create(app);
   }
