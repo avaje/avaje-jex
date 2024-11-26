@@ -181,6 +181,11 @@ class JdkContext implements Context, SpiContext {
     }
   }
 
+  @Override
+  public InputStream bodyAsInputStream() {
+    return exchange.getRequestBody();
+  }
+
   private String characterEncoding() {
     if (characterEncoding == null) {
       characterEncoding = mgr.requestCharset(this);
