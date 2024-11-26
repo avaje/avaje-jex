@@ -1,5 +1,7 @@
 package io.avaje.jex.core;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.System.Logger.Level;
@@ -18,7 +20,6 @@ import io.avaje.jex.Jex;
 import io.avaje.jex.Routing;
 import io.avaje.jex.core.json.JacksonJsonService;
 import io.avaje.jex.core.json.JsonbJsonService;
-import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.TemplateRender;
@@ -40,33 +41,33 @@ public final class CoreServiceManager implements SpiServiceManager {
     return new Builder(jex).build();
   }
 
-   CoreServiceManager(JsonService jsonService, ExceptionManager manager, TemplateManager templateManager) {
+  CoreServiceManager(JsonService jsonService, ExceptionManager manager, TemplateManager templateManager) {
     this.jsonService = jsonService;
     this.exceptionHandler = manager;
     this.templateManager = templateManager;
   }
 
   @Override
-  public <T> T jsonRead(Class<T> clazz, SpiContext ctx) {
-    return jsonService.jsonRead(clazz, ctx);
+  public <T> T jsonRead(Class<T> clazz, InputStream is) {
+    return jsonService.jsonRead(clazz, is);
   }
 
   @Override
-  public void jsonWrite(Object bean, SpiContext ctx) {
-    jsonService.jsonWrite(bean, ctx);
+  public void jsonWrite(Object bean, OutputStream os) {
+    jsonService.jsonWrite(bean, os);
   }
 
   @Override
-  public <E> void jsonWriteStream(Stream<E> stream, SpiContext ctx) {
+  public <E> void jsonWriteStream(Stream<E> stream, OutputStream os) {
     try (stream) {
-      jsonService.jsonWriteStream(stream.iterator(), ctx);
+      jsonService.jsonWriteStream(stream.iterator(), os);
     }
   }
 
   @Override
-  public <E> void jsonWriteStream(Iterator<E> iterator, SpiContext ctx) {
+  public <E> void jsonWriteStream(Iterator<E> iterator, OutputStream os) {
     try {
-      jsonService.jsonWriteStream(iterator, ctx);
+      jsonService.jsonWriteStream(iterator, os);
     } finally {
       maybeClose(iterator);
     }
@@ -75,8 +76,8 @@ public final class CoreServiceManager implements SpiServiceManager {
   @Override
   public void maybeClose(Object iterator) {
     if (iterator instanceof AutoCloseable closeable) {
-      try (closeable) {
-        // nothing
+      try {
+        closeable.close();
       } catch (Exception e) {
         throw new RuntimeException("Error closing iterator " + iterator, e);
       }

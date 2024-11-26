@@ -7,7 +7,7 @@ import io.avaje.jex.Jex;
 
 import java.lang.System.Logger.Level;
 
-class JdkJexServer implements Jex.Server {
+final class JdkJexServer implements Jex.Server {
 
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 

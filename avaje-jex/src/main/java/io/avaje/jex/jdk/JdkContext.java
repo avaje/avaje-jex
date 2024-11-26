@@ -27,14 +27,14 @@ import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
 import io.avaje.jex.compression.CompressedOutputStream;
 import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.core.HeaderKeys;
 import io.avaje.jex.http.ErrorCode;
 import io.avaje.jex.http.RedirectException;
 import io.avaje.jex.security.BasicAuthCredentials;
 import io.avaje.jex.security.Role;
-import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
 
-class JdkContext implements Context, SpiContext {
+final class JdkContext implements Context, SpiContext {
 
   private static final String UTF8 = "UTF8";
   private static final int SC_MOVED_TEMPORARILY = 302;
@@ -179,7 +179,7 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public <T> T bodyAsClass(Class<T> beanType) {
-    return mgr.jsonRead(beanType, this);
+    return mgr.jsonRead(beanType, inputStream());
   }
 
   @Override
@@ -226,7 +226,7 @@ class JdkContext implements Context, SpiContext {
 
   private String header(Headers headers, String name) {
     final List<String> values = headers.get(name);
-    return (values == null || values.isEmpty()) ? null : values.get(0);
+    return (values == null || values.isEmpty()) ? null : values.getFirst();
   }
 
   @Override
@@ -248,7 +248,7 @@ class JdkContext implements Context, SpiContext {
   @Override
   public String queryParam(String name) {
     final List<String> vals = queryParams(name);
-    return vals == null || vals.isEmpty() ? null : vals.get(0);
+    return vals == null || vals.isEmpty() ? null : vals.getFirst();
   }
 
   private Map<String, List<String>> queryParams() {
@@ -274,7 +274,7 @@ class JdkContext implements Context, SpiContext {
     for (Map.Entry<String, List<String>> entry : map.entrySet()) {
       final List<String> value = entry.getValue();
       if (value != null && !value.isEmpty()) {
-        single.put(entry.getKey(), value.get(0));
+        single.put(entry.getKey(), value.getFirst());
       }
     }
     return single;
@@ -326,21 +326,21 @@ class JdkContext implements Context, SpiContext {
   @Override
   public Context json(Object bean) {
     contentType(APPLICATION_JSON);
-    mgr.jsonWrite(bean, this);
+    mgr.jsonWrite(bean, outputStream());
     return this;
   }
 
   @Override
   public <E> Context jsonStream(Stream<E> stream) {
     contentType(APPLICATION_X_JSON_STREAM);
-    mgr.jsonWriteStream(stream, this);
+    mgr.jsonWriteStream(stream, outputStream());
     return this;
   }
 
   @Override
   public <E> Context jsonStream(Iterator<E> iterator) {
     contentType(APPLICATION_X_JSON_STREAM);
-    mgr.jsonWriteStream(iterator, this);
+    mgr.jsonWriteStream(iterator, outputStream());
     return this;
   }
 
@@ -358,17 +358,14 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public Context write(String content) {
-
     write(content.getBytes(StandardCharsets.UTF_8));
     return this;
   }
 
   @Override
   public Context write(byte[] bytes) {
-
     try (var os = exchange.getResponseBody()) {
       exchange.sendResponseHeaders(statusCode(), bytes.length == 0 ? -1 : bytes.length);
-
       os.write(bytes);
       os.flush();
     } catch (IOException e) {
@@ -379,9 +376,7 @@ class JdkContext implements Context, SpiContext {
 
   @Override
   public Context write(InputStream is) {
-
-    try (is;
-        var os = outputStream()) {
+    try (is; var os = outputStream()) {
       is.transferTo(os);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
@@ -405,7 +400,7 @@ class JdkContext implements Context, SpiContext {
     for (Map.Entry<String, List<String>> entry : exchange.getRequestHeaders().entrySet()) {
       final List<String> value = entry.getValue();
       if (!value.isEmpty()) {
-        map.put(entry.getKey(), value.get(0));
+        map.put(entry.getKey(), value.getFirst());
       }
     }
     return map;

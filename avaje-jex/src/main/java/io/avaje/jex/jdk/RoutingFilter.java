@@ -33,7 +33,6 @@ final class RoutingFilter extends Filter {
 
   @Override
   public void doFilter(HttpExchange exchange, Filter.Chain chain) {
-
     final String uri = exchange.getRequestURI().getPath();
     final Routing.Type routeType = mgr.lookupRoutingType(exchange.getRequestMethod());
     final SpiRoutes.Entry route = routes.match(routeType, uri);
@@ -77,7 +76,6 @@ final class RoutingFilter extends Filter {
   }
 
   private void handleNoResponse(HttpExchange exchange) throws IOException {
-
     if (exchange.getResponseCode() == -1) {
       exchange.sendResponseHeaders(204, -1);
     }

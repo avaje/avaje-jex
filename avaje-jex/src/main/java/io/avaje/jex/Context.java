@@ -14,9 +14,9 @@ import java.util.stream.Stream;
 
 import com.sun.net.httpserver.HttpExchange;
 
+import io.avaje.jex.core.HeaderKeys;
 import io.avaje.jex.security.BasicAuthCredentials;
 import io.avaje.jex.security.Role;
-import io.avaje.jex.spi.HeaderKeys;
 
 /**
  * Provides access to functions for handling the request and response.

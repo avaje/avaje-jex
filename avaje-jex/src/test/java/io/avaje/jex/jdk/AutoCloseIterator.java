@@ -1,11 +1,12 @@
 package io.avaje.jex.jdk;
 
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AutoCloseIterator<E> implements Iterator<E>, AutoCloseable {
 
   private final Iterator<E> it;
-  private boolean closed;
+  private final AtomicBoolean closed = new AtomicBoolean(false);
 
   public AutoCloseIterator(Iterator<E> it) {
     this.it = it;
@@ -23,10 +24,10 @@ public class AutoCloseIterator<E> implements Iterator<E>, AutoCloseable {
 
   @Override
   public void close() {
-    closed = true;
+    closed.set(true);
   }
 
   public boolean isClosed() {
-    return closed;
+    return closed.get();
   }
 }

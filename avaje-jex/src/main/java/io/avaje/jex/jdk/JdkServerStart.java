@@ -15,18 +15,16 @@ import io.avaje.jex.Jex;
 import io.avaje.jex.core.SpiServiceManager;
 import io.avaje.jex.routes.SpiRoutes;
 
-public class JdkServerStart {
+public final class JdkServerStart {
 
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
   public Jex.Server start(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
-
     try {
-      final HttpServer server;
-
       var port = new InetSocketAddress(jex.config().port());
       final var sslContext = jex.config().sslContext();
 
+      final HttpServer server;
       final String scheme;
       if (sslContext != null) {
         var httpsServer = HttpsServer.create(port, 0);

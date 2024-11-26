@@ -9,7 +9,6 @@ import io.avaje.jex.ExceptionHandler;
 import io.avaje.jex.http.ErrorCode;
 import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.http.InternalServerErrorException;
-import io.avaje.jex.spi.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
 
 public final class ExceptionManager {
@@ -54,7 +53,6 @@ public final class ExceptionManager {
   }
 
   private void defaultHandling(SpiContext ctx, HttpResponseException exception) {
-
     ctx.status(exception.getStatus());
     if (exception.getStatus() == ErrorCode.REDIRECT.status()) {
       ctx.performRedirect();
