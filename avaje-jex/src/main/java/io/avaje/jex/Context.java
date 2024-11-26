@@ -93,6 +93,11 @@ public interface Context {
    */
   byte[] bodyAsBytes();
 
+  /**
+   * Return the request body as an inputStream.
+   */
+  InputStream bodyAsInputStream();
+
   /***
    * Return the request body as bean.
    *
