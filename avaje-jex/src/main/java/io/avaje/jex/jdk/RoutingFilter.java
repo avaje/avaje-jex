@@ -37,7 +37,7 @@ final class RoutingFilter extends Filter {
     if (route == null) {
       var ctx = new JdkContext(mgr, exchange, uri, Set.of());
       routes.inc();
-      try (exchange) {
+      try {
         processNoRoute(ctx, uri, routeType);
         exchange.setAttribute("JdkContext", ctx);
         chain.doFilter(exchange);
@@ -46,10 +46,11 @@ final class RoutingFilter extends Filter {
         handleException(ctx, e);
       } finally {
         routes.dec();
+        exchange.close();
       }
     } else {
       route.inc();
-      try (exchange) {
+      try {
         final Map<String, String> params = route.pathParams(uri);
         JdkContext ctx = new JdkContext(mgr, exchange, route.matchPath(), params, route.roles());
         try {
@@ -64,6 +65,7 @@ final class RoutingFilter extends Filter {
         }
       } finally {
         route.dec();
+        exchange.close();
       }
     }
   }
