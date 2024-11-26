@@ -1,4 +1,4 @@
-package io.avaje.jex.spi;
+package io.avaje.jex.core;
 
 public class HeaderKeys {
 

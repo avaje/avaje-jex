@@ -5,6 +5,7 @@ import io.avaje.jex.Routing;
 import io.avaje.jex.core.SpiServiceManager;
 import io.avaje.jex.spi.SpiContext;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
@@ -41,23 +42,23 @@ public final class CtxServiceManager implements SpiServiceManager {
   }
 
   @Override
-  public <T> T jsonRead(Class<T> clazz, SpiContext ctx) {
-    return delegate.jsonRead(clazz, ctx);
+  public <T> T jsonRead(Class<T> clazz, InputStream is) {
+    return delegate.jsonRead(clazz, is);
   }
 
   @Override
-  public void jsonWrite(Object bean, SpiContext ctx) {
-    delegate.jsonWrite(bean, ctx);
+  public void jsonWrite(Object bean, OutputStream os) {
+    delegate.jsonWrite(bean, os);
   }
 
   @Override
-  public <E> void jsonWriteStream(Stream<E> stream, SpiContext ctx) {
-    delegate.jsonWriteStream(stream, ctx);
+  public <E> void jsonWriteStream(Stream<E> stream, OutputStream os) {
+    delegate.jsonWriteStream(stream, os);
   }
 
   @Override
-  public <E> void jsonWriteStream(Iterator<E> iterator, SpiContext ctx) {
-    delegate.jsonWriteStream(iterator, ctx);
+  public <E> void jsonWriteStream(Iterator<E> iterator, OutputStream os) {
+    delegate.jsonWriteStream(iterator, os);
   }
 
   @Override

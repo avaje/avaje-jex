@@ -1,15 +1,16 @@
 package io.avaje.jex.core.json;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.avaje.jex.spi.JsonService;
-import io.avaje.jex.spi.SpiContext;
-
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.util.Iterator;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.avaje.jex.spi.JsonService;
 
 public class JacksonJsonService implements JsonService {
 
@@ -25,22 +26,18 @@ public class JacksonJsonService implements JsonService {
   }
 
   @Override
-  public <T> T jsonRead(Class<T> clazz, SpiContext ctx) {
+  public <T> T jsonRead(Class<T> clazz, InputStream is) {
     try {
-      // TODO: Handle gzipped content
       // read direct
-      return mapper.readValue(ctx.inputStream(), clazz);
-      //return mapper.readValue(ctx.bodyAsBytes(), clazz);
+      return mapper.readValue(is, clazz);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
   }
 
   @Override
-  public void jsonWrite(Object bean, SpiContext ctx) {
+  public void jsonWrite(Object bean, OutputStream os) {
     try {
-      // gzip compression etc ?
-      OutputStream os = ctx.outputStream();
       try (JsonGenerator generator = mapper.createGenerator(os)) {
         // only flush to underlying OutputStream on success
         generator.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
@@ -57,24 +54,28 @@ public class JacksonJsonService implements JsonService {
   }
 
   @Override
-  public <T> void jsonWriteStream(Iterator<T> iterator, SpiContext ctx) {
+  public <T> void jsonWriteStream(Iterator<T> iterator, OutputStream os) {
     final JsonGenerator generator;
     try {
-      generator = mapper.createGenerator(ctx.outputStream());
+      generator = mapper.createGenerator(os);
       generator.setPrettyPrinter(null);
       try {
         while (iterator.hasNext()) {
-          try {
-            mapper.writeValue(generator, iterator.next());
-            generator.writeRaw('\n');
-          } catch (IOException e) {
-            throw new UncheckedIOException(e);
-          }
+          write(iterator, generator);
         }
       } finally {
         generator.flush();
         generator.close();
       }
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  private <T> void write(Iterator<T> iterator, final JsonGenerator generator) {
+    try {
+      mapper.writeValue(generator, iterator.next());
+      generator.writeRaw('\n');
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
