@@ -5,7 +5,7 @@ import java.util.Iterator;
 public class AutoCloseIterator<E> implements Iterator<E>, AutoCloseable {
 
   private final Iterator<E> it;
-  private boolean closed;
+  private volatile boolean closed;
 
   public AutoCloseIterator(Iterator<E> it) {
     this.it = it;
