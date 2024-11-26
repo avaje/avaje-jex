@@ -9,7 +9,7 @@ import io.avaje.jex.JexPlugin;
  * Health plugin with liveness and readiness support based on
  * the application lifecycle support.
  */
-public class HealthPlugin implements JexPlugin {
+public final class HealthPlugin implements JexPlugin {
 
   private AppLifecycle lifecycle;
 
