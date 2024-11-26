@@ -71,7 +71,7 @@ class JsonTest {
     // expect client gets the expected stream of beans
     assertCollectedStream(beanStream);
     // assert AutoCloseable iterator on the server-side was closed
-    LockSupport.parkNanos(TimeUnit.NANOSECONDS.toMillis(10));
+    LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(10));
     assertThat(ITERATOR.isClosed()).isTrue();
   }
 

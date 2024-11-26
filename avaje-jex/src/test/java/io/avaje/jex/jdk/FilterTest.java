@@ -75,7 +75,7 @@ class FilterTest {
 
     clearAfter();
     res = pair.request().path("two").GET().asString();
-    LockSupport.parkNanos(TimeUnit.NANOSECONDS.toMillis(10));
+    LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(10));
     assertHasBeforeAfterAll(res);
     assertNoBeforeAfterTwo(res);
   }
