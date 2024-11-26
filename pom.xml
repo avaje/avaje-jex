@@ -30,6 +30,7 @@
     <module>avaje-jex-test</module>
     <module>avaje-jex-freemarker</module>
     <module>avaje-jex-mustache</module>
+    <module>avaje-jex-htmx</module>
   </modules>
 
   <dependencies>
