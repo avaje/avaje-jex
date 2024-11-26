@@ -76,8 +76,8 @@ public final class CoreServiceManager implements SpiServiceManager {
   @Override
   public void maybeClose(Object iterator) {
     if (iterator instanceof AutoCloseable closeable) {
-      try (closeable) {
-        // nothing
+      try {
+        closeable.close();
       } catch (Exception e) {
         throw new RuntimeException("Error closing iterator " + iterator, e);
       }
