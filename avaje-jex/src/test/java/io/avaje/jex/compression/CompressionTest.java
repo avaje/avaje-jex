@@ -20,7 +20,7 @@ class CompressionTest {
 
     final Jex app =
         Jex.create()
-            .staticResource(b -> b.httpPath("/compress").resource("/64kb.json"))
+            .staticResource(b -> b.httpPath("/compress").resource("/public/64kb.json"))
             .routing(
                 r ->
                     r.get(
