@@ -9,7 +9,7 @@ import java.util.Iterator;
  *
  * <p>A service responsible for handling JSON-based request and response bodies.
  *
- * <p>This interface extends `JexExtension`.
+ * @see {@link JexExtension} for SPI registration details.
  */
 public non-sealed interface JsonService extends JexExtension {
 
