@@ -7,6 +7,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterAll;
@@ -69,6 +71,7 @@ class JsonTest {
     // expect client gets the expected stream of beans
     assertCollectedStream(beanStream);
     // assert AutoCloseable iterator on the server-side was closed
+    LockSupport.parkNanos(TimeUnit.NANOSECONDS.toMillis(10));
     assertThat(ITERATOR.isClosed()).isTrue();
   }
 
