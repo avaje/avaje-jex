@@ -1,5 +1,6 @@
 package io.avaje.jex.jdk;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,6 +43,7 @@ final class RoutingFilter extends Filter {
         processNoRoute(ctx, uri, routeType);
         exchange.setAttribute("JdkContext", ctx);
         chain.doFilter(exchange);
+        handleNoResponse(exchange);
       } catch (Exception e) {
         handleException(ctx, e);
       } finally {
@@ -59,6 +61,7 @@ final class RoutingFilter extends Filter {
           ExchangeHandler handlerConsumer = route::handle;
           exchange.setAttribute("SpiRoutes.Entry.Handler", handlerConsumer);
           chain.doFilter(exchange);
+          handleNoResponse(exchange);
         } catch (Exception e) {
           handleException(ctx, e);
         }
@@ -66,6 +69,13 @@ final class RoutingFilter extends Filter {
         route.dec();
         exchange.close();
       }
+    }
+  }
+
+  private void handleNoResponse(HttpExchange exchange) throws IOException {
+
+    if (exchange.getResponseCode() == -1) {
+      exchange.sendResponseHeaders(204, -1);
     }
   }
 

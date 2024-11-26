@@ -23,6 +23,7 @@ class FilterTest {
                 routing ->
                     routing
                         .get("/", ctx -> ctx.text("roo"))
+                        .get("/noResponse", ctx -> {})
                         .get("/one", ctx -> ctx.text("one"))
                         .get("/two", ctx -> ctx.text("two"))
                         .get("/two/{id}", ctx -> ctx.text("two-id"))
@@ -73,6 +74,15 @@ class FilterTest {
 
     clearAfter();
     res = pair.request().path("two").GET().asString();
+    assertHasBeforeAfterAll(res);
+    assertNoBeforeAfterTwo(res);
+  }
+
+  @Test
+  void getNoResponse() {
+    clearAfter();
+    HttpResponse<String> res = pair.request().path("noResponse").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(204);
     assertHasBeforeAfterAll(res);
     assertNoBeforeAfterTwo(res);
   }
