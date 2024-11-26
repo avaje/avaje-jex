@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import io.avaje.jex.Context;
-import io.avaje.jex.spi.HeaderKeys;
+import io.avaje.jex.core.HeaderKeys;
 import io.avaje.jex.spi.SpiContext;
 
 /**
