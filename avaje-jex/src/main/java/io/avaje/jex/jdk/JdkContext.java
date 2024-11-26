@@ -48,7 +48,7 @@ class JdkContext implements Context, SpiContext {
   private Map<String, List<String>> formParams;
   private Map<String, List<String>> queryParams;
   private Map<String, String> cookieMap;
-  private int statusCode;
+  private int statusCode = 200;
   private String characterEncoding;
 
   JdkContext(
