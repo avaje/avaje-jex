@@ -12,15 +12,14 @@ import io.avaje.jex.spi.TemplateRender;
  * Create configure and start Jex.
  *
  * <pre>{@code
+ * final Jex.Server app = Jex.create()
+ *   .routing(routing -> routing
+ *     .get("/", ctx -> ctx.text("hello world"))
+ *     .get("/one", ctx -> ctx.text("one"))
+ *   .port(8080)
+ *   .start();
  *
- *     final Jex.Server app = Jex.create()
- *       .routing(routing -> routing
- *         .get("/", ctx -> ctx.text("hello world"))
- *         .get("/one", ctx -> ctx.text("one"))
- *       .port(8080)
- *       .start();
- *
- *     app.shutdown();
+ * app.shutdown();
  *
  * }</pre>
  */
@@ -30,15 +29,14 @@ public sealed interface Jex permits DJex {
    * Create Jex.
    *
    * <pre>{@code
+   * final Jex.Server app = Jex.create()
+   *   .routing(routing -> routing
+   *     .get("/", ctx -> ctx.text("hello world"))
+   *     .get("/one", ctx -> ctx.text("one"))
+   *   .port(8080)
+   *   .start();
    *
-   *     final Jex.Server app = Jex.create()
-   *       .routing(routing -> routing
-   *         .get("/", ctx -> ctx.text("hello world"))
-   *         .get("/one", ctx -> ctx.text("one"))
-   *       .port(8080)
-   *       .start();
-   *
-   *     app.shutdown();
+   * app.shutdown();
    *
    * }</pre>
    */
@@ -47,37 +45,59 @@ public sealed interface Jex permits DJex {
   }
 
   /**
-   * Set a custom attribute that can be used by an implementation.
+   * Sets a custom attribute that can be accessed later by the Jex instance or its components.
+   *
+   * @param <T> The type of the attribute.
+   * @param cls The class of the attribute.
+   * @param instance The instance of the attribute.
    */
   <T> Jex attribute(Class<T> cls, T instance);
 
   /**
-   * Return a custom attribute.
+   * Returns a custom attribute previously set using {@link #attribute(Class, Object)}.
+   *
+   * @param <T> The type of the attribute.
+   * @param cls The class of the attribute.
+   * @return The attribute instance, or null if not found.
    */
   <T> T attribute(Class<T> cls);
 
   /**
-   * Add routes and handlers to the routing.
+   * Adds a new HTTP route and its associated handler to the Jex routing configuration.
+   *
+   * @param routes The HTTP service to add.
    */
   Jex routing(Routing.HttpService routes);
 
   /**
-   * Add many routes and handlers to the routing.
+   * Adds multiple HTTP routes and their associated handlers to the Jex routing configuration.
+   *
+   * @param routes A collection of HTTP services to add.
    */
   Jex routing(Collection<Routing.HttpService> routes);
 
   /**
-   * Return the Routing to configure.
+   * Returns the routing configuration object, allowing for further customization.
+   *
+   * @return The routing configuration object.
    */
   Routing routing();
 
-  /** Add a static resource route */
+  /**
+   * Adds a static resource route using the provided configuration.
+   *
+   * @param config The configuration for the static resource route.
+   */
   default Jex staticResource(StaticContentConfig config) {
     routing().get(config.httpPath(), config.createHandler());
     return this;
   }
 
-  /** Add a static resource route using a consumer */
+  /**
+   * Adds a static resource route using a consumer to configure the {@link StaticContentConfig}.
+   *
+   * @param consumer The consumer to configure the static resource route.
+   */
   default Jex staticResource(Consumer<StaticContentConfig> consumer) {
     var builder = StaticResourceHandlerBuilder.builder();
     consumer.accept(builder);
@@ -86,91 +106,94 @@ public sealed interface Jex permits DJex {
   }
 
   /**
-   * Set the JsonService.
+   * Sets the JSON service to use for serialization and deserialization.
+   *
+   * @param jsonService The JSON service to use.
    */
   Jex jsonService(JsonService jsonService);
 
   /**
-   * Add Plugin functionality.
+   * Adds a plugin to the Jex instance, extending its functionality.
+   *
+   * @param plugin The plugin to add.
    */
   Jex plugin(JexPlugin plugin);
 
   /**
-   * Configure given the dependency injection scope from <em>avaje-inject</em>.
+   * Configures the Jex instance using a dependency injection scope from Avaje-Inject.
    *
-   * @param beanScope The scope potentially containing Handlers, AccessManager, Plugins etc.
+   * <p>This method allows you to leverage the Avaje-Inject framework to provide dependencies like
+   * Handlers, StaticResources, and Plugins to the Jex instance.
+   *
+   * @param beanScope The Avaje-Inject BeanScope containing the dependencies.
+   * @return The configured Jex instance.
    */
   Jex configureWith(BeanScope beanScope);
 
   /**
-   * Configure via a lambda taking the JexConfig instance.
+   * Configures the Jex instance using a functional approach.
+   *
+   * <p>The provided consumer lambda allows you to customize the Jex configuration, such as setting
+   * the port, context path, and other options.
+   *
+   * @param configure A consumer lambda that accepts a `JexConfig` instance for configuration.
+   * @return The configured Jex instance.
    */
   Jex configure(Consumer<JexConfig> configure);
 
   /**
-   * Set the port to use.
+   * Sets the port number on which the Jex server will listen for incoming requests.
+   *
+   * @param port The port number to use.
+   * @return The updated Jex instance.
    */
   Jex port(int port);
 
   /**
-   * Set the context path.
+   * Sets the context path for the Jex application.
+   *
+   * <p>The context path is the portion of the URL that identifies the application.
+   *
+   * @param contextPath The context path to use.
+   * @return The updated Jex instance.
    */
   Jex context(String contextPath);
 
   /**
    * Explicitly register a template renderer.
-   * <p>
-   * Note that if not explicitly registered TemplateRender's can be
-   * automatically registered via ServiceLoader just by including them
-   * to the class path.
    *
-   * @param renderer   The template renderer to register
+   * <p>Note that if not explicitly registered TemplateRender's can be automatically registered via
+   * ServiceLoader just by including them to the class path.
+   *
+   * @param renderer The template renderer to register
    * @param extensions The extensions the renderer is used for
    */
   Jex register(TemplateRender renderer, String... extensions);
 
-  /**
-   * Return the application lifecycle support.
-   */
+  /** Return the application lifecycle support. */
   AppLifecycle lifecycle();
 
-  /**
-   * Return the configuration.
-   */
+  /** Return the configuration. */
   JexConfig config();
 
-  /**
-   * Start the server.
-   */
+  /** Start the server. */
   Jex.Server start();
 
-  /**
-   * The running server.
-   */
+  /** The running server. */
   interface Server {
 
     /**
-     * Register a function to execute LAST on shutdown after all the
-     * normal lifecycle shutdown functions have run.
-     * <p>
-     * Typically, we desire to shut down logging (e.g. Log4J) last.
+     * Register a function to execute LAST on shutdown after all the normal lifecycle shutdown
+     * functions have run.
+     *
+     * <p>Typically, we desire to shut down logging (e.g. Log4J) last.
      */
     void onShutdown(Runnable onShutdown);
 
-    /**
-     * Shutdown the server.
-     */
+    /** Shutdown the server. */
     void shutdown();
 
-    /**
-     * Return the port the server is using.
-     */
-    default int port() {
-      throw new IllegalStateException("not supported");
-    }
-
-    default void restart() {
-      throw new IllegalStateException("not supported");
-    }
+    /** The port of the server */
+    int port();
   }
 }

@@ -91,6 +91,7 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
    */
   StaticContentConfig location(ResourceLocation location);
 
+  /** the resource location */
   public enum ResourceLocation {
     CLASS_PATH,
     FILE

@@ -15,10 +15,6 @@ final class BootJexState {
     state.stop();
   }
 
-  static void restart() {
-    state.restart();
-  }
-
   State create(BeanScope beanScope) {
     Jex jex = beanScope.getOptional(Jex.class).orElse(Jex.create());
     jex.configureWith(beanScope);
@@ -41,10 +37,6 @@ final class BootJexState {
 
     void stop() {
       server.shutdown();
-    }
-
-    public void restart() {
-      server.restart();
     }
   }
 }

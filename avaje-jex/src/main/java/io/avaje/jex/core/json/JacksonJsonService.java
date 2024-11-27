@@ -12,15 +12,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.avaje.jex.spi.JsonService;
 
+/** Jackson JsonService */
 public final class JacksonJsonService implements JsonService {
 
   private final ObjectMapper mapper;
 
+  /** Create with defaults for Jackson */
   public JacksonJsonService() {
-    this.mapper = new ObjectMapper()
-      .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    this.mapper =
+        new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
+  /** Create with a Jackson instance that might have custom configuration. */
   public JacksonJsonService(ObjectMapper mapper) {
     this.mapper = mapper;
   }
@@ -28,7 +31,6 @@ public final class JacksonJsonService implements JsonService {
   @Override
   public <T> T jsonRead(Class<T> clazz, InputStream is) {
     try {
-      // read direct
       return mapper.readValue(is, clazz);
     } catch (IOException e) {
       throw new UncheckedIOException(e);

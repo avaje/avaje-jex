@@ -6,7 +6,6 @@ import java.util.zip.GZIPOutputStream;
 
 final class GzipCompressor implements Compressor {
   static final String ENCODING = "gzip";
-  private static final String EXTENSION = ".gz";
   private final int level;
 
   GzipCompressor() {

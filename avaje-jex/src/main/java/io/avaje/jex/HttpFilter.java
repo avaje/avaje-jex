@@ -5,7 +5,7 @@ import java.io.IOException;
 import com.sun.net.httpserver.HttpExchange;
 
 /**
- * A filter used to pre- and post-process incoming requests. Pre-processing occurs before the
+ * A filter used to pre/post-process incoming requests. Pre-processing occurs before the
  * application's exchange handler is invoked, and post-processing occurs after the exchange handler
  * returns. Filters are organized in chains, and are associated with {@link Context} instances.
  *
