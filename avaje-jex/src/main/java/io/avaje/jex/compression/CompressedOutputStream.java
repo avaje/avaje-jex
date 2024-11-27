@@ -6,11 +6,10 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import io.avaje.jex.Context;
-import io.avaje.jex.core.HeaderKeys;
-import io.avaje.jex.spi.SpiContext;
+import io.avaje.jex.core.Constants;
 
 /**
- * CompressedOutputStream class that conditionally compresses the output based on configuration and
+ * OutputStream implementation that conditionally compresses the output based on configuration and
  * request headers.
  */
 public class CompressedOutputStream extends OutputStream {
@@ -24,7 +23,7 @@ public class CompressedOutputStream extends OutputStream {
   private boolean compressionDecided;
 
   public CompressedOutputStream(
-      CompressionConfig compression, SpiContext ctx, OutputStream originStream) {
+      CompressionConfig compression, Context ctx, OutputStream originStream) {
     this.minSizeForCompression = compression.minSizeForCompression();
     this.compression = compression;
     this.ctx = ctx;
@@ -33,7 +32,7 @@ public class CompressedOutputStream extends OutputStream {
 
   private void decideCompression(int length) throws IOException {
     if (!compressionDecided) {
-      var encoding = ctx.responseHeader(HeaderKeys.CONTENT_ENCODING);
+      var encoding = ctx.responseHeader(Constants.CONTENT_ENCODING);
 
       if (encoding != null) {
 
@@ -51,10 +50,10 @@ public class CompressedOutputStream extends OutputStream {
 
       if (compressionAllowed && length >= minSizeForCompression) {
         Optional<Compressor> compressor;
-        compressor = findMatchingCompressor(ctx.header(HeaderKeys.ACCEPT_ENCODING));
+        compressor = findMatchingCompressor(ctx.header(Constants.ACCEPT_ENCODING));
         if (compressor.isPresent()) {
           this.compressedStream = compressor.get().compress(originStream);
-          ctx.header(HeaderKeys.CONTENT_ENCODING, compressor.get().encoding());
+          ctx.header(Constants.CONTENT_ENCODING, compressor.get().encoding());
         }
       }
       compressionDecided = true;

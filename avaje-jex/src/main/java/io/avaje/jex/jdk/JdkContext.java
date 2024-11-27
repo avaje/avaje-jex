@@ -1,5 +1,9 @@
 package io.avaje.jex.jdk;
 
+import static io.avaje.jex.core.Constants.APPLICATION_JSON;
+import static io.avaje.jex.core.Constants.APPLICATION_X_JSON_STREAM;
+import static io.avaje.jex.core.Constants.TEXT_HTML_UTF8;
+import static io.avaje.jex.core.Constants.TEXT_PLAIN_UTF8;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
@@ -24,17 +28,15 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
 import io.avaje.jex.Context;
-import io.avaje.jex.Routing;
 import io.avaje.jex.compression.CompressedOutputStream;
 import io.avaje.jex.compression.CompressionConfig;
-import io.avaje.jex.core.HeaderKeys;
+import io.avaje.jex.core.Constants;
 import io.avaje.jex.http.ErrorCode;
 import io.avaje.jex.http.RedirectException;
 import io.avaje.jex.security.BasicAuthCredentials;
 import io.avaje.jex.security.Role;
-import io.avaje.jex.spi.SpiContext;
 
-final class JdkContext implements Context, SpiContext {
+public final class JdkContext implements Context {
 
   private static final String UTF8 = "UTF8";
   private static final int SC_MOVED_TEMPORARILY = 302;
@@ -46,11 +48,11 @@ final class JdkContext implements Context, SpiContext {
   private final Map<String, String> pathParams;
   private final Set<Role> roles;
   private final HttpExchange exchange;
-  private Routing.Type mode;
+  private Mode mode;
   private Map<String, List<String>> formParams;
   private Map<String, List<String>> queryParams;
   private Map<String, String> cookieMap;
-  private int statusCode = 200;
+  private int statusCode;
   private String characterEncoding;
 
   JdkContext(
@@ -158,19 +160,18 @@ final class JdkContext implements Context, SpiContext {
 
   @Override
   public void redirect(String location, int statusCode) {
-    header(HeaderKeys.LOCATION, location);
+    header(Constants.LOCATION, location);
     status(statusCode);
-    if (mode == Routing.Type.FILTER) {
+    if (mode != Mode.EXCHANGE) {
       throw new RedirectException(ErrorCode.REDIRECT.message());
     } else {
       performRedirect();
     }
   }
 
-  @Override
   public void performRedirect() {
     try {
-      exchange.sendResponseHeaders(statusCode(), 0);
+      exchange.sendResponseHeaders(statusCode(), -1);
       exchange.getResponseBody().close();
     } catch (IOException e) {
       throw new UncheckedIOException(e);
@@ -179,7 +180,7 @@ final class JdkContext implements Context, SpiContext {
 
   @Override
   public <T> T bodyAsClass(Class<T> beanType) {
-    return mgr.jsonRead(beanType, inputStream());
+    return mgr.jsonRead(beanType, bodyAsInputStream());
   }
 
   @Override
@@ -210,13 +211,13 @@ final class JdkContext implements Context, SpiContext {
 
   @Override
   public long contentLength() {
-    final String len = header(HeaderKeys.CONTENT_LENGTH);
+    final String len = header(Constants.CONTENT_LENGTH);
     return len == null ? 0 : Long.parseLong(len);
   }
 
   @Override
   public String contentType() {
-    return header(exchange.getRequestHeaders(), HeaderKeys.CONTENT_TYPE);
+    return header(exchange.getRequestHeaders(), Constants.CONTENT_TYPE);
   }
 
   @Override
@@ -231,7 +232,7 @@ final class JdkContext implements Context, SpiContext {
 
   @Override
   public Context contentType(String contentType) {
-    exchange.getResponseHeaders().set(HeaderKeys.CONTENT_TYPE, contentType);
+    exchange.getResponseHeaders().set(Constants.CONTENT_TYPE, contentType);
     return this;
   }
 
@@ -431,7 +432,7 @@ final class JdkContext implements Context, SpiContext {
 
   @Override
   public String host() {
-    return header(HeaderKeys.HOST);
+    return header(Constants.HOST);
   }
 
   @Override
@@ -464,22 +465,15 @@ final class JdkContext implements Context, SpiContext {
     return exchange.getProtocol();
   }
 
-  @Override
   public OutputStream outputStream() {
     var out = mgr.createOutputStream(this);
     if (compressionConfig.compressionEnabled()) {
-      return new CompressedOutputStream(compressionConfig, this,out);
+      return new CompressedOutputStream(compressionConfig, this, out);
     }
     return out;
   }
 
-  @Override
-  public InputStream inputStream() {
-    return exchange.getRequestBody();
-  }
-
-  @Override
-  public void setMode(Routing.Type type) {
+  public void setMode(Mode type) {
     this.mode = type;
   }
 

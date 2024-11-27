@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import io.avaje.jex.Jex;
 import io.avaje.jex.ResourceLocation;
-import io.avaje.jex.core.HeaderKeys;
+import io.avaje.jex.core.Constants;
 import io.avaje.jex.jdk.TestPair;
 
 class CompressionTest {
@@ -25,7 +25,7 @@ class CompressionTest {
                 r ->
                     r.get(
                         "/forced",
-                        ctx -> ctx.header(HeaderKeys.CONTENT_ENCODING, "gzip").text("hi")))
+                        ctx -> ctx.header(Constants.CONTENT_ENCODING, "gzip").text("hi")))
             .staticResource(
                 b ->
                     b.location(ResourceLocation.FILE)
@@ -43,24 +43,24 @@ class CompressionTest {
   @Test
   void testCompression() {
     HttpResponse<String> res =
-        pair.request().header(HeaderKeys.ACCEPT_ENCODING, "gzip").path("compress").GET().asString();
+        pair.request().header(Constants.ACCEPT_ENCODING, "gzip").path("compress").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.headers().firstValue(HeaderKeys.CONTENT_ENCODING)).contains("gzip");
+    assertThat(res.headers().firstValue(Constants.CONTENT_ENCODING)).contains("gzip");
   }
 
   @Test
   void testNoCompression() {
     HttpResponse<String> res =
-        pair.request().header(HeaderKeys.ACCEPT_ENCODING, "gzip").path("sus").GET().asString();
+        pair.request().header(Constants.ACCEPT_ENCODING, "gzip").path("sus").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.headers().firstValue(HeaderKeys.CONTENT_ENCODING)).isEmpty();
+    assertThat(res.headers().firstValue(Constants.CONTENT_ENCODING)).isEmpty();
   }
 
   @Test
   void testForcedCompression() {
     HttpResponse<String> res =
-        pair.request().header(HeaderKeys.ACCEPT_ENCODING, "gzip").path("forced").GET().asString();
+        pair.request().header(Constants.ACCEPT_ENCODING, "gzip").path("forced").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.headers().firstValue(HeaderKeys.CONTENT_ENCODING)).contains("gzip");
+    assertThat(res.headers().firstValue(Constants.CONTENT_ENCODING)).contains("gzip");
   }
 }

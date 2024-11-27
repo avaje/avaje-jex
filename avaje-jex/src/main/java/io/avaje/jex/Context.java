@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import io.avaje.jex.core.HeaderKeys;
+import io.avaje.jex.core.Constants;
 import io.avaje.jex.security.BasicAuthCredentials;
 import io.avaje.jex.security.Role;
 
@@ -232,7 +232,7 @@ public interface Context {
    * Return the request user agent, or null.
    */
   default String userAgent() {
-    return header(HeaderKeys.USER_AGENT);
+    return header(Constants.USER_AGENT);
   }
 
   /**

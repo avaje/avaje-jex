@@ -1,16 +1,16 @@
 package io.avaje.jex.core;
 
-import io.avaje.jex.Context;
-import io.avaje.jex.Routing;
-import io.avaje.jex.jdk.CtxServiceManager;
-import io.avaje.jex.spi.SpiContext;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+
+import io.avaje.jex.Context;
+import io.avaje.jex.Routing;
+import io.avaje.jex.jdk.CtxServiceManager;
+import io.avaje.jex.jdk.JdkContext;
 
 /**
  * Core service methods available to Context implementations.
@@ -50,7 +50,7 @@ public sealed interface SpiServiceManager permits CoreServiceManager, CtxService
   /**
    * Handle the exception.
    */
-  void handleException(SpiContext ctx, Exception e);
+  void handleException(JdkContext ctx, Exception e);
 
   /**
    * Render using template manager.
