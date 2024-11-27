@@ -90,4 +90,9 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
    * @return the updated configuration
    */
   StaticContentConfig location(ResourceLocation location);
+
+  public enum ResourceLocation {
+    CLASS_PATH,
+    FILE
+  }
 }

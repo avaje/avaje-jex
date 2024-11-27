@@ -8,6 +8,7 @@ import java.time.Duration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
+import io.avaje.jex.StaticContentConfig.ResourceLocation;
 import io.avaje.jex.jdk.TestPair;
 
 class StaticFileTest {
