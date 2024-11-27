@@ -29,20 +29,18 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
 
   private StaticResourceHandlerBuilder() {}
 
-  public static StaticResourceHandlerBuilder builder() {
+  static StaticResourceHandlerBuilder builder() {
     return new StaticResourceHandlerBuilder();
   }
 
   @Override
   public ExchangeHandler createHandler() {
-
     path =
         Objects.requireNonNull(path)
             .transform(this::prependSlash)
             .transform(s -> s.endsWith("/*") ? s.substring(0, s.length() - 2) : s);
 
     final var isClasspath = location == CLASS_PATH;
-
     root = isClasspath ? root.transform(this::prependSlash) : root;
     if (isClasspath && "/".equals(root)) {
       throw new IllegalArgumentException(
@@ -128,7 +126,6 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
     File singleFile = null;
     if (directoryIndex != null) {
       try {
-
         dirIndex =
             fileLoader.apply(root.transform(this::appendSlash) + directoryIndex).getCanonicalFile();
 
@@ -139,7 +136,6 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
       }
     } else {
       try {
-
         singleFile = fileLoader.apply(root).getCanonicalFile();
 
         fsRoot = singleFile.getParentFile().getPath();
@@ -153,12 +149,10 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
   }
 
   private ExchangeHandler classPathHandler() {
-
     URL dirIndex = null;
     URL singleFile = null;
     if (directoryIndex != null) {
       dirIndex = resourceLoader.loadResource(root.transform(this::appendSlash) + directoryIndex);
-
     } else {
       singleFile = resourceLoader.loadResource(root);
     }

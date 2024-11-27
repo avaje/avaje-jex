@@ -55,7 +55,7 @@ final class DJex implements Jex {
 
   @Override
   public Jex jsonService(JsonService jsonService) {
-    this.config.jsonService(jsonService);
+    config.jsonService(jsonService);
     return this;
   }
 
@@ -84,13 +84,13 @@ final class DJex implements Jex {
 
   @Override
   public Jex port(int port) {
-    this.config.port(port);
+    config.port(port);
     return this;
   }
 
   @Override
   public Jex context(String contextPath) {
-    this.config.contextPath(contextPath);
+    config.contextPath(contextPath);
     return this;
   }
 
@@ -118,8 +118,7 @@ final class DJex implements Jex {
     }
 
     final SpiRoutes routes =
-        new RoutesBuilder(
-                this.routing, this.config.ignoreTrailingSlashes())
+        new RoutesBuilder(routing, config.ignoreTrailingSlashes())
             .build();
 
     return new JdkServerStart().start(this, routes, CoreServiceManager.create(this));

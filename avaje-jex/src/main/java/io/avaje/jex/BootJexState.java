@@ -20,7 +20,6 @@ final class BootJexState {
   }
 
   State create(BeanScope beanScope) {
-
     Jex jex = beanScope.getOptional(Jex.class).orElse(Jex.create());
     jex.configureWith(beanScope);
 

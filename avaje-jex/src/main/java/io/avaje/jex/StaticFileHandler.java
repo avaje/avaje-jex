@@ -29,9 +29,7 @@ final class StaticFileHandler extends AbstractStaticHandler implements ExchangeH
 
   @Override
   public void handle(Context ctx) throws IOException {
-
     final var jdkExchange = ctx.exchange();
-
     if (singleFile != null) {
       sendFile(ctx, jdkExchange, singleFile.getPath(), singleFile);
       return;
@@ -42,19 +40,15 @@ final class StaticFileHandler extends AbstractStaticHandler implements ExchangeH
     }
 
     final String wholeUrlPath = jdkExchange.getRequestURI().getPath();
-
     if (wholeUrlPath.endsWith("/") || wholeUrlPath.equals(urlPrefix)) {
       sendFile(ctx, jdkExchange, indexFile.getPath(), indexFile);
-
       return;
     }
 
     final String urlPath = wholeUrlPath.substring(urlPrefix.length());
-
     File canonicalFile;
     try {
       canonicalFile = new File(filesystemRoot, urlPath).getCanonicalFile();
-
     } catch (IOException e) {
       // This may be more benign (i.e. not an attack, just a 403),
       // but we don't want an attacker to be able to discern the difference.
@@ -73,7 +67,6 @@ final class StaticFileHandler extends AbstractStaticHandler implements ExchangeH
   private void sendFile(Context ctx, HttpExchange jdkExchange, String urlPath, File canonicalFile)
       throws IOException {
     try (var fis = new FileInputStream(canonicalFile)) {
-
       String mimeType = lookupMime(urlPath);
       ctx.header("Content-Type", mimeType);
       ctx.headers(headers);

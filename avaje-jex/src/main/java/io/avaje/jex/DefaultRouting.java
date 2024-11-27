@@ -157,7 +157,7 @@ final class DefaultRouting implements Routing {
     return this;
   }
 
-  private static class Entry implements Routing.Entry {
+  private static final class Entry implements Routing.Entry {
 
     private final Type type;
     private final String path;
