@@ -63,8 +63,8 @@ class ExceptionManagerTest {
   @Test
   void expect_fallback_to_fallback() {
     HttpResponse<String> res = pair.request().path("nested").PUT().asString();
-    assertThat(res.statusCode()).isEqualTo(222);
-    assertThat(res.body()).isEqualTo("Handled IllegalStateException|null");
+    assertThat(res.statusCode()).isEqualTo(500);
+    assertThat(res.body()).isEqualTo("Internal Server Error");
   }
 
   @Test

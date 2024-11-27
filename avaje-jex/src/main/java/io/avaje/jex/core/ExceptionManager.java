@@ -42,7 +42,7 @@ public final class ExceptionManager {
       try {
         handler.handle(ctx, e);
       } catch (Exception ex) {
-        handle(ctx, ex);
+        unhandledException(ctx, ex);
       }
     } else if (e instanceof HttpResponseException ex) {
       defaultHandling(ctx, ex);
