@@ -46,7 +46,15 @@ public sealed interface Routing permits DefaultRouting {
    */
   Routing withRoles(Role... permittedRoles);
 
-  /** Register an exception handler for the given exception type. */
+  /**
+   * Registers an error handler that handles the given type of exceptions.
+   * This will replace an existing error handler for the same exception class.
+   *
+   * @param exceptionClass the type of exception to handle by this handler
+   * @param handler        the error handler
+   * @param <T>            exception type
+   * @return updated routing
+   */
   <T extends Exception> Routing error(Class<T> exceptionClass, ExceptionHandler<T> handler);
 
   /** Add a group of route handlers with a common path prefix. */

@@ -42,12 +42,12 @@ class DefaultErrorHandlingTest {
   private static class RT implements ExceptionHandler<RuntimeException> {
 
     @Override
-    public void handle(RuntimeException exception, Context ctx) {}
+    public void handle(Context ctx, RuntimeException exception) {}
   }
 
   private static class ISE implements ExceptionHandler<IllegalStateException> {
 
     @Override
-    public void handle(IllegalStateException exception, Context ctx) {}
+    public void handle(Context ctx, IllegalStateException exception) {}
   }
 }

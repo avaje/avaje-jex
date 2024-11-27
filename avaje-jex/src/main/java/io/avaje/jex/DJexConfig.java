@@ -3,9 +3,7 @@ package io.avaje.jex;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
 
 import javax.net.ssl.SSLContext;

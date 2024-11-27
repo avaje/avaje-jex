@@ -39,7 +39,11 @@ public final class ExceptionManager {
   void handle(SpiContext ctx, Exception e) {
     final ExceptionHandler<Exception> handler = find(e.getClass());
     if (handler != null) {
-      handler.handle(e, ctx);
+      try {
+        handler.handle(ctx, e);
+      } catch (Exception ex) {
+        unhandledException(ctx, ex);
+      }
     } else if (e instanceof HttpResponseException ex) {
       defaultHandling(ctx, ex);
     } else {
