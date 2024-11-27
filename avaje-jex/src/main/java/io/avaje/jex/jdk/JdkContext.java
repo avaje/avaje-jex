@@ -398,13 +398,18 @@ public final class JdkContext implements Context {
   @Override
   public Map<String, String> headerMap() {
     Map<String, String> map = new LinkedHashMap<>();
-    for (Map.Entry<String, List<String>> entry : exchange.getRequestHeaders().entrySet()) {
+    for (var entry : exchange.getRequestHeaders().entrySet()) {
       final List<String> value = entry.getValue();
       if (!value.isEmpty()) {
         map.put(entry.getKey(), value.getFirst());
       }
     }
     return map;
+  }
+
+  @Override
+  public Headers headers() {
+    return exchange.getRequestHeaders();
   }
 
   @Override

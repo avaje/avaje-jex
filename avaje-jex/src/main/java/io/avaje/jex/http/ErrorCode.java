@@ -1,5 +1,6 @@
 package io.avaje.jex.http;
 
+/** Http Error Status codes */
 public enum ErrorCode {
   REDIRECT(302, "Redirect"),
 

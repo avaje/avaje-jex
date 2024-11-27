@@ -9,23 +9,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 
-/**
- * Provides JsonService using avaje-jsonb.
- */
+/** Provides JsonService using avaje-jsonb. */
 public final class JsonbJsonService implements JsonService {
 
   private final Jsonb jsonb;
 
-  /**
-   * Create with defaults for Jsonb.
-   */
+  /** Create with defaults for Jsonb. */
   public JsonbJsonService() {
     this.jsonb = Jsonb.builder().build();
   }
 
-  /**
-   * Create with a Jsonb instance that might have custom configuration.
-   */
+  /** Create with a Jsonb instance that might have custom configuration. */
   public JsonbJsonService(Jsonb jsonb) {
     this.jsonb = jsonb;
   }
