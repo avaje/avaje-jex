@@ -1,6 +1,6 @@
 package io.avaje.jex;
 
-import static io.avaje.jex.ResourceLocation.CLASS_PATH;
+import static io.avaje.jex.StaticContentConfig.ResourceLocation.CLASS_PATH;
 
 import java.io.File;
 import java.net.URL;
