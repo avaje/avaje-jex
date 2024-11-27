@@ -36,4 +36,9 @@ final class JdkJexServer implements Jex.Server {
     log.log(Level.TRACE, "server http listeners stopped");
     lifecycle.status(AppLifecycle.Status.STOPPED);
   }
+
+  @Override
+  public int port() {
+    return server.getAddress().getPort();
+  }
 }
