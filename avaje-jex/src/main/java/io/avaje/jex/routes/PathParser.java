@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class PathParser {
+final class PathParser {
 
   private final String rawPath;
   private final List<String> paramNames = new ArrayList<>();
@@ -33,11 +33,11 @@ class PathParser {
     this.literal = segmentCount > 1 && regBuilder.literal();
   }
 
-  public boolean matches(String url) {
+  boolean matches(String url) {
     return matchRegex.matcher(url).matches();
   }
 
-  public Map<String, String> extractPathParams(String uri) {
+  Map<String, String> extractPathParams(String uri) {
     Map<String, String> pathMap = new LinkedHashMap<>();
     final List<String> values = values(uri);
     for (int i = 0; i < values.size(); i++) {
@@ -70,28 +70,28 @@ class PathParser {
   /**
    * Return the raw path that was parsed (match path).
    */
-  public String raw() {
+  String raw() {
     return rawPath;
   }
 
   /**
    * Return the number of path segments.
    */
-  public int segmentCount() {
+  int segmentCount() {
     return segmentCount;
   }
 
   /**
    * Return true if one of the segments is wildcard or slash accepting.
    */
-  public boolean multiSlash() {
+  boolean multiSlash() {
     return multiSlash;
   }
 
   /**
    * Return true if all path segments are literal.
    */
-  public boolean literal() {
+  boolean literal() {
     return literal;
   }
 }

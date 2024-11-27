@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import static java.util.stream.Collectors.toList;
 
-class PathSegmentParser {
+final class PathSegmentParser {
 
   private static final PathSegment WILDCARD = new PathSegment.Wildcard();
 

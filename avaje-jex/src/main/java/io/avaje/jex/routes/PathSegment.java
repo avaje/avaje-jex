@@ -18,13 +18,13 @@ abstract class PathSegment {
     return false;
   }
 
-  static class SlashIgnoringParameter extends Parameter {
+  static final class SlashIgnoringParameter extends Parameter {
     SlashIgnoringParameter(String param) {
       super(param, "[^/]+?"); // Accepting everything except slash;);
     }
   }
 
-  static class SlashAcceptingParameter extends Parameter {
+  static final class SlashAcceptingParameter extends Parameter {
     SlashAcceptingParameter(String param) {
       super(param, ".+?"); // Accept everything
     }
@@ -60,7 +60,7 @@ abstract class PathSegment {
     }
   }
 
-  static class Multi extends PathSegment {
+  static final class Multi extends PathSegment {
 
     private final List<PathSegment> segments;
 
@@ -93,7 +93,7 @@ abstract class PathSegment {
     }
   }
 
-  static class Literal extends PathSegment {
+  static final class Literal extends PathSegment {
     private final String content;
 
     Literal(String content) {
@@ -116,7 +116,7 @@ abstract class PathSegment {
     }
   }
 
-  static class Wildcard extends PathSegment {
+  static final class Wildcard extends PathSegment {
 
     @Override
     boolean multiSlash() {
