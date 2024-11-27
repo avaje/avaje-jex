@@ -7,7 +7,7 @@
 
 # Avaje-Jex
 
-Lightweight (~120KB) wrapper over the JDK's [`jdk.httpserver`](https://docs.oracle.com/en/java/javase/23/docs/api/jdk.httpserver/module-summary.html) `HttpServer` classes.
+Lightweight (~120KB) wrapper over the JDK's [`jdk.httpserver`](https://docs.oracle.com/en/java/javase/23/docs/api/jdk.httpserver/module-summary.html) classes.
 
 Features:
 
@@ -15,7 +15,7 @@ Features:
 - Fluent API
 - Static resource handling
 - Compression SPI (will use gzip by default if the caller accepts it and the response exceeds a certain size)
-- Json SPI (will use either Avaje JsonB or Jackson if available)
+- Json SPI (will use either Avaje Jsonb or Jackson if available)
 - Virtual threads enabled by default
 
 ```java
