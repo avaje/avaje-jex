@@ -6,7 +6,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import io.avaje.jex.ExchangeHandler;
-import io.avaje.jex.Routing.Type;
 import io.avaje.jex.routes.SpiRoutes;
 
 final class BaseHandler implements HttpHandler {
@@ -27,8 +26,8 @@ final class BaseHandler implements HttpHandler {
     ExchangeHandler handlerConsumer =
         (ExchangeHandler) exchange.getAttribute("SpiRoutes.Entry.Handler");
 
-    ctx.setMode(null);
+    ctx.setMode(Mode.EXCHANGE);
     handlerConsumer.handle(ctx);
-    ctx.setMode(Type.FILTER);
+    ctx.setMode(Mode.AFTER);
   }
 }

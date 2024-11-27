@@ -154,8 +154,6 @@ public sealed interface Routing permits DefaultRouting {
 
   /** The type of route entry. */
   enum Type {
-    /** Http Filter. */
-    FILTER,
     /** Http GET. */
     GET,
     /** Http POST. */

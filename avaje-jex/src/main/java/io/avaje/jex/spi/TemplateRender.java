@@ -6,6 +6,8 @@ import io.avaje.jex.Context;
 
 /**
  * Template rendering typically of html.
+ *
+ * @see {@link JexExtension} for SPI registration details.
  */
 public non-sealed interface TemplateRender extends JexExtension {
 
@@ -21,8 +23,8 @@ public non-sealed interface TemplateRender extends JexExtension {
    * Render the template and model typically as html to the given context.
    *
    * @param context The context to render the template to
-   * @param name    The template name
-   * @param model   The model of key value pairs used when rendering the template
+   * @param name The template name
+   * @param model The model of key value pairs used when rendering the template
    */
   void render(Context context, String name, Map<String, Object> model);
 }

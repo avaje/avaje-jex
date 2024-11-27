@@ -9,11 +9,9 @@ import com.sun.net.httpserver.HttpExchange;
 
 import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.Routing;
-import io.avaje.jex.Routing.Type;
 import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.http.NotFoundException;
 import io.avaje.jex.routes.SpiRoutes;
-import io.avaje.jex.spi.SpiContext;
 
 final class RoutingFilter extends Filter {
 
@@ -41,6 +39,7 @@ final class RoutingFilter extends Filter {
       var ctx = new JdkContext(mgr, compressionConfig, exchange, uri, Set.of());
       routes.inc();
       try {
+        ctx.setMode(Mode.BEFORE);
         processNoRoute(ctx, uri, routeType);
         exchange.setAttribute("JdkContext", ctx);
         chain.doFilter(exchange);
@@ -59,7 +58,7 @@ final class RoutingFilter extends Filter {
             new JdkContext(
                 mgr, compressionConfig, exchange, route.matchPath(), params, route.roles());
         try {
-          ctx.setMode(Type.FILTER);
+          ctx.setMode(Mode.BEFORE);
           exchange.setAttribute("JdkContext", ctx);
           ExchangeHandler handlerConsumer = route::handle;
           exchange.setAttribute("SpiRoutes.Entry.Handler", handlerConsumer);
@@ -81,7 +80,7 @@ final class RoutingFilter extends Filter {
     }
   }
 
-  private void handleException(SpiContext ctx, Exception e) {
+  private void handleException(JdkContext ctx, Exception e) {
     mgr.handleException(ctx, e);
   }
 

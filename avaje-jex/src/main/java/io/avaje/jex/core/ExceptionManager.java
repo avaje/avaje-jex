@@ -5,11 +5,12 @@ import static java.lang.System.Logger.Level.WARNING;
 import java.util.Map;
 
 import io.avaje.applog.AppLog;
+import io.avaje.jex.Context;
 import io.avaje.jex.ExceptionHandler;
 import io.avaje.jex.http.ErrorCode;
 import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.http.InternalServerErrorException;
-import io.avaje.jex.spi.SpiContext;
+import io.avaje.jex.jdk.JdkContext;
 
 public final class ExceptionManager {
 
@@ -36,7 +37,7 @@ public final class ExceptionManager {
     return null;
   }
 
-  void handle(SpiContext ctx, Exception e) {
+  void handle(JdkContext ctx, Exception e) {
     final ExceptionHandler<Exception> handler = find(e.getClass());
     if (handler != null) {
       try {
@@ -51,12 +52,12 @@ public final class ExceptionManager {
     }
   }
 
-  private void unhandledException(SpiContext ctx, Exception e) {
+  private void unhandledException(JdkContext ctx, Exception e) {
     log.log(WARNING, "Uncaught exception", e);
     defaultHandling(ctx, new InternalServerErrorException(ErrorCode.INTERNAL_SERVER_ERROR.message()));
   }
 
-  private void defaultHandling(SpiContext ctx, HttpResponseException exception) {
+  private void defaultHandling(JdkContext ctx, HttpResponseException exception) {
     ctx.status(exception.getStatus());
     if (exception.getStatus() == ErrorCode.REDIRECT.status()) {
       ctx.performRedirect();
@@ -80,9 +81,9 @@ public final class ExceptionManager {
     return message;
   }
 
-  private boolean useJson(SpiContext ctx) {
-    final String acceptHeader = ctx.header(HeaderKeys.ACCEPT);
+  private boolean useJson(Context ctx) {
+    final String acceptHeader = ctx.header(Constants.ACCEPT);
     return (acceptHeader != null && acceptHeader.contains(APPLICATION_JSON)
-        || APPLICATION_JSON.equals(ctx.responseHeader(HeaderKeys.CONTENT_TYPE)));
+        || APPLICATION_JSON.equals(ctx.responseHeader(Constants.CONTENT_TYPE)));
   }
 }

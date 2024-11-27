@@ -1,16 +1,15 @@
 package io.avaje.jex.jdk;
 
-import io.avaje.jex.Context;
-import io.avaje.jex.Routing;
-import io.avaje.jex.core.SpiServiceManager;
-import io.avaje.jex.spi.SpiContext;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+
+import io.avaje.jex.Context;
+import io.avaje.jex.Routing;
+import io.avaje.jex.core.SpiServiceManager;
 
 public final class CtxServiceManager implements SpiServiceManager {
 
@@ -71,7 +70,7 @@ public final class CtxServiceManager implements SpiServiceManager {
   }
 
   @Override
-  public void handleException(SpiContext ctx, Exception e) {
+  public void handleException(JdkContext ctx, Exception e) {
     delegate.handleException(ctx, e);
   }
 

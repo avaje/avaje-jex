@@ -20,8 +20,8 @@ import io.avaje.jex.Jex;
 import io.avaje.jex.Routing;
 import io.avaje.jex.core.json.JacksonJsonService;
 import io.avaje.jex.core.json.JsonbJsonService;
+import io.avaje.jex.jdk.JdkContext;
 import io.avaje.jex.spi.JsonService;
-import io.avaje.jex.spi.SpiContext;
 import io.avaje.jex.spi.TemplateRender;
 
 /**
@@ -90,7 +90,7 @@ public final class CoreServiceManager implements SpiServiceManager {
   }
 
   @Override
-  public void handleException(SpiContext ctx, Exception e) {
+  public void handleException(JdkContext ctx, Exception e) {
     exceptionHandler.handle(ctx, e);
   }
 
@@ -102,7 +102,7 @@ public final class CoreServiceManager implements SpiServiceManager {
 
   @Override
   public String requestCharset(Context ctx) {
-    return parseCharset(ctx.header(HeaderKeys.CONTENT_TYPE));
+    return parseCharset(ctx.header(Constants.CONTENT_TYPE));
   }
 
   static String parseCharset(String header) {

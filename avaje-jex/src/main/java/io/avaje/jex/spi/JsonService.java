@@ -5,9 +5,8 @@ import java.io.OutputStream;
 import java.util.Iterator;
 
 /**
- * **JsonService**
  *
- * <p>A service responsible for handling JSON-based request and response bodies.
+ * <p>Service responsible for handling JSON-based request and response bodies.
  *
  * @see {@link JexExtension} for SPI registration details.
  */
