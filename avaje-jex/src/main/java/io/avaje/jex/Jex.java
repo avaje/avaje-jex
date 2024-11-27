@@ -192,5 +192,8 @@ public sealed interface Jex permits DJex {
 
     /** Shutdown the server. */
     void shutdown();
+
+    /** The port of the server */
+    int port();
   }
 }
