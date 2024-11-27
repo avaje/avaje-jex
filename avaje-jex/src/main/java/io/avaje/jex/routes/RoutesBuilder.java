@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-public class RoutesBuilder {
+public final class RoutesBuilder {
 
   private final EnumMap<Routing.Type, RouteIndex> typeMap = new EnumMap<>(Routing.Type.class);
   private final boolean ignoreTrailingSlashes;

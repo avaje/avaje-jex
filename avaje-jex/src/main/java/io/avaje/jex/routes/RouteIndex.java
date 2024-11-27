@@ -3,7 +3,7 @@ package io.avaje.jex.routes;
 import java.util.ArrayList;
 import java.util.List;
 
-class RouteIndex {
+final class RouteIndex {
 
   /**
    * Partition entries by the number of path segments.

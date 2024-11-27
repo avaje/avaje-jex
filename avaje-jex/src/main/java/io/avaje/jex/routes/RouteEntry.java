@@ -9,7 +9,7 @@ import io.avaje.jex.Context;
 import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.security.Role;
 
-class RouteEntry implements SpiRoutes.Entry {
+final class RouteEntry implements SpiRoutes.Entry {
 
   private final AtomicLong active = new AtomicLong();
   private final PathParser path;

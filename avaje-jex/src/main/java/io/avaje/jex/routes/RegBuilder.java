@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 /**
  * Helper for PathParser to build regex for the path.
  */
-class RegBuilder {
+final class RegBuilder {
   private final StringJoiner full = new StringJoiner("/");
   private final StringJoiner extract = new StringJoiner("/");
   private boolean trailingSlash;

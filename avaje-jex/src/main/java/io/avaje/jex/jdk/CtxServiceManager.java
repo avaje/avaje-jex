@@ -16,7 +16,6 @@ public final class CtxServiceManager implements SpiServiceManager {
 
   private final String scheme;
   private final String contextPath;
-
   private final SpiServiceManager delegate;
 
   CtxServiceManager(SpiServiceManager delegate, String scheme, String contextPath) {
