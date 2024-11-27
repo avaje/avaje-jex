@@ -34,9 +34,9 @@ class ExceptionManagerTest {
         .put("/nested", ctx -> {
           throw new JsonException("hmm");
         })
-        .error(NullPointerException.class, (exception, ctx) -> ctx.text("npe"))
-        .error(IllegalStateException.class, (exception, ctx) -> ctx.status(222).text("Handled IllegalStateException|" + exception.getMessage()))
-        .error(JsonException.class, (exception, ctx) -> {throw new IllegalStateException();}));
+        .error(NullPointerException.class, (ctx, exception) -> ctx.text("npe"))
+        .error(IllegalStateException.class, (ctx, exception) -> ctx.status(222).text("Handled IllegalStateException|" + exception.getMessage()))
+        .error(JsonException.class, (ctx, exception) -> {throw new IllegalStateException();}));
 
     return TestPair.create(app);
   }

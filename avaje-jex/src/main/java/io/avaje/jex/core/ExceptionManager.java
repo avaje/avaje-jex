@@ -40,7 +40,7 @@ public final class ExceptionManager {
     final ExceptionHandler<Exception> handler = find(e.getClass());
     if (handler != null) {
       try {
-        handler.handle(e, ctx);
+        handler.handle(ctx, e);
       } catch (Exception ex) {
         handle(ctx, ex);
       }
