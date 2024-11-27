@@ -22,7 +22,7 @@ class StaticFileTest {
             .staticResource(b -> defaultFile(b.httpPath("/indexFile")))
             .staticResource(b -> defaultCP(b.httpPath("/indexWild/*")))
             .staticResource(b -> defaultFile(b.httpPath("/indexWildFile/*")))
-            .staticResource(b -> defaultCP(b.httpPath("/sus/*")))
+            .staticResource(b -> defaultCP(b.httpPath("/sus/")))
             .staticResource(b -> defaultFile(b.httpPath("/susFile/*")))
             .staticResource(b -> b.httpPath("/single").resource("/logback.xml"))
             .staticResource(
