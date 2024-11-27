@@ -113,7 +113,7 @@ final class DJex implements Jex {
       plugin(new HealthPlugin());
     }
 
-    if (!config.useSpiPlugins()) {
+    if (config.useSpiPlugins()) {
       CoreServiceLoader.plugins().forEach(p -> p.apply(this));
     }
 
