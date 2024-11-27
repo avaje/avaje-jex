@@ -3,7 +3,7 @@ package io.avaje.jex.core;
 import io.avaje.jex.AppLifecycle;
 import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
-import io.avaje.jex.JexPlugin;
+import io.avaje.jex.spi.JexPlugin;
 
 /**
  * Health plugin with liveness and readiness support based on

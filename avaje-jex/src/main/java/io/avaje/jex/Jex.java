@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.function.Consumer;
 
 import io.avaje.inject.BeanScope;
+import io.avaje.jex.spi.JexPlugin;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 

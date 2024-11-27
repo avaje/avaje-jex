@@ -1,4 +1,6 @@
-package io.avaje.jex;
+package io.avaje.jex.spi;
+
+import io.avaje.jex.Jex;
 
 /**
  * A plugin that can register things like routes, exception handlers etc.

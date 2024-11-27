@@ -26,7 +26,7 @@ final class BootJexState {
 
     JexConfig config = jex.config();
     int port = config.port();
-    config.port(Config.getInt("jex.port", port));
+    config.port(Config.getInt("server.port", port));
 
     jex.lifecycle().onShutdown(beanScope::close);
     return new State(jex.start());

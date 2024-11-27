@@ -418,6 +418,18 @@ final class JdkContext implements Context, SpiContext {
   }
 
   @Override
+  public Context header(String key, List<String> value) {
+    exchange.getResponseHeaders().put(key, value);
+    return this;
+  }
+
+  @Override
+  public Context headerMap(Map<String, List<String>> map) {
+    exchange.getResponseHeaders().putAll(map);
+    return this;
+  }
+
+  @Override
   public String host() {
     return header(HeaderKeys.HOST);
   }
