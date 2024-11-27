@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 
 import io.avaje.jex.spi.JexExtension;
+import io.avaje.jex.spi.JexPlugin;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
@@ -16,6 +17,7 @@ public final class CoreServiceLoader {
 
   private final JsonService jsonService;
   private final List<TemplateRender> renders = new ArrayList<>();
+  private final List<JexPlugin> plugins = new ArrayList<>();
 
   CoreServiceLoader() {
     JsonService spiJsonService = null;
@@ -23,6 +25,7 @@ public final class CoreServiceLoader {
       switch (spi) {
         case JsonService s -> spiJsonService = s;
         case TemplateRender r -> renders.add(r);
+        case JexPlugin p -> plugins.add(p);
       }
     }
     jsonService = spiJsonService;
@@ -34,5 +37,9 @@ public final class CoreServiceLoader {
 
   public static List<TemplateRender> getRenders() {
     return INSTANCE.renders;
+  }
+
+  public static List<JexPlugin> plugins() {
+    return INSTANCE.plugins;
   }
 }

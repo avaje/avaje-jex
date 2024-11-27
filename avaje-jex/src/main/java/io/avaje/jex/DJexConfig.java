@@ -22,12 +22,11 @@ final class DJexConfig implements JexConfig {
   private boolean health = true;
   private boolean ignoreTrailingSlashes = true;
   private Executor executor;
-
-  private boolean preCompressStaticFiles;
   private JsonService jsonService;
   private final Map<String, TemplateRender> renderers = new HashMap<>();
   private SSLContext sslContext;
-  private final CompressionConfig compression= new CompressionConfig();
+  private boolean useJexSpi = true;
+  private final CompressionConfig compression = new CompressionConfig();
 
   @Override
   public JexConfig port(int port) {
@@ -56,12 +55,6 @@ final class DJexConfig implements JexConfig {
   @Override
   public JexConfig ignoreTrailingSlashes(boolean ignoreTrailingSlashes) {
     this.ignoreTrailingSlashes = ignoreTrailingSlashes;
-    return this;
-  }
-
-  @Override
-  public JexConfig preCompressStaticFiles(boolean preCompressStaticFiles) {
-    this.preCompressStaticFiles = preCompressStaticFiles;
     return this;
   }
 
@@ -119,11 +112,6 @@ final class DJexConfig implements JexConfig {
   }
 
   @Override
-  public boolean preCompressStaticFiles() {
-    return preCompressStaticFiles;
-  }
-
-  @Override
   public JsonService jsonService() {
     return jsonService;
   }
@@ -153,5 +141,15 @@ final class DJexConfig implements JexConfig {
   @Override
   public CompressionConfig compression() {
     return compression;
+  }
+
+  @Override
+  public DJexConfig disableSpiPlugins() {
+    useJexSpi = false;
+    return this;
+  }
+
+  boolean useSpiPlugins() {
+    return useJexSpi;
   }
 }

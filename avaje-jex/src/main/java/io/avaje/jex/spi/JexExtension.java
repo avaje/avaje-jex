@@ -9,4 +9,4 @@ import io.avaje.spi.Service;
  * META-INF/services/io.avaje.jex.spi.JexExtension } for it to be loaded by Jex
  */
 @Service
-public sealed interface JexExtension permits JsonService, TemplateRender {}
+public sealed interface JexExtension permits JsonService, TemplateRender, JexPlugin {}
