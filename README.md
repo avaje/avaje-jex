@@ -11,11 +11,12 @@ Lightweight (~120KB) wrapper over the JDK's [`jdk.httpserver`](https://docs.orac
 
 Features:
 
+- [Context](https://javadoc.io/doc/io.avaje/avaje-jex/latest/io.avaje.jex/io/avaje/jex/Context.html) abstraction over `HttpExchange` to easily retrieve and send request/response data.
+- Fluent API
 - Static resource handling
-- Compression SPI (will use gzip by default)
+- Compression SPI (will use gzip by default if the caller accepts it and the response exceeds a certain size)
 - Json SPI (will use either Avaje JsonB or Jackson if available)
 - Virtual threads enabled by default
-- [Context](https://javadoc.io/doc/io.avaje/avaje-jex/latest/io.avaje.jex/io/avaje/jex/Context.html) abstraction over `HttpExchange` to easily retrieve and send request/response data.
 
 ```java
 var app = Jex.create()
@@ -37,18 +38,137 @@ var app = Jex.create()
   .start();
 ```
 
-### Alternate `HttpServer` Implementations
+## Alternate `HttpServer` Implementations
 
-As the JDK provides an SPI to swap the underlying `HttpServer`, you can easily use jex with alternate implementations by adding them as a dependency.
+The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily use jex with alternate implementations by adding them as a dependency.
 
-An example would be [@robaho's implementation](https://github.com/robaho/httpserver?tab=readme-ov-file#performance) where performance seems to be increased by 10x in certain benchmarks.
+An example would be [@robaho's implementation](https://github.com/robaho/httpserver?tab=readme-ov-file#performance) where performance seems to be increased by 10x over the default in certain benchmarks.
 
 ```xml
+<dependency>
+  <groupId>io.avaje</groupId>
+  <artifactId>avaje-jex</artifactId>
+  <version>3.0-RC2</version>
+</dependency>
+
 <dependency>
   <groupId>io.github.robaho</groupId>
   <artifactId>httpserver</artifactId>
   <version>1.0.9</version>
 </dependency>
+```
+
+## Use with [Avaje Http](https://avaje.io/http/)
+
+If you find yourself pining for the JAX-RS style of controllers, you can have avaje http generate jex adapters for your annotated classes.
+
+### Add dependencies
+```xml
+<dependency>
+  <groupId>io.avaje</groupId>
+  <artifactId>avaje-jex</artifactId>
+  <version>3.0-RC2</version>
+</dependency>
+
+<dependency>
+  <groupId>io.avaje</groupId>
+  <artifactId>avaje-http-api</artifactId>
+  <version>2.9-RC2</version>
+</dependency>
+
+<!-- Annotation processor -->
+<dependency>
+  <groupId>io.avaje</groupId>
+  <artifactId>avaje-http-sigma-generator</artifactId>
+  <version>2.9-RC2</version>
+  <scope>provided</scope>
+  <optional>true</optional>
+</dependency>
+```
+
+#### JDK 23+
+
+In JDK 23+, annotation processors are disabled by default, you will need to add a flag to re-enable.
+```xml
+<properties>
+  <maven.compiler.proc>full</maven.compiler.proc>
+</properties>
+```
+
+### Define a Controller
+```java
+package org.example.hello;
+
+import io.avaje.http.api.Controller;
+import io.avaje.http.api.Get;
+import java.util.List;
+
+@Controller("/widgets")
+public class WidgetController {
+  private final HelloComponent hello;
+  public WidgetController(HelloComponent hello) {
+    this.hello = hello;
+  }
+
+  @Get("/{id}")
+  Widget getById(int id) {
+    return new Widget(id, "you got it"+ hello.hello());
+  }
+
+  @Get()
+  List<Widget> getAll() {
+    return List.of(new Widget(1, "Rob"), new Widget(2, "Fi"));
+  }
+
+  record Widget(int id, String name){};
+}
+```
+
+This will generate routing code that we can register using any JSR-330 compliant DI:
+
+```java
+@Generated("avaje-jex-generator")
+@Singleton
+public class WidgetController$Route implements Routing.HttpService {
+
+  private final WidgetController controller;
+
+  public WidgetController$Route(WidgetController controller) {
+    this.controller = controller;
+  }
+
+  @Override
+  public void add(Routing routing) {
+    routing.get("/widgets/{id}", this::_getById);
+    routing.get("/widgets", this::_getAll);
+  }
+
+  private void _getById(Context ctx) throws IOException {
+    ctx.status(200);
+    var id = asInt(ctx.pathParam("id"));
+    ctx.json(controller.getById(id));
+  }
+
+  private void _getAll(Context ctx) throws IOException {
+    ctx.status(200);
+    ctx.json(controller.getAll());
+  }
+
+}
+```
+
+### JSR-330 DI Usage
+You can use whatever DI library you like.
+
+```java
+public class Main {
+
+  public static void main(String[] args ) {
+
+    List<Routing.HttpService> services = // Retrieve HttpServices via DI;
+    Jex.create().routing(services).start();
+  }
+}
 ```
 
 See also:
