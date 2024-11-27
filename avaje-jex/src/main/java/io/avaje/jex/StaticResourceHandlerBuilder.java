@@ -63,7 +63,7 @@ final class StaticResourceHandlerBuilder implements StaticContentConfig {
 
   @Override
   public StaticResourceHandlerBuilder httpPath(String path) {
-    this.path = path;
+    this.path = path.endsWith("/") ? path + "*" : path;
     return this;
   }
 
