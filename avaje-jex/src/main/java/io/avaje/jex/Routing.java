@@ -8,10 +8,11 @@ import java.util.function.Consumer;
 
 import io.avaje.jex.security.Role;
 
+/** Routing abstraction. */
 public sealed interface Routing permits DefaultRouting {
 
-  /** Add the routes provided by the Routing HttpService. */
-  Routing add(Routing.HttpService routes);
+  /** Add the routes provided by the given HttpService. */
+  Routing add(Routing.HttpService service);
 
   /** Add all the routes provided by the Routing Services. */
   Routing addAll(Collection<Routing.HttpService> routes);
@@ -47,12 +48,12 @@ public sealed interface Routing permits DefaultRouting {
   Routing withRoles(Role... permittedRoles);
 
   /**
-   * Registers an error handler that handles the given type of exceptions.
-   * This will replace an existing error handler for the same exception class.
+   * Registers an error handler that handles the given type of exceptions. This will replace an
+   * existing error handler for the same exception class.
    *
    * @param exceptionClass the type of exception to handle by this handler
-   * @param handler        the error handler
-   * @param <T>            exception type
+   * @param handler the error handler
+   * @param <T> exception type
    * @return updated routing
    */
   <T extends Exception> Routing error(Class<T> exceptionClass, ExceptionHandler<T> handler);
@@ -87,7 +88,7 @@ public sealed interface Routing permits DefaultRouting {
   /** Add a filter for all requests. */
   Routing filter(HttpFilter handler);
 
-  /** Add a preprocessing filter for all requests. */
+  /** Add a pre-processing filter for all requests. */
   default Routing before(Consumer<Context> handler) {
 
     return filter(
@@ -154,21 +155,13 @@ public sealed interface Routing permits DefaultRouting {
 
   /** The type of route entry. */
   enum Type {
-    /** Http GET. */
     GET,
-    /** Http POST. */
     POST,
-    /** HTTP PUT. */
     PUT,
-    /** HTTP PATCH. */
     PATCH,
-    /** HTTP DELETE. */
     DELETE,
-    /** HTTP HEAD. */
     HEAD,
-    /** HTTP TRACE. */
     TRACE,
-    /** HTTP OPTIONS. */
     OPTIONS;
   }
 }

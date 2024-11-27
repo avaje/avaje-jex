@@ -31,7 +31,7 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
   /**
    * Sets the file to serve, or the folder your files are located in. (default: "/public/")
    *
-   * @param root the root directory
+   * @param resource the root directory
    * @return the updated configuration
    */
   StaticContentConfig resource(String resource);
@@ -91,7 +91,7 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
    */
   StaticContentConfig location(ResourceLocation location);
 
-  /** the resource location */
+  /** Resource location */
   public enum ResourceLocation {
     CLASS_PATH,
     FILE
