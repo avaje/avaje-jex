@@ -3,6 +3,7 @@ package io.avaje.jex.jdk;
 import io.avaje.jex.Jex;
 import io.avaje.jex.http.ErrorCode;
 import io.avaje.jex.http.HttpResponseException;
+import io.avaje.jsonb.JsonException;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -30,8 +31,12 @@ class ExceptionManagerTest {
         .get("/fiveHundred", ctx -> {
           throw new IllegalArgumentException("Bar");
         })
+        .put("/nested", ctx -> {
+          throw new JsonException("hmm");
+        })
         .error(NullPointerException.class, (exception, ctx) -> ctx.text("npe"))
-        .error(IllegalStateException.class, (exception, ctx) -> ctx.status(222).text("Handled IllegalStateException|" + exception.getMessage())));
+        .error(IllegalStateException.class, (exception, ctx) -> ctx.status(222).text("Handled IllegalStateException|" + exception.getMessage()))
+        .error(JsonException.class, (exception, ctx) -> {throw new IllegalStateException();}));
 
     return TestPair.create(app);
   }
@@ -53,6 +58,13 @@ class ExceptionManagerTest {
     HttpResponse<String> res = pair.request().body("simple").POST().asString();
     assertThat(res.statusCode()).isEqualTo(222);
     assertThat(res.body()).isEqualTo("Handled IllegalStateException|foo");
+  }
+
+  @Test
+  void expect_fallback_to_fallback() {
+    HttpResponse<String> res = pair.request().path("nested").PUT().asString();
+    assertThat(res.statusCode()).isEqualTo(222);
+    assertThat(res.body()).isEqualTo("Handled IllegalStateException|null");
   }
 
   @Test
