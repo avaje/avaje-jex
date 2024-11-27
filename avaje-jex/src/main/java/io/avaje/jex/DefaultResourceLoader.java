@@ -10,18 +10,15 @@ final class DefaultResourceLoader implements ClassResourceLoader {
   private final Class<?> clazz;
 
   DefaultResourceLoader() {
-
     this.clazz = DefaultResourceLoader.class;
   }
 
   DefaultResourceLoader(Class<?> clazz) {
-
     this.clazz = clazz;
   }
 
   @Override
   public URL loadResource(String resourcePath) {
-
     var url = clazz.getResource(resourcePath);
     if (url == null) {
       // search the module path for top level resource
@@ -35,11 +32,10 @@ final class DefaultResourceLoader implements ClassResourceLoader {
 
   @Override
   public InputStream loadResourceAsStream(String resourcePath) {
-
-    var url = clazz.getResourceAsStream(resourcePath);
-    if (url == null) {
+    var resourceStream = clazz.getResourceAsStream(resourcePath);
+    if (resourceStream == null) {
       // search the module path for top level resource
-      url =
+      resourceStream =
           Optional.ofNullable(ClassLoader.getSystemResourceAsStream(resourcePath))
               .orElseGet(
                   () ->
@@ -47,6 +43,6 @@ final class DefaultResourceLoader implements ClassResourceLoader {
                           .getContextClassLoader()
                           .getResourceAsStream(resourcePath));
     }
-    return Objects.requireNonNull(url, "Unable to locate resource: " + resourcePath);
+    return Objects.requireNonNull(resourceStream, "Unable to locate resource: " + resourcePath);
   }
 }

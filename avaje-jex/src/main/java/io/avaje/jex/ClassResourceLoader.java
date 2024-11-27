@@ -14,7 +14,6 @@ import java.net.URL;
 public interface ClassResourceLoader {
 
   static ClassResourceLoader fromClass(Class<?> clazz) {
-
     return new DefaultResourceLoader(clazz);
   }
 

@@ -18,9 +18,9 @@ final class DefaultLifecycle implements AppLifecycle {
   private final List<Pair> shutdownRunnable = new ArrayList<>();
   private final ReentrantLock lock = new ReentrantLock();
   private final AtomicInteger next = new AtomicInteger(1000);
+  private final AtomicBoolean jvmStop = new AtomicBoolean();
   private Status status = Status.STARTING;
   private Hook shutdownHook;
-  private final AtomicBoolean jvmStop = new AtomicBoolean();
 
   @Override
   public void onShutdown(Runnable onShutdown) {
@@ -50,7 +50,7 @@ final class DefaultLifecycle implements AppLifecycle {
     }
   }
 
-  static class Hook extends Thread {
+  static final class Hook extends Thread {
     private final AtomicBoolean jvmStop;
 
     Hook(Runnable runnable, AtomicBoolean jvmStop) {
@@ -106,7 +106,7 @@ final class DefaultLifecycle implements AppLifecycle {
     }
   }
 
-  static class Pair implements Comparable<Pair> {
+  static final class Pair implements Comparable<Pair> {
     private final Runnable callback;
     private final int order;
 

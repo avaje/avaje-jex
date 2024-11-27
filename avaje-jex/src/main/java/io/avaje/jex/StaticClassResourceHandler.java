@@ -1,6 +1,5 @@
 package io.avaje.jex;
 
-import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -29,28 +28,24 @@ final class StaticClassResourceHandler extends AbstractStaticHandler implements 
   }
 
   @Override
-  public void handle(Context ctx) throws IOException {
-
-    final var jdkExchange = ctx.exchange();
-
+  public void handle(Context ctx) {
     if (singleFile != null) {
       sendURL(ctx, singleFile.getPath(), singleFile);
       return;
     }
 
+    final var jdkExchange = ctx.exchange();
     if (skipFilePredicate.test(ctx)) {
       throw404(jdkExchange);
     }
 
     final String wholeUrlPath = jdkExchange.getRequestURI().getPath();
-
     if (wholeUrlPath.endsWith("/") || wholeUrlPath.equals(urlPrefix)) {
       sendURL(ctx, indexFile.getPath(), indexFile);
       return;
     }
 
     final String urlPath = wholeUrlPath.substring(urlPrefix.length());
-
     final String normalizedPath =
         Paths.get(filesystemRoot, urlPath).normalize().toString().replace("\\", "/");
 
@@ -67,8 +62,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler implements 
     }
   }
 
-  private void sendURL(Context ctx, String urlPath, URL path) throws IOException {
-
+  private void sendURL(Context ctx, String urlPath, URL path) {
     try (var fis = path.openStream()) {
       ctx.header("Content-Type", lookupMime(urlPath));
       ctx.headers(headers);
