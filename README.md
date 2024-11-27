@@ -5,9 +5,17 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.avaje/avaje-jex.svg?label=Maven%20Central)](https://mvnrepository.com/artifact/io.avaje/avaje-jex)
 [![javadoc](https://javadoc.io/badge2/io.avaje/avaje-jex/javadoc.svg?color=purple)](https://javadoc.io/doc/io.avaje/avaje-jex)
 
-# avaje-jex
+# Avaje-Jex
 
-Javalin style wrapper over the JDK's [`jdk.httpserver`](https://docs.oracle.com/en/java/javase/23/docs/api/jdk.httpserver/module-summary.html) `HttpServer` classes.
+Lightweight (~120KB) wrapper over the JDK's [`jdk.httpserver`](https://docs.oracle.com/en/java/javase/23/docs/api/jdk.httpserver/module-summary.html) `HttpServer` classes.
+
+Features:
+
+- Static resource handling
+- Compression SPI (will use gzip by default)
+- Json SPI (will use either Avaje JsonB or Jackson if available)
+- Virtual threads enabled by default
+- [Context](https://javadoc.io/doc/io.avaje/avaje-jex/latest/io.avaje.jex/io/avaje/jex/Context.html) abstraction over `HttpExchange` to easily retrieve and send request/response data.
 
 ```java
 var app = Jex.create()
@@ -20,6 +28,29 @@ var app = Jex.create()
           chain.proceed();
           System.out.println("after request");
         }))
+  .staticResource(
+        b ->
+          b.httpPath("/myResource")
+           .resource("/public")
+           .directoryIndex("index.html"))
   .port(8080)
   .start();
 ```
+
+### Alternate `HttpServer` Implementations
+
+As the JDK provides an SPI to swap the underlying `HttpServer`, you can easily use jex with alternate implementations by adding them as a dependency.
+
+An example would be [@robaho's implementation](https://github.com/robaho/httpserver?tab=readme-ov-file#performance) where performance seems to be increased by 10x in certain benchmarks.
+
+```xml
+<dependency>
+  <groupId>io.github.robaho</groupId>
+  <artifactId>httpserver</artifactId>
+  <version>1.0.9</version>
+</dependency>
+```
+
+See also:
+
+- [Javalin](https://github.com/javalin/javalin) (A lightweight wrapper over Jetty)
