@@ -149,6 +149,16 @@ public sealed interface Jex permits DJex {
   Jex port(int port);
 
   /**
+   * Sets the context path for the Jex application.
+   *
+   * <p>The context path is the portion of the URL that identifies the application.
+   *
+   * @param contextPath The context path to use.
+   * @return The updated Jex instance.
+   */
+  Jex context(String contextPath);
+
+  /**
    * Explicitly register a template renderer.
    *
    * <p>Note that if not explicitly registered TemplateRender's can be automatically registered via

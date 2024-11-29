@@ -2,7 +2,6 @@ package io.avaje.jex.jdk;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.lang.System.Logger.Level;
 import java.net.InetSocketAddress;
 
 import com.sun.net.httpserver.HttpServer;
@@ -14,6 +13,8 @@ import io.avaje.jex.Jex;
 import io.avaje.jex.core.SpiServiceManager;
 import io.avaje.jex.routes.SpiRoutes;
 
+import static java.lang.System.Logger.Level.INFO;
+
 public final class JdkServerStart {
 
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
@@ -22,6 +23,7 @@ public final class JdkServerStart {
     try {
       final var config = jex.config();
       final var port = new InetSocketAddress(config.port());
+      final var contextPath = config.contextPath();
       final var https = config.httpsConfig();
       final var backlog = config.socketBacklog();
 
@@ -37,18 +39,15 @@ public final class JdkServerStart {
         server = HttpServer.create(port, backlog);
       }
 
-      final var manager = new CtxServiceManager(serviceManager, scheme, "");
-
+      final var manager = new CtxServiceManager(serviceManager, scheme, contextPath);
       final var handler = new RoutingHandler(routes, manager, config.compression());
 
       server.setExecutor(config.executor());
-      server.createContext("/", handler);
+      server.createContext(contextPath, handler);
       server.start();
 
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
-      log.log(
-          Level.INFO,
-          "started com.sun.net.httpserver.HttpServer on port %s://%s".formatted(scheme, port));
+      log.log(INFO, "started com.sun.net.httpserver.HttpServer on port %s://%s", scheme, port);
       return new JdkJexServer(server, jex.lifecycle(), handler);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
