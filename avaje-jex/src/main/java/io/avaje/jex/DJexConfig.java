@@ -15,6 +15,7 @@ import io.avaje.jex.spi.TemplateRender;
 final class DJexConfig implements JexConfig {
 
   private int port = 8080;
+  private String contextPath = "/";
   private int socketBacklog = 0;
   private boolean health = true;
   private boolean ignoreTrailingSlashes = true;
@@ -28,6 +29,12 @@ final class DJexConfig implements JexConfig {
   @Override
   public JexConfig port(int port) {
     this.port = port;
+    return this;
+  }
+
+  @Override
+  public JexConfig contextPath(String contextPath) {
+    this.contextPath = contextPath;
     return this;
   }
 
@@ -80,6 +87,11 @@ final class DJexConfig implements JexConfig {
   @Override
   public int port() {
     return port;
+  }
+
+  @Override
+  public String contextPath() {
+    return contextPath;
   }
 
   @Override

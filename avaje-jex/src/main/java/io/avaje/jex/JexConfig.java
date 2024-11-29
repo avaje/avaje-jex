@@ -28,6 +28,13 @@ public sealed interface JexConfig permits DJexConfig {
   JexConfig port(int port);
 
   /**
+   * Set the contextPath.
+   *
+   * @param contextPath The context path which defaults to "/".
+   */
+  JexConfig contextPath(String contextPath);
+
+  /**
    * Set the socket backlog. If this value is less than or equal to zero, then a system default
    * value is used
    *
@@ -90,6 +97,9 @@ public sealed interface JexConfig permits DJexConfig {
   /** Returns the configured port number. (Defaults to 8080 if not set) */
   int port();
 
+  /** Return the contextPath. (Defaults to "/") */
+  String contextPath();
+
   /** Returns whether the health endpoint is enabled. */
   boolean health();
 
@@ -122,4 +132,5 @@ public sealed interface JexConfig permits DJexConfig {
 
   /** Return the socket backlog. */
   int socketBacklog();
+
 }

@@ -89,6 +89,12 @@ final class DJex implements Jex {
   }
 
   @Override
+  public Jex context(String contextPath) {
+    config.contextPath(contextPath);
+    return this;
+  }
+
+  @Override
   public Jex register(TemplateRender renderer, String... extensions) {
     for (String extension : extensions) {
       config.renderer(extension, renderer);

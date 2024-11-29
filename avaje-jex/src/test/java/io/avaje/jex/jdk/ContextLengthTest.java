@@ -90,7 +90,7 @@ class ContextLengthTest {
       .GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.body()).isEqualTo("contextPath:");
+    assertThat(res.body()).isEqualTo("contextPath:/");
   }
 
   @Test
