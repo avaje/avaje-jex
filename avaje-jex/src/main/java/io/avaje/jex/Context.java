@@ -78,7 +78,7 @@ public interface Context {
   Context cookie(String name, String value, int maxAge);
 
   /**
-   * Sets a cookie using the provided `Cookie` object.
+   * Sets a cookie using the provided {@link Cookie} object.
    *
    * @param cookie The cookie object to set.
    */

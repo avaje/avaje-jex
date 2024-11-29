@@ -6,7 +6,6 @@ import java.lang.System.Logger.Level;
 import java.net.InetSocketAddress;
 
 import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsServer;
 
 import io.avaje.applog.AppLog;
@@ -21,26 +20,28 @@ public final class JdkServerStart {
 
   public Jex.Server start(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
     try {
-      var port = new InetSocketAddress(jex.config().port());
-      final HttpsConfigurator https = jex.config().httpsConfig();
+      final var config = jex.config();
+      final var port = new InetSocketAddress(config.port());
+      final var https = config.httpsConfig();
+      final var backlog = config.socketBacklog();
 
       final HttpServer server;
       final String scheme;
       if (https != null) {
-        var httpsServer = HttpsServer.create(port, 0);
+        var httpsServer = HttpsServer.create(port, backlog);
         httpsServer.setHttpsConfigurator(https);
         server = httpsServer;
         scheme = "https";
       } else {
         scheme = "http";
-        server = HttpServer.create(port, 0);
+        server = HttpServer.create(port, backlog);
       }
 
       final var manager = new CtxServiceManager(serviceManager, scheme, "");
 
-      final var handler = new RoutingHandler(routes, manager, jex.config().compression());
+      final var handler = new RoutingHandler(routes, manager, config.compression());
 
-      server.setExecutor(jex.config().executor());
+      server.setExecutor(config.executor());
       server.createContext("/", handler);
       server.start();
 

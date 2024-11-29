@@ -134,9 +134,9 @@ public sealed interface Jex permits DJex {
    * Configures the Jex instance using a functional approach.
    *
    * <p>The provided consumer lambda allows you to customize the Jex configuration, such as setting
-   * the port, context path, and other options.
+   * the port, compression, and other options.
    *
-   * @param configure A consumer lambda that accepts a `JexConfig` instance for configuration.
+   * @param configure A consumer lambda that accepts a {@link JexConfig} instance for configuration.
    * @return The configured Jex instance.
    */
   Jex configure(Consumer<JexConfig> configure);
@@ -145,19 +145,8 @@ public sealed interface Jex permits DJex {
    * Sets the port number on which the Jex server will listen for incoming requests.
    *
    * @param port The port number to use.
-   * @return The updated Jex instance.
    */
   Jex port(int port);
-
-  /**
-   * Sets the context path for the Jex application.
-   *
-   * <p>The context path is the portion of the URL that identifies the application.
-   *
-   * @param contextPath The context path to use.
-   * @return The updated Jex instance.
-   */
-  Jex context(String contextPath);
 
   /**
    * Explicitly register a template renderer.
