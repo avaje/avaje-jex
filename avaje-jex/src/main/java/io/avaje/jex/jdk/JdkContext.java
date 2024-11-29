@@ -17,6 +17,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,6 +47,7 @@ public final class JdkContext implements Context {
   private final CompressionConfig compressionConfig;
   private final String path;
   private final Map<String, String> pathParams;
+  private final Map<String, Object> attributes = new HashMap<>();
   private final Set<Role> roles;
   private final HttpExchange exchange;
   private Mode mode;
@@ -92,14 +94,14 @@ public final class JdkContext implements Context {
 
   @Override
   public Context attribute(String key, Object value) {
-    exchange.setAttribute(key, value);
+    attributes.put(key, value);
     return this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public <T> T attribute(String key) {
-    return (T) exchange.getAttribute(key);
+    return (T) attributes.get(key);
   }
 
   private Map<String, String> parseCookies() {

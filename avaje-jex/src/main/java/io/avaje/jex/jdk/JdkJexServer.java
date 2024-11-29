@@ -13,9 +13,9 @@ final class JdkJexServer implements Jex.Server {
 
   private final HttpServer server;
   private final AppLifecycle lifecycle;
-  private final BaseHandler handler;
+  private final RoutingHandler handler;
 
-  JdkJexServer(HttpServer server, AppLifecycle lifecycle, BaseHandler handler) {
+  JdkJexServer(HttpServer server, AppLifecycle lifecycle, RoutingHandler handler) {
     this.server = server;
     this.lifecycle = lifecycle;
     this.handler = handler;

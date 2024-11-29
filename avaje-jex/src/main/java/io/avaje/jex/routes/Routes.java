@@ -7,8 +7,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
 
 import io.avaje.applog.AppLog;
+import io.avaje.jex.HttpFilter;
 import io.avaje.jex.Routing;
-import io.avaje.jex.jdk.JdkFilter;
 
 final class Routes implements SpiRoutes {
 
@@ -22,12 +22,12 @@ final class Routes implements SpiRoutes {
   /**
    * The filters.
    */
-  private final List<JdkFilter> filters;
+  private final List<HttpFilter> filters;
 
   private final AtomicLong noRouteCounter = new AtomicLong();
 
 
-  Routes(EnumMap<Routing.Type, RouteIndex> typeMap, List<JdkFilter> filters) {
+  Routes(EnumMap<Routing.Type, RouteIndex> typeMap, List<HttpFilter> filters) {
     this.typeMap = typeMap;
     this.filters = filters;
   }
@@ -79,7 +79,7 @@ final class Routes implements SpiRoutes {
   }
 
   @Override
-  public List<JdkFilter> filters() {
+  public List<HttpFilter> filters() {
     return filters;
   }
 }

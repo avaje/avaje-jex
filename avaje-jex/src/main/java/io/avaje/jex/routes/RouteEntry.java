@@ -1,11 +1,9 @@
 package io.avaje.jex.routes;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
-import io.avaje.jex.Context;
 import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.security.Role;
 
@@ -43,8 +41,8 @@ final class RouteEntry implements SpiRoutes.Entry {
   }
 
   @Override
-  public void handle(Context ctx) throws IOException {
-    handler.handle(ctx);
+  public ExchangeHandler handler() {
+    return handler;
   }
 
   @Override

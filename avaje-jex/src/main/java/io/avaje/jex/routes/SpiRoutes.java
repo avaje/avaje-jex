@@ -6,8 +6,9 @@ import java.util.Map;
 import java.util.Set;
 
 import io.avaje.jex.Context;
+import io.avaje.jex.ExchangeHandler;
+import io.avaje.jex.HttpFilter;
 import io.avaje.jex.Routing;
-import io.avaje.jex.jdk.JdkFilter;
 import io.avaje.jex.security.Role;
 
 /**
@@ -43,7 +44,7 @@ public sealed interface SpiRoutes permits Routes {
   /**
    * Get filters
    */
-  List<JdkFilter> filters();
+  List<HttpFilter> filters();
 
   /**
    * A route entry.
@@ -56,9 +57,9 @@ public sealed interface SpiRoutes permits Routes {
     boolean matches(String requestUri);
 
     /**
-     * Handle the request.
+     * Handler for the request.
      */
-    void handle(Context ctx) throws IOException;
+    ExchangeHandler handler();
 
     /**
      * Return the path parameter map given the uri.
