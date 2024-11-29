@@ -2,48 +2,111 @@ package io.avaje.jex;
 
 import java.util.Map;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.function.Consumer;
-
-import javax.net.ssl.SSLContext;
 
 import com.sun.net.httpserver.HttpsConfigurator;
 
 import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.spi.JexPlugin;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
-/** Jex configuration. */
+/**
+ * Jex configuration interface.
+ *
+ * <p>Provides a fluent API for configuring Jex's various settings, including port, host, health
+ * endpoint, trailing slash handling, JSON service, template renderers, executor service, HTTPS
+ * configuration, compression, and plugin loading.
+ */
 public sealed interface JexConfig permits DJexConfig {
 
-  /** Set the port to use. Defaults to 7001. */
+  /**
+   * Sets the port number on which Jex will listen for incoming requests.
+   *
+   * @param port The port number.
+   */
   JexConfig port(int port);
 
-  /** Set the host to bind to. */
-  JexConfig host(String host);
+  /**
+   * Set the socket backlog. If this value is less than or equal to zero, then a system default
+   * value is used
+   *
+   * @param backlog the socket backlog. If this value is less than or equal to zero, then a system
+   *     default value is used
+   */
+  JexConfig socketBacklog(int backlog);
 
-  /** Set the contextPath. */
-  JexConfig contextPath(String contextPath);
-
-  /** Set to true to include the health endpoint. Defaults to true. */
+  /**
+   * Enables/Disables the default health endpoint.
+   *
+   * @param health whether to enable/disable.
+   */
   JexConfig health(boolean health);
 
-  /** Set to true to ignore trailing slashes. Defaults to true. */
+  /**
+   * Configures whether trailing slashes in request URIs should be ignored.
+   *
+   * @param ignoreTrailingSlashes whether to enable/disable trailing slashes.
+   */
   JexConfig ignoreTrailingSlashes(boolean ignoreTrailingSlashes);
 
-  /** Set the JsonService to use. */
+  /**
+   * Sets the JSON service used for (de)serialization.
+   *
+   * @param jsonService The json service instance.
+   */
   JexConfig jsonService(JsonService jsonService);
 
   /**
-   * Register a template renderer explicitly.
+   * Registers a template renderer for a specific file extension.
    *
-   * @param extension The extension the renderer applies to.
-   * @param renderer The template render to use for the given extension.
+   * @param extension The file extension.
+   * @param renderer The template renderer implementation.
    */
   JexConfig renderer(String extension, TemplateRender renderer);
 
-  /** Set executor for serving requests. */
+  /**
+   * Sets the executor service used to handle incoming requests.
+   *
+   * @param executor The executor service.
+   */
   JexConfig executor(Executor executor);
+
+  /**
+   * Enable https with the provided {@link HttpsConfigurator}
+   *
+   * @param https The HTTPS configuration.
+   */
+  JexConfig httpsConfig(HttpsConfigurator https);
+
+  /**
+   * Configures compression settings using a consumer function.
+   *
+   * @param consumer The consumer function to configure compression settings.
+   * @return The updated configuration.
+   */
+  JexConfig compression(Consumer<CompressionConfig> consumer);
+
+  /** Returns the configured port number. (Defaults to 8080 if not set) */
+  int port();
+
+  /** Returns whether the health endpoint is enabled. */
+  boolean health();
+
+  /** Returns whether trailing slashes in request URIs are ignored. */
+  boolean ignoreTrailingSlashes();
+
+  /** Returns the configured JSON service. */
+  JsonService jsonService();
+
+  /** Return the {@link HttpsConfigurator} if https is enabled. */
+  HttpsConfigurator httpsConfig();
+
+  /** Returns the configured compression settings. */
+  CompressionConfig compression();
+
+  /** Returns a map of registered template renderers, keyed by file extension. */
+  Map<String, TemplateRender> renderers();
 
   /**
    * Executor for serving requests. Defaults to a {@link
@@ -51,39 +114,12 @@ public sealed interface JexConfig permits DJexConfig {
    */
   Executor executor();
 
-  /** Return the port to use. */
-  int port();
-
-  /** Return the host to bind to. */
-  String host();
-
-  /** Return the contextPath to use. */
-  String contextPath();
-
-  /** Return true to include the health endpoint. */
-  boolean health();
-
-  /** Return true to ignore trailing slashes. */
-  boolean ignoreTrailingSlashes();
-
-  /** Return the JsonService. */
-  JsonService jsonService();
-
-  /** Return the {@link HttpsConfigurator} if https is enabled. */
-  HttpsConfigurator httpsConfig();
-
-  /** Enable https with the provided {@link HttpsConfigurator} */
-  JexConfig httpsConfig(HttpsConfigurator https);
-
-  /** Return the template renderers registered by extension. */
-  Map<String, TemplateRender> renderers();
-
-  /** configure compression via consumer */
-  JexConfig compression(Consumer<CompressionConfig> consumer);
-
-  /** get compression configuration */
-  CompressionConfig compression();
-
-  /** whether to disable JexPlugins loaded from ServiceLoader */
+  /**
+   * Disables auto-configuring the current instance with {@link JexPlugin} loaded using the
+   * ServiceLoader.
+   */
   JexConfig disableSpiPlugins();
+
+  /** Return the socket backlog. */
+  int socketBacklog();
 }
