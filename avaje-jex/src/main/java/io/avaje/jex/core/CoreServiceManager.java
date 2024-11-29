@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import io.avaje.applog.AppLog;
 import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
 import io.avaje.jex.Routing;
@@ -29,7 +28,7 @@ import io.avaje.jex.spi.TemplateRender;
  */
 public final class CoreServiceManager implements SpiServiceManager {
 
-  private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
+  private static final System.Logger log = System.getLogger("io.avaje.jex");
   public static final String UTF_8 = "UTF-8";
 
   private final HttpMethodMap methodMap = new HttpMethodMap();

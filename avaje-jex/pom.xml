@@ -16,12 +16,6 @@
 
     <dependency>
       <groupId>io.avaje</groupId>
-      <artifactId>avaje-applog</artifactId>
-      <version>1.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.avaje</groupId>
       <artifactId>avaje-config</artifactId>
       <version>4.0</version>
       <optional>true</optional>
