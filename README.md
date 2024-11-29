@@ -1,3 +1,4 @@
+![Supported JVM Versions](https://img.shields.io/badge/JVM-21-brightgreen.svg?&logo=openjdk)
 [![Discord](https://img.shields.io/discord/1074074312421683250?color=%237289da&label=discord)](https://discord.gg/Qcqf9R27BR)
 [![Build](https://github.com/avaje/avaje-jex/actions/workflows/build.yml/badge.svg)](https://github.com/avaje/avaje-jex/actions/workflows/build.yml)
 [![JDK EA](https://github.com/avaje/avaje-jex/actions/workflows/jdk-ea.yml/badge.svg)](https://github.com/avaje/avaje-jex/actions/workflows/jdk-ea.yml)
@@ -54,7 +55,7 @@ An example would be [@robaho's implementation](https://github.com/robaho/httpser
 <dependency>
   <groupId>io.github.robaho</groupId>
   <artifactId>httpserver</artifactId>
-  <version>1.0.9</version>
+  <version>1.0.10</version>
 </dependency>
 ```
 
@@ -79,7 +80,7 @@ If you find yourself pining for the JAX-RS style of controllers, you can have av
 <!-- Annotation processor -->
 <dependency>
   <groupId>io.avaje</groupId>
-  <artifactId>avaje-http-sigma-generator</artifactId>
+  <artifactId>avaje-http-jex-generator</artifactId>
   <version>2.9-RC3</version>
   <scope>provided</scope>
   <optional>true</optional>
