@@ -6,7 +6,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-import javax.net.ssl.SSLContext;
+import com.sun.net.httpserver.HttpsConfigurator;
 
 import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.spi.JsonService;
@@ -22,7 +22,7 @@ final class DJexConfig implements JexConfig {
   private Executor executor;
   private JsonService jsonService;
   private final Map<String, TemplateRender> renderers = new HashMap<>();
-  private SSLContext sslContext;
+  private HttpsConfigurator httpsConfig;
   private boolean useJexSpi = true;
   private final CompressionConfig compression = new CompressionConfig();
 
@@ -120,13 +120,13 @@ final class DJexConfig implements JexConfig {
   }
 
   @Override
-  public SSLContext sslContext() {
-    return this.sslContext;
+  public HttpsConfigurator httpsConfig() {
+    return this.httpsConfig;
   }
 
   @Override
-  public JexConfig sslContext(SSLContext ssl) {
-    this.sslContext = ssl;
+  public JexConfig httpsConfig(HttpsConfigurator ssl) {
+    this.httpsConfig = ssl;
     return this;
   }
 

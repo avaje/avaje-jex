@@ -22,13 +22,13 @@ public final class JdkServerStart {
   public Jex.Server start(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
     try {
       var port = new InetSocketAddress(jex.config().port());
-      final var sslContext = jex.config().sslContext();
+      final HttpsConfigurator https = jex.config().httpsConfig();
 
       final HttpServer server;
       final String scheme;
-      if (sslContext != null) {
+      if (https != null) {
         var httpsServer = HttpsServer.create(port, 0);
-        httpsServer.setHttpsConfigurator(new HttpsConfigurator(sslContext));
+        httpsServer.setHttpsConfigurator(https);
         server = httpsServer;
         scheme = "https";
       } else {
@@ -38,11 +38,10 @@ public final class JdkServerStart {
 
       final var manager = new CtxServiceManager(serviceManager, scheme, "");
 
-      var handler = new BaseHandler(routes);
-      var context = server.createContext("/", handler);
-      context.getFilters().add(new RoutingFilter(routes, manager, jex.config().compression()));
-      context.getFilters().addAll(routes.filters());
+      final var handler = new RoutingHandler(routes, manager, jex.config().compression());
+
       server.setExecutor(jex.config().executor());
+      server.createContext("/", handler);
       server.start();
 
       jex.lifecycle().status(AppLifecycle.Status.STARTED);

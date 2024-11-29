@@ -7,6 +7,8 @@ import java.util.function.Consumer;
 
 import javax.net.ssl.SSLContext;
 
+import com.sun.net.httpserver.HttpsConfigurator;
+
 import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
@@ -67,11 +69,11 @@ public sealed interface JexConfig permits DJexConfig {
   /** Return the JsonService. */
   JsonService jsonService();
 
-  /** Return the ssl context if https is enabled. */
-  SSLContext sslContext();
+  /** Return the {@link HttpsConfigurator} if https is enabled. */
+  HttpsConfigurator httpsConfig();
 
-  /** Enable https with the provided SSLContext. */
-  JexConfig sslContext(SSLContext ssl);
+  /** Enable https with the provided {@link HttpsConfigurator} */
+  JexConfig httpsConfig(HttpsConfigurator https);
 
   /** Return the template renderers registered by extension. */
   Map<String, TemplateRender> renderers();
