@@ -101,7 +101,6 @@ public sealed interface Jex permits DJex {
   default Jex staticResource(Consumer<StaticContentConfig> consumer) {
     var builder = StaticResourceHandlerBuilder.builder();
     consumer.accept(builder);
-
     return staticResource(builder);
   }
 

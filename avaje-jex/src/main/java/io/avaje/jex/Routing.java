@@ -90,7 +90,6 @@ public sealed interface Routing permits DefaultRouting {
 
   /** Add a pre-processing filter for all requests. */
   default Routing before(Consumer<Context> handler) {
-
     return filter(
         (ctx, chain) -> {
           handler.accept(ctx);
@@ -100,7 +99,6 @@ public sealed interface Routing permits DefaultRouting {
 
   /** Add a post-processing filter for all requests. */
   default Routing after(Consumer<Context> handler) {
-
     return filter(
         (ctx, chain) -> {
           chain.proceed();

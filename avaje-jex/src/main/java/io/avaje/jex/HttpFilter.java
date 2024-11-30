@@ -44,7 +44,7 @@ public interface HttpFilter {
    * route.
    */
   @FunctionalInterface
-  public interface FilterChain {
+  interface FilterChain {
 
     /**
      * Calls the next filter in the chain, or else the user's exchange handler, if this is the final
