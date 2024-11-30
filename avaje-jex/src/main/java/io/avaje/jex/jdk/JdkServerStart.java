@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsServer;
@@ -11,6 +12,7 @@ import com.sun.net.httpserver.HttpsServer;
 import io.avaje.applog.AppLog;
 import io.avaje.jex.AppLifecycle;
 import io.avaje.jex.Jex;
+import io.avaje.jex.JexConfig;
 import io.avaje.jex.core.SpiServiceManager;
 import io.avaje.jex.routes.SpiRoutes;
 
@@ -23,25 +25,20 @@ public final class JdkServerStart {
   public Jex.Server start(Jex jex, SpiRoutes routes, SpiServiceManager serviceManager) {
     try {
       final var config = jex.config();
-      final var port = config.port();
-      final var host = InetAddress.getByName(config.host());
-      final var socket = new InetSocketAddress(host, config.port());
-      final var contextPath = config.contextPath();
+      final var socketAddress = createSocketAddress(config);
       final var https = config.httpsConfig();
-      final var backlog = config.socketBacklog();
 
       final HttpServer server;
-      final String scheme;
       if (https != null) {
-        var httpsServer = HttpsServer.create(socket, backlog);
+        var httpsServer = HttpsServer.create(socketAddress, config.socketBacklog());
         httpsServer.setHttpsConfigurator(https);
         server = httpsServer;
-        scheme = "https";
       } else {
-        scheme = "http";
-        server = HttpServer.create(socket, backlog);
+        server = HttpServer.create(socketAddress, config.socketBacklog());
       }
 
+      final var scheme = config.scheme();
+      final var contextPath = config.contextPath();
       final var manager = new CtxServiceManager(serviceManager, scheme, contextPath);
       final var handler = new RoutingHandler(routes, manager, config.compression());
 
@@ -51,12 +48,17 @@ public final class JdkServerStart {
 
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
       log.log(
-          INFO,
-          "started com.sun.net.httpserver.HttpServer on port %s://%s:%s"
-              .formatted(scheme, host.getHostName(), port));
+        INFO,
+        "started com.sun.net.httpserver.HttpServer on port {0}://{1}",
+        scheme, socketAddress);
       return new JdkJexServer(server, jex.lifecycle(), handler);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  private static InetSocketAddress createSocketAddress(JexConfig config) throws UnknownHostException {
+    final var inetAddress = config.host() == null ? null : InetAddress.getByName(config.host());
+    return new InetSocketAddress(inetAddress, config.port());
   }
 }
