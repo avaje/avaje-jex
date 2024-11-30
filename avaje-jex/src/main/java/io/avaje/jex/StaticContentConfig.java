@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 /** Builder for a static resource exchange handler. */
 public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder {
 
+  /** Create and return a new static content configuration. */
   static StaticContentConfig create() {
     return StaticResourceHandlerBuilder.builder();
   }
@@ -92,7 +93,7 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
   StaticContentConfig location(ResourceLocation location);
 
   /** Resource location */
-  public enum ResourceLocation {
+  enum ResourceLocation {
     CLASS_PATH,
     FILE
   }

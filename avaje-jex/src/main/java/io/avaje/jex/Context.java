@@ -227,7 +227,7 @@ public interface Context {
   default String fullUrl() {
     final String url = url();
     final String qs = queryString();
-    return qs == null ? url : url + "?" + qs;
+    return qs == null ? url : url + '?' + qs;
   }
 
   /** Return the request context path. */
@@ -426,7 +426,7 @@ public interface Context {
    * sent from a server to a web browser and stored on the user's computer. They can be used to
    * store information about a user's session, preferences, or other data.
    */
-  public interface Cookie {
+  interface Cookie {
 
     /**
      * Creates and returns a new expired cookie with the given name. This cookie will be sent to the
