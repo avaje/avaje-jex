@@ -86,8 +86,8 @@ final class DJexConfig implements JexConfig {
   }
 
   @Override
-  public JexConfig executor(Executor factory) {
-    this.executor = factory;
+  public JexConfig executor(Executor executor) {
+    this.executor = executor;
     return this;
   }
 
@@ -132,13 +132,18 @@ final class DJexConfig implements JexConfig {
   }
 
   @Override
-  public HttpsConfigurator httpsConfig() {
-    return this.httpsConfig;
+  public String scheme() {
+    return httpsConfig == null ? "http" : "https";
   }
 
   @Override
-  public JexConfig httpsConfig(HttpsConfigurator ssl) {
-    this.httpsConfig = ssl;
+  public HttpsConfigurator httpsConfig() {
+    return httpsConfig;
+  }
+
+  @Override
+  public JexConfig httpsConfig(HttpsConfigurator httpsConfig) {
+    this.httpsConfig = httpsConfig;
     return this;
   }
 

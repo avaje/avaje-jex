@@ -21,7 +21,7 @@ import io.avaje.jex.spi.TemplateRender;
 public sealed interface JexConfig permits DJexConfig {
 
   /**
-   * Set the host on which the HttpServer will bind to.
+   * Set the host on which the HttpServer will bind to. Defaults to any local address.
    *
    * @param host The host.
    */
@@ -121,6 +121,9 @@ public sealed interface JexConfig permits DJexConfig {
 
   /** Return the {@link HttpsConfigurator} if https is enabled. */
   HttpsConfigurator httpsConfig();
+
+  /** Return the schema as http or https. */
+  String scheme();
 
   /** Returns the configured compression settings. */
   CompressionConfig compression();
