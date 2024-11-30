@@ -21,7 +21,14 @@ import io.avaje.jex.spi.TemplateRender;
 public sealed interface JexConfig permits DJexConfig {
 
   /**
-   * Sets the port number on which Jex will listen for incoming requests.
+   * Set the host on which the HttpServer will bind to.
+   *
+   * @param host The host.
+   */
+  JexConfig host(String host);
+
+  /**
+   * Sets the port number on which the HttpServer will listen for incoming requests.
    *
    * @param port The port number.
    */
@@ -97,6 +104,9 @@ public sealed interface JexConfig permits DJexConfig {
   /** Returns the configured port number. (Defaults to 8080 if not set) */
   int port();
 
+  /** Returns the configured host. (Defaults to localhost if not set) */
+  String host();
+
   /** Return the contextPath. (Defaults to "/") */
   String contextPath();
 
@@ -132,5 +142,4 @@ public sealed interface JexConfig permits DJexConfig {
 
   /** Return the socket backlog. */
   int socketBacklog();
-
 }

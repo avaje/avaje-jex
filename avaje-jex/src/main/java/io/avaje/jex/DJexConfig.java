@@ -16,6 +16,7 @@ final class DJexConfig implements JexConfig {
 
   private int port = 8080;
   private String contextPath = "/";
+  private String host;
   private int socketBacklog = 0;
   private boolean health = true;
   private boolean ignoreTrailingSlashes = true;
@@ -25,6 +26,12 @@ final class DJexConfig implements JexConfig {
   private HttpsConfigurator httpsConfig;
   private boolean useJexSpi = true;
   private final CompressionConfig compression = new CompressionConfig();
+
+  @Override
+  public JexConfig host(String host) {
+    this.host = host;
+    return this;
+  }
 
   @Override
   public JexConfig port(int port) {
@@ -82,6 +89,11 @@ final class DJexConfig implements JexConfig {
   public JexConfig executor(Executor factory) {
     this.executor = factory;
     return this;
+  }
+
+  @Override
+  public String host() {
+    return host;
   }
 
   @Override
