@@ -12,13 +12,13 @@ import io.avaje.jex.core.Constants;
  * OutputStream implementation that conditionally compresses the output based on configuration and
  * request headers.
  */
-public class CompressedOutputStream extends OutputStream {
+public final class CompressedOutputStream extends OutputStream {
 
   private final int minSizeForCompression;
   private final CompressionConfig compression;
   private final Context ctx;
-
   private final OutputStream originStream;
+
   private OutputStream compressedStream;
   private boolean compressionDecided;
 
@@ -33,9 +33,7 @@ public class CompressedOutputStream extends OutputStream {
   private void decideCompression(int length) throws IOException {
     if (!compressionDecided) {
       var encoding = ctx.responseHeader(Constants.CONTENT_ENCODING);
-
       if (encoding != null) {
-
         this.compressedStream =
             findMatchingCompressor(encoding)
                 .orElseThrow(
@@ -81,9 +79,7 @@ public class CompressedOutputStream extends OutputStream {
   }
 
   private Optional<Compressor> findMatchingCompressor(String acceptedEncoding) {
-
     if (acceptedEncoding != null) {
-
       return Arrays.stream(acceptedEncoding.split(",")).map(compression::forType).findFirst();
     }
     return Optional.empty();
