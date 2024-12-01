@@ -14,9 +14,11 @@ public final class RoutesBuilder {
 
   public RoutesBuilder(Routing routing, boolean ignoreTrailingSlashes) {
     this.ignoreTrailingSlashes = ignoreTrailingSlashes;
+    final var buildMap = new EnumMap<Routing.Type, RouteIndexBuild>(Routing.Type.class);
     for (var handler : routing.handlers()) {
-      typeMap.computeIfAbsent(handler.getType(), h -> new RouteIndex()).add(convert(handler));
+      buildMap.computeIfAbsent(handler.getType(), h -> new RouteIndexBuild()).add(convert(handler));
     }
+    buildMap.forEach((key, value) -> typeMap.put(key, value.build()));
     filters = List.copyOf(routing.filters());
   }
 

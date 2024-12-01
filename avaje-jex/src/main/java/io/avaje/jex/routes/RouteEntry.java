@@ -21,6 +21,12 @@ final class RouteEntry implements SpiRoutes.Entry {
   }
 
   @Override
+  public SpiRoutes.Entry multiHandler(ExchangeHandler[] handlers) {
+    final var handler = new MultiHandler(handlers);
+    return new RouteEntry(path, handler, roles);
+  }
+
+  @Override
   public void inc() {
     active.incrementAndGet();
   }
