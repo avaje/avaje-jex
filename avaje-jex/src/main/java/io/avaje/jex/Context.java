@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Iterator;
@@ -293,6 +294,15 @@ public interface Context {
    * @param is The input stream containing the content to write.
    */
   Context write(InputStream is);
+
+  /**
+   * Return the outputStream to write content. It is expected that
+   * the {@link #contentType(String)} has been set prior to obtaining
+   * and writing to the outputStream.
+   *
+   * @return The outputStream to write content to.
+   */
+  OutputStream outputStream();
 
   /**
    * Render a template typically as html.

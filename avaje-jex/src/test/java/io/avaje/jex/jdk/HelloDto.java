@@ -1,5 +1,8 @@
 package io.avaje.jex.jdk;
 
+import io.avaje.jsonb.Json;
+
+@Json
 public class HelloDto {
 
   public long id;
