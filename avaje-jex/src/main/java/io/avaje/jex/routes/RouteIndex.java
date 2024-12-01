@@ -1,6 +1,5 @@
 package io.avaje.jex.routes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 final class RouteIndex {
@@ -8,29 +7,27 @@ final class RouteIndex {
   /**
    * Partition entries by the number of path segments.
    */
-  private final RouteIndex.Entry[] entries = new RouteIndex.Entry[6];
+  private final IndexEntry[] entries;
 
   /**
    * Wildcard/splat based route entries.
    */
-  private final List<SpiRoutes.Entry> wildcardEntries = new ArrayList<>();
+  private final SpiRoutes.Entry[] wildcardEntries;
 
-  RouteIndex() {
-    for (int i = 0; i < entries.length; i++) {
-      entries[i] = new RouteIndex.Entry();
-    }
+  RouteIndex(List<SpiRoutes.Entry> wildcards, List<List<SpiRoutes.Entry>> pathEntries) {
+    this.wildcardEntries = wildcards.toArray(new SpiRoutes.Entry[0]);
+    this.entries = pathEntries.stream()
+      .map(RouteIndex::toEntry)
+      .toList()
+      .toArray(new IndexEntry[0]);
+  }
+
+  private static IndexEntry toEntry(List<SpiRoutes.Entry> routeEntries) {
+    return new IndexEntry(routeEntries.toArray(new SpiRoutes.Entry[0]));
   }
 
   private int index(int segmentCount) {
     return Math.min(segmentCount, 5);
-  }
-
-  void add(SpiRoutes.Entry entry) {
-    if (entry.multiSlash()) {
-      wildcardEntries.add(entry);
-    } else {
-      entries[index(entry.segmentCount())].add(entry);
-    }
   }
 
   SpiRoutes.Entry match(String pathInfo) {
@@ -63,7 +60,7 @@ final class RouteIndex {
 
   long activeRequests() {
     long total = 0;
-    for (RouteIndex.Entry entry : entries) {
+    for (IndexEntry entry : entries) {
       total += entry.activeRequests();
     }
     for (SpiRoutes.Entry entry : wildcardEntries) {
@@ -72,21 +69,16 @@ final class RouteIndex {
     return total;
   }
 
-  private static class Entry {
+  private static final class IndexEntry {
 
-    private final List<SpiRoutes.Entry> list = new ArrayList<>();
+    private final SpiRoutes.Entry[] pathEntries;
 
-    void add(SpiRoutes.Entry entry) {
-      if (entry.literal()) {
-        // add literal paths to the beginning
-        list.add(0, entry);
-      } else {
-        list.add(entry);
-      }
+    IndexEntry(SpiRoutes.Entry[] pathEntries) {
+      this.pathEntries = pathEntries;
     }
 
     SpiRoutes.Entry match(String pathInfo) {
-      for (SpiRoutes.Entry entry : list) {
+      for (SpiRoutes.Entry entry : pathEntries) {
         if (entry.matches(pathInfo)) {
           return entry;
         }
@@ -96,7 +88,7 @@ final class RouteIndex {
 
     long activeRequests() {
       long total = 0;
-      for (SpiRoutes.Entry entry : list) {
+      for (SpiRoutes.Entry entry : pathEntries) {
         total += entry.activeRequests();
       }
       return total;
