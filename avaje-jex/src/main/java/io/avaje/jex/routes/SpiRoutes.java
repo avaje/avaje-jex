@@ -1,11 +1,9 @@
 package io.avaje.jex.routes;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.avaje.jex.Context;
 import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.HttpFilter;
 import io.avaje.jex.Routing;
@@ -103,6 +101,9 @@ public sealed interface SpiRoutes permits Routes {
 
     /** Return the authentication roles for the route. */
     Set<Role> roles();
+
+    /** Create and return a new Entry with multiple handlers. */
+    Entry multiHandler(ExchangeHandler[] handlers);
   }
 
 }

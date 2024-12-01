@@ -387,6 +387,11 @@ public final class JdkContext implements Context {
     return this;
   }
 
+  @Override
+  public boolean responseSent() {
+    return exchange.getResponseCode() != -1;
+  }
+
   int statusCode() {
     return statusCode == 0 ? 200 : statusCode;
   }

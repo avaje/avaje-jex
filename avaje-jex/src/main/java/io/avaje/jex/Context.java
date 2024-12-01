@@ -421,6 +421,9 @@ public interface Context {
    */
   BasicAuthCredentials basicAuthCredentials();
 
+  /** Return true if the response has been sent. */
+  boolean responseSent();
+
   /**
    * This interface represents a cookie used in HTTP communication. Cookies are small pieces of data
    * sent from a server to a web browser and stored on the user's computer. They can be used to
