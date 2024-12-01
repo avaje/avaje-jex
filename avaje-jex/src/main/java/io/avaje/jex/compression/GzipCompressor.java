@@ -29,9 +29,9 @@ final class GzipCompressor implements Compressor {
     return new LeveledGzipStream(out, level);
   }
 
-  static class LeveledGzipStream extends GZIPOutputStream {
+  private static final class LeveledGzipStream extends GZIPOutputStream {
 
-    public LeveledGzipStream(OutputStream out, int level) throws IOException {
+    private LeveledGzipStream(OutputStream out, int level) throws IOException {
       super(out);
       this.def.setLevel(level);
     }
