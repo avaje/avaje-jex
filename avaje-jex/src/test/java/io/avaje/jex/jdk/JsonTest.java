@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Stream;
 
+import io.avaje.jsonb.JsonType;
+import io.avaje.jsonb.Jsonb;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
@@ -26,12 +28,19 @@ class JsonTest {
     return new AutoCloseIterator<>(HELLO_BEANS.iterator());
   }
 
-  static TestPair pair = init();
+  static final TestPair pair = init();
+  static final Jsonb jsonb = Jsonb.builder().build();
+  static final JsonType<HelloDto> jsonTypeHelloDto = jsonb.type(HelloDto.class);
 
   static TestPair init() {
     Jex app = Jex.create()
       .routing(routing -> routing
-        .get("/", ctx -> ctx.json(HelloDto.rob()).status(200))
+        .get("/", ctx -> ctx.status(200).json(HelloDto.rob()))
+        .get("/usingOutputStream", ctx -> {
+          ctx.status(200).contentType("application/json");
+          var result = HelloDto.rob();
+          jsonTypeHelloDto.toJson(result, ctx.outputStream());
+        })
         .get("/iterate", ctx -> ctx.jsonStream(ITERATOR))
         .get("/stream", ctx -> ctx.jsonStream(HELLO_BEANS.stream()))
         .post("/", ctx -> ctx.text("bean[" + ctx.bodyAsClass(HelloDto.class) + "]")));
@@ -58,8 +67,32 @@ class JsonTest {
       .GET().asString();
 
     final HttpHeaders headers = hres.headers();
-    assertThat(headers.firstValue("Content-Type").get()).isEqualTo("application/json");
+    assertThat(headers.firstValue("Content-Type").orElseThrow()).isEqualTo("application/json");
   }
+
+  @Test
+  void usingOutputStream() {
+
+    var bean = pair.request().path("usingOutputStream")
+      .GET()
+      .bean(HelloDto.class);
+
+    assertThat(bean.id).isEqualTo(42);
+    assertThat(bean.name).isEqualTo("rob");
+
+    final HttpResponse<String> hres = pair.request()
+      .GET().asString();
+
+    final HttpHeaders headers = hres.headers();
+    assertThat(headers.firstValue("Content-Type").orElseThrow()).isEqualTo("application/json");
+
+    bean = pair.request().path("usingOutputStream")
+      .GET()
+      .bean(HelloDto.class);
+    assertThat(bean.id).isEqualTo(42);
+    assertThat(bean.name).isEqualTo("rob");
+  }
+
 
   @Test
   void stream_viaIterator() {

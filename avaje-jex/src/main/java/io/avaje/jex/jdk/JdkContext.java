@@ -477,6 +477,7 @@ public final class JdkContext implements Context {
     return exchange.getProtocol();
   }
 
+  @Override
   public OutputStream outputStream() {
     var out = mgr.createOutputStream(this);
     if (compressionConfig.compressionEnabled()) {
