@@ -32,15 +32,13 @@ public final class BootstrapServer {
     }
 
     final SpiRoutes routes =
-      new RoutesBuilder(jex.routing(), config.ignoreTrailingSlashes())
-        .build();
+        new RoutesBuilder(jex.routing(), config.ignoreTrailingSlashes()).build();
 
     return start(jex, routes);
   }
 
   static Jex.Server start(Jex jex, SpiRoutes routes) {
-    SpiServiceManager serviceManager = CoreServiceManager.create(jex);
-    try {
+     try {
       final var config = jex.config();
       final var socketAddress = createSocketAddress(config);
       final var https = config.httpsConfig();
@@ -56,8 +54,8 @@ public final class BootstrapServer {
 
       final var scheme = config.scheme();
       final var contextPath = config.contextPath();
-      final var manager = new CtxServiceManager(serviceManager, scheme, contextPath);
-      final var handler = new RoutingHandler(routes, manager, config.compression());
+      SpiServiceManager serviceManager = SpiServiceManager.create(jex);
+      final var handler = new RoutingHandler(routes, serviceManager, config.compression());
 
       server.setExecutor(config.executor());
       server.createContext(contextPath, handler);
@@ -65,16 +63,18 @@ public final class BootstrapServer {
 
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
       log.log(
-        INFO,
-        "started com.sun.net.httpserver.HttpServer on port {0}://{1}",
-        scheme, socketAddress);
+          INFO,
+          "started com.sun.net.httpserver.HttpServer on port {0}://{1}",
+          scheme,
+          socketAddress);
       return new JdkJexServer(server, jex.lifecycle(), handler);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
   }
 
-  private static InetSocketAddress createSocketAddress(JexConfig config) throws UnknownHostException {
+  private static InetSocketAddress createSocketAddress(JexConfig config)
+      throws UnknownHostException {
     final var inetAddress = config.host() == null ? null : InetAddress.getByName(config.host());
     return new InetSocketAddress(inetAddress, config.port());
   }
