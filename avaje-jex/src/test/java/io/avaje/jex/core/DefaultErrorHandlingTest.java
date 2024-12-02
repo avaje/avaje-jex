@@ -1,12 +1,14 @@
-package io.avaje.jex;
+package io.avaje.jex.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.DirectoryIteratorException;
 
+import io.avaje.jex.Context;
+import io.avaje.jex.ExceptionHandler;
+import io.avaje.jex.Jex;
+import io.avaje.jex.Routing;
 import org.junit.jupiter.api.Test;
-
-import io.avaje.jex.core.ExceptionManager;
 
 class DefaultErrorHandlingTest {
 
@@ -15,8 +17,7 @@ class DefaultErrorHandlingTest {
 
   @Test
   void exception() {
-
-    Routing router = new DefaultRouting();
+    Routing router = Jex.create().routing();
     router.error(RuntimeException.class, rt);
 
     var handling = new ExceptionManager(router.errorHandlers());
@@ -28,7 +29,7 @@ class DefaultErrorHandlingTest {
 
   @Test
   void exception_expect_highestMatch() {
-    Routing router = new DefaultRouting();
+    Routing router = Jex.create().routing();
     router.error(RuntimeException.class, rt);
     router.error(IllegalStateException.class, ise);
 

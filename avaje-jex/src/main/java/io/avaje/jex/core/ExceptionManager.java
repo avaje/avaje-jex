@@ -11,7 +11,7 @@ import io.avaje.jex.http.ErrorCode;
 import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.http.InternalServerErrorException;
 
-public final class ExceptionManager {
+final class ExceptionManager {
 
   private static final String APPLICATION_JSON = "application/json";
 
@@ -19,12 +19,12 @@ public final class ExceptionManager {
 
   private final Map<Class<?>, ExceptionHandler<?>> handlers;
 
-  public ExceptionManager(Map<Class<?>, ExceptionHandler<?>> handlers) {
+  ExceptionManager(Map<Class<?>, ExceptionHandler<?>> handlers) {
     this.handlers = handlers;
   }
 
   @SuppressWarnings("unchecked")
-  public <T extends Exception> ExceptionHandler<Exception> find(Class<T> exceptionType) {
+  <T extends Exception> ExceptionHandler<Exception> find(Class<T> exceptionType) {
     Class<?> type = exceptionType;
     do {
       final ExceptionHandler<?> handler = handlers.get(type);
