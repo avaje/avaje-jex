@@ -1,11 +1,12 @@
 package io.avaje.jex.htmx;
 
+import static io.avaje.jex.htmx.HxHeaders.HX_REQUEST;
+import static io.avaje.jex.htmx.HxHeaders.HX_TARGET;
+import static io.avaje.jex.htmx.HxHeaders.HX_TRIGGER;
+import static io.avaje.jex.htmx.HxHeaders.HX_TRIGGER_NAME;
+
 import io.avaje.jex.Context;
 import io.avaje.jex.ExchangeHandler;
-
-import java.io.IOException;
-
-import static io.avaje.jex.htmx.HxHeaders.*;
 
 final class DHxHandler implements ExchangeHandler {
 
@@ -22,17 +23,14 @@ final class DHxHandler implements ExchangeHandler {
   }
 
   @Override
-  public void handle(Context ctx) throws IOException {
+  public void handle(Context ctx) throws Exception {
     if (ctx.header(HX_REQUEST) != null && matched(ctx)) {
       delegate.handle(ctx);
     }
   }
 
   private boolean matched(Context ctx) {
-    if (target != null && notMatched(ctx.header(HX_TARGET), target)) {
-      return false;
-    }
-    if (trigger != null && notMatched(ctx.header(HX_TRIGGER), trigger)) {
+    if ((target != null && notMatched(ctx.header(HX_TARGET), target)) || (trigger != null && notMatched(ctx.header(HX_TRIGGER), trigger))) {
       return false;
     }
     return triggerName == null || !notMatched(ctx.header(HX_TRIGGER_NAME), triggerName);

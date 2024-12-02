@@ -9,7 +9,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import io.avaje.jex.HttpFilter;
-import io.avaje.jex.Routing;
 import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.http.NotFoundException;
 import io.avaje.jex.routes.SpiRoutes;
@@ -34,9 +33,9 @@ final class RoutingHandler implements HttpHandler {
 
   @Override
   public void handle(HttpExchange exchange) {
-    final String uri = exchange.getRequestURI().getPath();
-    final Routing.Type routeType = mgr.lookupRoutingType(exchange.getRequestMethod());
-    final SpiRoutes.Entry route = routes.match(routeType, uri);
+    final var uri = exchange.getRequestURI().getPath();
+    final var routeType = mgr.lookupRoutingType(exchange.getRequestMethod());
+    final var route = routes.match(routeType, uri);
 
     if (route == null) {
       var ctx = new JdkContext(mgr, compressionConfig, exchange, uri, Set.of());
