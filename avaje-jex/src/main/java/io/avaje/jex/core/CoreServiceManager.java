@@ -140,7 +140,8 @@ final class CoreServiceManager implements SpiServiceManager {
     }
   }
 
-  private static class Builder {
+  private static final class Builder {
+
     private final Jex jex;
 
     Builder(Jex jex) {
