@@ -30,11 +30,7 @@ final class CtxServiceManager implements SpiServiceManager {
     return scheme;
   }
 
-  public String url() {
-    return scheme + "://";
-  }
-
-  public String contextPath() {
+  String contextPath() {
     return contextPath;
   }
 

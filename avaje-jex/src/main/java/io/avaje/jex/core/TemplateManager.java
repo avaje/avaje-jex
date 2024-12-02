@@ -11,16 +11,15 @@ import java.util.Set;
 /**
  * Render templates typically as html.
  */
-public final class TemplateManager {
+final class TemplateManager {
 
   private final Map<String, TemplateRender> map = new HashMap<>();
-
   private final Set<Class<?>> renderTypes = new HashSet<>();
 
   /**
    * Register all the extension renderer pairs.
    */
-  public void register(Map<String, TemplateRender> source) {
+  void register(Map<String, TemplateRender> source) {
     map.putAll(source);
     map.values().forEach(templateRender -> renderTypes.add(templateRender.getClass()));
   }
@@ -28,7 +27,7 @@ public final class TemplateManager {
   /**
    * Auto register via ServiceLoader if it has not already been explicitly registered.
    */
-  public void registerDefault(TemplateRender render) {
+  void registerDefault(TemplateRender render) {
     if (!renderTypes.contains(render.getClass())) {
       for (String extension : render.defaultExtensions()) {
         map.computeIfAbsent(extension, k->render);
@@ -39,7 +38,7 @@ public final class TemplateManager {
   /**
    * Register an extension and renderer.
    */
-  public void register(String extn, TemplateRender renderer) {
+  void register(String extn, TemplateRender renderer) {
     map.put(extn, renderer);
   }
 
@@ -50,7 +49,7 @@ public final class TemplateManager {
    * @param name  The name of the template
    * @param model The model key value pairs to render use with the template
    */
-  public void render(Context ctx, String name, Map<String, Object> model) {
+  void render(Context ctx, String name, Map<String, Object> model) {
     final String extn = extension(name);
     if (extn == null) {
       throw new IllegalArgumentException("No extension, not handled yet - " + name);

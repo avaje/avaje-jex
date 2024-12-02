@@ -145,4 +145,7 @@ public sealed interface JexConfig permits DJexConfig {
 
   /** Return the socket backlog. */
   int socketBacklog();
+
+  /** Return true if SPI plugins should be loaded and registered. */
+  boolean useSpiPlugins();
 }

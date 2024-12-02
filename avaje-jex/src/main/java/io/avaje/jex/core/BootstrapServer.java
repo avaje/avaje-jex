@@ -1,27 +1,44 @@
 package io.avaje.jex.core;
 
+import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpsServer;
+import io.avaje.applog.AppLog;
+import io.avaje.jex.AppLifecycle;
+import io.avaje.jex.Jex;
+import io.avaje.jex.JexConfig;
+import io.avaje.jex.routes.RoutesBuilder;
+import io.avaje.jex.routes.SpiRoutes;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
-import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.HttpsServer;
-
-import io.avaje.applog.AppLog;
-import io.avaje.jex.AppLifecycle;
-import io.avaje.jex.Jex;
-import io.avaje.jex.JexConfig;
-import io.avaje.jex.routes.SpiRoutes;
-
 import static java.lang.System.Logger.Level.INFO;
 
-public final class JdkServerStart {
+public final class BootstrapServer {
 
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
-  public Jex.Server start(Jex jex, SpiRoutes routes) {
+  public static Jex.Server start(Jex jex) {
+    final var config = jex.config();
+    if (config.health()) {
+      jex.plugin(new HealthPlugin());
+    }
+
+    if (config.useSpiPlugins()) {
+      CoreServiceLoader.plugins().forEach(p -> p.apply(jex));
+    }
+
+    final SpiRoutes routes =
+      new RoutesBuilder(jex.routing(), config.ignoreTrailingSlashes())
+        .build();
+
+    return start(jex, routes);
+  }
+
+  static Jex.Server start(Jex jex, SpiRoutes routes) {
     SpiServiceManager serviceManager = CoreServiceManager.create(jex);
     try {
       final var config = jex.config();

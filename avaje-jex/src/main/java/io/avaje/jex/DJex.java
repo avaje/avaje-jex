@@ -1,11 +1,7 @@
 package io.avaje.jex;
 
 import io.avaje.inject.BeanScope;
-import io.avaje.jex.core.CoreServiceLoader;
-import io.avaje.jex.core.HealthPlugin;
-import io.avaje.jex.core.JdkServerStart;
-import io.avaje.jex.routes.RoutesBuilder;
-import io.avaje.jex.routes.SpiRoutes;
+import io.avaje.jex.core.BootstrapServer;
 import io.avaje.jex.spi.*;
 
 import java.util.*;
@@ -108,18 +104,6 @@ final class DJex implements Jex {
 
   @Override
   public Server start() {
-    if (config.health()) {
-      plugin(new HealthPlugin());
-    }
-
-    if (config.useSpiPlugins()) {
-      CoreServiceLoader.plugins().forEach(p -> p.apply(this));
-    }
-
-    final SpiRoutes routes =
-        new RoutesBuilder(routing, config.ignoreTrailingSlashes())
-            .build();
-
-    return new JdkServerStart().start(this, routes);
+    return BootstrapServer.start(this);
   }
 }

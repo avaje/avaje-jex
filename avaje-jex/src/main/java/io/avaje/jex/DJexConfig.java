@@ -164,7 +164,8 @@ final class DJexConfig implements JexConfig {
     return this;
   }
 
-  boolean useSpiPlugins() {
+  @Override
+  public boolean useSpiPlugins() {
     return useJexSpi;
   }
 }

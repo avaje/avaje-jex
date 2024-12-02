@@ -485,7 +485,7 @@ final class JdkContext implements Context {
     return out;
   }
 
-  public void setMode(Mode type) {
+  void setMode(Mode type) {
     this.mode = type;
   }
 
