@@ -9,7 +9,7 @@
 
   <groupId>io.avaje</groupId>
   <artifactId>avaje-jex-parent</artifactId>
-  <version>3.0-RC5</version>
+  <version>3.0-RC6</version>
   <packaging>pom</packaging>
 
   <scm>
@@ -22,7 +22,7 @@
     <jackson.version>2.18.2</jackson.version>
     <surefire.useModulePath>false</surefire.useModulePath>
     <maven.compiler.release>21</maven.compiler.release>
-    <project.build.outputTimestamp>2024-12-02T00:10:24Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-12-02T07:39:59Z</project.build.outputTimestamp>
   </properties>
 
   <modules>
