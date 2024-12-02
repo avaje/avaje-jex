@@ -10,7 +10,6 @@ import io.avaje.jex.ExceptionHandler;
 import io.avaje.jex.http.ErrorCode;
 import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.http.InternalServerErrorException;
-import io.avaje.jex.jdk.JdkContext;
 
 public final class ExceptionManager {
 

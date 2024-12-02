@@ -9,8 +9,6 @@ import java.util.stream.Stream;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.Routing;
-import io.avaje.jex.jdk.CtxServiceManager;
-import io.avaje.jex.jdk.JdkContext;
 
 /**
  * Core service methods available to Context implementations.

@@ -15,7 +15,7 @@ To Run:
 ./target/mytest
 
 # produces
-# Oct 21, 2022 1:39:36 PM io.avaje.jex.jdk.JdkServerStart start
+# Oct 21, 2022 1:39:36 PM io.avaje.jex.core.JdkServerStart start
 # INFO: started server on port 7003 version 2.5-SNAPSHOT
 ```
 
