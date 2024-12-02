@@ -1,10 +1,8 @@
 package io.avaje.jex.core;
 
-import org.junit.jupiter.api.Test;
-
-import io.avaje.jex.core.SpiServiceManager;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 class ContextUtilTest {
 
