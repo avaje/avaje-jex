@@ -14,7 +14,7 @@ import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.http.NotFoundException;
 import io.avaje.jex.routes.SpiRoutes;
 
-public final class RoutingHandler implements HttpHandler {
+final class RoutingHandler implements HttpHandler {
 
   private final SpiRoutes routes;
   private final CtxServiceManager mgr;
