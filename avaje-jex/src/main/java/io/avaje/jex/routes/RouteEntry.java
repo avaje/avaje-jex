@@ -80,4 +80,9 @@ final class RouteEntry implements SpiRoutes.Entry {
   public Set<Role> roles() {
     return roles;
   }
+
+  @Override
+  public String toString() {
+    return path.raw();
+  }
 }
