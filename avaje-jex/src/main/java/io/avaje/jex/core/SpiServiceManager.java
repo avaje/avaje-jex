@@ -23,7 +23,7 @@ import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
 /** Core service methods available to Context implementations. */
-class SpiServiceManager {
+final class SpiServiceManager {
 
   private static final System.Logger log = System.getLogger("io.avaje.jex");
   static final String UTF_8 = "UTF-8";
