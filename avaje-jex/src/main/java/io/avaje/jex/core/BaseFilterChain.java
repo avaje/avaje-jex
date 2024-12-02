@@ -21,7 +21,7 @@ final class BaseFilterChain implements FilterChain {
   }
 
   @Override
-  public void proceed() throws IOException {
+  public void proceed() throws Exception {
     if (!iter.hasNext()) {
       handler.handle(ctx);
       ctx.setMode(Mode.AFTER);

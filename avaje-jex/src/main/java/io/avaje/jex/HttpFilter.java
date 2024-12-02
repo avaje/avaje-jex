@@ -37,7 +37,7 @@ public interface HttpFilter {
    * @param ctx the {@code Context} of the current request
    * @param chain the {@code FilterChain} which allows the next filter to be invoked
    */
-  void filter(Context ctx, FilterChain chain) throws IOException;
+  void filter(Context ctx, FilterChain chain) throws Exception;
 
   /**
    * Filter chain that contains all subsequent filters that are configured, as well as the final
@@ -54,6 +54,6 @@ public interface HttpFilter {
      *
      * @throws IOException if an I/O error occurs
      */
-    void proceed() throws IOException;
+    void proceed() throws Exception;
   }
 }

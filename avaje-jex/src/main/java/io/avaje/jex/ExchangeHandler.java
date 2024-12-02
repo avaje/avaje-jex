@@ -23,5 +23,5 @@ public interface ExchangeHandler {
    * @param ctx The context object containing the request and response details.
    * @throws IOException if an I/O error occurs during request processing or response generation.
    */
-  void handle(Context ctx) throws IOException;
+  void handle(Context ctx) throws Exception;
 }
