@@ -74,7 +74,6 @@ class FilterTest {
 
     clearAfter();
     res = pair.request().path("two").GET().asString();
-    LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(10));
     assertHasBeforeAfterAll(res);
     assertNoBeforeAfterTwo(res);
   }
@@ -108,6 +107,7 @@ class FilterTest {
   private void assertHasBeforeAfterAll(HttpResponse<String> res) {
     assertThat(res.statusCode()).isLessThan(300);
     assertThat(res.headers().firstValue("before-all")).get().isEqualTo("set");
+    LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(2));
     assertThat(afterAll.get()).isEqualTo("set");
   }
 }
