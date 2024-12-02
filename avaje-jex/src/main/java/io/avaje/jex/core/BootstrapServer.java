@@ -17,7 +17,7 @@ import java.net.UnknownHostException;
 
 import static java.lang.System.Logger.Level.INFO;
 
-public class BootstrapServer {
+public final class BootstrapServer {
 
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
