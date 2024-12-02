@@ -7,16 +7,15 @@
 [![javadoc](https://javadoc.io/badge2/io.avaje/avaje-jex/javadoc.svg?color=purple)](https://javadoc.io/doc/io.avaje/avaje-jex)
 
 # Avaje-Jex
-
-Lightweight (~120KB) wrapper over the JDK's [`jdk.httpserver`](https://docs.oracle.com/en/java/javase/23/docs/api/jdk.httpserver/module-summary.html) classes.
+Lightweight (~120KB) wrapper over the JDK's built-in [HTTP server](https://docs.oracle.com/en/java/javase/23/docs/api/jdk.httpserver/module-summary.html).
 
 Features:
 
 - [Context](https://javadoc.io/doc/io.avaje/avaje-jex/latest/io.avaje.jex/io/avaje/jex/Context.html) abstraction over `HttpExchange` to easily retrieve and send request/response data.
 - Fluent API
 - Static resource handling
-- Compression SPI (will use gzip by default if the caller accepts it and the response exceeds a certain size)
-- Json SPI (will use either Avaje Jsonb or Jackson if available)
+- Compression SPI
+- Json SPI
 - Virtual threads enabled by default
 
 ```java
@@ -29,7 +28,7 @@ var app = Jex.create()
           System.out.println("before request");
           chain.proceed();
           System.out.println("after request");
-        }))
+        })
     .error(IllegalStateException.class, (ctx, exception) -> ctx.status(500).text("Handled IllegalStateException|" + exception.getMessage()))
   .staticResource(
         b ->
