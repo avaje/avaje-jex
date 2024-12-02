@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import io.avaje.jex.Jex;
 import io.avaje.jex.StaticContentConfig.ResourceLocation;
 import io.avaje.jex.core.Constants;
-import io.avaje.jex.jdk.TestPair;
+import io.avaje.jex.core.TestPair;
 
 class CompressionTest {
 

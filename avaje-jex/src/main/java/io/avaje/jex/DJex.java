@@ -2,9 +2,8 @@ package io.avaje.jex;
 
 import io.avaje.inject.BeanScope;
 import io.avaje.jex.core.CoreServiceLoader;
-import io.avaje.jex.core.CoreServiceManager;
 import io.avaje.jex.core.HealthPlugin;
-import io.avaje.jex.jdk.JdkServerStart;
+import io.avaje.jex.core.JdkServerStart;
 import io.avaje.jex.routes.RoutesBuilder;
 import io.avaje.jex.routes.SpiRoutes;
 import io.avaje.jex.spi.*;
@@ -121,6 +120,6 @@ final class DJex implements Jex {
         new RoutesBuilder(routing, config.ignoreTrailingSlashes())
             .build();
 
-    return new JdkServerStart().start(this, routes, CoreServiceManager.create(this));
+    return new JdkServerStart().start(this, routes);
   }
 }

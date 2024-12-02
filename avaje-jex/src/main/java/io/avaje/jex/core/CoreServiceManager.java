@@ -20,24 +20,23 @@ import io.avaje.jex.Jex;
 import io.avaje.jex.Routing;
 import io.avaje.jex.core.json.JacksonJsonService;
 import io.avaje.jex.core.json.JsonbJsonService;
-import io.avaje.jex.jdk.JdkContext;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
 /**
  * Core implementation of SpiServiceManager provided to specific implementations like jetty etc.
  */
-public final class CoreServiceManager implements SpiServiceManager {
+final class CoreServiceManager implements SpiServiceManager {
 
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
-  public static final String UTF_8 = "UTF-8";
+  static final String UTF_8 = "UTF-8";
 
   private final HttpMethodMap methodMap = new HttpMethodMap();
   private final JsonService jsonService;
   private final ExceptionManager exceptionHandler;
   private final TemplateManager templateManager;
 
-  public static SpiServiceManager create(Jex jex) {
+  static SpiServiceManager create(Jex jex) {
     return new Builder(jex).build();
   }
 
