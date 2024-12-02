@@ -6,13 +6,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
 
-import io.avaje.applog.AppLog;
 import io.avaje.jex.HttpFilter;
 import io.avaje.jex.Routing;
 
 final class Routes implements SpiRoutes {
 
-  private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
+  private static final System.Logger log = System.getLogger("io.avaje.jex");
 
   /**
    * The "real" handlers by http method.
