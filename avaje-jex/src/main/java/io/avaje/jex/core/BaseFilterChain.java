@@ -1,6 +1,5 @@
 package io.avaje.jex.core;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -21,7 +20,7 @@ final class BaseFilterChain implements FilterChain {
   }
 
   @Override
-  public void proceed() throws IOException {
+  public void proceed() throws Exception {
     if (!iter.hasNext()) {
       handler.handle(ctx);
       ctx.setMode(Mode.AFTER);
