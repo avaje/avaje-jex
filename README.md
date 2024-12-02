@@ -30,6 +30,7 @@ var app = Jex.create()
           chain.proceed();
           System.out.println("after request");
         }))
+    .error(IllegalStateException.class, (ctx, exception) -> ctx.status(500).text("Handled IllegalStateException|" + exception.getMessage()))
   .staticResource(
         b ->
           b.httpPath("/myResource")
