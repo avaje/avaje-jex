@@ -100,11 +100,13 @@ class FilterTest {
   }
 
   private void assertNoBeforeAfterTwo(HttpResponse<String> res) {
+    assertThat(res.statusCode()).isLessThan(300);
     assertThat(res.headers().firstValue("before-two")).isEmpty();
     assertThat(afterTwo.get()).isNull();
   }
 
   private void assertHasBeforeAfterAll(HttpResponse<String> res) {
+    assertThat(res.statusCode()).isLessThan(300);
     assertThat(res.headers().firstValue("before-all")).get().isEqualTo("set");
     assertThat(afterAll.get()).isEqualTo("set");
   }
