@@ -25,10 +25,14 @@ final class Routes implements SpiRoutes {
 
   private final AtomicLong noRouteCounter = new AtomicLong();
 
-
   Routes(EnumMap<Routing.Type, RouteIndex> typeMap, List<HttpFilter> filters) {
     this.typeMap = typeMap;
     this.filters = filters;
+  }
+
+  @Override
+  public String toString() {
+    return "Routes{" + typeMap + ", filters=" + filters + '}';
   }
 
   @Override

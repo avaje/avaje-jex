@@ -15,6 +15,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
+import static java.lang.System.Logger.Level.DEBUG;
 import static java.lang.System.Logger.Level.INFO;
 
 public final class BootstrapServer {
@@ -67,6 +68,7 @@ public final class BootstrapServer {
           "started com.sun.net.httpserver.HttpServer on port {0}://{1}",
           scheme,
           socketAddress);
+      log.log(DEBUG, routes);
       return new JdkJexServer(server, jex.lifecycle(), handler);
     } catch (IOException e) {
       throw new UncheckedIOException(e);

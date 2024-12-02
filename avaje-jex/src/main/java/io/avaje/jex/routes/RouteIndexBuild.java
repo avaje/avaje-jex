@@ -2,10 +2,7 @@ package io.avaje.jex.routes;
 
 import io.avaje.jex.ExchangeHandler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Build the RouteIndex.
@@ -54,7 +51,7 @@ final class RouteIndexBuild {
   private static class Entry {
 
     private final List<SpiRoutes.Entry> list = new ArrayList<>();
-    private final Map<String,List<SpiRoutes.Entry>> pathMap = new HashMap<>();
+    private final Map<String,List<SpiRoutes.Entry>> pathMap = new LinkedHashMap<>();
 
     void add(SpiRoutes.Entry entry) {
       if (entry.literal()) {

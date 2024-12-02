@@ -1,5 +1,6 @@
 package io.avaje.jex.routes;
 
+import java.util.Arrays;
 import java.util.List;
 
 final class RouteIndex {
@@ -20,6 +21,13 @@ final class RouteIndex {
       .map(RouteIndex::toEntry)
       .toList()
       .toArray(new IndexEntry[0]);
+  }
+
+  @Override
+  public String toString() {
+    return "RouteIndex{" + Arrays.toString(entries) +
+      ", wildcards=" + Arrays.toString(wildcardEntries) +
+      '}';
   }
 
   private static IndexEntry toEntry(List<SpiRoutes.Entry> routeEntries) {
@@ -75,6 +83,11 @@ final class RouteIndex {
 
     IndexEntry(SpiRoutes.Entry[] pathEntries) {
       this.pathEntries = pathEntries;
+    }
+
+    @Override
+    public String toString() {
+      return Arrays.toString(pathEntries);
     }
 
     SpiRoutes.Entry match(String pathInfo) {
