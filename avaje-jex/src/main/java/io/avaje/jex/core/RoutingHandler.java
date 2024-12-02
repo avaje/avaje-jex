@@ -17,11 +17,11 @@ import io.avaje.jex.routes.SpiRoutes;
 final class RoutingHandler implements HttpHandler {
 
   private final SpiRoutes routes;
-  private final CtxServiceManager mgr;
+  private final SpiServiceManager mgr;
   private final CompressionConfig compressionConfig;
   private final List<HttpFilter> filters;
 
-  RoutingHandler(SpiRoutes routes, CtxServiceManager mgr, CompressionConfig compressionConfig) {
+  RoutingHandler(SpiRoutes routes, SpiServiceManager mgr, CompressionConfig compressionConfig) {
     this.mgr = mgr;
     this.routes = routes;
     this.filters = routes.filters();

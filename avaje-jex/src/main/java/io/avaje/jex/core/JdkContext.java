@@ -42,7 +42,7 @@ final class JdkContext implements Context {
   private static final int SC_MOVED_TEMPORARILY = 302;
   private static final String SET_COOKIE = "Set-Cookie";
   private static final String COOKIE = "Cookie";
-  private final CtxServiceManager mgr;
+  private final SpiServiceManager mgr;
   private final CompressionConfig compressionConfig;
   private final String path;
   private final Map<String, String> pathParams;
@@ -57,7 +57,7 @@ final class JdkContext implements Context {
   private String characterEncoding;
 
   JdkContext(
-      CtxServiceManager mgr,
+      SpiServiceManager mgr,
       CompressionConfig compressionConfig,
       HttpExchange exchange,
       String path,
@@ -73,7 +73,7 @@ final class JdkContext implements Context {
 
   /** Create when no route matched. */
   JdkContext(
-      CtxServiceManager mgr,
+      SpiServiceManager mgr,
       CompressionConfig compressionConfig,
       HttpExchange exchange,
       String path,
