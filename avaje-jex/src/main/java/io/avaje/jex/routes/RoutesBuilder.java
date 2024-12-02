@@ -1,6 +1,7 @@
 package io.avaje.jex.routes;
 
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import io.avaje.jex.HttpFilter;
@@ -14,7 +15,7 @@ public final class RoutesBuilder {
 
   public RoutesBuilder(Routing routing, boolean ignoreTrailingSlashes) {
     this.ignoreTrailingSlashes = ignoreTrailingSlashes;
-    final var buildMap = new EnumMap<Routing.Type, RouteIndexBuild>(Routing.Type.class);
+    final var buildMap = new LinkedHashMap<Routing.Type, RouteIndexBuild>();
     for (var handler : routing.handlers()) {
       buildMap.computeIfAbsent(handler.getType(), h -> new RouteIndexBuild()).add(convert(handler));
     }
