@@ -9,3 +9,4 @@ build/
 *.prefs
 *.factorypath
 bin/
+.DS_Store
