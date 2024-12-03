@@ -1,21 +1,16 @@
-import io.avaje.jex.spi.JexExtension;
-
 /**
- * Defines the Jex HTTP server API, for running a minimal HTTP server.
+ * Defines the Static Content API for serving static resources with Jex - see {@link io.avaje.jex.staticcontent.StaticContentSupport}.
  *
  * <pre>{@code
+ * var staticContent = StaticContentSupport.createCP().resource("/public").directoryIndex("index.html");
  * final Jex.Server app = Jex.create()
- *   .routing(routing -> routing
- *     .get("/", ctx -> ctx.text("hello world"))
- *     .get("/one", ctx -> ctx.text("one"))
+ *   .routing(staticContent.createService())
  *   .port(8080)
  *   .start();
  *
  * app.shutdown();
  *
  * }</pre>
- *
- *
  */
 module io.avaje.jex.staticcontent {
 

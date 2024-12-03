@@ -10,8 +10,6 @@ import com.sun.net.httpserver.HttpExchange;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.ExchangeHandler;
-import io.avaje.jex.Routing;
-import io.avaje.jex.Routing.HttpService;
 import io.avaje.jex.http.BadRequestException;
 import io.avaje.jex.http.NotFoundException;
 
