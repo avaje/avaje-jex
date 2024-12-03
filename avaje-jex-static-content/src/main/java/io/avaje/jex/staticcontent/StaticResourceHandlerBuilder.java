@@ -12,7 +12,7 @@ import io.avaje.jex.Context;
 import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.Routing;
 
-final class StaticResourceHandlerBuilder implements StaticContentSupport {
+final class StaticResourceHandlerBuilder implements StaticContentService {
 
   private static final String FAILED_TO_LOCATE_FILE = "Failed to locate file: ";
   private static final String DIRECTORY_INDEX_FAILURE =
@@ -21,7 +21,7 @@ final class StaticResourceHandlerBuilder implements StaticContentSupport {
   private static final ClassResourceLoader DEFAULT_LOADER = new DefaultResourceLoader();
 
   private String path = "/";
-  private String root = "/public/";
+  private String root;
   private String directoryIndex = null;
   private ClassResourceLoader resourceLoader = DEFAULT_LOADER;
   private final Map<String, String> mimeTypes = new HashMap<>();
@@ -29,10 +29,12 @@ final class StaticResourceHandlerBuilder implements StaticContentSupport {
   private Predicate<Context> skipFilePredicate = NO_OP_PREDICATE;
   private boolean isClasspath = true;
 
-  private StaticResourceHandlerBuilder() {}
+  private StaticResourceHandlerBuilder(String root) {
+    this.root = root;
+  }
 
-  static StaticResourceHandlerBuilder builder() {
-    return new StaticResourceHandlerBuilder();
+  static StaticResourceHandlerBuilder builder(String root) {
+    return new StaticResourceHandlerBuilder(root);
   }
 
   @Override
@@ -68,12 +70,6 @@ final class StaticResourceHandlerBuilder implements StaticContentSupport {
   @Override
   public StaticResourceHandlerBuilder httpPath(String path) {
     this.path = path.endsWith("/") ? path + "*" : path;
-    return this;
-  }
-
-  @Override
-  public StaticResourceHandlerBuilder resource(String directory) {
-    this.root = directory;
     return this;
   }
 

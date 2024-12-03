@@ -24,23 +24,21 @@ class StaticFileTest {
             .routing(defaultFile().httpPath("/indexWildFile/*"))
             .routing(defaultCP().httpPath("/sus/"))
             .routing(defaultFile().httpPath("/susFile/*"))
-            .routing(StaticContentSupport.createCP().httpPath("/single").resource("/logback.xml"))
+            .routing(StaticContentService.createCP("/logback.xml").httpPath("/single"))
             .routing(
-                StaticContentSupport.createFile()
-                    .httpPath("/singleFile")
-                    .resource("src/test/resources/logback.xml"));
+                StaticContentService.createFile("src/test/resources/logback.xml")
+                    .httpPath("/singleFile"));
 
     return TestPair.create(app);
   }
 
-  private static StaticContentSupport defaultFile() {
-    return StaticContentSupport.createFile()
-        .resource("src/test/resources/public")
+  private static StaticContentService defaultFile() {
+    return StaticContentService.createFile("src/test/resources/public")
         .directoryIndex("index.html");
   }
 
-  private static StaticContentSupport defaultCP() {
-    return StaticContentSupport.createCP().resource("/public").directoryIndex("index.html");
+  private static StaticContentService defaultCP() {
+    return StaticContentService.createCP("/public").directoryIndex("index.html");
   }
 
   @AfterAll

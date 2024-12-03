@@ -7,17 +7,33 @@ import io.avaje.jex.Context;
 import io.avaje.jex.Routing.HttpService;
 
 /** Builder for a static resource exchange handler. */
-public sealed interface StaticContentSupport extends HttpService
+public sealed interface StaticContentService extends HttpService
     permits StaticResourceHandlerBuilder {
 
-  /** Create and return a new static content configuration. */
-  static StaticContentSupport createCP() {
-    return StaticResourceHandlerBuilder.builder();
+  /**
+   * Create and return a new static content configuration.
+   *
+   * @param resourceRoot The file to serve, or the directory the files are located in.
+   */
+  static StaticContentService createCP(String resourceRoot) {
+    return StaticResourceHandlerBuilder.builder(resourceRoot);
   }
 
-  /** Create and return a new static content configuration for a File. */
-  static StaticContentSupport createFile() {
-    return StaticResourceHandlerBuilder.builder().file();
+  /**
+   * Create and return a new static class path content configuration with the `/public` directory as
+   * the root.
+   */
+  static StaticContentService createCP() {
+    return StaticResourceHandlerBuilder.builder("/public/");
+  }
+
+  /**
+   * Create and return a new static content configuration for a File.
+   *
+   * @param resourceRoot The path of the file to serve, or the directory the files are located in.
+   */
+  static StaticContentService createFile(String resourceRoot) {
+    return StaticResourceHandlerBuilder.builder(resourceRoot).file();
   }
 
   /**
@@ -26,15 +42,7 @@ public sealed interface StaticContentSupport extends HttpService
    * @param path the HTTP path prefix
    * @return the updated configuration
    */
-  StaticContentSupport httpPath(String path);
-
-  /**
-   * Sets the file to serve, or the folder your files are located in. (default: "/public/")
-   *
-   * @param resource the root directory
-   * @return the updated configuration
-   */
-  StaticContentSupport resource(String resource);
+  StaticContentService httpPath(String path);
 
   /**
    * Sets the index file to be served when a directory is requests.
@@ -42,7 +50,7 @@ public sealed interface StaticContentSupport extends HttpService
    * @param directoryIndex the index file
    * @return the updated configuration
    */
-  StaticContentSupport directoryIndex(String directoryIndex);
+  StaticContentService directoryIndex(String directoryIndex);
 
   /**
    * Sets a custom resource loader for loading class/module path resources. This is normally used
@@ -53,7 +61,7 @@ public sealed interface StaticContentSupport extends HttpService
    * @param resourceLoader the custom resource loader
    * @return the updated configuration
    */
-  StaticContentSupport resourceLoader(ClassResourceLoader resourceLoader);
+  StaticContentService resourceLoader(ClassResourceLoader resourceLoader);
 
   /**
    * Adds a new MIME type mapping to the configuration. (Default: uses {@link
@@ -64,7 +72,7 @@ public sealed interface StaticContentSupport extends HttpService
    *     "application/javascript")
    * @return the updated configuration
    */
-  StaticContentSupport putMimeTypeMapping(String ext, String mimeType);
+  StaticContentService putMimeTypeMapping(String ext, String mimeType);
 
   /**
    * Adds a new response header to the configuration.
@@ -73,7 +81,7 @@ public sealed interface StaticContentSupport extends HttpService
    * @param value the header value
    * @return the updated configuration
    */
-  StaticContentSupport putResponseHeader(String key, String value);
+  StaticContentService putResponseHeader(String key, String value);
 
   /**
    * Sets a predicate to filter files based on the request context.
@@ -81,5 +89,5 @@ public sealed interface StaticContentSupport extends HttpService
    * @param skipFilePredicate the predicate to use
    * @return the updated configuration
    */
-  StaticContentSupport skipFilePredicate(Predicate<Context> skipFilePredicate);
+  StaticContentService skipFilePredicate(Predicate<Context> skipFilePredicate);
 }
