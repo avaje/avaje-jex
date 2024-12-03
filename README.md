@@ -7,7 +7,7 @@
 [![javadoc](https://javadoc.io/badge2/io.avaje/avaje-jex/javadoc.svg?color=purple)](https://javadoc.io/doc/io.avaje/avaje-jex)
 
 # Avaje-Jex
-Lightweight (~120KB) wrapper over the JDK's built-in [HTTP server](https://docs.oracle.com/en/java/javase/23/docs/api/jdk.httpserver/module-summary.html).
+Lightweight (~100KB) wrapper over the JDK's built-in [HTTP server](https://docs.oracle.com/en/java/javase/23/docs/api/jdk.httpserver/module-summary.html).
 
 Features:
 
@@ -30,11 +30,6 @@ var app = Jex.create()
           System.out.println("after request");
         })
     .error(IllegalStateException.class, (ctx, exception) -> ctx.status(500).text("Handled IllegalStateException|" + exception.getMessage()))
-  .staticResource(
-        b ->
-          b.httpPath("/myResource")
-           .resource("/public")
-           .directoryIndex("index.html"))
   .port(8080)
   .start();
 ```
