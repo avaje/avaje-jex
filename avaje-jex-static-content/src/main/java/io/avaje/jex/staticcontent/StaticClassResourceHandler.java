@@ -1,11 +1,13 @@
-package io.avaje.jex;
+package io.avaje.jex.staticcontent;
 
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.function.Predicate;
 
-final class StaticClassResourceHandler extends AbstractStaticHandler implements ExchangeHandler {
+import io.avaje.jex.Context;
+
+final class StaticClassResourceHandler extends AbstractStaticHandler {
 
   private final URL indexFile;
   private final URL singleFile;

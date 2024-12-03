@@ -84,27 +84,6 @@ public sealed interface Jex permits DJex {
   Routing routing();
 
   /**
-   * Adds a static resource route using the provided configuration.
-   *
-   * @param config The configuration for the static resource route.
-   */
-  default Jex staticResource(StaticContentConfig config) {
-    routing().get(config.httpPath(), config.createHandler());
-    return this;
-  }
-
-  /**
-   * Adds a static resource route using a consumer to configure the {@link StaticContentConfig}.
-   *
-   * @param consumer The consumer to configure the static resource route.
-   */
-  default Jex staticResource(Consumer<StaticContentConfig> consumer) {
-    var builder = StaticResourceHandlerBuilder.builder();
-    consumer.accept(builder);
-    return staticResource(builder);
-  }
-
-  /**
    * Sets the JSON service to use for serialization and deserialization.
    *
    * @param jsonService The JSON service to use.

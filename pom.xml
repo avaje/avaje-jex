@@ -9,7 +9,7 @@
 
   <groupId>io.avaje</groupId>
   <artifactId>avaje-jex-parent</artifactId>
-  <version>3.0-RC7</version>
+  <version>3.0-RC8</version>
   <packaging>pom</packaging>
 
   <scm>
@@ -22,7 +22,7 @@
     <jackson.version>2.18.2</jackson.version>
     <surefire.useModulePath>false</surefire.useModulePath>
     <maven.compiler.release>21</maven.compiler.release>
-    <project.build.outputTimestamp>2024-12-02T08:52:38Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-12-02T22:09:37Z</project.build.outputTimestamp>
   </properties>
 
   <modules>
@@ -31,6 +31,7 @@
     <module>avaje-jex-freemarker</module>
     <module>avaje-jex-mustache</module>
     <module>avaje-jex-htmx</module>
+    <module>avaje-jex-static-content</module>
   </modules>
 
   <dependencies>

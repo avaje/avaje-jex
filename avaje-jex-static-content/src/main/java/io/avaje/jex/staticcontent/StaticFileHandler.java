@@ -1,4 +1,4 @@
-package io.avaje.jex;
+package io.avaje.jex.staticcontent;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,7 +9,9 @@ import java.util.function.Predicate;
 
 import com.sun.net.httpserver.HttpExchange;
 
-final class StaticFileHandler extends AbstractStaticHandler implements ExchangeHandler {
+import io.avaje.jex.Context;
+
+final class StaticFileHandler extends AbstractStaticHandler {
 
   private final File indexFile;
   private final File singleFile;

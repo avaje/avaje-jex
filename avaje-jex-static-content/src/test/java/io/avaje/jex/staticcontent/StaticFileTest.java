@@ -1,4 +1,4 @@
-package io.avaje.jex;
+package io.avaje.jex.staticcontent;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,8 +8,7 @@ import java.time.Duration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
-import io.avaje.jex.StaticContentConfig.ResourceLocation;
-import io.avaje.jex.core.TestPair;
+import io.avaje.jex.Jex;
 
 class StaticFileTest {
 
@@ -19,30 +18,29 @@ class StaticFileTest {
 
     final Jex app =
         Jex.create()
-            .staticResource(b -> defaultCP(b.httpPath("/index")))
-            .staticResource(b -> defaultFile(b.httpPath("/indexFile")))
-            .staticResource(b -> defaultCP(b.httpPath("/indexWild/*")))
-            .staticResource(b -> defaultFile(b.httpPath("/indexWildFile/*")))
-            .staticResource(b -> defaultCP(b.httpPath("/sus/")))
-            .staticResource(b -> defaultFile(b.httpPath("/susFile/*")))
-            .staticResource(b -> b.httpPath("/single").resource("/logback.xml"))
-            .staticResource(
-                b ->
-                    b.location(ResourceLocation.FILE)
-                        .httpPath("/singleFile")
-                        .resource("src/test/resources/logback.xml"));
+            .routing(defaultCP().httpPath("/index"))
+            .routing(defaultFile().httpPath("/indexFile"))
+            .routing(defaultCP().httpPath("/indexWild/*"))
+            .routing(defaultFile().httpPath("/indexWildFile/*"))
+            .routing(defaultCP().httpPath("/sus/"))
+            .routing(defaultFile().httpPath("/susFile/*"))
+            .routing(StaticContentSupport.createCP().httpPath("/single").resource("/logback.xml"))
+            .routing(
+                StaticContentSupport.createFile()
+                    .httpPath("/singleFile")
+                    .resource("src/test/resources/logback.xml"));
 
     return TestPair.create(app);
   }
 
-  private static StaticContentConfig defaultFile(StaticContentConfig b) {
-    return b.location(ResourceLocation.FILE)
+  private static StaticContentSupport defaultFile() {
+    return StaticContentSupport.createFile()
         .resource("src/test/resources/public")
         .directoryIndex("index.html");
   }
 
-  private static StaticContentConfig defaultCP(StaticContentConfig b) {
-    return b.resource("/public").directoryIndex("index.html");
+  private static StaticContentSupport defaultCP() {
+    return StaticContentSupport.createCP().resource("/public").directoryIndex("index.html");
   }
 
   @AfterAll

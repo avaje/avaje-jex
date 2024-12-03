@@ -1,18 +1,24 @@
-package io.avaje.jex;
+package io.avaje.jex.staticcontent;
 
 import java.net.URLConnection;
 import java.util.function.Predicate;
 
+import io.avaje.jex.Context;
+import io.avaje.jex.Routing.HttpService;
+
 /** Builder for a static resource exchange handler. */
-public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder {
+public sealed interface StaticContentSupport extends HttpService
+    permits StaticResourceHandlerBuilder {
 
   /** Create and return a new static content configuration. */
-  static StaticContentConfig create() {
+  static StaticContentSupport createCP() {
     return StaticResourceHandlerBuilder.builder();
   }
 
-  /** Return a new ExchangeHandler that will serve the resources */
-  ExchangeHandler createHandler();
+  /** Create and return a new static content configuration for a File. */
+  static StaticContentSupport createFile() {
+    return StaticResourceHandlerBuilder.builder().file();
+  }
 
   /**
    * Sets the HTTP path for the static resource handler.
@@ -20,14 +26,7 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
    * @param path the HTTP path prefix
    * @return the updated configuration
    */
-  StaticContentConfig httpPath(String path);
-
-  /**
-   * Gets the current HTTP path.
-   *
-   * @return the current HTTP path
-   */
-  String httpPath();
+  StaticContentSupport httpPath(String path);
 
   /**
    * Sets the file to serve, or the folder your files are located in. (default: "/public/")
@@ -35,7 +34,7 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
    * @param resource the root directory
    * @return the updated configuration
    */
-  StaticContentConfig resource(String resource);
+  StaticContentSupport resource(String resource);
 
   /**
    * Sets the index file to be served when a directory is requests.
@@ -43,7 +42,7 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
    * @param directoryIndex the index file
    * @return the updated configuration
    */
-  StaticContentConfig directoryIndex(String directoryIndex);
+  StaticContentSupport directoryIndex(String directoryIndex);
 
   /**
    * Sets a custom resource loader for loading class/module path resources. This is normally used
@@ -54,7 +53,7 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
    * @param resourceLoader the custom resource loader
    * @return the updated configuration
    */
-  StaticContentConfig resourceLoader(ClassResourceLoader resourceLoader);
+  StaticContentSupport resourceLoader(ClassResourceLoader resourceLoader);
 
   /**
    * Adds a new MIME type mapping to the configuration. (Default: uses {@link
@@ -65,7 +64,7 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
    *     "application/javascript")
    * @return the updated configuration
    */
-  StaticContentConfig putMimeTypeMapping(String ext, String mimeType);
+  StaticContentSupport putMimeTypeMapping(String ext, String mimeType);
 
   /**
    * Adds a new response header to the configuration.
@@ -74,7 +73,7 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
    * @param value the header value
    * @return the updated configuration
    */
-  StaticContentConfig putResponseHeader(String key, String value);
+  StaticContentSupport putResponseHeader(String key, String value);
 
   /**
    * Sets a predicate to filter files based on the request context.
@@ -82,19 +81,5 @@ public sealed interface StaticContentConfig permits StaticResourceHandlerBuilder
    * @param skipFilePredicate the predicate to use
    * @return the updated configuration
    */
-  StaticContentConfig skipFilePredicate(Predicate<Context> skipFilePredicate);
-
-  /**
-   * Sets the resource location (CLASSPATH or FILE).
-   *
-   * @param location the resource location
-   * @return the updated configuration
-   */
-  StaticContentConfig location(ResourceLocation location);
-
-  /** Resource location */
-  enum ResourceLocation {
-    CLASS_PATH,
-    FILE
-  }
+  StaticContentSupport skipFilePredicate(Predicate<Context> skipFilePredicate);
 }

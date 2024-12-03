@@ -8,7 +8,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import io.avaje.jex.Jex;
-import io.avaje.jex.StaticContentConfig.ResourceLocation;
 import io.avaje.jex.core.Constants;
 import io.avaje.jex.core.TestPair;
 
@@ -20,17 +19,20 @@ class CompressionTest {
 
     final Jex app =
         Jex.create()
-            .staticResource(b -> b.httpPath("/compress").resource("/64KB.json"))
             .routing(
                 r ->
                     r.get(
-                        "/forced",
-                        ctx -> ctx.header(Constants.CONTENT_ENCODING, "gzip").text("hi")))
-            .staticResource(
-                b ->
-                    b.location(ResourceLocation.FILE)
-                        .httpPath("/sus")
-                        .resource("src/test/resources/public/sus.txt"));
+                            "/compress",
+                            ctx ->
+                                ctx.write(CompressionTest.class.getResourceAsStream("/64KB.json")))
+                        .get(
+                            "/sus",
+                            ctx ->
+                                ctx.write(
+                                    CompressionTest.class.getResourceAsStream("/public/sus.txt")))
+                        .get(
+                            "/forced",
+                            ctx -> ctx.header(Constants.CONTENT_ENCODING, "gzip").text("hi")));
 
     return TestPair.create(app);
   }

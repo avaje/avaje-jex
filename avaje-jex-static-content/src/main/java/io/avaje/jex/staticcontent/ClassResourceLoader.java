@@ -1,4 +1,4 @@
-package io.avaje.jex;
+package io.avaje.jex.staticcontent;
 
 import java.io.InputStream;
 import java.net.URL;
