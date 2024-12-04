@@ -1,11 +1,10 @@
 package io.avaje.jex.test;
 
+import java.util.Random;
+
 import io.avaje.http.client.HttpClient;
 import io.avaje.http.client.HttpClientRequest;
-import io.avaje.http.client.JacksonBodyAdapter;
 import io.avaje.jex.Jex;
-
-import java.util.Random;
 
 /**
  * Server and Client pair for a test.
@@ -51,7 +50,6 @@ public class TestPair {
     var url = "http://localhost:" + port;
     var client = HttpClient.builder()
       .baseUrl(url)
-      .bodyAdapter(new JacksonBodyAdapter())
       .build();
 
     return new TestPair(port, jexServer, client);
