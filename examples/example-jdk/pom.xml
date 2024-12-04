@@ -24,7 +24,7 @@
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-jex</artifactId>
-      <version>3.0-RC7</version>
+      <version>3.0-RC8</version>
     </dependency>
 
     <dependency>

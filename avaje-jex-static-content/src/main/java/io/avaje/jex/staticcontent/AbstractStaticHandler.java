@@ -1,4 +1,4 @@
-package io.avaje.jex;
+package io.avaje.jex.staticcontent;
 
 import java.net.FileNameMap;
 import java.net.URLConnection;
@@ -8,6 +8,8 @@ import java.util.function.Predicate;
 
 import com.sun.net.httpserver.HttpExchange;
 
+import io.avaje.jex.Context;
+import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.http.BadRequestException;
 import io.avaje.jex.http.NotFoundException;
 
