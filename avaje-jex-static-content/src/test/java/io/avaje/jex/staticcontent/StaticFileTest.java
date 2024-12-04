@@ -9,6 +9,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import io.avaje.jex.Jex;
+import io.avaje.jex.test.TestPair;
 
 class StaticFileTest {
 
