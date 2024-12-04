@@ -38,7 +38,6 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
 
   @Override
   public void add(Routing routing) {
-
     routing.get(path, createHandler());
   }
 
@@ -122,7 +121,6 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
     if (directoryIndex != null) {
       try {
         dirIndex = new File(root.transform(this::appendSlash) + directoryIndex).getCanonicalFile();
-
         fsRoot = dirIndex.getParentFile().getPath();
       } catch (Exception e) {
         throw new IllegalStateException(
@@ -131,7 +129,6 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
     } else {
       try {
         singleFile = new File(root).getCanonicalFile();
-
         fsRoot = singleFile.getParentFile().getPath();
       } catch (Exception e) {
         throw new IllegalStateException(FAILED_TO_LOCATE_FILE + root, e);
