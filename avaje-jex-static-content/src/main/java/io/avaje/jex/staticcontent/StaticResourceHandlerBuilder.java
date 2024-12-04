@@ -5,11 +5,9 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import io.avaje.jex.Context;
-import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.Routing;
 
 final class StaticResourceHandlerBuilder implements StaticContentService {
@@ -39,11 +37,6 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
 
   @Override
   public void add(Routing routing) {
-
-    routing.get(path, createHandler());
-  }
-
-  ExchangeHandler createHandler() {
     path =
         Objects.requireNonNull(path)
             .transform(this::prependSlash)
@@ -60,11 +53,7 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
           "Directory Index file is required when serving directories");
     }
 
-    if (!isClasspath) {
-      return fileLoader(File::new);
-    }
-
-    return classPathHandler();
+    routing.get(path, isClasspath ? classPathHandler() : fileLoader());
   }
 
   @Override
@@ -116,14 +105,13 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
     return s.endsWith("/") ? s : s + "/";
   }
 
-  private StaticFileHandler fileLoader(Function<String, File> fileLoader) {
+  private StaticFileHandler fileLoader() {
     String fsRoot;
     File dirIndex = null;
     File singleFile = null;
     if (directoryIndex != null) {
       try {
-        dirIndex =
-            fileLoader.apply(root.transform(this::appendSlash) + directoryIndex).getCanonicalFile();
+        dirIndex = new File(root.transform(this::appendSlash) + directoryIndex).getCanonicalFile();
 
         fsRoot = dirIndex.getParentFile().getPath();
       } catch (Exception e) {
@@ -132,7 +120,7 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
       }
     } else {
       try {
-        singleFile = fileLoader.apply(root).getCanonicalFile();
+        singleFile = new File(root).getCanonicalFile();
 
         fsRoot = singleFile.getParentFile().getPath();
       } catch (Exception e) {
