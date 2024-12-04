@@ -250,7 +250,7 @@ final class JdkContext implements Context {
   @Override
   public String queryParam(String name) {
     final List<String> vals = queryParams(name);
-    return vals == null || vals.isEmpty() ? null : vals.getFirst();
+    return vals.isEmpty() ? null : vals.getFirst();
   }
 
   private Map<String, List<String>> queryParams() {
