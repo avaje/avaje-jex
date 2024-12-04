@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 import io.avaje.jex.Context;
+import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.Routing;
 
 final class StaticResourceHandlerBuilder implements StaticContentService {
@@ -37,6 +38,11 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
 
   @Override
   public void add(Routing routing) {
+
+    routing.get(path, createHandler());
+  }
+
+  ExchangeHandler createHandler() {
     path =
         Objects.requireNonNull(path)
             .transform(this::prependSlash)
@@ -53,7 +59,11 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
           "Directory Index file is required when serving directories");
     }
 
-    routing.get(path, isClasspath ? classPathHandler() : fileLoader());
+    if (!isClasspath) {
+      return fileLoader();
+    }
+
+    return classPathHandler();
   }
 
   @Override
