@@ -246,17 +246,17 @@ public interface Context {
   int status();
 
   /** Write plain text content to the response. */
-  Context text(String content);
+  void text(String content);
 
   /** Write html content to the response. */
-  Context html(String content);
+  void html(String content);
 
   /**
    * Set the content type as application/json and write the response.
    *
    * @param bean the object to serialize and write
    */
-  Context json(Object bean);
+  void json(Object bean);
 
   /**
    * Write the stream as a JSON stream with new line delimiters {@literal
@@ -264,7 +264,7 @@ public interface Context {
    *
    * @param stream The stream of beans to write as json
    */
-  <E> Context jsonStream(Stream<E> stream);
+  <E> void jsonStream(Stream<E> stream);
 
   /**
    * Write the stream as a JSON stream with new line delimiters {@literal
@@ -272,28 +272,28 @@ public interface Context {
    *
    * @param iterator The iterator of beans to write as json
    */
-  <E> Context jsonStream(Iterator<E> iterator);
+  <E> void jsonStream(Iterator<E> iterator);
 
   /**
    * Writes the given string content directly to the response.
    *
    * @param content The string content to write.
    */
-  Context write(String content);
+  void write(String content);
 
   /**
    * Writes the given bytes directly to the response.
    *
    * @param bytes The byte array to write.
    */
-  Context write(byte[] bytes);
+  void write(byte[] bytes);
 
   /**
    * Writes the content from the given InputStream directly to the response body.
    *
    * @param is The input stream containing the content to write.
    */
-  Context write(InputStream is);
+  void write(InputStream is);
 
   /**
    * Return the outputStream to write content. It is expected that

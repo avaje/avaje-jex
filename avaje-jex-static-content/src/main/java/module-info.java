@@ -2,9 +2,9 @@
  * Defines the Static Content API for serving static resources with Jex - see {@link io.avaje.jex.staticcontent.StaticContentService}.
  *
  * <pre>{@code
- * var staticContent = StaticContentService.createCP("/public").directoryIndex("index.html");
+ * var staticContent = StaticContentService.createCP("/public").httpPath("/").directoryIndex("index.html");
  * final Jex.Server app = Jex.create()
- *   .routing(staticContent.createService())
+ *   .routing(staticContent)
  *   .port(8080)
  *   .start();
  *
