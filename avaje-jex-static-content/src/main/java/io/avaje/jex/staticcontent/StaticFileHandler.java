@@ -1,5 +1,6 @@
 package io.avaje.jex.staticcontent;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,6 +11,8 @@ import java.util.function.Predicate;
 import com.sun.net.httpserver.HttpExchange;
 
 import io.avaje.jex.Context;
+import io.avaje.jex.compression.CompressedOutputStream;
+import io.avaje.jex.compression.CompressionConfig;
 
 final class StaticFileHandler extends AbstractStaticHandler {
 
@@ -23,8 +26,17 @@ final class StaticFileHandler extends AbstractStaticHandler {
       Map<String, String> headers,
       Predicate<Context> skipFilePredicate,
       File welcomeFile,
-      File singleFile) {
-    super(urlPrefix, filesystemRoot, mimeTypes, headers, skipFilePredicate);
+      File singleFile,
+      boolean precompress,
+      CompressionConfig compressionConfig) {
+    super(
+        urlPrefix,
+        filesystemRoot,
+        mimeTypes,
+        headers,
+        skipFilePredicate,
+        precompress,
+        compressionConfig);
     this.indexFile = welcomeFile;
     this.singleFile = singleFile;
   }
@@ -33,7 +45,14 @@ final class StaticFileHandler extends AbstractStaticHandler {
   public void handle(Context ctx) throws IOException {
     final var jdkExchange = ctx.exchange();
     if (singleFile != null) {
-      sendFile(ctx, jdkExchange, singleFile.getPath(), singleFile);
+
+      final var path = singleFile.getPath();
+      if (isCached(path)) {
+        writeCached(ctx, path);
+        return;
+      }
+
+      sendFile(ctx, jdkExchange, path, singleFile);
       return;
     }
 
@@ -43,11 +62,24 @@ final class StaticFileHandler extends AbstractStaticHandler {
 
     final String wholeUrlPath = jdkExchange.getRequestURI().getPath();
     if (wholeUrlPath.endsWith("/") || wholeUrlPath.equals(urlPrefix)) {
-      sendFile(ctx, jdkExchange, indexFile.getPath(), indexFile);
+
+      final var path = indexFile.getPath();
+      if (isCached(path)) {
+        writeCached(ctx, path);
+        return;
+      }
+
+      sendFile(ctx, jdkExchange, path, indexFile);
       return;
     }
 
     final String urlPath = wholeUrlPath.substring(urlPrefix.length());
+
+    if (isCached(urlPath)) {
+      writeCached(ctx, urlPath);
+      return;
+    }
+
     File canonicalFile;
     try {
       canonicalFile = new File(filesystemRoot, urlPath).getCanonicalFile();
@@ -72,6 +104,10 @@ final class StaticFileHandler extends AbstractStaticHandler {
       String mimeType = lookupMime(urlPath);
       ctx.header("Content-Type", mimeType);
       ctx.headers(headers);
+      if (precompress) {
+        addCachedEntry(ctx, urlPath, fis);
+        return;
+      }
       ctx.write(fis);
     } catch (FileNotFoundException e) {
       throw404(jdkExchange);

@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import io.avaje.jex.Jex;
 import io.avaje.jex.test.TestPair;
 
-class StaticFileTest {
+class CompressedStaticFileTest {
 
   static TestPair pair = init();
 
@@ -35,11 +35,12 @@ class StaticFileTest {
 
   private static StaticContentService defaultFile() {
     return StaticContentService.createFile("src/test/resources/public")
-        .directoryIndex("index.html");
+        .directoryIndex("index.html")
+        .preCompress();
   }
 
   private static StaticContentService defaultCP() {
-    return StaticContentService.createCP("/public").directoryIndex("index.html");
+    return StaticContentService.createCP("/public").directoryIndex("index.html").preCompress();
   }
 
   @AfterAll
@@ -49,18 +50,21 @@ class StaticFileTest {
 
   @Test
   void testGet() {
+    pair.request().path("index").GET().asString();
     HttpResponse<String> res = pair.request().path("index").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
   }
 
   @Test
   void testTraversal() {
+    pair.request().path("indexWild/../hmm").GET().asString();
     HttpResponse<String> res = pair.request().path("indexWild/../hmm").GET().asString();
     assertThat(res.statusCode()).isEqualTo(400);
   }
 
   @Test
   void getIndexWildCP() {
+    pair.request().path("indexWild/").GET().asString();
     HttpResponse<String> res = pair.request().path("indexWild/").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().firstValue("Content-Type").orElseThrow()).contains("html");
@@ -68,12 +72,14 @@ class StaticFileTest {
 
   @Test
   void getIndex404() {
+    pair.request().path("index").path("index.html").GET().asString();
     HttpResponse<String> res = pair.request().path("index").path("index.html").GET().asString();
     assertThat(res.statusCode()).isEqualTo(404);
   }
 
   @Test
   void getDirContentCP() {
+    pair.request().requestTimeout(Duration.ofHours(1)).path("sus/sus.txt").GET().asString();
     HttpResponse<String> res =
         pair.request().requestTimeout(Duration.ofHours(1)).path("sus/sus.txt").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
@@ -82,6 +88,7 @@ class StaticFileTest {
 
   @Test
   void getSingleFileCP() {
+    pair.request().path("single").GET().asString();
     HttpResponse<String> res = pair.request().path("single").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().firstValue("Content-Type").orElseThrow()).contains("xml");
@@ -89,6 +96,7 @@ class StaticFileTest {
 
   @Test
   void getIndexFile() {
+    pair.request().path("indexFile").GET().asString();
     HttpResponse<String> res = pair.request().path("indexFile").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().firstValue("Content-Type").orElseThrow()).contains("html");
@@ -96,14 +104,15 @@ class StaticFileTest {
 
   @Test
   void getDirContentFile() {
-    HttpResponse<String> res =
-        pair.request().requestTimeout(Duration.ofHours(1)).path("susFile/sus.txt").GET().asString();
+    pair.request().path("susFile/sus.txt").GET().asString();
+    HttpResponse<String> res = pair.request().path("susFile/sus.txt").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).contains("ඞ");
   }
 
   @Test
   void getSingleResourceFile() {
+    pair.request().path("singleFile").GET().asString();
     HttpResponse<String> res = pair.request().path("singleFile").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().firstValue("Content-Type").orElseThrow()).contains("xml");
@@ -111,6 +120,7 @@ class StaticFileTest {
 
   @Test
   void getIndexWildFile() {
+    pair.request().path("indexWildFile/").GET().asString();
     HttpResponse<String> res = pair.request().path("indexWildFile/").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().firstValue("Content-Type").orElseThrow()).contains("html");
@@ -118,6 +128,7 @@ class StaticFileTest {
 
   @Test
   void testFileTraversal() {
+    pair.request().path("indexWildFile/../traverse").GET().asString();
     HttpResponse<String> res = pair.request().path("indexWildFile/../traverse").GET().asString();
     assertThat(res.statusCode()).isEqualTo(400);
   }

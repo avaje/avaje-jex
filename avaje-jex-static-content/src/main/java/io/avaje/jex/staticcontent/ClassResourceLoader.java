@@ -1,6 +1,5 @@
 package io.avaje.jex.staticcontent;
 
-import java.io.InputStream;
 import java.net.URL;
 
 /**
@@ -31,12 +30,4 @@ public interface ClassResourceLoader {
    * @return The URL of the resource.
    */
   URL loadResource(String resourcePath);
-
-  /**
-   * Loads the specified resource and returns an input stream to read its contents.
-   *
-   * @param resourcePath The path to the resource.
-   * @return An InputStream to read the resource.
-   */
-  InputStream loadResourceAsStream(String resourcePath);
 }

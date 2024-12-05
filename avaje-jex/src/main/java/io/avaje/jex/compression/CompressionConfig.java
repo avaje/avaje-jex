@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 /** Configuration class for compression settings. */
-public class CompressionConfig {
+public final class CompressionConfig {
 
   private static final int HTTP_PACKET_SIZE = 1500;
 
