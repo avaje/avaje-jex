@@ -17,8 +17,10 @@ final class DCookie implements Context.Cookie {
   private ZonedDateTime expires;
   private Duration maxAge;// = -1; // ;Max-Age=VALUE ... cookies auto-expire
   private String path; // ;Path=VALUE ... URLs that see the cookie
+  private SameSite sameSite; // ;SameSite=Strict|Lax|None
   private boolean secure; // ;Secure ... e.g. use SSL
   private boolean httpOnly;
+  private boolean partitioned;
 
   private DCookie(String name, String value) {
     if (name == null || name.isEmpty()) {
@@ -113,6 +115,28 @@ final class DCookie implements Context.Cookie {
   }
 
   @Override
+  public boolean partitioned() {
+    return partitioned;
+  }
+
+  @Override
+  public Context.Cookie partitioned(boolean partitioned) {
+    this.partitioned = partitioned;
+    return this;
+  }
+
+  @Override
+  public SameSite sameSite() {
+    return sameSite;
+  }
+
+  @Override
+  public Context.Cookie sameSite(SameSite sameSite) {
+    this.sameSite = sameSite;
+    return this;
+  }
+
+  @Override
   public String toString() {
     StringBuilder result = new StringBuilder(60);
     result.append(name).append('=').append(value);
@@ -128,11 +152,17 @@ final class DCookie implements Context.Cookie {
     if (path != null) {
       result.append(PARAM_SEPARATOR).append("Path=").append(path);
     }
+    if (sameSite != null) {
+      result.append(PARAM_SEPARATOR).append("SameSite=").append(sameSite);
+    }
     if (secure) {
       result.append(PARAM_SEPARATOR).append("Secure");
     }
     if (httpOnly) {
       result.append(PARAM_SEPARATOR).append("HttpOnly");
+    }
+    if (partitioned) {
+      result.append(PARAM_SEPARATOR).append("Partitioned");
     }
     return result.toString();
   }
