@@ -559,7 +559,7 @@ public interface Context {
     Cookie secure(boolean secure);
 
     /**
-     * Checks if the HttpOnly attribute is enabled for this cookie.
+     * Indicates if the HttpOnly attribute is enabled for this cookie.
      *
      * <p>The HttpOnly attribute ensures that the cookie is inaccessible to JavaScript, helping to
      * mitigate cross-site scripting (XSS) attacks.
@@ -581,10 +581,37 @@ public interface Context {
     Cookie httpOnly(boolean httpOnly);
 
     /**
+     * Indicates if the Partitioned attribute is enabled for this cookie.
+     */
+    boolean partitioned();
+
+    /**
+     * Set the Partitioned attribute for this cookie.
+     */
+    Cookie partitioned(boolean partitioned);
+
+    /**
+     * Return the SameSite setting.
+     */
+    SameSite sameSite();
+
+    /**
+     * Set the SameSite setting for this cookie.
+     */
+    Cookie sameSite(SameSite sameSite);
+
+    /**
      * Returns content of the cookie as a 'Set-Cookie:' header value specified by <a
      * href="https://tools.ietf.org/html/rfc6265">RFC6265</a>.
      */
     @Override
     String toString();
+
+    /**
+     * Cookie SameSite options.
+     */
+    enum SameSite {
+     Strict, Lax, None
+    }
   }
 }
