@@ -4,14 +4,14 @@ import java.net.URLConnection;
 import java.util.function.Predicate;
 
 import io.avaje.jex.Context;
-import io.avaje.jex.Routing.HttpService;
+import io.avaje.jex.spi.JexPlugin;
 
 /** Builder for a static resource exchange handler. */
-public sealed interface StaticContentService extends HttpService
+public sealed interface StaticContentService extends JexPlugin
     permits StaticResourceHandlerBuilder {
 
   /**
-   * Create and return a new static content configuration.
+   * Create and return a new static class path content configuration.
    *
    * @param resourceRoot The file to serve, or the directory the files are located in.
    */
@@ -53,10 +53,17 @@ public sealed interface StaticContentService extends HttpService
   StaticContentService directoryIndex(String directoryIndex);
 
   /**
+   * Sent resources will be pre-compressed and cached in memory when this is enabled
+   *
+   * @return the updated configuration
+   */
+  StaticContentService preCompress();
+
+  /**
    * Sets a custom resource loader for loading class/module path resources. This is normally used
    * when running the application on the module path when files cannot be discovered.
    *
-   * <p>Example usage: {@code config.resourceLoader(ClassResourceLoader.create(getClass())) }
+   * <p>Example usage: {@code service.resourceLoader(ClassResourceLoader.create(getClass())) }
    *
    * @param resourceLoader the custom resource loader
    * @return the updated configuration

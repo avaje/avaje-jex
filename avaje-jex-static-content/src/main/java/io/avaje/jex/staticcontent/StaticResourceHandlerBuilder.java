@@ -9,7 +9,8 @@ import java.util.function.Predicate;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.ExchangeHandler;
-import io.avaje.jex.Routing;
+import io.avaje.jex.Jex;
+import io.avaje.jex.compression.CompressionConfig;
 
 final class StaticResourceHandlerBuilder implements StaticContentService {
 
@@ -27,6 +28,7 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
   private final Map<String, String> headers = new HashMap<>();
   private Predicate<Context> skipFilePredicate = NO_OP_PREDICATE;
   private boolean isClasspath = true;
+  private boolean precompress;
 
   private StaticResourceHandlerBuilder(String root) {
     this.root = root;
@@ -37,11 +39,11 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
   }
 
   @Override
-  public void add(Routing routing) {
-    routing.get(path, createHandler());
+  public void apply(Jex jex) {
+    jex.routing().get(path, createHandler(jex.config().compression()));
   }
 
-  ExchangeHandler createHandler() {
+  ExchangeHandler createHandler(CompressionConfig compress) {
     path =
         Objects.requireNonNull(path)
             .transform(this::prependSlash)
@@ -59,10 +61,10 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
     }
 
     if (!isClasspath) {
-      return fileLoader();
+      return fileLoader(compress);
     }
 
-    return classPathHandler();
+    return classPathHandler(compress);
   }
 
   @Override
@@ -101,7 +103,13 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
     return this;
   }
 
-  public StaticResourceHandlerBuilder file() {
+  @Override
+  public StaticResourceHandlerBuilder preCompress() {
+    this.precompress = true;
+    return this;
+  }
+
+  StaticResourceHandlerBuilder file() {
     this.isClasspath = false;
     return this;
   }
@@ -114,7 +122,7 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
     return s.endsWith("/") ? s : s + "/";
   }
 
-  private StaticFileHandler fileLoader() {
+  private StaticFileHandler fileLoader(CompressionConfig compress) {
     String fsRoot;
     File dirIndex = null;
     File singleFile = null;
@@ -136,10 +144,18 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
     }
 
     return new StaticFileHandler(
-        path, fsRoot, mimeTypes, headers, skipFilePredicate, dirIndex, singleFile);
+        path,
+        fsRoot,
+        mimeTypes,
+        headers,
+        skipFilePredicate,
+        dirIndex,
+        singleFile,
+        precompress,
+        compress);
   }
 
-  private StaticClassResourceHandler classPathHandler() {
+  private StaticClassResourceHandler classPathHandler(CompressionConfig compress) {
     URL dirIndex = null;
     URL singleFile = null;
     if (directoryIndex != null) {
@@ -149,6 +165,15 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
     }
 
     return new StaticClassResourceHandler(
-        path, root, mimeTypes, headers, skipFilePredicate, resourceLoader, dirIndex, singleFile);
+        path,
+        root,
+        mimeTypes,
+        headers,
+        skipFilePredicate,
+        resourceLoader,
+        dirIndex,
+        singleFile,
+        precompress,
+        compress);
   }
 }

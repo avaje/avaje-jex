@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import io.avaje.jex.Context;
+import io.avaje.jex.compression.CompressionConfig;
 
 final class StaticClassResourceHandler extends AbstractStaticHandler {
 
@@ -21,8 +22,17 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
       Predicate<Context> skipFilePredicate,
       ClassResourceLoader resourceLoader,
       URL indexFile,
-      URL singleFile) {
-    super(urlPrefix, filesystemRoot, mimeTypes, headers, skipFilePredicate);
+      URL singleFile,
+      boolean precompress,
+      CompressionConfig compressionConfig) {
+    super(
+        urlPrefix,
+        filesystemRoot,
+        mimeTypes,
+        headers,
+        skipFilePredicate,
+        precompress,
+        compressionConfig);
 
     this.resourceLoader = resourceLoader;
     this.indexFile = indexFile;
@@ -32,7 +42,12 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
   @Override
   public void handle(Context ctx) {
     if (singleFile != null) {
-      sendURL(ctx, singleFile.getPath(), singleFile);
+      final var path = singleFile.getPath();
+      if (isCached(path)) {
+        writeCached(ctx, path);
+        return;
+      }
+      sendURL(ctx, path, singleFile);
       return;
     }
 
@@ -43,31 +58,39 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
 
     final String wholeUrlPath = jdkExchange.getRequestURI().getPath();
     if (wholeUrlPath.endsWith("/") || wholeUrlPath.equals(urlPrefix)) {
-      sendURL(ctx, indexFile.getPath(), indexFile);
+      final var path = indexFile.getPath();
+      if (isCached(path)) {
+        writeCached(ctx, path);
+        return;
+      }
+      sendURL(ctx, path, indexFile);
       return;
     }
 
     final String urlPath = wholeUrlPath.substring(urlPrefix.length());
+
+    if (isCached(urlPath)) {
+      writeCached(ctx, urlPath);
+      return;
+    }
+
     final String normalizedPath =
         Paths.get(filesystemRoot, urlPath).normalize().toString().replace("\\", "/");
 
     if (!normalizedPath.startsWith(filesystemRoot)) {
       reportPathTraversal();
     }
-
-    try (var fis = resourceLoader.loadResourceAsStream(normalizedPath)) {
-      ctx.header("Content-Type", lookupMime(normalizedPath));
-      ctx.headers(headers);
-      ctx.write(fis);
-    } catch (final Exception e) {
-      throw404(ctx.exchange());
-    }
+    sendURL(ctx, urlPath, resourceLoader.loadResource(normalizedPath));
   }
 
   private void sendURL(Context ctx, String urlPath, URL path) {
     try (var fis = path.openStream()) {
       ctx.header("Content-Type", lookupMime(urlPath));
       ctx.headers(headers);
+      if (precompress) {
+        addCachedEntry(ctx, urlPath, fis);
+        return;
+      }
       ctx.write(fis);
     } catch (final Exception e) {
       throw404(ctx.exchange());
