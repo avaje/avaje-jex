@@ -326,46 +326,42 @@ final class JdkContext implements Context {
   }
 
   @Override
-  public Context json(Object bean) {
+  public void json(Object bean) {
     contentType(APPLICATION_JSON);
     mgr.jsonWrite(bean, outputStream());
-    return this;
   }
 
   @Override
-  public <E> Context jsonStream(Stream<E> stream) {
+  public <E> void jsonStream(Stream<E> stream) {
     contentType(APPLICATION_X_JSON_STREAM);
     mgr.jsonWriteStream(stream, outputStream());
-    return this;
   }
 
   @Override
-  public <E> Context jsonStream(Iterator<E> iterator) {
+  public <E> void jsonStream(Iterator<E> iterator) {
     contentType(APPLICATION_X_JSON_STREAM);
     mgr.jsonWriteStream(iterator, outputStream());
-    return this;
   }
 
   @Override
-  public Context text(String content) {
+  public void text(String content) {
     contentType(TEXT_PLAIN_UTF8);
-    return write(content);
+    write(content);
   }
 
   @Override
-  public Context html(String content) {
+  public void html(String content) {
     contentType(TEXT_HTML_UTF8);
-    return write(content);
+    write(content);
   }
 
   @Override
-  public Context write(String content) {
+  public void write(String content) {
     write(content.getBytes(StandardCharsets.UTF_8));
-    return this;
   }
 
   @Override
-  public Context write(byte[] bytes) {
+  public void write(byte[] bytes) {
     try (var os = exchange.getResponseBody()) {
       exchange.sendResponseHeaders(statusCode(), bytes.length == 0 ? -1 : bytes.length);
       os.write(bytes);
@@ -373,17 +369,15 @@ final class JdkContext implements Context {
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
-    return this;
   }
 
   @Override
-  public Context write(InputStream is) {
+  public void write(InputStream is) {
     try (is; var os = outputStream()) {
       is.transferTo(os);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
-    return this;
   }
 
   @Override
