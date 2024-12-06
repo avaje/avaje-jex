@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.function.Consumer;
 
 import io.avaje.inject.BeanScope;
+import io.avaje.jex.Routing.HttpService;
 import io.avaje.jex.security.Role;
 import io.avaje.jex.spi.JexPlugin;
 import io.avaje.jex.spi.JsonService;
@@ -167,6 +168,26 @@ public sealed interface Jex permits DJex {
    */
   default <T extends Exception> Jex error(Class<T> exceptionClass, ExceptionHandler<T> handler) {
     routing().error(exceptionClass, handler);
+    return this;
+  }
+
+  /**
+   * Add a group of route handlers with a common path prefix.
+   *
+   * <pre>{@code
+   * routing.path("api", g -> {
+   *     g.get("/", ctx -> ctx.text("apiRoot"));
+   *     g.get("{id}", ctx -> ctx.text("api-" + ctx.pathParam("id")));
+   * });
+   *
+   * }</pre>
+   *
+   * @param path the common path prefix
+   * @param group the function to register the rout handlers
+   *
+   */
+  default Jex group(String path, HttpService group) {
+    routing().group(path, group);
     return this;
   }
 
