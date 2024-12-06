@@ -46,7 +46,7 @@ final class DefaultRouting implements Routing {
   private void addEndpoints(String path, Group group) {
     path = path.startsWith("/") ? path : "/" + path;
     pathDeque.addLast(path);
-    group.addGroup();
+    group.addGroup(this);
     pathDeque.removeLast();
   }
 

@@ -130,7 +130,7 @@ public sealed interface Routing permits DefaultRouting {
   interface Group {
 
     /** Add the group of entries with a common prefix. */
-    void addGroup();
+    void addGroup(Routing routing);
   }
 
   /** Adds to the Routing. */
