@@ -3,7 +3,6 @@ package io.avaje.jex;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -38,10 +37,10 @@ final class DefaultRouting implements Routing {
     return String.join("", pathDeque) + ((path.startsWith("/") || path.isEmpty()) ? path : "/" + path);
   }
 
-  private void addEndpoints(String path, Group group) {
+  private void addEndpoints(String path, HttpService group) {
     path = path.startsWith("/") ? path : "/" + path;
     pathDeque.addLast(path);
-    group.addGroup(this);
+    group.add(this);
     pathDeque.removeLast();
   }
 
@@ -66,7 +65,7 @@ final class DefaultRouting implements Routing {
   }
 
   @Override
-  public Routing path(String path, Group group) {
+  public Routing group(String path, HttpService group) {
     addEndpoints(path, group);
     return this;
   }

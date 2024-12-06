@@ -31,14 +31,18 @@ public sealed interface Routing permits DefaultRouting {
    * Add a group of route handlers with a common path prefix.
    *
    * <pre>{@code
-   * routing.path("api", () -> {
-   *     routing.get("/", ctx -> ctx.text("apiRoot"));
-   *     routing.get("{id}", ctx -> ctx.text("api-" + ctx.pathParam("id")));
+   * routing.path("api", g -> {
+   *     g.get("/", ctx -> ctx.text("apiRoot"));
+   *     g.get("{id}", ctx -> ctx.text("api-" + ctx.pathParam("id")));
    * });
    *
    * }</pre>
+   *
+   * @param path the common path prefix
+   * @param group the function to register the rout handlers
+   *
    */
-  Routing path(String path, Group group);
+  Routing group(String path, HttpService group);
 
   /**
    * Adds a HEAD handler to the route configuration.
@@ -141,14 +145,6 @@ public sealed interface Routing permits DefaultRouting {
 
   /** Return all the registered Exception Handlers. */
   Map<Class<?>, ExceptionHandler<?>> errorHandlers();
-
-  /** A group of routing entries prefixed by a common path. */
-  @FunctionalInterface
-  interface Group {
-
-    /** Add the group of entries with a common prefix. */
-    void addGroup(Routing routing);
-  }
 
   /** Adds to the Routing. */
   @FunctionalInterface
