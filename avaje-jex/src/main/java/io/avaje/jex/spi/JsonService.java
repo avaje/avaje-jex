@@ -42,5 +42,8 @@ public non-sealed interface JsonService extends JexExtension {
    * @param iterator the stream of objects to be serialized
    * @param os the output stream to write the JSON-Stream data to
    */
-  <E> void jsonWriteStream(Iterator<E> iterator, OutputStream os);
+  default <E> void jsonWriteStream(Iterator<E> iterator, OutputStream os) {
+
+    throw new UnsupportedOperationException("Not Implemented");
+  }
 }
