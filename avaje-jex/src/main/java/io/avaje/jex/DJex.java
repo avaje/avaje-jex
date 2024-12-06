@@ -11,24 +11,11 @@ final class DJex implements Jex {
 
   private final Routing routing = new DefaultRouting();
   private final AppLifecycle lifecycle = new DefaultLifecycle();
-  private final Map<Class<?>, Object> attributes = new HashMap<>();
   private final DJexConfig config = new DJexConfig();
 
   @Override
   public DJexConfig config() {
     return config;
-  }
-
-  @Override
-  public <T> Jex attribute(Class<T> cls, T instance) {
-    attributes.put(cls, instance);
-    return this;
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public <T> T attribute(Class<T> cls) {
-    return (T) attributes.get(cls);
   }
 
   @Override

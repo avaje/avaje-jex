@@ -58,7 +58,17 @@ public sealed interface Routing permits DefaultRouting {
    */
   <T extends Exception> Routing error(Class<T> exceptionClass, ExceptionHandler<T> handler);
 
-  /** Add a group of route handlers with a common path prefix. */
+  /**
+   * Add a group of route handlers with a common path prefix.
+   *
+   * <pre>{@code
+   * routing.path("api", () -> {
+   *     routing.get("/", ctx -> ctx.text("apiRoot"));
+   *     routing.get("{id}", ctx -> ctx.text("api-" + ctx.pathParam("id")));
+   * });
+   *
+   * }</pre>
+   */
   Routing path(String path, Group group);
 
   /** Add a HEAD handler. */
