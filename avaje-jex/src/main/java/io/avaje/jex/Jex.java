@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.function.Consumer;
 
 import io.avaje.inject.BeanScope;
+import io.avaje.jex.security.Role;
 import io.avaje.jex.spi.JexPlugin;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
@@ -65,49 +66,91 @@ public sealed interface Jex permits DJex {
    */
   Routing routing();
 
-  /** Add a GET handler. */
-  default Jex get(String path, ExchangeHandler handler) {
-    routing().get(path, handler);
+  /**
+   * Adds a GET handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when a GET request matches the path.
+   * @param roles An array of roles that are associated with this endpoint.
+   */
+  default Jex get(String path, ExchangeHandler handler, Role... roles) {
+    routing().get(path, handler, roles);
     return this;
   }
 
-  /** Add a POST handler. */
-  default Jex post(String path, ExchangeHandler handler) {
-    routing().get(path, handler);
+  /**
+   * Adds a POST handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when a POST request matches the path.
+   * @param roles An array of roles that are associated with this endpoint.
+   */
+  default Jex post(String path, ExchangeHandler handler, Role... roles) {
+    routing().get(path, handler, roles);
     return this;
   }
 
-  /** Add a PUT handler. */
-  default Jex put(String path, ExchangeHandler handler) {
-    routing().get(path, handler);
+  /**
+   * Adds a PUT handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when a PUT request matches the path.
+   * @param roles An array of roles that are associated with this endpoint.
+   */
+  default Jex put(String path, ExchangeHandler handler, Role... roles) {
+    routing().get(path, handler, roles);
     return this;
   }
 
-  /** Add a PATCH handler. */
-  default Jex patch(String path, ExchangeHandler handler) {
-    routing().get(path, handler);
+  /**
+   * Adds a PATCH handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when a PATCH request matches the path.
+   * @param roles An array of roles that are associated with this endpoint.
+   */
+  default Jex patch(String path, ExchangeHandler handler, Role... roles) {
+    routing().get(path, handler, roles);
     return this;
   }
 
-  /** Add a DELETE handler. */
-  default Jex delete(String path, ExchangeHandler handler) {
-    routing().get(path, handler);
+  /**
+   * Adds a DELETE handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when a DELETE request matches the path.
+   * @param roles An array of roles that are associated with this endpoint.
+   */
+  default Jex delete(String path, ExchangeHandler handler, Role... roles) {
+    routing().get(path, handler, roles);
     return this;
   }
 
-  /** Add a filter for all requests. */
+  /**
+   * Adds an OPTIONS handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when an OPTIONS request matches the path.
+   * @param roles An array of roles that are associated with this endpoint.
+   */
+  default Jex options(String path, ExchangeHandler handler, Role... roles) {
+    routing().options(path, handler, roles);
+    return this;
+  }
+
+  /** Add a filter for all matched requests. */
   default Jex filter(HttpFilter handler) {
     routing().filter(handler);
     return this;
   }
 
-  /** Add a pre-processing filter for all requests. */
+  /** Add a pre-processing filter for all matched requests. */
   default Jex before(Consumer<Context> handler) {
     routing().before(handler);
     return this;
   }
 
-  /** Add a post-processing filter for all requests. */
+  /** Add a post-processing filter for all matched requests. */
   default Jex after(Consumer<Context> handler) {
     routing().after(handler);
     return this;
@@ -121,8 +164,7 @@ public sealed interface Jex permits DJex {
    * @param handler the error handler
    * @param <T> exception type
    */
-  default <T extends Exception> Jex error(
-      Class<T> exceptionClass, ExceptionHandler<T> handler) {
+  default <T extends Exception> Jex error(Class<T> exceptionClass, ExceptionHandler<T> handler) {
     routing().error(exceptionClass, handler);
     return this;
   }
