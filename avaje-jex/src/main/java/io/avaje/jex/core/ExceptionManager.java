@@ -57,8 +57,11 @@ final class ExceptionManager {
 
   private void defaultHandling(JdkContext ctx, HttpResponseException exception) {
     ctx.status(exception.getStatus());
+    var jsonResponse = exception.jsonResponse();
     if (exception.getStatus() == ErrorCode.REDIRECT.status()) {
       ctx.performRedirect();
+    } else if (jsonResponse != null) {
+      ctx.json(jsonResponse);
     } else if (useJson(ctx)) {
       ctx.contentType(APPLICATION_JSON).write(asJsonContent(exception));
     } else {
