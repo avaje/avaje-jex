@@ -3,9 +3,8 @@
  *
  * <pre>{@code
  * final Jex.Server app = Jex.create()
- *   .routing(routing -> routing
- *     .get("/", ctx -> ctx.text("hello world"))
- *     .get("/one", ctx -> ctx.text("one"))
+ *   .get("/", ctx -> ctx.text("hello world"))
+ *   .get("/one", ctx -> ctx.text("one"))
  *   .port(8080)
  *   .start();
  *
