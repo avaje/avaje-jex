@@ -19,18 +19,20 @@ Features:
 - Virtual threads enabled by default
 
 ```java
-var app = Jex.create()
-  .get("/", ctx -> ctx.text("hello"))
-  .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id")))
-  .filter(
-        (ctx, chain) -> {
-          System.out.println("before request");
-          chain.proceed();
-          System.out.println("after request");
-        })
-  .error(IllegalStateException.class, (ctx, exception) -> ctx.status(500).text(exception.getMessage()))
-  .port(8080)
-  .start();
+    Jex.create()
+        .get("/", ctx -> ctx.text("hello"))
+        .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id")))
+        .filter(
+            (ctx, chain) -> {
+              System.out.println("before request");
+              chain.proceed();
+              System.out.println("after request");
+            })
+        .error(
+            IllegalStateException.class,
+            (ctx, exception) -> ctx.status(500).text(exception.getMessage()))
+        .port(8080)
+        .start();
 ```
 
 ## Alternate `HttpServer` Implementations
@@ -43,7 +45,7 @@ An example would be [@robaho's implementation](https://github.com/robaho/httpser
 <dependency>
   <groupId>io.avaje</groupId>
   <artifactId>avaje-jex</artifactId>
-  <version>3.0-RC8</version>
+  <version>${jex.version}</version>
 </dependency>
 
 <dependency>
@@ -62,20 +64,20 @@ If you find yourself pining for the JAX-RS style of controllers, you can have av
 <dependency>
   <groupId>io.avaje</groupId>
   <artifactId>avaje-jex</artifactId>
-  <version>3.0-RC8</version>
+  <version>${jex.version}</version>
 </dependency>
 
 <dependency>
   <groupId>io.avaje</groupId>
   <artifactId>avaje-http-api</artifactId>
-  <version>2.9-RC4</version>
+  <version>${avaje.http.version}</version>
 </dependency>
 
 <!-- Annotation processor -->
 <dependency>
   <groupId>io.avaje</groupId>
   <artifactId>avaje-http-jex-generator</artifactId>
-  <version>2.9-RC4</version>
+  <version>${avaje.http.version}</version>
   <scope>provided</scope>
   <optional>true</optional>
 </dependency>
