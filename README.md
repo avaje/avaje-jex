@@ -20,16 +20,15 @@ Features:
 
 ```java
 var app = Jex.create()
-  .routing(routing -> routing
-    .get("/", ctx -> ctx.text("hello"))
-    .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id")))
-    .filter(
+  .get("/", ctx -> ctx.text("hello"))
+  .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id")))
+  .filter(
         (ctx, chain) -> {
           System.out.println("before request");
           chain.proceed();
           System.out.println("after request");
         })
-    .error(IllegalStateException.class, (ctx, exception) -> ctx.status(500).text("Handled IllegalStateException|" + exception.getMessage()))
+  .error(IllegalStateException.class, (ctx, exception) -> ctx.status(500).text("Handled IllegalStateException|" + exception.getMessage()))
   .port(8080)
   .start();
 ```
