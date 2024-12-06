@@ -32,17 +32,6 @@ public final class CompressedOutputStream extends OutputStream {
 
   private void decideCompression(int length) throws IOException {
     if (!compressionDecided) {
-      var encoding = ctx.responseHeader(Constants.CONTENT_ENCODING);
-      if (encoding != null) {
-        this.compressedStream =
-            findMatchingCompressor(encoding)
-                .orElseThrow(
-                    () ->
-                        new IllegalStateException(
-                            "No compressor found for Content-Encoding:" + encoding))
-                .compress(originStream);
-      }
-
       boolean compressionAllowed =
           compressedStream == null && compression.allowsForCompression(ctx.contentType());
 
