@@ -45,24 +45,6 @@ public sealed interface Jex permits DJex {
   }
 
   /**
-   * Sets a custom attribute that can be accessed later by the Jex instance or its components.
-   *
-   * @param <T> The type of the attribute.
-   * @param cls The class of the attribute.
-   * @param instance The instance of the attribute.
-   */
-  <T> Jex attribute(Class<T> cls, T instance);
-
-  /**
-   * Returns a custom attribute previously set using {@link #attribute(Class, Object)}.
-   *
-   * @param <T> The type of the attribute.
-   * @param cls The class of the attribute.
-   * @return The attribute instance, or null if not found.
-   */
-  <T> T attribute(Class<T> cls);
-
-  /**
    * Adds a new HTTP route and its associated handler to the Jex routing configuration.
    *
    * @param routes The HTTP service to add.

@@ -168,7 +168,12 @@ final class SpiServiceManager {
       if (jsonService != null) {
         return jsonService;
       }
-      return CoreServiceLoader.jsonService().orElseGet(this::defaultJsonService);
+
+      var json = CoreServiceLoader.jsonService().orElseGet(this::defaultJsonService);
+
+      if (json == null) log.log(Level.WARNING, "No Json library configured");
+
+      return json;
     }
 
     /** Create a reasonable default JsonService if Jackson or avaje-jsonb are present. */
