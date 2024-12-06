@@ -40,7 +40,7 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
 
   @Override
   public void apply(Jex jex) {
-    jex.routing().get(path, createHandler(jex.config().compression()));
+    jex.get(path, createHandler(jex.config().compression()));
   }
 
   ExchangeHandler createHandler(CompressionConfig compress) {
