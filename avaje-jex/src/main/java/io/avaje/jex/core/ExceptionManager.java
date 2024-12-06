@@ -56,9 +56,9 @@ final class ExceptionManager {
   }
 
   private void defaultHandling(JdkContext ctx, HttpResponseException exception) {
-    ctx.status(exception.getStatus());
+    ctx.status(exception.status());
     var jsonResponse = exception.jsonResponse();
-    if (exception.getStatus() == ErrorCode.REDIRECT.status()) {
+    if (exception.status() == ErrorCode.REDIRECT.status()) {
       ctx.performRedirect();
     } else if (jsonResponse != null) {
       ctx.json(jsonResponse);
@@ -74,7 +74,7 @@ final class ExceptionManager {
         + jsonEscape(e.getMessage())
         + ", "
         + "\"status\": "
-        + e.getStatus()
+        + e.status()
         + "}";
   }
 

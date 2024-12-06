@@ -10,7 +10,9 @@ public class HttpResponseException extends RuntimeException {
   private final Object jsonResponse;
 
   /**
-   * @param status the http status to send
+   * Create with a status and message.
+   *
+   * @param status  the http status to send
    * @param message the exception message that will be sent back in the response
    */
   public HttpResponseException(int status, String message) {
@@ -20,19 +22,22 @@ public class HttpResponseException extends RuntimeException {
   }
 
   /**
-   * @param status the http status to send
+   * Create with a status and response that will sent as JSON.
+   *
+   * @param status       the http status to send
    * @param jsonResponse the response body that will be sent back as json
    */
   public HttpResponseException(int status, Object jsonResponse) {
-
     this.status = status;
     this.jsonResponse = jsonResponse;
   }
 
-  public int getStatus() {
+  /**  Return the status code. */
+  public int status() {
     return status;
   }
 
+  /** Return the response body that will sent as JSON. */
   public Object jsonResponse() {
     return jsonResponse;
   }
