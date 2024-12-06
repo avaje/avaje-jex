@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.System.Logger.Level;
+import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,23 +57,23 @@ final class SpiServiceManager {
     return new BufferedOutStream(jdkContext);
   }
 
-  public <T> T jsonRead(Class<T> clazz, InputStream is) {
-    return jsonService.jsonRead(clazz, is);
+  public <T> T fromJson(Type type, InputStream is) {
+    return jsonService.fromJson(type, is);
   }
 
-  public void jsonWrite(Object bean, OutputStream os) {
-    jsonService.jsonWrite(bean, os);
+  public void toJson(Object bean, OutputStream os) {
+    jsonService.toJson(bean, os);
   }
 
-  public <E> void jsonWriteStream(Stream<E> stream, OutputStream os) {
+  public <E> void toJsonStream(Stream<E> stream, OutputStream os) {
     try (stream) {
-      jsonService.jsonWriteStream(stream.iterator(), os);
+      jsonService.toJsonStream(stream.iterator(), os);
     }
   }
 
-  public <E> void jsonWriteStream(Iterator<E> iterator, OutputStream os) {
+  public <E> void toJsonStream(Iterator<E> iterator, OutputStream os) {
     try {
-      jsonService.jsonWriteStream(iterator, os);
+      jsonService.toJsonStream(iterator, os);
     } finally {
       maybeClose(iterator);
     }

@@ -2,14 +2,26 @@ package io.avaje.jex.spi;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
 import java.util.Iterator;
 
 /**
  * Service responsible for handling JSON-based request and response bodies.
  *
- * @see JexExtension for SPI registration details.
+ * @see JexExtension SPI registration details.
  */
 public non-sealed interface JsonService extends JexExtension {
+
+  /**
+   * **Writes a Java Object as JSON to an OutputStream**
+   *
+   * <p>Serializes a Java object into JSON format and writes the resulting JSON to the specified
+   * output stream.
+   *
+   * @param bean the Java object to be serialized
+   * @param os the output stream to write the JSON data to
+   */
+  void toJson(Object bean, OutputStream os);
 
   /**
    * **Reads JSON from an InputStream**
@@ -21,18 +33,7 @@ public non-sealed interface JsonService extends JexExtension {
    * @param is the input stream containing the JSON data
    * @return the deserialized object
    */
-  <T> T jsonRead(Class<T> type, InputStream is);
-
-  /**
-   * **Writes a Java Object as JSON to an OutputStream**
-   *
-   * <p>Serializes a Java object into JSON format and writes the resulting JSON to the specified
-   * output stream.
-   *
-   * @param bean the Java object to be serialized
-   * @param os the output stream to write the JSON data to
-   */
-  void jsonWrite(Object bean, OutputStream os);
+  <T> T fromJson(Type type, InputStream is);
 
   /**
    * Serializes a stream of Java objects into a JSON-Stream format, using the {@code x-json-stream}
@@ -42,5 +43,8 @@ public non-sealed interface JsonService extends JexExtension {
    * @param iterator the stream of objects to be serialized
    * @param os the output stream to write the JSON-Stream data to
    */
-  <E> void jsonWriteStream(Iterator<E> iterator, OutputStream os);
+  default <E> void toJsonStream(Iterator<E> iterator, OutputStream os) {
+
+    throw new UnsupportedOperationException("Not Implemented");
+  }
 }

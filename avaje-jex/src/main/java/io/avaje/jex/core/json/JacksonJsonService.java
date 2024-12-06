@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.lang.reflect.Type;
 import java.util.Iterator;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -29,16 +30,17 @@ public final class JacksonJsonService implements JsonService {
   }
 
   @Override
-  public <T> T jsonRead(Class<T> clazz, InputStream is) {
+  public <T> T fromJson(Type type, InputStream is) {
     try {
-      return mapper.readValue(is, clazz);
+      var javaType = mapper.getTypeFactory().constructType(type);
+      return mapper.readValue(is, javaType);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
   }
 
   @Override
-  public void jsonWrite(Object bean, OutputStream os) {
+  public void toJson(Object bean, OutputStream os) {
     try {
       try (JsonGenerator generator = mapper.createGenerator(os)) {
         // only flush to underlying OutputStream on success
@@ -56,7 +58,7 @@ public final class JacksonJsonService implements JsonService {
   }
 
   @Override
-  public <T> void jsonWriteStream(Iterator<T> iterator, OutputStream os) {
+  public <T> void toJsonStream(Iterator<T> iterator, OutputStream os) {
     final JsonGenerator generator;
     try {
       generator = mapper.createGenerator(os);

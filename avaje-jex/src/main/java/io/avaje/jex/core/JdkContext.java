@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
@@ -180,8 +181,8 @@ final class JdkContext implements Context {
   }
 
   @Override
-  public <T> T bodyAsClass(Class<T> beanType) {
-    return mgr.jsonRead(beanType, bodyAsInputStream());
+  public <T> T bodyAsType(Type beanType) {
+    return mgr.<T>fromJson(beanType, bodyAsInputStream());
   }
 
   @Override
@@ -328,19 +329,19 @@ final class JdkContext implements Context {
   @Override
   public void json(Object bean) {
     contentType(APPLICATION_JSON);
-    mgr.jsonWrite(bean, outputStream());
+    mgr.toJson(bean, outputStream());
   }
 
   @Override
   public <E> void jsonStream(Stream<E> stream) {
     contentType(APPLICATION_X_JSON_STREAM);
-    mgr.jsonWriteStream(stream, outputStream());
+    mgr.toJsonStream(stream, outputStream());
   }
 
   @Override
   public <E> void jsonStream(Iterator<E> iterator) {
     contentType(APPLICATION_X_JSON_STREAM);
-    mgr.jsonWriteStream(iterator, outputStream());
+    mgr.toJsonStream(iterator, outputStream());
   }
 
   @Override
