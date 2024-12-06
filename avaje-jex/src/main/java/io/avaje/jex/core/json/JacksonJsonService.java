@@ -6,9 +6,12 @@ import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.avaje.jex.spi.JsonService;
@@ -17,6 +20,7 @@ import io.avaje.jex.spi.JsonService;
 public final class JacksonJsonService implements JsonService {
 
   private final ObjectMapper mapper;
+  private final Map<String, JavaType> genericTypes = new ConcurrentHashMap<>();
 
   /** Create with defaults for Jackson */
   public JacksonJsonService() {
@@ -30,9 +34,15 @@ public final class JacksonJsonService implements JsonService {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public <T> T fromJson(Type type, InputStream is) {
     try {
-      var javaType = mapper.getTypeFactory().constructType(type);
+      if (type instanceof Class<?> clazz) {
+        return (T) mapper.readValue(is, clazz);
+      }
+      var javaType =
+          genericTypes.computeIfAbsent(
+              type.getTypeName(), k -> mapper.getTypeFactory().constructType(type));
       return mapper.readValue(is, javaType);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
