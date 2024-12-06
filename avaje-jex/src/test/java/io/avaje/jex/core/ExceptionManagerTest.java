@@ -1,6 +1,7 @@
 package io.avaje.jex.core;
 
 import io.avaje.jex.Jex;
+import io.avaje.jex.http.BadRequestException;
 import io.avaje.jex.http.ErrorCode;
 import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jsonb.JsonException;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import java.net.http.HttpResponse;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,6 +35,9 @@ class ExceptionManagerTest {
         })
         .put("/nested", ctx -> {
           throw new JsonException("hmm");
+        })
+        .patch("/patch", ctx -> {
+          throw new BadRequestException(Map.of("error","bad request"));
         })
         .error(NullPointerException.class, (ctx, exception) -> ctx.text("npe"))
         .error(IllegalStateException.class, (ctx, exception) -> ctx.status(222).text("Handled IllegalStateException|" + exception.getMessage()))
@@ -59,6 +64,14 @@ class ExceptionManagerTest {
     assertThat(res.statusCode()).isEqualTo(222);
     assertThat(res.body()).isEqualTo("Handled IllegalStateException|foo");
   }
+
+  @Test
+  void patch() {
+    HttpResponse<String> res = pair.request().path("patch").PATCH().asString();
+    assertThat(res.statusCode()).isEqualTo(400);
+    assertThat(res.body()).isEqualTo("{\"error\":\"bad request\"}");
+    assertThat(res.headers().firstValue("Content-Type").get()).contains("application/json");
+ }
 
   @Test
   void expect_fallback_to_fallback() {
