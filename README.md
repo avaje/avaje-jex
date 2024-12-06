@@ -28,7 +28,7 @@ var app = Jex.create()
           chain.proceed();
           System.out.println("after request");
         })
-  .error(IllegalStateException.class, (ctx, exception) -> ctx.status(500).text("Handled IllegalStateException|" + exception.getMessage()))
+  .error(IllegalStateException.class, (ctx, exception) -> ctx.status(500).text(exception.getMessage()))
   .port(8080)
   .start();
 ```
