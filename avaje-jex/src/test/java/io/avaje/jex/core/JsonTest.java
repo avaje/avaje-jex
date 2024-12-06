@@ -11,14 +11,17 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Stream;
 
+import io.avaje.jsonb.Json;
 import io.avaje.jsonb.JsonType;
 import io.avaje.jsonb.Jsonb;
+import io.avaje.jsonb.Types;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import io.avaje.jex.Jex;
 
-class JsonTest {
+public class JsonTest {
 
   static List<HelloDto> HELLO_BEANS = asList(HelloDto.rob(), HelloDto.fi());
 
@@ -32,18 +35,30 @@ class JsonTest {
   static final Jsonb jsonb = Jsonb.builder().build();
   static final JsonType<HelloDto> jsonTypeHelloDto = jsonb.type(HelloDto.class);
 
+  @Json
+  public record Generic<T>(T value){}
+
   static TestPair init() {
-    Jex app = Jex.create()
-      .routing(routing -> routing
-        .get("/", ctx -> ctx.status(200).json(HelloDto.rob()))
-        .get("/usingOutputStream", ctx -> {
-          ctx.status(200).contentType("application/json");
-          var result = HelloDto.rob();
-          jsonTypeHelloDto.toJson(result, ctx.outputStream());
-        })
-        .get("/iterate", ctx -> ctx.jsonStream(ITERATOR))
-        .get("/stream", ctx -> ctx.jsonStream(HELLO_BEANS.stream()))
-        .post("/", ctx -> ctx.text("bean[" + ctx.bodyAsClass(HelloDto.class) + "]")));
+    Jex app =
+        Jex.create()
+            .get("/", ctx -> ctx.status(200).json(HelloDto.rob()))
+            .post(
+                "/generic",
+                ctx -> {
+                  var type = Types.newParameterizedType(Generic.class, String.class);
+                  String value = ctx.<Generic<String>>bodyAsType(type).value;
+                  ctx.text(value);
+                })
+            .get(
+                "/usingOutputStream",
+                ctx -> {
+                  ctx.status(200).contentType("application/json");
+                  var result = HelloDto.rob();
+                  jsonTypeHelloDto.toJson(result, ctx.outputStream());
+                })
+            .get("/iterate", ctx -> ctx.jsonStream(ITERATOR))
+            .get("/stream", ctx -> ctx.jsonStream(HELLO_BEANS.stream()))
+            .post("/", ctx -> ctx.text("bean[" + ctx.bodyAsClass(HelloDto.class) + "]"));
 
     return TestPair.create(app);
   }
@@ -68,6 +83,14 @@ class JsonTest {
 
     final HttpHeaders headers = hres.headers();
     assertThat(headers.firstValue("Content-Type").orElseThrow()).isEqualTo("application/json");
+  }
+
+  @Test
+  void generic() {
+    var generic = new Generic<>("stringy");
+    var bean = pair.request().path("generic").body(generic).POST().asString().body();
+
+    assertThat(bean).isEqualTo(generic.value);
   }
 
   @Test
