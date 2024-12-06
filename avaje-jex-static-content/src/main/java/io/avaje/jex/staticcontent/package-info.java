@@ -1,5 +1,5 @@
 /**
- * Static Content API - see {@link io.avaje.jex.staticcontent.StaticContentService}.
+ * Static Content API - see {@link io.avaje.jex.staticcontent.StaticContent}.
  *
  * <pre>{@code
  * var staticContent = StaticContentService.createCP("/public").httpPath("/").directoryIndex("index.html");

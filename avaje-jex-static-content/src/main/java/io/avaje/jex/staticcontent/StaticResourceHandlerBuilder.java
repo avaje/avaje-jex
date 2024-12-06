@@ -12,7 +12,7 @@ import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.Jex;
 import io.avaje.jex.compression.CompressionConfig;
 
-final class StaticResourceHandlerBuilder implements StaticContentService {
+final class StaticResourceHandlerBuilder implements StaticContent.Builder, StaticContent {
 
   private static final String FAILED_TO_LOCATE_FILE = "Failed to locate file: ";
   private static final String DIRECTORY_INDEX_FAILURE =
@@ -41,6 +41,11 @@ final class StaticResourceHandlerBuilder implements StaticContentService {
   @Override
   public void apply(Jex jex) {
     jex.get(path, createHandler(jex.config().compression()));
+  }
+
+  @Override
+  public StaticContent build() {
+    return this;
   }
 
   ExchangeHandler createHandler(CompressionConfig compress) {

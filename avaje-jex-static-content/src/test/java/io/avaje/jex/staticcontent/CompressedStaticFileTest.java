@@ -19,28 +19,30 @@ class CompressedStaticFileTest {
 
     final Jex app =
         Jex.create()
-            .plugin(defaultCP().httpPath("/index"))
-            .plugin(defaultFile().httpPath("/indexFile"))
-            .plugin(defaultCP().httpPath("/indexWild/*"))
-            .plugin(defaultFile().httpPath("/indexWildFile/*"))
-            .plugin(defaultCP().httpPath("/sus/"))
-            .plugin(defaultFile().httpPath("/susFile/*"))
-            .plugin(StaticContentService.createCP("/logback.xml").httpPath("/single"))
+            .plugin(defaultCP().httpPath("/index").build())
+            .plugin(defaultFile().httpPath("/indexFile").build())
+            .plugin(defaultCP().httpPath("/indexWild/*").build())
+            .plugin(defaultFile().httpPath("/indexWildFile/*").build())
+            .plugin(defaultCP().httpPath("/sus/").build())
+            .plugin(defaultFile().httpPath("/susFile/*").build())
+            .plugin(StaticContent.createCP("/logback.xml").httpPath("/single").build())
             .plugin(
-                StaticContentService.createFile("src/test/resources/logback.xml")
-                    .httpPath("/singleFile"));
+                StaticContent.createFile("src/test/resources/logback.xml")
+                    .httpPath("/singleFile").build());
 
     return TestPair.create(app);
   }
 
-  private static StaticContentService defaultFile() {
-    return StaticContentService.createFile("src/test/resources/public")
+  private static StaticContent.Builder defaultFile() {
+    return StaticContent.createFile("src/test/resources/public")
         .directoryIndex("index.html")
         .preCompress();
   }
 
-  private static StaticContentService defaultCP() {
-    return StaticContentService.createCP("/public").directoryIndex("index.html").preCompress();
+  private static StaticContent.Builder defaultCP() {
+    return StaticContent.createCP("/public")
+      .directoryIndex("index.html")
+      .preCompress();
   }
 
   @AfterAll
