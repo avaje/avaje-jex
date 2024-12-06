@@ -95,6 +95,12 @@ public sealed interface Jex permits DJex {
     return this;
   }
 
+  /** Add a OPTIONS handler. */
+  default Jex options(String path, ExchangeHandler handler) {
+    routing().options(path, handler);
+    return this;
+  }
+
   /** Add a filter for all requests. */
   default Jex filter(HttpFilter handler) {
     routing().filter(handler);
