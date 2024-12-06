@@ -7,7 +7,7 @@ import io.avaje.jex.Context;
 /**
  * Template rendering typically of html.
  *
- * @see JexExtension for SPI registration details.
+ * @see JexExtension SPI registration details.
  */
 public non-sealed interface TemplateRender extends JexExtension {
 

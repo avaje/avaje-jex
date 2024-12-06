@@ -6,7 +6,7 @@ import io.avaje.jex.Jex;
  * A plugin that can register things like routes, exception handlers and configure the current Jex
  * instance.
  *
- * @see JexExtension for SPI registration details.
+ * @see JexExtension SPI registration details.
  */
 @FunctionalInterface
 public non-sealed interface JexPlugin extends JexExtension {

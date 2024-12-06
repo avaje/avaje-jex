@@ -88,7 +88,7 @@ public sealed interface Jex permits DJex {
    * @param roles An array of roles that are associated with this endpoint.
    */
   default Jex post(String path, ExchangeHandler handler, Role... roles) {
-    routing().get(path, handler, roles);
+    routing().post(path, handler, roles);
     return this;
   }
 
@@ -112,7 +112,7 @@ public sealed interface Jex permits DJex {
    * @param roles An array of roles that are associated with this endpoint.
    */
   default Jex patch(String path, ExchangeHandler handler, Role... roles) {
-    routing().get(path, handler, roles);
+    routing().patch(path, handler, roles);
     return this;
   }
 
@@ -124,7 +124,7 @@ public sealed interface Jex permits DJex {
    * @param roles An array of roles that are associated with this endpoint.
    */
   default Jex delete(String path, ExchangeHandler handler, Role... roles) {
-    routing().get(path, handler, roles);
+    routing().delete(path, handler, roles);
     return this;
   }
 

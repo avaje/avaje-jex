@@ -5,6 +5,7 @@ import static java.util.Collections.emptyMap;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Iterator;
@@ -141,7 +142,16 @@ public interface Context {
    *
    * @param beanType The bean type
    */
-  <T> T bodyAsClass(Class<T> beanType);
+  default <T> T bodyAsClass(Class<T> beanType) {
+    return bodyAsType(beanType);
+  }
+
+  /***
+   * Return the request body as bean.
+   *
+   * @param beanType The bean type
+   */
+  <T> T bodyAsType(Type beanType);
 
   /** Return the request body as String. */
   String body();
