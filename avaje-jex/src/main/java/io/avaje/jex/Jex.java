@@ -30,6 +30,7 @@ public sealed interface Jex permits DJex {
    * Create Jex.
    *
    * <pre>{@code
+   *
    * final Jex.Server app = Jex.create()
    *   .routing(routing -> routing
    *     .get("/", ctx -> ctx.text("hello world"))
