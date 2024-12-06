@@ -1,32 +1,39 @@
 package io.avaje.jex.http;
 
-import java.util.Collections;
-import java.util.Map;
-
 /**
  * Throwing an uncaught {@code HttpResponseException} will interrupt http processing and set the
- * status code and response body with the given message
+ * status code and response body with the given message or json body
  */
 public class HttpResponseException extends RuntimeException {
 
   private final int status;
-  private final Map<String, String> details;
+  private final Object jsonResponse;
 
-  public HttpResponseException(int status, String message, Map<String, String> details) {
+  /**
+   * @param status the http status to send
+   * @param message the exception message that will be sent back in the response
+   */
+  public HttpResponseException(int status, String message) {
     super(message);
     this.status = status;
-    this.details = details;
+    this.jsonResponse = null;
   }
 
-  public HttpResponseException(int status, String message) {
-    this(status, message, Collections.emptyMap());
+  /**
+   * @param status the http status to send
+   * @param jsonResponse the response body that will be sent back as json
+   */
+  public HttpResponseException(int status, Object jsonResponse) {
+
+    this.status = status;
+    this.jsonResponse = jsonResponse;
   }
 
   public int getStatus() {
     return status;
   }
 
-  public Map<String, String> getDetails() {
-    return details;
+  public Object jsonResponse() {
+    return jsonResponse;
   }
 }
