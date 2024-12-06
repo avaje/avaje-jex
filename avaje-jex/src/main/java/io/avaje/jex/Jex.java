@@ -65,6 +65,68 @@ public sealed interface Jex permits DJex {
    */
   Routing routing();
 
+  /** Add a GET handler. */
+  default Jex get(String path, ExchangeHandler handler) {
+    routing().get(path, handler);
+    return this;
+  }
+
+  /** Add a POST handler. */
+  default Jex post(String path, ExchangeHandler handler) {
+    routing().get(path, handler);
+    return this;
+  }
+
+  /** Add a PUT handler. */
+  default Jex put(String path, ExchangeHandler handler) {
+    routing().get(path, handler);
+    return this;
+  }
+
+  /** Add a PATCH handler. */
+  default Jex patch(String path, ExchangeHandler handler) {
+    routing().get(path, handler);
+    return this;
+  }
+
+  /** Add a DELETE handler. */
+  default Jex delete(String path, ExchangeHandler handler) {
+    routing().get(path, handler);
+    return this;
+  }
+
+  /** Add a filter for all requests. */
+  default Jex filter(HttpFilter handler) {
+    routing().filter(handler);
+    return this;
+  }
+
+  /** Add a pre-processing filter for all requests. */
+  default Jex before(Consumer<Context> handler) {
+    routing().before(handler);
+    return this;
+  }
+
+  /** Add a post-processing filter for all requests. */
+  default Jex after(Consumer<Context> handler) {
+    routing().after(handler);
+    return this;
+  }
+
+  /**
+   * Registers an exception handler that handles the given type of exceptions. This will replace an
+   * existing error handler for the same exception class.
+   *
+   * @param exceptionClass the type of exception to handle by this handler
+   * @param handler the error handler
+   * @param <T> exception type
+   */
+  default <T extends Exception> Jex error(
+      Class<T> exceptionClass, ExceptionHandler<T> handler) {
+    routing().error(exceptionClass, handler);
+    return this;
+  }
+
   /**
    * Sets the JSON service to use for serialization and deserialization.
    *
