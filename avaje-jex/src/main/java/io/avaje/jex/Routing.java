@@ -18,43 +18,12 @@ public sealed interface Routing permits DefaultRouting {
   Routing addAll(Collection<Routing.HttpService> routes);
 
   /**
-   * Specify permittedRoles for the last added handler.
-   *
-   * <pre>{@code
-   * routing
-   * .get("/customers", getHandler).withRoles(readRoles)
-   * .post("/customers", postHandler).withRoles(writeRoles)
-   * ...
-   *
-   * }</pre>
-   *
-   * @param permittedRoles The permitted roles required for the last handler
-   */
-  Routing withRoles(Set<Role> permittedRoles);
-
-  /**
-   * Specify permittedRoles for the last added handler using varargs.
-   *
-   * <pre>{@code
-   * routing
-   * .get("/customers", getHandler).withRoles(ADMIN, USER)
-   * .post("/customers", postHandler).withRoles(ADMIN)
-   * ...
-   *
-   * }</pre>
-   *
-   * @param permittedRoles The permitted roles required for the last handler
-   */
-  Routing withRoles(Role... permittedRoles);
-
-  /**
    * Registers an exception handler that handles the given type of exceptions. This will replace an
    * existing error handler for the same exception class.
    *
    * @param exceptionClass the type of exception to handle by this handler
    * @param handler the error handler
    * @param <T> exception type
-   * @return updated routing
    */
   <T extends Exception> Routing error(Class<T> exceptionClass, ExceptionHandler<T> handler);
 
@@ -71,34 +40,82 @@ public sealed interface Routing permits DefaultRouting {
    */
   Routing path(String path, Group group);
 
-  /** Add a HEAD handler. */
-  Routing head(String path, ExchangeHandler handler);
+  /**
+   * Adds a HEAD handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when a HEAD request matches the path.
+   * @param roles roles that are associated with this endpoint.
+   */
+  Routing head(String path, ExchangeHandler handler, Role... roles);
 
-  /** Add a GET handler. */
-  Routing get(String path, ExchangeHandler handler);
+  /**
+   * Adds a GET handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when a GET request matches the path.
+   * @param roles roles that are associated with this endpoint.
+   */
+  Routing get(String path, ExchangeHandler handler, Role... roles);
 
-  /** Add a POST handler. */
-  Routing post(String path, ExchangeHandler handler);
+  /**
+   * Adds a POST handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when a POST request matches the path.
+   * @param roles roles that are associated with this endpoint.
+   */
+  Routing post(String path, ExchangeHandler handler, Role... roles);
 
-  /** Add a PUT handler. */
-  Routing put(String path, ExchangeHandler handler);
+  /**
+   * Adds a PUT handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when a PUT request matches the path.
+   * @param roles roles that are associated with this endpoint.
+   */
+  Routing put(String path, ExchangeHandler handler, Role... roles);
 
-  /** Add a PATCH handler. */
-  Routing patch(String path, ExchangeHandler handler);
+  /**
+   * Adds a PATCH handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when a PATCH request matches the path.
+   * @param roles roles that are associated with this endpoint.
+   */
+  Routing patch(String path, ExchangeHandler handler, Role... roles);
 
-  /** Add a DELETE handler. */
-  Routing delete(String path, ExchangeHandler handler);
+  /**
+   * Adds a DELETE handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when a DELETE request matches the path.
+   * @param roles roles that are associated with this endpoint.
+   */
+  Routing delete(String path, ExchangeHandler handler, Role... roles);
 
-  /** Add a TRACE handler. */
-  Routing trace(String path, ExchangeHandler handler);
+  /**
+   * Adds a TRACE handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when a TRACE request matches the path.
+   * @param roles roles that are associated with this endpoint.
+   */
+  Routing trace(String path, ExchangeHandler handler, Role... roles);
 
-  /** Add an OPTIONS handler. */
-  Routing options(String path, ExchangeHandler handler);
+  /**
+   * Adds an OPTIONS handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when an OPTIONS request matches the path.
+   * @param roles roles that are associated with this endpoint.
+   */
+  Routing options(String path, ExchangeHandler handler, Role... roles);
 
-  /** Add a filter for all requests. */
+  /** Add a filter for all matched requests. */
   Routing filter(HttpFilter handler);
 
-  /** Add a pre-processing filter for all requests. */
+  /** Add a pre-processing filter for all matched requests. */
   default Routing before(Consumer<Context> handler) {
     return filter(
         (ctx, chain) -> {
@@ -107,7 +124,7 @@ public sealed interface Routing permits DefaultRouting {
         });
   }
 
-  /** Add a post-processing filter for all requests. */
+  /** Add a post-processing filter for all matched requests. */
   default Routing after(Consumer<Context> handler) {
     return filter(
         (ctx, chain) -> {

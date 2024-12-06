@@ -19,11 +19,6 @@ final class DefaultRouting implements Routing {
   private final Deque<String> pathDeque = new ArrayDeque<>();
   private final Map<Class<?>, ExceptionHandler<?>> exceptionHandlers = new HashMap<>();
 
-  /**
-   * Last entry that we can add permitted roles to.
-   */
-  private Entry lastEntry;
-
   @Override
   public List<Routing.Entry> handlers() {
     return handlers;
@@ -76,23 +71,9 @@ final class DefaultRouting implements Routing {
     return this;
   }
 
-  @Override
-  public Routing withRoles(Set<Role> permittedRoles) {
-    if (lastEntry == null) {
-      throw new IllegalStateException("Must call withRoles() after adding a route");
-    }
-    lastEntry.withRoles(permittedRoles);
-    return this;
-  }
-
-  @Override
-  public Routing withRoles(Role... permittedRoles) {
-    return withRoles(Set.of(permittedRoles));
-  }
-
-  private void add(Type verb, String path, ExchangeHandler handler) {
-    lastEntry = new Entry(verb, path(path), handler);
-    handlers.add(lastEntry);
+  private void add(Type verb, String path, ExchangeHandler handler, Role... roles) {
+    var entry = new Entry(verb, path(path), handler, Set.of(roles));
+    handlers.add(entry);
   }
 
   // ********************************************************************************************
@@ -100,50 +81,50 @@ final class DefaultRouting implements Routing {
   // ********************************************************************************************
 
   @Override
-  public Routing get(String path, ExchangeHandler handler) {
-    add(Type.GET, path, handler);
+  public Routing get(String path, ExchangeHandler handler, Role... roles) {
+    add(Type.GET, path, handler, roles);
     return this;
   }
 
   @Override
-  public Routing post(String path, ExchangeHandler handler) {
-    add(Type.POST, path, handler);
+  public Routing post(String path, ExchangeHandler handler, Role... roles) {
+    add(Type.POST, path, handler, roles);
     return this;
   }
 
   @Override
-  public Routing put(String path, ExchangeHandler handler) {
-    add(Type.PUT, path, handler);
+  public Routing put(String path, ExchangeHandler handler, Role... roles) {
+    add(Type.PUT, path, handler, roles);
     return this;
   }
 
   @Override
-  public Routing patch(String path, ExchangeHandler handler) {
-    add(Type.PATCH, path, handler);
+  public Routing patch(String path, ExchangeHandler handler, Role... roles) {
+    add(Type.PATCH, path, handler, roles);
     return this;
   }
 
   @Override
-  public Routing delete(String path, ExchangeHandler handler) {
-    add(Type.DELETE, path, handler);
+  public Routing delete(String path, ExchangeHandler handler, Role... roles) {
+    add(Type.DELETE, path, handler, roles);
     return this;
   }
 
   @Override
-  public Routing head(String path, ExchangeHandler handler) {
-    add(Type.HEAD, path, handler);
+  public Routing head(String path, ExchangeHandler handler, Role... roles) {
+    add(Type.HEAD, path, handler, roles);
     return this;
   }
 
   @Override
-  public Routing trace(String path, ExchangeHandler handler) {
-    add(Type.TRACE, path, handler);
+  public Routing trace(String path, ExchangeHandler handler, Role... roles) {
+    add(Type.TRACE, path, handler, roles);
     return this;
   }
 
   @Override
-  public Routing options(String path, ExchangeHandler handler) {
-    add(Type.OPTIONS, path, handler);
+  public Routing options(String path, ExchangeHandler handler, Role... roles) {
+    add(Type.OPTIONS, path, handler, roles);
     return this;
   }
 
@@ -162,15 +143,12 @@ final class DefaultRouting implements Routing {
     private final Type type;
     private final String path;
     private final ExchangeHandler handler;
-    private Set<Role> roles = Collections.emptySet();
+    private final Set<Role> roles;
 
-    Entry(Type type, String path, ExchangeHandler handler) {
+    Entry(Type type, String path, ExchangeHandler handler, Set<Role> roles) {
       this.type = type;
       this.path = path;
       this.handler = handler;
-    }
-
-    void withRoles(Set<Role> roles) {
       this.roles = roles;
     }
 
