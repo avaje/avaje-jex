@@ -16,14 +16,14 @@ class NestedRoutesTest {
     Jex app = Jex.create()
       .routing(routing -> routing
         .get("/", ctx -> ctx.text("hello"))
-        .path("api", () -> {
-          routing.get("/", ctx -> ctx.text("apiRoot"));
-          routing.get("{id}", ctx -> ctx.text("api-" + ctx.pathParam("id")));
+        .path("api", g -> {
+          g.get("/", ctx -> ctx.text("apiRoot"));
+          g.get("{id}", ctx -> ctx.text("api-" + ctx.pathParam("id")));
         })
-        .path("extra", () -> {
-          routing.get("/", ctx -> ctx.text("extraRoot"));
-          routing.get("{id}", ctx -> ctx.text("extra-id-" + ctx.pathParam("id")));
-          routing.get("more/{id}", ctx -> ctx.text("extraMore-" + ctx.pathParam("id")));
+        .path("extra", g -> {
+          g.get("/", ctx -> ctx.text("extraRoot"));
+          g.get("{id}", ctx -> ctx.text("extra-id-" + ctx.pathParam("id")));
+          g.get("more/{id}", ctx -> ctx.text("extraMore-" + ctx.pathParam("id")));
         }));
     return TestPair.create(app);
   }
