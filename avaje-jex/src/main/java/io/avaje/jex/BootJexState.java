@@ -20,9 +20,9 @@ final class BootJexState {
     jex.configureWith(beanScope);
 
     JexConfig config = jex.config();
-    int port = config.port();
-    config.port(Config.getInt("server.port", port));
-
+    config.port(Config.getInt("server.port", config.port()));
+    config.contextPath(Config.get("server.context.path", config.contextPath()));
+    config.host(Config.get("server.context.host", config.host()));
     jex.lifecycle().onShutdown(beanScope::close);
     return new State(jex.start());
   }
