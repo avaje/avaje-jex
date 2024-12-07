@@ -2,6 +2,7 @@ package io.avaje.jex;
 
 import java.util.Map;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import com.sun.net.httpserver.HttpsConfigurator;
@@ -48,8 +49,7 @@ public sealed interface JexConfig permits DJexConfig {
   JexConfig disableSpiPlugins();
 
   /**
-   * Executor for serving requests. Defaults to a {@link
-   * Executors#newVirtualThreadPerTaskExecutor()}
+   * Executor for serving requests. Defaults to a {@link Executors#newVirtualThreadPerTaskExecutor()}
    */
   Executor executor();
 
@@ -70,7 +70,7 @@ public sealed interface JexConfig permits DJexConfig {
    */
   JexConfig health(boolean health);
 
-  /** Returns the configured host. (Defaults to localhost if not set) */
+  /** Returns the configured host. */
   String host();
 
   /**
