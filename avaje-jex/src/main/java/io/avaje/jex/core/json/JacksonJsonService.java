@@ -20,13 +20,21 @@ public final class JacksonJsonService implements JsonService {
 
   /** Create with defaults for Jackson */
   public JacksonJsonService() {
-    this.mapper =
-        new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    this.mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
   /** Create with a Jackson instance that might have custom configuration. */
   public JacksonJsonService(ObjectMapper mapper) {
     this.mapper = mapper;
+  }
+
+  @Override
+  public <T> T fromJson(Class<T> type, InputStream is) {
+    try {
+      return mapper.readValue(is, type);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   @Override

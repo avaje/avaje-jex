@@ -33,6 +33,18 @@ public non-sealed interface JsonService extends JexExtension {
    * @param is the input stream containing the JSON data
    * @return the deserialized object
    */
+  <T> T fromJson(Class<T> type, InputStream is);
+
+  /**
+   * **Reads JSON from an InputStream**
+   *
+   * <p>Reads a JSON-formatted input stream and deserializes it into a Java object of the specified
+   * type.
+   *
+   * @param type the Type object of the desired type
+   * @param is the input stream containing the JSON data
+   * @return the deserialized object
+   */
   <T> T fromJson(Type type, InputStream is);
 
   /**
@@ -43,8 +55,5 @@ public non-sealed interface JsonService extends JexExtension {
    * @param iterator the stream of objects to be serialized
    * @param os the output stream to write the JSON-Stream data to
    */
-  default <E> void toJsonStream(Iterator<E> iterator, OutputStream os) {
-
-    throw new UnsupportedOperationException("Not Implemented");
-  }
+  <E> void toJsonStream(Iterator<E> iterator, OutputStream os);
 }
