@@ -181,8 +181,13 @@ final class JdkContext implements Context {
   }
 
   @Override
+  public <T> T bodyAsClass(Class<T> beanType) {
+    return mgr.fromJson(beanType, bodyAsInputStream());
+  }
+
+  @Override
   public <T> T bodyAsType(Type beanType) {
-    return mgr.<T>fromJson(beanType, bodyAsInputStream());
+    return mgr.fromJson(beanType, bodyAsInputStream());
   }
 
   @Override

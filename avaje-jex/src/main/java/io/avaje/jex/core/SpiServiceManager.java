@@ -57,21 +57,25 @@ final class SpiServiceManager {
     return new BufferedOutStream(jdkContext);
   }
 
-  public <T> T fromJson(Type type, InputStream is) {
+  <T> T fromJson(Class<T> type, InputStream is) {
     return jsonService.fromJson(type, is);
   }
 
-  public void toJson(Object bean, OutputStream os) {
+  <T> T fromJson(Type type, InputStream is) {
+    return jsonService.fromJson(type, is);
+  }
+
+  void toJson(Object bean, OutputStream os) {
     jsonService.toJson(bean, os);
   }
 
-  public <E> void toJsonStream(Stream<E> stream, OutputStream os) {
+  <E> void toJsonStream(Stream<E> stream, OutputStream os) {
     try (stream) {
       jsonService.toJsonStream(stream.iterator(), os);
     }
   }
 
-  public <E> void toJsonStream(Iterator<E> iterator, OutputStream os) {
+  <E> void toJsonStream(Iterator<E> iterator, OutputStream os) {
     try {
       jsonService.toJsonStream(iterator, os);
     } finally {
@@ -79,7 +83,7 @@ final class SpiServiceManager {
     }
   }
 
-  public void maybeClose(Object iterator) {
+  void maybeClose(Object iterator) {
     if (iterator instanceof AutoCloseable closeable) {
       try {
         closeable.close();
@@ -89,19 +93,19 @@ final class SpiServiceManager {
     }
   }
 
-  public Routing.Type lookupRoutingType(String method) {
+  Routing.Type lookupRoutingType(String method) {
     return methodMap.get(method);
   }
 
-  public void handleException(JdkContext ctx, Exception e) {
+  void handleException(JdkContext ctx, Exception e) {
     exceptionHandler.handle(ctx, e);
   }
 
-  public void render(Context ctx, String name, Map<String, Object> model) {
+  void render(Context ctx, String name, Map<String, Object> model) {
     templateManager.render(ctx, name, model);
   }
 
-  public String requestCharset(Context ctx) {
+  String requestCharset(Context ctx) {
     return parseCharset(ctx.header(Constants.CONTENT_TYPE));
   }
 
@@ -117,11 +121,11 @@ final class SpiServiceManager {
     return UTF_8;
   }
 
-  public Map<String, List<String>> formParamMap(Context ctx, String charset) {
+  Map<String, List<String>> formParamMap(Context ctx, String charset) {
     return parseParamMap(ctx.body(), charset);
   }
 
-  public Map<String, List<String>> parseParamMap(String body, String charset) {
+  Map<String, List<String>> parseParamMap(String body, String charset) {
     if (body == null || body.isEmpty()) {
       return Collections.emptyMap();
     }
