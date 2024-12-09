@@ -19,7 +19,7 @@
 <!--    <maven.compiler.target>18</maven.compiler.target>-->
 <!--    <javadoc.source>11</javadoc.source>-->
     <java.release>17</java.release>
-    <native.maven.plugin.version>0.10.3</native.maven.plugin.version>
+    <native.maven.plugin.version>0.10.4</native.maven.plugin.version>
   </properties>
 
   <dependencies>
