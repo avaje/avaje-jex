@@ -183,18 +183,10 @@ final class SpiServiceManager {
 
     /** Create a reasonable default JsonService if Jackson or avaje-jsonb are present. */
     JsonService defaultJsonService() {
-      if (detectJackson()) {
-        try {
-          return new JacksonJsonService();
-        } catch (IllegalAccessError errorNotInModulePath) {
-          // not in module path
-          log.log(
-              Level.DEBUG,
-              "Not using Jackson due to module path {0}",
-              errorNotInModulePath.getMessage());
-        }
+      if (detectJsonb()) {
+        return new JsonbJsonService();
       }
-      return detectJsonb() ? new JsonbJsonService() : null;
+      return detectJackson() ? new JacksonJsonService() : null;
     }
 
     boolean detectJackson() {

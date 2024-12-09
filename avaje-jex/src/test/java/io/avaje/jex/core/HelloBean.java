@@ -1,5 +1,8 @@
 package io.avaje.jex.core;
 
+import io.avaje.jsonb.Json;
+
+@Json
 public class HelloBean {
 
   public int id;
