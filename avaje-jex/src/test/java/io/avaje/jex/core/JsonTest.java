@@ -20,6 +20,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import io.avaje.jex.Jex;
+import io.avaje.jex.core.json.JacksonJsonService;
 
 public class JsonTest {
 
@@ -41,6 +42,7 @@ public class JsonTest {
   static TestPair init() {
     Jex app =
         Jex.create()
+            .jsonService(new JacksonJsonService())
             .get("/", ctx -> ctx.status(200).json(HelloDto.rob()))
             .post(
                 "/generic",
