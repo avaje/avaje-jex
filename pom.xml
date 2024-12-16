@@ -57,13 +57,6 @@
         <type>pom</type>
       </dependency>
       <dependency>
-        <groupId>io.helidon</groupId>
-        <artifactId>helidon-bom</artifactId>
-        <version>${helidon.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-      <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-logback-encoder</artifactId>
         <version>0.4</version>
@@ -161,13 +154,8 @@
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
-        <artifactId>avaje-http-jex-generator</artifactId>
-        <version>1.1-RC2</version>
-      </dependency>
-      <dependency>
-        <groupId>io.avaje</groupId>
-        <artifactId>avaje-nima-test</artifactId>
-        <version>1.1-RC2</version>
+        <artifactId>avaje-jex-test</artifactId>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -236,7 +224,6 @@
         <plugin>
           <groupId>io.avaje</groupId>
           <artifactId>avaje-provides-maven-plugin</artifactId>
-          <version>0.10</version>
           <executions>
             <execution>
               <goals>
