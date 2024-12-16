@@ -24,6 +24,7 @@
     <jackson.version>2.18.2</jackson.version>
     <surefire.useModulePath>false</surefire.useModulePath>
     <maven.compiler.release>21</maven.compiler.release>
+    <maven.compiler.proc>full</maven.compiler.proc>
     <project.build.outputTimestamp>2024-12-16T18:42:05Z</project.build.outputTimestamp>
 
     <avaje.config.version>4.0</avaje.config.version>
