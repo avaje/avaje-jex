@@ -11,7 +11,7 @@
 
   <groupId>io.avaje</groupId>
   <artifactId>avaje-jex-parent</artifactId>
-  <version>3.0-RC10</version>
+  <version>3.0-RC11</version>
   <packaging>pom</packaging>
 
   <scm>
@@ -24,7 +24,7 @@
     <jackson.version>2.18.2</jackson.version>
     <surefire.useModulePath>false</surefire.useModulePath>
     <maven.compiler.release>21</maven.compiler.release>
-    <project.build.outputTimestamp>2024-12-08T18:26:16Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-12-16T18:42:05Z</project.build.outputTimestamp>
 
     <avaje.config.version>4.0</avaje.config.version>
     <avaje.inject.version>11.1-RC1</avaje.inject.version>
@@ -74,6 +74,11 @@
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-http-api</artifactId>
+        <version>${avaje.http.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.avaje</groupId>
+        <artifactId>avaje-htmx-api</artifactId>
         <version>${avaje.http.version}</version>
       </dependency>
       <dependency>
@@ -155,6 +160,26 @@
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.avaje</groupId>
+        <artifactId>avaje-jex-freemarker</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.avaje</groupId>
+        <artifactId>avaje-jex-mustache</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.avaje</groupId>
+        <artifactId>avaje-jex-htmx</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.avaje</groupId>
+        <artifactId>avaje-jex-static-content</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

@@ -1,14 +1,14 @@
 package io.avaje.jex.core.json;
 
-import io.avaje.jex.spi.JsonService;
-import io.avaje.jsonb.JsonType;
-import io.avaje.jsonb.JsonWriter;
-import io.avaje.jsonb.Jsonb;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.util.Iterator;
+
+import io.avaje.jex.spi.JsonService;
+import io.avaje.json.JsonWriter;
+import io.avaje.jsonb.JsonType;
+import io.avaje.jsonb.Jsonb;
 
 /** Provides JsonService using avaje-jsonb. */
 public final class JsonbJsonService implements JsonService {
