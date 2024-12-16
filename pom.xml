@@ -156,32 +156,32 @@
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex</artifactId>
-        <version>${project.version}</version>
+        <version>3.0-RC11</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-test</artifactId>
-        <version>${project.version}</version>
+        <version>3.0-RC11</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-freemarker</artifactId>
-        <version>${project.version}</version>
+        <version>3.0-RC11</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-mustache</artifactId>
-        <version>${project.version}</version>
+        <version>3.0-RC11</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-htmx</artifactId>
-        <version>${project.version}</version>
+        <version>3.0-RC11</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-static-content</artifactId>
-        <version>${project.version}</version>
+        <version>3.0-RC11</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -259,6 +259,19 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+          <groupId>io.ebean</groupId>
+          <artifactId>ebean-maven-plugin</artifactId>
+          <version>${ebean.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>enhance</goal>
+                <goal>testEnhance</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -286,6 +299,23 @@
           <plugin>
             <groupId>io.avaje</groupId>
             <artifactId>avaje-provides-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>ebean</id>
+      <activation>
+        <file>
+          <exists>target/classes/META-INF/ebean-generated-info.mf</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.ebean</groupId>
+            <artifactId>ebean-maven-plugin</artifactId>
           </plugin>
         </plugins>
       </build>
