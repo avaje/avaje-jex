@@ -71,7 +71,7 @@ final class DJex implements Jex {
   }
 
   @Override
-  public Jex context(String contextPath) {
+  public Jex contextPath(String contextPath) {
     config.contextPath(contextPath);
     return this;
   }

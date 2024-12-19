@@ -33,7 +33,7 @@ public final class BootstrapServer {
     }
 
     final SpiRoutes routes =
-        new RoutesBuilder(jex.routing(), config.ignoreTrailingSlashes()).build();
+        new RoutesBuilder(jex.routing(), config).build();
 
     return start(jex, routes);
   }

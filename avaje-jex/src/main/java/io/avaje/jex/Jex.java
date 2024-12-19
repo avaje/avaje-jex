@@ -242,7 +242,7 @@ public sealed interface Jex permits DJex {
    * @param contextPath The context path to use.
    * @return The updated Jex instance.
    */
-  Jex context(String contextPath);
+  Jex contextPath(String contextPath);
 
   /**
    * Explicitly register a template renderer.
