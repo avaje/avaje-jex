@@ -183,6 +183,11 @@
         <artifactId>avaje-jex-static-content</artifactId>
         <version>3.0-RC12</version>
       </dependency>
+      <dependency>
+        <groupId>io.github.robaho</groupId>
+        <artifactId>httpserver</artifactId>
+        <version>1.0.11</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
