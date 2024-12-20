@@ -36,7 +36,7 @@
     <avaje.record.builder.version>1.2</avaje.record.builder.version>
     <avaje.spi.version>2.9</avaje.spi.version>
     <avaje.prisms.versionn>1.36</avaje.prisms.versionn>
-    <ebean.version>15.8.0</ebean.version>
+    <ebean.version>15.8.1</ebean.version>
   </properties>
 
   <modules>
