@@ -11,6 +11,7 @@ import io.avaje.jex.Context;
 import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.Jex;
 import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.security.Role;
 
 final class StaticResourceHandlerBuilder implements StaticContent.Builder, StaticContent {
 
@@ -29,6 +30,7 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
   private Predicate<Context> skipFilePredicate = NO_OP_PREDICATE;
   private boolean isClasspath = true;
   private boolean precompress;
+  private Role[] roles = {};
 
   private StaticResourceHandlerBuilder(String root) {
     this.root = root;
@@ -40,7 +42,7 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
 
   @Override
   public void apply(Jex jex) {
-    jex.get(path, createHandler(jex.config().compression()));
+    jex.get(path, createHandler(jex.config().compression()), roles);
   }
 
   @Override
@@ -73,8 +75,9 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
   }
 
   @Override
-  public StaticResourceHandlerBuilder httpPath(String path) {
+  public StaticResourceHandlerBuilder route(String path, Role... roles) {
     this.path = path.endsWith("/") ? path + "*" : path;
+    this.roles = roles;
     return this;
   }
 

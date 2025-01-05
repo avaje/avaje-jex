@@ -1,6 +1,5 @@
 package io.avaje.jex.staticcontent;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,7 +10,6 @@ import java.util.function.Predicate;
 import com.sun.net.httpserver.HttpExchange;
 
 import io.avaje.jex.Context;
-import io.avaje.jex.compression.CompressedOutputStream;
 import io.avaje.jex.compression.CompressionConfig;
 
 final class StaticFileHandler extends AbstractStaticHandler {
