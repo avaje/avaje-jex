@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/** Configuration class for compression settings. */
+/** Configuration for compression settings. */
 public final class CompressionConfig {
 
   private static final int HTTP_PACKET_SIZE = 1500;
@@ -29,11 +29,11 @@ public final class CompressionConfig {
   private final Set<String> allowedExcludedTypes = Set.of("image/svg+xml");
 
   /**
-   * Adds a custom compressor for a given encoding type.
+   * Adds a compressor for a given encoding type.
    *
    * @param compressor The compressor to use.
    */
-  public CompressionConfig customCompressor(Compressor compressor) {
+  public CompressionConfig compressor(Compressor compressor) {
     compressors.put(compressor.encoding(), compressor);
     return this;
   }
