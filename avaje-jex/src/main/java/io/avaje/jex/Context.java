@@ -432,10 +432,12 @@ public interface Context {
   String protocol();
 
   /**
-   * Gets basic-auth credentials from the request, or throws.
+   * Gets basic-auth credentials from the request.
    *
-   * <p>Returns a wrapper object containing the Base64 decoded username and password from the
-   * Authorization header, or null if basic-auth is not properly configured
+   * @return The Base64 decoded username and password from the
+   * Authorization header, or null if no header is sent
+   *
+   * @throws IllegalStateException if the Authorization header is malformed
    */
   BasicAuthCredentials basicAuthCredentials();
 
