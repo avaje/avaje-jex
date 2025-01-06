@@ -2,7 +2,10 @@ package io.avaje.jex.compression;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
+import java.util.zip.GZIPInputStream;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -43,11 +46,23 @@ class CompressionTest {
   }
 
   @Test
-  void testCompression() {
-    HttpResponse<String> res =
-        pair.request().header(Constants.ACCEPT_ENCODING, "deflate, gzip;q=1.0, *;q=0.5").path("compress").GET().asString();
+  void testCompression() throws IOException {
+    var res =
+        pair.request()
+            .header(Constants.ACCEPT_ENCODING, "deflate, gzip;q=1.0, *;q=0.5")
+            .path("compress")
+            .GET()
+            .asInputStream();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().firstValue(Constants.CONTENT_ENCODING)).contains("gzip");
+
+    var expected = CompressionTest.class.getResourceAsStream("/64KB.json").readAllBytes();
+
+    assertThat(res.body().readAllBytes()).isNotEqualTo(expected);
+    final var gzipInputStream = new GZIPInputStream(res.body());
+    var decompressed = gzipInputStream.readAllBytes();
+    gzipInputStream.close();
+    assertThat(decompressed).isEqualTo(expected);
   }
 
   @Test

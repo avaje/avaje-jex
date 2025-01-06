@@ -60,7 +60,9 @@ final class BufferedOutStream extends OutputStream {
   @Override
   public void close() throws IOException {
     if (stream != null) {
-      stream.flush();
+      if (!context.responseSent()) {
+        stream.flush();
+      }
       stream.close();
     } else {
       context.write(buffer.toByteArray());
