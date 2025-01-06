@@ -58,7 +58,6 @@ class CompressionTest {
 
     var expected = CompressionTest.class.getResourceAsStream("/64KB.json").readAllBytes();
 
-    assertThat(res.body().readAllBytes()).isNotEqualTo(expected);
     final var gzipInputStream = new GZIPInputStream(res.body());
     var decompressed = gzipInputStream.readAllBytes();
     gzipInputStream.close();
