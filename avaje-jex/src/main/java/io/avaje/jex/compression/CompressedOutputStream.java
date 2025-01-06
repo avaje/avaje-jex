@@ -3,6 +3,7 @@ package io.avaje.jex.compression;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 import io.avaje.jex.Context;
@@ -69,7 +70,12 @@ public final class CompressedOutputStream extends OutputStream {
 
   private Optional<Compressor> findMatchingCompressor(String acceptedEncoding) {
     if (acceptedEncoding != null) {
-      return Arrays.stream(acceptedEncoding.split(",")).map(compression::forType).findFirst();
+      return Arrays.stream(acceptedEncoding.split(","))
+          .map(e -> e.trim().split(";")[0])
+          .map(e -> "*".equals(e) ? "gzip" : e.toLowerCase())
+          .map(compression::forType)
+          .filter(Objects::nonNull)
+          .findFirst();
     }
     return Optional.empty();
   }

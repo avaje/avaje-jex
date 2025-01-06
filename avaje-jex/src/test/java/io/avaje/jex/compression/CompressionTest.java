@@ -45,7 +45,7 @@ class CompressionTest {
   @Test
   void testCompression() {
     HttpResponse<String> res =
-        pair.request().header(Constants.ACCEPT_ENCODING, "gzip").path("compress").GET().asString();
+        pair.request().header(Constants.ACCEPT_ENCODING, "deflate, gzip;q=1.0, *;q=0.5").path("compress").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().firstValue(Constants.CONTENT_ENCODING)).contains("gzip");
   }

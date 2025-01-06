@@ -29,6 +29,16 @@ public final class CompressionConfig {
   private final Set<String> allowedExcludedTypes = Set.of("image/svg+xml");
 
   /**
+   * Adds a custom compressor for a given encoding type.
+   *
+   * @param compressor The compressor to use.
+   */
+  public CompressionConfig customCompressor(Compressor compressor) {
+    compressors.put(compressor.encoding(), compressor);
+    return this;
+  }
+
+  /**
    * Sets the default GZIP compression level.
    *
    * @param level The new compression level (0-9).
@@ -99,6 +109,6 @@ public final class CompressionConfig {
    * @return The compressor for the given Content-Encoding value, or null if not found.
    */
   Compressor forType(String encoding) {
-    return compressors.get(encoding.toLowerCase());
+    return compressors.get(encoding);
   }
 }
