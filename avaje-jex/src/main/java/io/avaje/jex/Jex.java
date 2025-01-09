@@ -225,7 +225,7 @@ public sealed interface Jex permits DJex {
    * @param configure A consumer lambda that accepts a {@link JexConfig} instance for configuration.
    * @return The configured Jex instance.
    */
-  Jex configure(Consumer<JexConfig> configure);
+  Jex config(Consumer<JexConfig> configure);
 
   /**
    * Sets the port number on which the Jex server will listen for incoming requests.

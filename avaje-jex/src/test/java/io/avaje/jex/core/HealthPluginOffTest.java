@@ -14,7 +14,7 @@ class HealthPluginOffTest {
 
   static TestPair init() {
     final Jex app = Jex.create()
-      .configure(config -> config.health(false))
+      .config(config -> config.health(false))
       .routing(routing -> routing
         .get("/", ctx -> ctx.text("hello"))
       );
