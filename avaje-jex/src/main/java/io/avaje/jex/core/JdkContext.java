@@ -371,7 +371,6 @@ final class JdkContext implements Context {
     try (var os = exchange.getResponseBody()) {
       exchange.sendResponseHeaders(statusCode(), bytes.length == 0 ? -1 : bytes.length);
       os.write(bytes);
-      os.flush();
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
