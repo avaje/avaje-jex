@@ -28,7 +28,7 @@ final class BufferedOutStream extends OutputStream {
     } else {
       if (count++ > max) {
         initialiseChunked();
-        write(b);
+        stream.write(b);
         return;
       }
       buffer.write(b);
@@ -43,7 +43,7 @@ final class BufferedOutStream extends OutputStream {
       count += len;
       if (count > max) {
         initialiseChunked();
-        write(b, off, len);
+        stream.write(b, off, len);
         return;
       }
       buffer.write(b, off, len);
