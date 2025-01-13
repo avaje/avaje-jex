@@ -49,7 +49,8 @@ public sealed interface JexConfig permits DJexConfig {
   JexConfig disableSpiPlugins();
 
   /**
-   * Executor for serving requests. Defaults to a {@link Executors#newVirtualThreadPerTaskExecutor()}
+   * Executor for serving requests. Defaults to a {@link
+   * Executors#newVirtualThreadPerTaskExecutor()}
    */
   Executor executor();
 
@@ -100,6 +101,19 @@ public sealed interface JexConfig permits DJexConfig {
    */
   JexConfig ignoreTrailingSlashes(boolean ignoreTrailingSlashes);
 
+  /** The initial size of the response buffer */
+  int initialStreamBufferSize();
+
+  /**
+   * Set the initial size of the response stream buffer. If exceeded, the buffer will expand until
+   * it reaches the maximum configured size
+   *
+   * <p>Defaults to 256
+   *
+   * @param initialSize The initial size of the response buffer
+   */
+  JexConfig initialStreamBufferSize(int initialSize);
+
   /** Returns the configured JSON service. */
   JsonService jsonService();
 
@@ -109,6 +123,20 @@ public sealed interface JexConfig permits DJexConfig {
    * @param jsonService The json service instance.
    */
   JexConfig jsonService(JsonService jsonService);
+
+  /** the maximum size of the response stream buffer. */
+  long maxStreamBufferSize();
+
+  /**
+   * Set the maximum size of the response stream buffer. If the response data exceeds this size,
+   * then it will be written to the client using chunked transfer encoding. Otherwise, the response
+   * will be sent using a Content-Length header with the exact size of the response data.
+   *
+   * <p>Defaults to 1024
+   *
+   * @param maxSize The maximum size of the response
+   */
+  JexConfig maxStreamBufferSize(long maxSize);
 
   /** Returns the configured port number. (Defaults to 8080 if not set) */
   int port();

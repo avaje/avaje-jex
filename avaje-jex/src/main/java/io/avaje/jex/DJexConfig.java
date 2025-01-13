@@ -26,6 +26,8 @@ final class DJexConfig implements JexConfig {
   private HttpsConfigurator httpsConfig;
   private boolean useJexSpi = true;
   private final CompressionConfig compression = new CompressionConfig();
+  private int bufferInitial = 256;
+  private long bufferMax = 1024L;
 
   @Override
   public JexConfig host(String host) {
@@ -170,5 +172,27 @@ final class DJexConfig implements JexConfig {
   @Override
   public boolean useSpiPlugins() {
     return useJexSpi;
+  }
+
+  @Override
+  public long maxStreamBufferSize() {
+    return bufferMax;
+  }
+
+  @Override
+  public int initialStreamBufferSize() {
+    return bufferInitial;
+  }
+
+  @Override
+  public JexConfig initialStreamBufferSize(int initialSize) {
+    bufferInitial = initialSize;
+    return this;
+  }
+
+  @Override
+  public JexConfig maxStreamBufferSize(long maxSize) {
+    bufferMax = maxSize;
+    return this;
   }
 }
