@@ -35,6 +35,8 @@ final class SpiServiceManager {
   private final TemplateManager templateManager;
   private final String scheme;
   private final String contextPath;
+  private final int bufferInitial;
+  private final long bufferMax;
 
   static SpiServiceManager create(Jex jex) {
     return new Builder(jex).build();
@@ -45,16 +47,20 @@ final class SpiServiceManager {
       ExceptionManager manager,
       TemplateManager templateManager,
       String scheme,
-      String contextPath) {
+      String contextPath,
+      long bufferMax,
+      int bufferInitial) {
     this.jsonService = jsonService;
     this.exceptionHandler = manager;
     this.templateManager = templateManager;
     this.scheme = scheme;
     this.contextPath = contextPath;
+    this.bufferInitial = bufferInitial;
+    this.bufferMax = bufferMax;
   }
 
   OutputStream createOutputStream(JdkContext jdkContext) {
-    return new BufferedOutStream(jdkContext);
+    return new BufferedOutStream(jdkContext, bufferInitial, bufferMax);
   }
 
   <T> T fromJson(Class<T> type, InputStream is) {
@@ -165,7 +171,9 @@ final class SpiServiceManager {
           new ExceptionManager(jex.routing().errorHandlers()),
           initTemplateMgr(),
           jex.config().scheme(),
-          jex.config().contextPath());
+          jex.config().contextPath(),
+          jex.config().maxStreamBufferSize(),
+          jex.config().initialStreamBufferSize());
     }
 
     JsonService initJsonService() {
