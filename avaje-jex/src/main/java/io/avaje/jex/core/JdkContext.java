@@ -58,6 +58,7 @@ final class JdkContext implements Context {
   private Map<String, List<String>> queryParams;
   private Map<String, String> cookieMap;
   private int statusCode;
+
   private String characterEncoding;
 
   JdkContext(
@@ -91,414 +92,15 @@ final class JdkContext implements Context {
   }
 
   @Override
-  public String matchedPath() {
-    return path;
+  @SuppressWarnings("unchecked")
+  public <T> T attribute(String key) {
+    return (T) attributes.get(key);
   }
 
   @Override
   public Context attribute(String key, Object value) {
     attributes.put(key, value);
     return this;
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public <T> T attribute(String key) {
-    return (T) attributes.get(key);
-  }
-
-  private Map<String, String> parseCookies() {
-    final String cookieHeader = header(exchange.getRequestHeaders(), COOKIE);
-    if (cookieHeader == null || cookieHeader.isEmpty()) {
-      return emptyMap();
-    }
-    return CookieParser.parse(cookieHeader);
-  }
-
-  @Override
-  public Map<String, String> cookieMap() {
-    if (cookieMap == null) {
-      cookieMap = parseCookies();
-    }
-    return cookieMap;
-  }
-
-  @Override
-  public String cookie(String name) {
-    return cookieMap().get(name);
-  }
-
-  @Override
-  public Context cookie(Cookie cookie) {
-    header(SET_COOKIE, cookie.toString());
-    return this;
-  }
-
-  @Override
-  public Context cookie(String name, String value) {
-    header(SET_COOKIE, Cookie.of(name, value).toString());
-    return this;
-  }
-
-  @Override
-  public Context cookie(String name, String value, int maxAge) {
-    header(SET_COOKIE, Cookie.of(name, value).maxAge(Duration.ofSeconds(maxAge)).toString());
-    return this;
-  }
-
-  @Override
-  public Context removeCookie(String name) {
-    header(SET_COOKIE, Cookie.expired(name).path("/").toString());
-    return this;
-  }
-
-  @Override
-  public Context removeCookie(String name, String path) {
-    header(SET_COOKIE, Cookie.expired(name).path(path).toString());
-    return this;
-  }
-
-  @Override
-  public void redirect(String location) {
-    redirect(location, SC_MOVED_TEMPORARILY);
-  }
-
-  @Override
-  public void redirect(String location, int statusCode) {
-    header(Constants.LOCATION, location);
-    status(statusCode);
-    if (mode != Mode.EXCHANGE) {
-      throw new RedirectException(ErrorCode.REDIRECT.message());
-    } else {
-      performRedirect();
-    }
-  }
-
-  public void performRedirect() {
-    try {
-      exchange.sendResponseHeaders(statusCode(), -1);
-      exchange.getResponseBody().close();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
-
-  @Override
-  public <T> T bodyAsClass(Class<T> beanType) {
-    return mgr.fromJson(beanType, bodyAsInputStream());
-  }
-
-  @Override
-  public <T> T bodyAsType(Type beanType) {
-    return mgr.fromJson(beanType, bodyAsInputStream());
-  }
-
-  @Override
-  public byte[] bodyAsBytes() {
-    try {
-      return exchange.getRequestBody().readAllBytes();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
-
-  @Override
-  public InputStream bodyAsInputStream() {
-    return exchange.getRequestBody();
-  }
-
-  private String characterEncoding() {
-    if (characterEncoding == null) {
-      characterEncoding = mgr.requestCharset(this);
-    }
-    return characterEncoding;
-  }
-
-  @Override
-  public String body() {
-    return new String(bodyAsBytes(), Charset.forName(characterEncoding()));
-  }
-
-  @Override
-  public long contentLength() {
-    final String len = header(Constants.CONTENT_LENGTH);
-    return len == null ? 0 : Long.parseLong(len);
-  }
-
-  @Override
-  public String contentType() {
-    return header(exchange.getRequestHeaders(), Constants.CONTENT_TYPE);
-  }
-
-  @Override
-  public String responseHeader(String key) {
-    return header(exchange.getResponseHeaders(), key);
-  }
-
-  private String header(Headers headers, String name) {
-    final List<String> values = headers.get(name);
-    return (values == null || values.isEmpty()) ? null : values.getFirst();
-  }
-
-  @Override
-  public Context contentType(String contentType) {
-    exchange.getResponseHeaders().set(Constants.CONTENT_TYPE, contentType);
-    return this;
-  }
-
-  @Override
-  public Map<String, String> pathParamMap() {
-    return pathParams;
-  }
-
-  @Override
-  public String pathParam(String name) {
-    return pathParams.get(name);
-  }
-
-  @Override
-  public String queryParam(String name) {
-    final List<String> vals = queryParams(name);
-    return vals.isEmpty() ? null : vals.getFirst();
-  }
-
-  private Map<String, List<String>> queryParams() {
-    if (queryParams == null) {
-      queryParams = mgr.parseParamMap(queryString(), UTF8);
-    }
-    return queryParams;
-  }
-
-  @Override
-  public List<String> queryParams(String name) {
-    final List<String> vals = queryParams().get(name);
-    return vals == null ? emptyList() : vals;
-  }
-
-  @Override
-  public Map<String, String> queryParamMap() {
-    final Map<String, List<String>> map = queryParams();
-    if (map.isEmpty()) {
-      return emptyMap();
-    }
-    final Map<String, String> single = new LinkedHashMap<>();
-    for (Map.Entry<String, List<String>> entry : map.entrySet()) {
-      final List<String> value = entry.getValue();
-      if (value != null && !value.isEmpty()) {
-        single.put(entry.getKey(), value.getFirst());
-      }
-    }
-    return single;
-  }
-
-  @Override
-  public String queryString() {
-    return exchange.getRequestURI().getQuery();
-  }
-
-  @Override
-  public Map<String, List<String>> formParamMap() {
-    if (formParams == null) {
-      formParams = initFormParamMap();
-    }
-    return formParams;
-  }
-
-  private Map<String, List<String>> initFormParamMap() {
-    return mgr.formParamMap(this, characterEncoding());
-  }
-
-  @Override
-  public String scheme() {
-    return mgr.scheme();
-  }
-
-  @Override
-  public String url() {
-    return scheme() + "://" + host() + path;
-  }
-
-  @Override
-  public String contextPath() {
-    return mgr.contextPath();
-  }
-
-  @Override
-  public Context status(int statusCode) {
-    this.statusCode = statusCode;
-    return this;
-  }
-
-  @Override
-  public int status() {
-    return statusCode;
-  }
-
-  @Override
-  public void json(Object bean) {
-    contentType(APPLICATION_JSON);
-    mgr.toJson(bean, outputStream());
-  }
-
-  @Override
-  public <E> void jsonStream(Stream<E> stream) {
-    contentType(APPLICATION_X_JSON_STREAM);
-    mgr.toJsonStream(stream, outputStream());
-  }
-
-  @Override
-  public <E> void jsonStream(Iterator<E> iterator) {
-    contentType(APPLICATION_X_JSON_STREAM);
-    mgr.toJsonStream(iterator, outputStream());
-  }
-
-  @Override
-  public void text(String content) {
-    contentType(TEXT_PLAIN_UTF8);
-    write(content);
-  }
-
-  @Override
-  public void html(String content) {
-    contentType(TEXT_HTML_UTF8);
-    write(content);
-  }
-
-  @Override
-  public void write(String content) {
-    write(content.getBytes(StandardCharsets.UTF_8));
-  }
-
-  @Override
-  public void write(byte[] bytes) {
-    try (var os = exchange.getResponseBody()) {
-      exchange.sendResponseHeaders(statusCode(), bytes.length == 0 ? -1 : bytes.length);
-      os.write(bytes);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
-
-  @Override
-  public void write(InputStream is) {
-    try (is; var os = outputStream()) {
-      is.transferTo(os);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
-
-  @Override
-  public boolean responseSent() {
-    return exchange.getResponseCode() != -1;
-  }
-
-  int statusCode() {
-    return statusCode == 0 ? 200 : statusCode;
-  }
-
-  @Override
-  public Context render(String name, Map<String, Object> model) {
-    mgr.render(this, name, model);
-    return this;
-  }
-
-  @Override
-  public Map<String, String> headerMap() {
-    Map<String, String> map = new LinkedHashMap<>();
-    for (var entry : exchange.getRequestHeaders().entrySet()) {
-      final List<String> value = entry.getValue();
-      if (!value.isEmpty()) {
-        map.put(entry.getKey(), value.getFirst());
-      }
-    }
-    return map;
-  }
-
-  @Override
-  public Headers headers() {
-    return exchange.getRequestHeaders();
-  }
-
-  @Override
-  public String header(String key) {
-    return header(exchange.getRequestHeaders(), key);
-  }
-
-  @Override
-  public Context header(String key, String value) {
-    exchange.getResponseHeaders().add(key, value);
-    return this;
-  }
-
-  @Override
-  public Context header(String key, List<String> value) {
-    exchange.getResponseHeaders().put(key, value);
-    return this;
-  }
-
-  @Override
-  public Context headerMap(Map<String, List<String>> map) {
-    exchange.getResponseHeaders().putAll(map);
-    return this;
-  }
-
-  @Override
-  public String host() {
-    return header(Constants.HOST);
-  }
-
-  @Override
-  public String ip() {
-    final InetSocketAddress remote = exchange.getRemoteAddress();
-    if (remote == null) {
-      return "";
-    }
-    InetAddress address = remote.getAddress();
-    return address == null ? remote.getHostString() : address.getHostAddress();
-  }
-
-  @Override
-  public String method() {
-    return exchange.getRequestMethod();
-  }
-
-  @Override
-  public String path() {
-    return path;
-  }
-
-  @Override
-  public int port() {
-    return exchange.getLocalAddress().getPort();
-  }
-
-  @Override
-  public String protocol() {
-    return exchange.getProtocol();
-  }
-
-  @Override
-  public OutputStream outputStream() {
-    var out = mgr.createOutputStream(this);
-    if (compressionConfig.compressionEnabled()) {
-      return new CompressedOutputStream(compressionConfig, this, out);
-    }
-    return out;
-  }
-
-  void setMode(Mode type) {
-    this.mode = type;
-  }
-
-  @Override
-  public HttpExchange exchange() {
-    return exchange;
-  }
-
-  @Override
-  public Set<Role> routeRoles() {
-    return roles;
   }
 
   @Override
@@ -524,8 +126,406 @@ final class JdkContext implements Context {
   }
 
   @Override
-  public SSLSession sslSession() {
+  public String body() {
+    return new String(bodyAsBytes(), Charset.forName(characterEncoding()));
+  }
 
+  @Override
+  public byte[] bodyAsBytes() {
+    try {
+      return exchange.getRequestBody().readAllBytes();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  @Override
+  public <T> T bodyAsClass(Class<T> beanType) {
+    return mgr.fromJson(beanType, bodyAsInputStream());
+  }
+
+  @Override
+  public InputStream bodyAsInputStream() {
+    return exchange.getRequestBody();
+  }
+
+  @Override
+  public <T> T bodyAsType(Type beanType) {
+    return mgr.fromJson(beanType, bodyAsInputStream());
+  }
+
+  private String characterEncoding() {
+    if (characterEncoding == null) {
+      characterEncoding = mgr.requestCharset(this);
+    }
+    return characterEncoding;
+  }
+
+  @Override
+  public long contentLength() {
+    final String len = header(Constants.CONTENT_LENGTH);
+    return len == null ? 0 : Long.parseLong(len);
+  }
+
+  @Override
+  public String contentType() {
+    return header(exchange.getRequestHeaders(), Constants.CONTENT_TYPE);
+  }
+
+  @Override
+  public Context contentType(String contentType) {
+    exchange.getResponseHeaders().set(Constants.CONTENT_TYPE, contentType);
+    return this;
+  }
+
+  @Override
+  public String contextPath() {
+    return mgr.contextPath();
+  }
+
+  @Override
+  public Context cookie(Cookie cookie) {
+    header(SET_COOKIE, cookie.toString());
+    return this;
+  }
+
+  @Override
+  public String cookie(String name) {
+    return cookieMap().get(name);
+  }
+
+  @Override
+  public Context cookie(String name, String value) {
+    header(SET_COOKIE, Cookie.of(name, value).toString());
+    return this;
+  }
+
+  @Override
+  public Context cookie(String name, String value, int maxAge) {
+    header(SET_COOKIE, Cookie.of(name, value).maxAge(Duration.ofSeconds(maxAge)).toString());
+    return this;
+  }
+
+  @Override
+  public Map<String, String> cookieMap() {
+    if (cookieMap == null) {
+      cookieMap = parseCookies();
+    }
+    return cookieMap;
+  }
+
+  @Override
+  public HttpExchange exchange() {
+    return exchange;
+  }
+
+  @Override
+  public Map<String, List<String>> formParamMap() {
+    if (formParams == null) {
+      formParams = initFormParamMap();
+    }
+    return formParams;
+  }
+
+  private String header(Headers headers, String name) {
+    final List<String> values = headers.get(name);
+    return (values == null || values.isEmpty()) ? null : values.getFirst();
+  }
+
+  @Override
+  public String header(String key) {
+    return header(exchange.getRequestHeaders(), key);
+  }
+
+  @Override
+  public Context header(String key, List<String> value) {
+    exchange.getResponseHeaders().put(key, value);
+    return this;
+  }
+
+  @Override
+  public Context header(String key, String value) {
+    exchange.getResponseHeaders().add(key, value);
+    return this;
+  }
+
+  @Override
+  public Map<String, String> headerMap() {
+    Map<String, String> map = new LinkedHashMap<>();
+    for (var entry : exchange.getRequestHeaders().entrySet()) {
+      final List<String> value = entry.getValue();
+      if (!value.isEmpty()) {
+        map.put(entry.getKey(), value.getFirst());
+      }
+    }
+    return map;
+  }
+
+  @Override
+  public Context headerMap(Map<String, List<String>> map) {
+    exchange.getResponseHeaders().putAll(map);
+    return this;
+  }
+
+  @Override
+  public Headers headers() {
+    return exchange.getRequestHeaders();
+  }
+
+  @Override
+  public String host() {
+    return header(Constants.HOST);
+  }
+
+  @Override
+  public void html(String content) {
+    contentType(TEXT_HTML_UTF8);
+    write(content);
+  }
+
+  private Map<String, List<String>> initFormParamMap() {
+    return mgr.formParamMap(this, characterEncoding());
+  }
+
+  @Override
+  public String ip() {
+    final InetSocketAddress remote = exchange.getRemoteAddress();
+    if (remote == null) {
+      return "";
+    }
+    InetAddress address = remote.getAddress();
+    return address == null ? remote.getHostString() : address.getHostAddress();
+  }
+
+  @Override
+  public void json(Object bean) {
+    contentType(APPLICATION_JSON);
+    mgr.toJson(bean, outputStream());
+  }
+
+  @Override
+  public <E> void jsonStream(Iterator<E> iterator) {
+    contentType(APPLICATION_X_JSON_STREAM);
+    mgr.toJsonStream(iterator, outputStream());
+  }
+
+  @Override
+  public <E> void jsonStream(Stream<E> stream) {
+    contentType(APPLICATION_X_JSON_STREAM);
+    mgr.toJsonStream(stream, outputStream());
+  }
+
+  @Override
+  public String matchedPath() {
+    return path;
+  }
+
+  @Override
+  public String method() {
+    return exchange.getRequestMethod();
+  }
+
+  @Override
+  public OutputStream outputStream() {
+    var out = mgr.createOutputStream(this);
+    if (compressionConfig.compressionEnabled()) {
+      return new CompressedOutputStream(compressionConfig, this, out);
+    }
+    return out;
+  }
+
+  private Map<String, String> parseCookies() {
+    final String cookieHeader = header(exchange.getRequestHeaders(), COOKIE);
+    if (cookieHeader == null || cookieHeader.isEmpty()) {
+      return emptyMap();
+    }
+    return CookieParser.parse(cookieHeader);
+  }
+
+  @Override
+  public String path() {
+    return path;
+  }
+
+  @Override
+  public String pathParam(String name) {
+    return pathParams.get(name);
+  }
+
+  @Override
+  public Map<String, String> pathParamMap() {
+    return pathParams;
+  }
+
+  public void performRedirect() {
+    try {
+      exchange.sendResponseHeaders(statusCode(), -1);
+      exchange.getResponseBody().close();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  @Override
+  public int port() {
+    return exchange.getLocalAddress().getPort();
+  }
+
+  @Override
+  public String protocol() {
+    return exchange.getProtocol();
+  }
+
+  @Override
+  public String queryParam(String name) {
+    final List<String> vals = queryParams(name);
+    return vals.isEmpty() ? null : vals.getFirst();
+  }
+
+  @Override
+  public Map<String, String> queryParamMap() {
+    final Map<String, List<String>> map = queryParams();
+    if (map.isEmpty()) {
+      return emptyMap();
+    }
+    final Map<String, String> single = new LinkedHashMap<>();
+    for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+      final List<String> value = entry.getValue();
+      if (value != null && !value.isEmpty()) {
+        single.put(entry.getKey(), value.getFirst());
+      }
+    }
+    return single;
+  }
+
+  private Map<String, List<String>> queryParams() {
+    if (queryParams == null) {
+      queryParams = mgr.parseParamMap(queryString(), UTF8);
+    }
+    return queryParams;
+  }
+
+  @Override
+  public List<String> queryParams(String name) {
+    final List<String> vals = queryParams().get(name);
+    return vals == null ? emptyList() : vals;
+  }
+
+  @Override
+  public String queryString() {
+    return exchange.getRequestURI().getQuery();
+  }
+
+  @Override
+  public void redirect(String location) {
+    redirect(location, SC_MOVED_TEMPORARILY);
+  }
+
+  @Override
+  public void redirect(String location, int statusCode) {
+    header(Constants.LOCATION, location);
+    status(statusCode);
+    if (mode != Mode.EXCHANGE) {
+      throw new RedirectException(ErrorCode.REDIRECT.message());
+    } else {
+      performRedirect();
+    }
+  }
+
+  @Override
+  public Context removeCookie(String name) {
+    header(SET_COOKIE, Cookie.expired(name).path("/").toString());
+    return this;
+  }
+
+  @Override
+  public Context removeCookie(String name, String path) {
+    header(SET_COOKIE, Cookie.expired(name).path(path).toString());
+    return this;
+  }
+
+  @Override
+  public Context render(String name, Map<String, Object> model) {
+    mgr.render(this, name, model);
+    return this;
+  }
+
+  @Override
+  public String responseHeader(String key) {
+    return header(exchange.getResponseHeaders(), key);
+  }
+
+  @Override
+  public boolean responseSent() {
+    return exchange.getResponseCode() != -1;
+  }
+
+  @Override
+  public Set<Role> routeRoles() {
+    return roles;
+  }
+
+  @Override
+  public String scheme() {
+    return mgr.scheme();
+  }
+
+  void setMode(Mode type) {
+    this.mode = type;
+  }
+
+  @Override
+  public SSLSession sslSession() {
     return exchange instanceof HttpsExchange ex ? ex.getSSLSession() : null;
+  }
+
+  @Override
+  public int status() {
+    return statusCode;
+  }
+
+  @Override
+  public Context status(int statusCode) {
+    this.statusCode = statusCode;
+    return this;
+  }
+
+  int statusCode() {
+    return statusCode == 0 ? 200 : statusCode;
+  }
+
+  @Override
+  public void text(String content) {
+    contentType(TEXT_PLAIN_UTF8);
+    write(content);
+  }
+
+  @Override
+  public String url() {
+    return scheme() + "://" + host() + path;
+  }
+
+  @Override
+  public void write(byte[] bytes) {
+    try (var os = exchange.getResponseBody()) {
+      exchange.sendResponseHeaders(statusCode(), bytes.length == 0 ? -1 : bytes.length);
+      os.write(bytes);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  @Override
+  public void write(InputStream is) {
+    try (is; var os = outputStream()) {
+      is.transferTo(os);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  @Override
+  public void write(String content) {
+    write(content.getBytes(StandardCharsets.UTF_8));
   }
 }
