@@ -26,8 +26,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import javax.net.ssl.SSLSession;
+
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpsExchange;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.compression.CompressedOutputStream;
@@ -518,5 +521,11 @@ final class JdkContext implements Context {
     }
 
     return new BasicAuthCredentials(credentials[0], credentials[1]);
+  }
+
+  @Override
+  public SSLSession sslSession() {
+
+    return exchange instanceof HttpsExchange ex ? ex.getSSLSession() : null;
   }
 }
