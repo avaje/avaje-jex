@@ -65,7 +65,8 @@ public final class BootstrapServer {
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
       log.log(
           INFO,
-          "Started jdk.httpserver on port {0}://{1}",
+          "Avaje Jex started {0} on port {1}://{2}",
+          server.getClass(),
           scheme,
           socketAddress);
       log.log(DEBUG, routes);
