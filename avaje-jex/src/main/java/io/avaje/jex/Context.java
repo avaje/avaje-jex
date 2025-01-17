@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
+
+import javax.net.ssl.SSLSession;
+
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
@@ -443,6 +446,13 @@ public interface Context {
 
   /** Return true if the response has been sent. */
   boolean responseSent();
+
+  /**
+   * Get the {@link SSLSession} for this exchange.
+   *
+   * @return the {@code SSLSession}
+   */
+  SSLSession sslSession();
 
   /**
    * This interface represents a cookie used in HTTP communication. Cookies are small pieces of data
