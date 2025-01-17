@@ -51,7 +51,7 @@ An example would be [@robaho's implementation](https://github.com/robaho/httpser
 <dependency>
   <groupId>io.github.robaho</groupId>
   <artifactId>httpserver</artifactId>
-  <version>1.0.20</version>
+  <version>1.0.21</version>
 </dependency>
 ```
 
