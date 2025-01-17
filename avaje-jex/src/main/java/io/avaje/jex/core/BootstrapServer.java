@@ -65,7 +65,7 @@ public final class BootstrapServer {
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
       log.log(
           INFO,
-          "started com.sun.net.httpserver.HttpServer on port {0}://{1}",
+          "Started jdk.httpserver on port {0}://{1}",
           scheme,
           socketAddress);
       log.log(DEBUG, routes);
