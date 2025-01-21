@@ -23,20 +23,20 @@ final class ExceptionManager {
   }
 
   @SuppressWarnings("unchecked")
-  <T extends Exception> ExceptionHandler<Exception> find(Class<T> exceptionType) {
+  <T extends Throwable> ExceptionHandler<Throwable> find(Class<T> exceptionType) {
     Class<?> type = exceptionType;
     do {
       final ExceptionHandler<?> handler = handlers.get(type);
       if (handler != null) {
-        return (ExceptionHandler<Exception>) handler;
+        return (ExceptionHandler<Throwable>) handler;
       }
       type = type.getSuperclass();
     } while (type != null);
     return null;
   }
 
-  void handle(JdkContext ctx, Exception e) {
-    final ExceptionHandler<Exception> handler = find(e.getClass());
+  void handle(JdkContext ctx, Throwable e) {
+    final ExceptionHandler<Throwable> handler = find(e.getClass());
     if (handler != null) {
       try {
         handler.handle(ctx, e);
@@ -50,7 +50,7 @@ final class ExceptionManager {
     }
   }
 
-  private void unhandledException(JdkContext ctx, Exception e) {
+  private void unhandledException(JdkContext ctx, Throwable e) {
     log.log(ERROR, "Uncaught exception", e);
     defaultHandling(ctx, new InternalServerErrorException(ErrorCode.INTERNAL_SERVER_ERROR.message()));
   }
