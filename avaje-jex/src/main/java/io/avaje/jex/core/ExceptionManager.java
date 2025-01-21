@@ -23,10 +23,10 @@ final class ExceptionManager {
   }
 
   @SuppressWarnings("unchecked")
-  ExceptionHandler<Throwable> find(Class<?> exceptionType) {
+  <T extends Throwable> ExceptionHandler<Throwable> find(Class<T> exceptionType) {
     Class<?> type = exceptionType;
     do {
-      final var handler = handlers.get(type);
+      final ExceptionHandler<?> handler = handlers.get(type);
       if (handler != null) {
         return (ExceptionHandler<Throwable>) handler;
       }
@@ -36,7 +36,7 @@ final class ExceptionManager {
   }
 
   void handle(JdkContext ctx, Throwable e) {
-    final var handler = find(e.getClass());
+    final ExceptionHandler<Throwable> handler = find(e.getClass());
     if (handler != null) {
       try {
         handler.handle(ctx, e);
