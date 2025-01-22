@@ -6,7 +6,7 @@ package io.avaje.jex;
  * @param <T> type of throwable handled by this handler
  */
 @FunctionalInterface
-public interface ExceptionHandler<T extends Throwable> {
+public interface ExceptionHandler<T extends Exception> {
 
   /**
    * Error handling consumer. Do not throw an exception from an error handler, it would make this
