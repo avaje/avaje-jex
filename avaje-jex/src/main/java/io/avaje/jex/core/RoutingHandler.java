@@ -16,15 +16,13 @@ import io.avaje.jex.routes.SpiRoutes;
 final class RoutingHandler implements HttpHandler {
 
   private final SpiRoutes routes;
-  private final SpiServiceManager mgr;
-  private final CompressionConfig compressionConfig;
+  private final ServiceManager mgr;
   private final List<HttpFilter> filters;
 
-  RoutingHandler(SpiRoutes routes, SpiServiceManager mgr, CompressionConfig compressionConfig) {
+  RoutingHandler(SpiRoutes routes, ServiceManager mgr) {
     this.mgr = mgr;
     this.routes = routes;
     this.filters = routes.filters();
-    this.compressionConfig = compressionConfig;
   }
 
   void waitForIdle(long maxSeconds) {
@@ -38,7 +36,7 @@ final class RoutingHandler implements HttpHandler {
     final var route = routes.match(routeType, uri);
 
     if (route == null) {
-      var ctx = new JdkContext(mgr, compressionConfig, exchange, uri, Set.of());
+      var ctx = new JdkContext(mgr, exchange, uri, Set.of());
       handleException(
           ctx,
           new NotFoundException(
@@ -47,9 +45,7 @@ final class RoutingHandler implements HttpHandler {
       route.inc();
       try {
         final Map<String, String> params = route.pathParams(uri);
-        JdkContext ctx =
-            new JdkContext(
-                mgr, compressionConfig, exchange, route.matchPath(), params, route.roles());
+        JdkContext ctx = new JdkContext(mgr, exchange, route.matchPath(), params, route.roles());
         try {
           ctx.setMode(Mode.BEFORE);
           new BaseFilterChain(filters, route.handler(), ctx).proceed();
