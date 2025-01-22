@@ -13,7 +13,7 @@ public interface ExceptionHandler<T extends Exception> {
    * error handler invalid and the exception would be ignored.
    *
    * @param ctx the server context
-   * @param throwable the cause of the error
+   * @param exception the cause of the error
    */
-  void handle(Context ctx, T throwable);
+  void handle(Context ctx, T exception);
 }
