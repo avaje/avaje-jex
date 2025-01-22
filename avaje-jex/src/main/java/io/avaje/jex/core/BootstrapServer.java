@@ -55,8 +55,8 @@ public final class BootstrapServer {
 
       final var scheme = config.scheme();
       final var contextPath = config.contextPath();
-      SpiServiceManager serviceManager = SpiServiceManager.create(jex);
-      final var handler = new RoutingHandler(routes, serviceManager, config.compression());
+      ServiceManager serviceManager = ServiceManager.create(jex);
+      final var handler = new RoutingHandler(routes, serviceManager);
 
       server.setExecutor(config.executor());
       server.createContext(contextPath, handler);
