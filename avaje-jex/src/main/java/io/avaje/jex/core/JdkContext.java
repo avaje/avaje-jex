@@ -33,8 +33,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpsExchange;
 
 import io.avaje.jex.Context;
-import io.avaje.jex.compression.CompressedOutputStream;
-import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.http.ErrorCode;
 import io.avaje.jex.http.RedirectException;
 import io.avaje.jex.security.BasicAuthCredentials;
@@ -46,8 +44,7 @@ final class JdkContext implements Context {
   private static final int SC_MOVED_TEMPORARILY = 302;
   private static final String SET_COOKIE = "Set-Cookie";
   private static final String COOKIE = "Cookie";
-  private final SpiServiceManager mgr;
-  private final CompressionConfig compressionConfig;
+  private final ServiceManager mgr;
   private final String path;
   private final Map<String, String> pathParams;
   private final Map<String, Object> attributes = new HashMap<>();
@@ -62,14 +59,12 @@ final class JdkContext implements Context {
   private String characterEncoding;
 
   JdkContext(
-      SpiServiceManager mgr,
-      CompressionConfig compressionConfig,
+      ServiceManager mgr,
       HttpExchange exchange,
       String path,
       Map<String, String> pathParams,
       Set<Role> roles) {
     this.mgr = mgr;
-    this.compressionConfig = compressionConfig;
     this.roles = roles;
     this.exchange = exchange;
     this.path = path;
@@ -78,13 +73,11 @@ final class JdkContext implements Context {
 
   /** Create when no route matched. */
   JdkContext(
-      SpiServiceManager mgr,
-      CompressionConfig compressionConfig,
+      ServiceManager mgr,
       HttpExchange exchange,
       String path,
       Set<Role> roles) {
     this.mgr = mgr;
-    this.compressionConfig = compressionConfig;
     this.roles = roles;
     this.exchange = exchange;
     this.path = path;
@@ -327,11 +320,7 @@ final class JdkContext implements Context {
 
   @Override
   public OutputStream outputStream() {
-    var out = mgr.createOutputStream(this);
-    if (compressionConfig.compressionEnabled()) {
-      return new CompressedOutputStream(compressionConfig, this, out);
-    }
-    return out;
+    return mgr.createOutputStream(this);
   }
 
   private Map<String, String> parseCookies() {
