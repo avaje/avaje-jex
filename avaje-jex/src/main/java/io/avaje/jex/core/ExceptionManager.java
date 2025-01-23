@@ -50,7 +50,7 @@ final class ExceptionManager {
     }
   }
 
-  private void unhandledException(JdkContext ctx, Throwable e) {
+  private void unhandledException(JdkContext ctx, Exception e) {
     log.log(ERROR, "Uncaught exception", e);
     defaultHandling(ctx, new InternalServerErrorException(ErrorCode.INTERNAL_SERVER_ERROR.message()));
   }
