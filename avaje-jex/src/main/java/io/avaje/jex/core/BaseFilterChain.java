@@ -1,7 +1,6 @@
 package io.avaje.jex.core;
 
 import java.util.Iterator;
-import java.util.List;
 
 import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.HttpFilter;
@@ -15,8 +14,8 @@ final class BaseFilterChain implements FilterChain {
   private final ServiceManager mgr;
 
   BaseFilterChain(
-      List<HttpFilter> filters, ExchangeHandler handler, JdkContext ctx, ServiceManager mgr) {
-    this.iter = filters.iterator();
+      Iterator<HttpFilter> filters, ExchangeHandler handler, JdkContext ctx, ServiceManager mgr) {
+    this.iter = filters;
     this.handler = handler;
     this.ctx = ctx;
     this.mgr = mgr;
