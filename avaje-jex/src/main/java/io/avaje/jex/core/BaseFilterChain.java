@@ -8,14 +8,13 @@ import io.avaje.jex.HttpFilter.FilterChain;
 
 final class BaseFilterChain implements FilterChain {
 
-  private final Iterator<HttpFilter> iter;
+  private final Iterator<HttpFilter> filters;
   private final ExchangeHandler handler;
   private final JdkContext ctx;
   private final ServiceManager mgr;
 
-  BaseFilterChain(
-      Iterator<HttpFilter> filters, ExchangeHandler handler, JdkContext ctx, ServiceManager mgr) {
-    this.iter = filters;
+  BaseFilterChain(Iterator<HttpFilter> filters, ExchangeHandler handler, JdkContext ctx, ServiceManager mgr) {
+    this.filters = filters;
     this.handler = handler;
     this.ctx = ctx;
     this.mgr = mgr;
@@ -23,9 +22,8 @@ final class BaseFilterChain implements FilterChain {
 
   @Override
   public void proceed() {
-
-    if (iter.hasNext()) {
-      iter.next().filter(ctx, this);
+    if (filters.hasNext()) {
+      filters.next().filter(ctx, this);
     } else {
       try {
         if (!ctx.responseSent()) {
