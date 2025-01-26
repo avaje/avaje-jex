@@ -9,7 +9,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import io.avaje.jex.HttpFilter;
-import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.http.NotFoundException;
 import io.avaje.jex.routes.SpiRoutes;
 
@@ -37,7 +36,7 @@ final class RoutingHandler implements HttpHandler {
 
     if (route == null) {
       var ctx = new JdkContext(mgr, exchange, uri, Set.of());
-      handleException(
+      mgr.handleException(
           ctx,
           new NotFoundException(
               "No route matching http method %s, with path %s".formatted(routeType.name(), uri)));
@@ -48,10 +47,10 @@ final class RoutingHandler implements HttpHandler {
         JdkContext ctx = new JdkContext(mgr, exchange, route.matchPath(), params, route.roles());
         try {
           ctx.setMode(Mode.BEFORE);
-          new BaseFilterChain(filters, route.handler(), ctx).proceed();
+          new BaseFilterChain(filters.iterator(), route.handler(), ctx, mgr).proceed();
           handleNoResponse(exchange);
         } catch (Exception e) {
-          handleException(ctx, e);
+          mgr.handleException(ctx, e);
         }
       } finally {
         route.dec();
@@ -64,9 +63,5 @@ final class RoutingHandler implements HttpHandler {
     if (exchange.getResponseCode() == -1) {
       exchange.sendResponseHeaders(204, -1);
     }
-  }
-
-  private void handleException(JdkContext ctx, Exception e) {
-    mgr.handleException(ctx, e);
   }
 }
