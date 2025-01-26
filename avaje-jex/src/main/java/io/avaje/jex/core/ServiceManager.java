@@ -115,8 +115,8 @@ final class ServiceManager {
     }
   }
 
-  void handleException(JdkContext ctx, Exception e) {
-    exceptionHandler.handle(ctx, e);
+  void handleException(JdkContext ctx, Exception t) {
+    exceptionHandler.handle(ctx, t);
   }
 
   void render(Context ctx, String name, Map<String, Object> model) {

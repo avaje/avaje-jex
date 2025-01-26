@@ -1,7 +1,5 @@
 package io.avaje.jex;
 
-import java.io.IOException;
-
 import com.sun.net.httpserver.HttpExchange;
 
 /**
@@ -37,7 +35,7 @@ public interface HttpFilter {
    * @param ctx the {@code Context} of the current request
    * @param chain the {@code FilterChain} which allows the next filter to be invoked
    */
-  void filter(Context ctx, FilterChain chain) throws Exception;
+  void filter(Context ctx, FilterChain chain);
 
   /**
    * Filter chain that contains all subsequent filters that are configured, as well as the final
@@ -51,9 +49,7 @@ public interface HttpFilter {
      * filter in the chain. The {@link HttpFilter} may decide to terminate the chain, by not calling
      * this method. In this case, the filter <b>must</b> send the response to the request, because
      * the application's {@linkplain HttpExchange exchange} handler will not be invoked.
-     *
-     * @throws IOException if an I/O error occurs
      */
-    void proceed() throws Exception;
+    void proceed();
   }
 }
