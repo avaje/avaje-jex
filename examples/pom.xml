@@ -15,6 +15,7 @@
   <modules>
     <module>example-jdk</module>
     <module>example-robaho</module>
+    <module>example-jetty</module>
   </modules>
 
   <profiles>

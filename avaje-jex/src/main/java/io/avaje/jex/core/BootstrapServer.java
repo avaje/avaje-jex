@@ -58,7 +58,14 @@ public final class BootstrapServer {
       ServiceManager serviceManager = ServiceManager.create(jex);
       final var handler = new RoutingHandler(routes, serviceManager);
 
-      server.setExecutor(config.executor());
+      final var serverClass = server.getClass();
+
+      // jetty's server does not support setExecutor with virtual threads (VT)
+      // as it has it's own impl that will auto-use VTs
+      if (!serverClass.getName().contains("jetty")) {
+        server.setExecutor(config.executor());
+      }
+
       server.createContext(contextPath, handler);
       server.start();
 
@@ -66,7 +73,7 @@ public final class BootstrapServer {
       log.log(
           INFO,
           "Avaje Jex started {0} on port {1}://{2}",
-          server.getClass(),
+          serverClass,
           scheme,
           socketAddress);
       log.log(DEBUG, routes);
