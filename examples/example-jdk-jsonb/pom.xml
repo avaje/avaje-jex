@@ -6,7 +6,7 @@
   <parent>
     <artifactId>avaje-jex-parent</artifactId>
     <groupId>io.avaje</groupId>
-    <version>3.0-RC15</version>
+    <version>3.0-RC16</version>
   </parent>
 
   <groupId>org.example</groupId>

@@ -24,7 +24,7 @@
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-jex</artifactId>
-      <version>3.0-RC15</version>
+      <version>3.0-RC16</version>
     </dependency>
 
     <dependency>
