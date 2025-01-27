@@ -14,9 +14,5 @@ public interface HiApi {
   Hello hello();
 
   @Json
-  class Hello {
-    public int id2;
-    public String msg;
-    public String other;
-  }
+  record Hello(int id2, String msg, String other) {}
 }

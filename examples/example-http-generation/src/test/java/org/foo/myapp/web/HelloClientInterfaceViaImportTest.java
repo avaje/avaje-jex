@@ -1,14 +1,15 @@
 package org.foo.myapp.web;
 
-import io.avaje.http.api.Client;
-import io.avaje.http.client.HttpClientContext;
-import io.avaje.inject.test.InjectTest;
-import jakarta.inject.Inject;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.http.HttpResponse;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+
+import io.avaje.http.api.Client;
+import io.avaje.http.client.HttpClient;
+import io.avaje.inject.test.InjectTest;
+import jakarta.inject.Inject;
 
 /**
  * HiApi is a 'server' interface.
@@ -22,7 +23,7 @@ class HelloClientInterfaceViaImportTest {
 
   @Inject static HiApi client;
 
-  @Inject static HttpClientContext rawClient;
+  @Inject static HttpClient rawClient;
 
   @Test
   void hello() {
@@ -37,7 +38,7 @@ class HelloClientInterfaceViaImportTest {
   @Test
   void hello2() {
     var hello = client.hello();
-    assertThat(hello.msg).isEqualTo("hello");
+    assertThat(hello.msg()).isEqualTo("hello");
   }
 
   @Test
