@@ -2,11 +2,9 @@ package org.foo.myapp.web;
 
 import io.avaje.http.api.Client;
 import io.avaje.http.api.Get;
-import io.avaje.http.api.Path;
 import io.avaje.http.api.Produces;
 
-@Client
-@Path("/hello")
+@Client("/hello")
 public interface HelloApi {
 
   @Produces("text/plain")

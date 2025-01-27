@@ -11,15 +11,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Stream;
 
+import io.avaje.jsonb.Json;
+import io.avaje.jsonb.JsonType;
+import io.avaje.jsonb.Jsonb;
+import io.avaje.jsonb.Types;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import io.avaje.jex.Jex;
 import io.avaje.jex.core.json.JacksonJsonService;
-import io.avaje.jsonb.Json;
-import io.avaje.jsonb.JsonType;
-import io.avaje.jsonb.Jsonb;
-import io.avaje.jsonb.Types;
 
 public class JsonTest {
 

@@ -4,10 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.avaje</groupId>
-    <artifactId>java11-oss</artifactId>
-    <version>4.5</version>
-    <relativePath/>
+    <artifactId>avaje-jex-parent</artifactId>
+    <groupId>io.avaje</groupId>
+    <version>3.0-RC15</version>
   </parent>
 
   <groupId>org.example</groupId>
@@ -15,62 +14,46 @@
   <version>1</version>
 
   <properties>
-<!--    <maven.compiler.source>18</maven.compiler.source>-->
-<!--    <maven.compiler.target>18</maven.compiler.target>-->
-<!--    <javadoc.source>11</javadoc.source>-->
-    <java.release>17</java.release>
-    <native.maven.plugin.version>0.10.4</native.maven.plugin.version>
+    <maven.compiler.source>21</maven.compiler.source>
   </properties>
 
   <dependencies>
 
     <dependency>
       <groupId>io.avaje</groupId>
-      <artifactId>avaje-jex</artifactId>
-      <version>2.6-SNAPSHOT</version>
+      <artifactId>avaje-config</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-jex</artifactId>
+    </dependency>
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-jsonb</artifactId>
-      <version>2.4</version>
+    </dependency>
+    
+    <!-- Annotation processors -->
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-inject-generator</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-jsonb-generator</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-http-client-generator</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-http-jex-generator</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.13.0</version>
-        <configuration>
-          <release>17</release>
-<!--          <compilerArgs>-->
-<!--            &#45;&#45;enable-preview-->
-<!--          </compilerArgs>-->
-          <annotationProcessorPaths>
-            <path>
-              <groupId>io.avaje</groupId>
-              <artifactId>avaje-jsonb-generator</artifactId>
-              <version>2.4</version>
-            </path>
-          </annotationProcessorPaths>
-        </configuration>
-      </plugin>
-<!--      <plugin>-->
-<!--        <groupId>io.repaint.maven</groupId>-->
-<!--        <artifactId>tiles-maven-plugin</artifactId>-->
-<!--        <version>2.22</version>-->
-<!--        <extensions>true</extensions>-->
-<!--        <configuration>-->
-<!--          <tiles>-->
-<!--            <tile>org.avaje.tile:lib-classpath:1.1</tile>-->
-<!--          </tiles>-->
-<!--        </configuration>-->
-<!--      </plugin>-->
-    </plugins>
-  </build>
 
   <profiles>
     <profile>
@@ -80,7 +63,7 @@
           <plugin>
             <groupId>org.graalvm.buildtools</groupId>
             <artifactId>native-maven-plugin</artifactId>
-            <version>${native.maven.plugin.version}</version>
+            <version>0.10.4</version>
             <extensions>true</extensions>
             <executions>
               <execution>
@@ -108,9 +91,9 @@
                 <buildArg>--no-fallback</buildArg>
                 <buildArg>--allow-incomplete-classpath</buildArg>
                 <buildArg>-H:ReflectionConfigurationFiles=graalvm-meta/reflection.json</buildArg>
-<!--                <buildArg>&#45;&#45;initialize-at-build-time=org.slf4j.simple.SimpleLogger</buildArg>-->
-<!--                <buildArg>&#45;&#45;initialize-at-build-time=org.slf4j.simple.SimpleLogger$1</buildArg>-->
-<!--                <buildArg>&#45;&#45;trace-object-instantiation=org.slf4j.simple.SimpleLogger</buildArg>-->
+                <!--                <buildArg>&#45;&#45;initialize-at-build-time=org.slf4j.simple.SimpleLogger</buildArg>-->
+                <!--                <buildArg>&#45;&#45;initialize-at-build-time=org.slf4j.simple.SimpleLogger$1</buildArg>-->
+                <!--                <buildArg>&#45;&#45;trace-object-instantiation=org.slf4j.simple.SimpleLogger</buildArg>-->
               </buildArgs>
             </configuration>
           </plugin>
