@@ -4,6 +4,7 @@ import java.net.URLConnection;
 import java.util.function.Predicate;
 
 import io.avaje.jex.Context;
+import io.avaje.jex.security.Role;
 import io.avaje.jex.spi.JexPlugin;
 
 /**
@@ -58,15 +59,16 @@ public sealed interface StaticContent extends JexPlugin
     permits StaticResourceHandlerBuilder {
 
     /**
-     * Sets the HTTP path for the static resource handler.
+     * Sets the HTTP route for the static resource handler.
      *
      * @param path the HTTP path prefix
+     * @param roles the security roles for the route
      * @return the updated configuration
      */
-    Builder httpPath(String path);
+    Builder route(String path, Role... roles);
 
     /**
-     * Sets the index file to be served when a directory is requests.
+     * Sets the index file to be served when a directory is requested.
      *
      * @param directoryIndex the index file
      * @return the updated configuration

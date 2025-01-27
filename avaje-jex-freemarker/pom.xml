@@ -4,13 +4,13 @@
   <parent>
     <artifactId>avaje-jex-parent</artifactId>
     <groupId>io.avaje</groupId>
-    <version>3.0-RC10</version>
+    <version>3.0-RC15</version>
   </parent>
 
   <artifactId>avaje-jex-freemarker</artifactId>
 
   <properties>
-    <freemarker.version>2.3.33</freemarker.version>
+    <freemarker.version>2.3.34</freemarker.version>
   </properties>
 
   <dependencies>
@@ -18,7 +18,6 @@
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-jex</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -26,6 +25,12 @@
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
       <version>${freemarker.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-spi-service</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- test dependencies -->
@@ -39,7 +44,6 @@
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-jex-test</artifactId>
-      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
 

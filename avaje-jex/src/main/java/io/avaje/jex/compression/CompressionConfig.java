@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/** Configuration class for compression settings. */
+/** Configuration for compression settings. */
 public final class CompressionConfig {
 
   private static final int HTTP_PACKET_SIZE = 1500;
@@ -27,6 +27,16 @@ public final class CompressionConfig {
       new HashMap<>(Map.of(GzipCompressor.ENCODING, new GzipCompressor()));
 
   private final Set<String> allowedExcludedTypes = Set.of("image/svg+xml");
+
+  /**
+   * Adds a compressor for a given encoding type.
+   *
+   * @param compressor The compressor to use.
+   */
+  public CompressionConfig compressor(Compressor compressor) {
+    compressors.put(compressor.encoding(), compressor);
+    return this;
+  }
 
   /**
    * Sets the default GZIP compression level.
@@ -99,6 +109,6 @@ public final class CompressionConfig {
    * @return The compressor for the given Content-Encoding value, or null if not found.
    */
   Compressor forType(String encoding) {
-    return compressors.get(encoding.toLowerCase());
+    return compressors.get(encoding);
   }
 }

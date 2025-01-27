@@ -3,6 +3,7 @@ package io.avaje.jex;
 import io.avaje.inject.BeanScope;
 import io.avaje.jex.core.BootstrapServer;
 import io.avaje.jex.spi.*;
+import com.sun.net.httpserver.HttpsConfigurator;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -55,11 +56,12 @@ final class DJex implements Jex {
     }
     routing.addAll(beanScope.list(Routing.HttpService.class));
     beanScope.getOptional(JsonService.class).ifPresent(this::jsonService);
+    beanScope.getOptional(HttpsConfigurator.class).ifPresent(config()::httpsConfig);
     return this;
   }
 
   @Override
-  public Jex configure(Consumer<JexConfig> configure) {
+  public Jex config(Consumer<JexConfig> configure) {
     configure.accept(config);
     return this;
   }
@@ -71,7 +73,7 @@ final class DJex implements Jex {
   }
 
   @Override
-  public Jex context(String contextPath) {
+  public Jex contextPath(String contextPath) {
     config.contextPath(contextPath);
     return this;
   }

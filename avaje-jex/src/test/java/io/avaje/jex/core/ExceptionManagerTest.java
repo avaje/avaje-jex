@@ -1,18 +1,18 @@
 package io.avaje.jex.core;
 
-import io.avaje.jex.Jex;
-import io.avaje.jex.http.BadRequestException;
-import io.avaje.jex.http.ErrorCode;
-import io.avaje.jex.http.HttpResponseException;
-import io.avaje.jsonb.JsonException;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.http.HttpResponse;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
+
+import io.avaje.jex.Jex;
+import io.avaje.jex.http.BadRequestException;
+import io.avaje.jex.http.ErrorCode;
+import io.avaje.jex.http.HttpResponseException;
+import io.avaje.json.JsonException;
 
 class ExceptionManagerTest {
 

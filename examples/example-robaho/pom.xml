@@ -15,13 +15,13 @@
     <dependency>
       <groupId>io.github.robaho</groupId>
       <artifactId>httpserver</artifactId>
-      <version>1.0.10</version>
+      <version>1.0.21</version>
     </dependency>
 
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-jex</artifactId>
-      <version>3.0-RC10</version>
+      <version>3.0-RC15</version>
     </dependency>
 
     <dependency>
@@ -33,7 +33,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.5.12</version>
+      <version>1.5.16</version>
     </dependency>
 
   </dependencies>

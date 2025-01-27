@@ -8,18 +8,17 @@ import com.sun.net.httpserver.HttpExchange;
 
 final class BufferedOutStream extends OutputStream {
 
-  private static final long MAX = Long.getLong("jex.outputBuffer.max", 1024);
-  private static final int INITIAL =
-      Integer.getInteger("jex.outputBuffer.initial", 256);
-
+  private final long max;
   private final JdkContext context;
   private ByteArrayOutputStream buffer;
   private OutputStream stream;
   private long count;
 
-  BufferedOutStream(JdkContext context) {
+  BufferedOutStream(JdkContext context, int initial, long max) {
+
     this.context = context;
-    this.buffer = new ByteArrayOutputStream(INITIAL);
+    this.max = max;
+    this.buffer = new ByteArrayOutputStream(initial);
   }
 
   @Override
@@ -27,10 +26,12 @@ final class BufferedOutStream extends OutputStream {
     if (stream != null) {
       stream.write(b);
     } else {
-      buffer.write(b);
-      if (count++ > MAX) {
+      if (count++ > max) {
         initialiseChunked();
+        stream.write(b);
+        return;
       }
+      buffer.write(b);
     }
   }
 
@@ -40,10 +41,12 @@ final class BufferedOutStream extends OutputStream {
       stream.write(b, off, len);
     } else {
       count += len;
-      buffer.write(b, off, len);
-      if (count > MAX) {
+      if (count > max) {
         initialiseChunked();
+        stream.write(b, off, len);
+        return;
       }
+      buffer.write(b, off, len);
     }
   }
 
@@ -60,7 +63,6 @@ final class BufferedOutStream extends OutputStream {
   @Override
   public void close() throws IOException {
     if (stream != null) {
-      stream.flush();
       stream.close();
     } else {
       context.write(buffer.toByteArray());

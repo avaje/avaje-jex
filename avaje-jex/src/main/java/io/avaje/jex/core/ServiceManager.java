@@ -18,43 +18,57 @@ import java.util.stream.Stream;
 import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
 import io.avaje.jex.Routing;
+import io.avaje.jex.compression.CompressedOutputStream;
+import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.core.json.JacksonJsonService;
 import io.avaje.jex.core.json.JsonbJsonService;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
 /** Core service methods available to Context implementations. */
-final class SpiServiceManager {
+final class ServiceManager {
 
   private static final System.Logger log = System.getLogger("io.avaje.jex");
-  static final String UTF_8 = "UTF-8";
+  private static final String UTF_8 = "UTF-8";
 
-  private final HttpMethodMap methodMap = new HttpMethodMap();
+  private final CompressionConfig compressionConfig;
   private final JsonService jsonService;
   private final ExceptionManager exceptionHandler;
   private final TemplateManager templateManager;
   private final String scheme;
   private final String contextPath;
+  private final int bufferInitial;
+  private final long bufferMax;
 
-  static SpiServiceManager create(Jex jex) {
+  static ServiceManager create(Jex jex) {
     return new Builder(jex).build();
   }
 
-  SpiServiceManager(
+  ServiceManager(
+      CompressionConfig compressionConfig,
       JsonService jsonService,
       ExceptionManager manager,
       TemplateManager templateManager,
       String scheme,
-      String contextPath) {
+      String contextPath,
+      long bufferMax,
+      int bufferInitial) {
+    this.compressionConfig = compressionConfig;
     this.jsonService = jsonService;
     this.exceptionHandler = manager;
     this.templateManager = templateManager;
     this.scheme = scheme;
     this.contextPath = contextPath;
+    this.bufferInitial = bufferInitial;
+    this.bufferMax = bufferMax;
   }
 
   OutputStream createOutputStream(JdkContext jdkContext) {
-    return new BufferedOutStream(jdkContext);
+    var out = new BufferedOutStream(jdkContext, bufferInitial, bufferMax);
+    if (compressionConfig.compressionEnabled()) {
+      return new CompressedOutputStream(compressionConfig, jdkContext, out);
+    }
+    return out;
   }
 
   <T> T fromJson(Class<T> type, InputStream is) {
@@ -94,11 +108,15 @@ final class SpiServiceManager {
   }
 
   Routing.Type lookupRoutingType(String method) {
-    return methodMap.get(method);
+    try {
+      return Routing.Type.valueOf(method);
+    } catch (Exception e) {
+      return null;
+    }
   }
 
-  void handleException(JdkContext ctx, Exception e) {
-    exceptionHandler.handle(ctx, e);
+  void handleException(JdkContext ctx, Exception t) {
+    exceptionHandler.handle(ctx, t);
   }
 
   void render(Context ctx, String name, Map<String, Object> model) {
@@ -159,13 +177,16 @@ final class SpiServiceManager {
       this.jex = jex;
     }
 
-    SpiServiceManager build() {
-      return new SpiServiceManager(
+    ServiceManager build() {
+      return new ServiceManager(
+          jex.config().compression(),
           initJsonService(),
           new ExceptionManager(jex.routing().errorHandlers()),
           initTemplateMgr(),
           jex.config().scheme(),
-          jex.config().contextPath());
+          jex.config().contextPath(),
+          jex.config().maxStreamBufferSize(),
+          jex.config().initialStreamBufferSize());
     }
 
     JsonService initJsonService() {

@@ -6,9 +6,6 @@ public class Main {
 
   public static void main(String[] args) {
 
-    // Below system property is NOT required as it will register via service loading
-    // System.setProperty("com.sun.net.httpserver.HttpServerProvider", "robaho.net.httpserver.DefaultHttpServerProvider");
-
     Jex.create()
       .routing(routing -> routing
         .get("/", ctx -> ctx.text("root"))

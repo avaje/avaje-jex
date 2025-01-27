@@ -1,7 +1,6 @@
 package io.avaje.jex.core;
 
-import java.util.List;
-import java.util.ListIterator;
+import java.util.Iterator;
 
 import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.HttpFilter;
@@ -9,23 +8,31 @@ import io.avaje.jex.HttpFilter.FilterChain;
 
 final class BaseFilterChain implements FilterChain {
 
-  private final ListIterator<HttpFilter> iter;
+  private final Iterator<HttpFilter> filters;
   private final ExchangeHandler handler;
   private final JdkContext ctx;
+  private final ServiceManager mgr;
 
-  BaseFilterChain(List<HttpFilter> filters, ExchangeHandler handler, JdkContext ctx) {
-    this.iter = filters.listIterator();
+  BaseFilterChain(Iterator<HttpFilter> filters, ExchangeHandler handler, JdkContext ctx, ServiceManager mgr) {
+    this.filters = filters;
     this.handler = handler;
     this.ctx = ctx;
+    this.mgr = mgr;
   }
 
   @Override
-  public void proceed() throws Exception {
-    if (!iter.hasNext()) {
-      handler.handle(ctx);
-      ctx.setMode(Mode.AFTER);
+  public void proceed() {
+    if (filters.hasNext()) {
+      filters.next().filter(ctx, this);
     } else {
-      iter.next().filter(ctx, this);
+      try {
+        if (!ctx.responseSent()) {
+          handler.handle(ctx);
+        }
+      } catch (Exception t) {
+        mgr.handleException(ctx, t);
+      }
     }
+    ctx.setMode(Mode.AFTER);
   }
 }

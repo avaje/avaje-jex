@@ -19,16 +19,16 @@ class CompressedStaticFileTest {
 
     final Jex app =
         Jex.create()
-            .plugin(defaultCP().httpPath("/index").build())
-            .plugin(defaultFile().httpPath("/indexFile").build())
-            .plugin(defaultCP().httpPath("/indexWild/*").build())
-            .plugin(defaultFile().httpPath("/indexWildFile/*").build())
-            .plugin(defaultCP().httpPath("/sus/").build())
-            .plugin(defaultFile().httpPath("/susFile/*").build())
-            .plugin(StaticContent.createCP("/logback.xml").httpPath("/single").build())
+            .plugin(defaultCP().route("/index").build())
+            .plugin(defaultFile().route("/indexFile").build())
+            .plugin(defaultCP().route("/indexWild/*").build())
+            .plugin(defaultFile().route("/indexWildFile/*").build())
+            .plugin(defaultCP().route("/sus/").build())
+            .plugin(defaultFile().route("/susFile/*").build())
+            .plugin(StaticContent.createCP("/logback.xml").route("/single").build())
             .plugin(
                 StaticContent.createFile("src/test/resources/logback.xml")
-                    .httpPath("/singleFile").build());
+                    .route("/singleFile").build());
 
     return TestPair.create(app);
   }

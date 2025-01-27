@@ -33,7 +33,7 @@ public final class BootstrapServer {
     }
 
     final SpiRoutes routes =
-        new RoutesBuilder(jex.routing(), config.ignoreTrailingSlashes()).build();
+        new RoutesBuilder(jex.routing(), config).build();
 
     return start(jex, routes);
   }
@@ -55,8 +55,8 @@ public final class BootstrapServer {
 
       final var scheme = config.scheme();
       final var contextPath = config.contextPath();
-      SpiServiceManager serviceManager = SpiServiceManager.create(jex);
-      final var handler = new RoutingHandler(routes, serviceManager, config.compression());
+      ServiceManager serviceManager = ServiceManager.create(jex);
+      final var handler = new RoutingHandler(routes, serviceManager);
 
       server.setExecutor(config.executor());
       server.createContext(contextPath, handler);
@@ -65,7 +65,8 @@ public final class BootstrapServer {
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
       log.log(
           INFO,
-          "started com.sun.net.httpserver.HttpServer on port {0}://{1}",
+          "Avaje Jex started {0} on port {1}://{2}",
+          server.getClass(),
           scheme,
           socketAddress);
       log.log(DEBUG, routes);
