@@ -29,8 +29,8 @@
 
     <avaje.config.version>4.0</avaje.config.version>
     <avaje.inject.version>11.1</avaje.inject.version>
-    <avaje.jsonb.version>3.0-RC5</avaje.jsonb.version>
-    <avaje.http.version>2.9-RC8</avaje.http.version>
+    <avaje.jsonb.version>3.0-RC6</avaje.jsonb.version>
+    <avaje.http.version>3.0-RC1</avaje.http.version>
     <avaje.metrics.version>9.4</avaje.metrics.version>
     <avaje.validator.version>2.5</avaje.validator.version>
     <avaje.record.builder.version>1.2</avaje.record.builder.version>
