@@ -28,7 +28,7 @@
     <project.build.outputTimestamp>2025-01-27T08:47:34Z</project.build.outputTimestamp>
 
     <avaje.config.version>4.0</avaje.config.version>
-    <avaje.inject.version>11.1</avaje.inject.version>
+    <avaje.inject.version>11.2-RC2</avaje.inject.version>
     <avaje.jsonb.version>3.0-RC6</avaje.jsonb.version>
     <avaje.http.version>3.0-RC1</avaje.http.version>
     <avaje.metrics.version>9.4</avaje.metrics.version>
