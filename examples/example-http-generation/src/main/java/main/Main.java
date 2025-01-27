@@ -1,12 +1,12 @@
 package main;
 
-import io.avaje.jex.BootJex;
+import io.avaje.jex.AvajeJex;
 
 public class Main {
 
   public static void main(String[] args) {
 
-    BootJex.start();
+    AvajeJex.start();
   }
 
 }

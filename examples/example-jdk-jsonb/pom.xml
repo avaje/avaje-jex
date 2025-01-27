@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
+    <artifactId>avaje-jex-parent</artifactId>
     <groupId>io.avaje</groupId>
-    <artifactId>examples</artifactId>
-    <version>0.1</version>
+    <version>3.0-RC15</version>
   </parent>
 
   <groupId>org.example</groupId>
@@ -15,23 +15,42 @@
 
   <properties>
     <maven.compiler.source>21</maven.compiler.source>
-    <native.maven.plugin.version>0.10.4</native.maven.plugin.version>
   </properties>
 
   <dependencies>
 
     <dependency>
       <groupId>io.avaje</groupId>
+      <artifactId>avaje-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.avaje</groupId>
       <artifactId>avaje-jex</artifactId>
     </dependency>
-
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-jsonb</artifactId>
     </dependency>
+    
+    <!-- Annotation processors -->
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-inject-generator</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-jsonb-generator</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-http-client-generator</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-http-jex-generator</artifactId>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -44,7 +63,7 @@
           <plugin>
             <groupId>org.graalvm.buildtools</groupId>
             <artifactId>native-maven-plugin</artifactId>
-            <version>${native.maven.plugin.version}</version>
+            <version>0.10.4</version>
             <extensions>true</extensions>
             <executions>
               <execution>

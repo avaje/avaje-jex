@@ -1,6 +1,6 @@
 package org.foo.myapp.web;
 
-import io.avaje.http.client.HttpClientContext;
+import io.avaje.http.client.HttpClient;
 import io.avaje.http.client.JsonbBodyAdapter;
 import io.avaje.inject.Bean;
 import io.avaje.inject.Factory;

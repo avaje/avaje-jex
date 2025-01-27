@@ -1,14 +1,17 @@
 package org.foo.myapp.web;
 
-import io.avaje.inject.test.InjectTest;
-import jakarta.inject.Inject;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import io.avaje.http.api.Client;
+import io.avaje.inject.test.InjectTest;
+import jakarta.inject.Inject;
 
 /**
  * A `@Client` interface lives in src/main - not usually expected.
  */
+@Client.Import(types =HelloApi.class)
 @InjectTest
 class HelloClientInterfaceInMainTest {
 

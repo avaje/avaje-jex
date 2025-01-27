@@ -13,6 +13,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>example-http-generation</module>
     <module>example-jdk</module>
     <module>example-jdk-jsonb</module>
     <module>example-robaho</module>
