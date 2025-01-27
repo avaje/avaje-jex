@@ -32,7 +32,7 @@
     <avaje.jsonb.version>3.0-RC5</avaje.jsonb.version>
     <avaje.http.version>2.9-RC8</avaje.http.version>
     <avaje.metrics.version>9.4</avaje.metrics.version>
-    <avaje.validator.version>2.4</avaje.validator.version>
+    <avaje.validator.version>2.5</avaje.validator.version>
     <avaje.record.builder.version>1.2</avaje.record.builder.version>
     <avaje.spi.version>2.9</avaje.spi.version>
     <avaje.prisms.versionn>1.36</avaje.prisms.versionn>
