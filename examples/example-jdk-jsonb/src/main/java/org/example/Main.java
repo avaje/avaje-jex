@@ -1,12 +1,12 @@
 package org.example;
 
-import io.avaje.jex.Context;
-import io.avaje.jex.Jex;
-import io.avaje.jex.core.JsonbJsonService;
-import io.avaje.jsonb.Jsonb;
-
 import java.util.Map;
 import java.util.Set;
+
+import io.avaje.jex.Context;
+import io.avaje.jex.Jex;
+import io.avaje.jex.core.json.JsonbJsonService;
+import io.avaje.jsonb.Jsonb;
 
 public class Main {
 
@@ -17,7 +17,7 @@ public class Main {
     Jsonb jsonb = Jsonb.builder().build();
 
     Jex.create()
-      .configure(config -> config.jsonService(new JsonbJsonService(jsonb)))
+      .config(config -> config.jsonService(new JsonbJsonService(jsonb)))
       //.attribute(Executor.class, Executors.newVirtualThreadPerTaskExecutor())
       .routing(routing -> routing
         .get("/", ctx -> ctx.text("hello world"))

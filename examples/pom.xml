@@ -5,7 +5,7 @@
   <parent>
     <artifactId>avaje-jex-parent</artifactId>
     <groupId>io.avaje</groupId>
-    <version>3.0-RC10</version>
+    <version>3.0-RC15</version>
   </parent>
 
   <artifactId>examples</artifactId>
@@ -14,19 +14,8 @@
 
   <modules>
     <module>example-jdk</module>
+    <module>example-jdk-jsonb</module>
     <module>example-robaho</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>jdk17plus</id>
-      <activation>
-        <jdk>[17,20]</jdk>
-      </activation>
-      <modules>
-        <module>example-jdk-jsonb</module>
-      </modules>
-    </profile>
-  </profiles>
 </project>
 
