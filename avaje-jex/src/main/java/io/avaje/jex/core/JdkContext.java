@@ -446,7 +446,7 @@ final class JdkContext implements Context {
 
   @Override
   public boolean responseSent() {
-    return exchange.getResponseCode() != -1;
+    return exchange.getResponseCode() > 1;
   }
 
   @Override

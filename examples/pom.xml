@@ -17,6 +17,7 @@
     <module>example-jdk</module>
     <module>example-jdk-jsonb</module>
     <module>example-robaho</module>
+    <module>example-jetty</module>
   </modules>
 </project>
 
