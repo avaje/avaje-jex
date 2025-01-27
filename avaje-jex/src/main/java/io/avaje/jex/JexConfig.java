@@ -142,7 +142,10 @@ public sealed interface JexConfig permits DJexConfig {
   int port();
 
   /**
-   * Sets the port number on which the HttpServer will listen for incoming requests.
+   * Sets the port number on which the HttpServer will listen for incoming requests. *
+   *
+   * <p>The default value is 8080. If The port is set to 0, the server will randomly choose an
+   * available port.
    *
    * @param port The port number.
    */

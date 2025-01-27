@@ -230,6 +230,8 @@ public sealed interface Jex permits DJex {
   /**
    * Sets the port number on which the Jex server will listen for incoming requests.
    *
+   * <p>The default value is 8080. If The port is set to 0, the server will randomly choose an available port.
+   *
    * @param port The port number to use.
    */
   Jex port(int port);
