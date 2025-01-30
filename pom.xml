@@ -25,8 +25,6 @@
     <surefire.useModulePath>false</surefire.useModulePath>
     <maven.compiler.release>21</maven.compiler.release>
     <maven.compiler.proc>full</maven.compiler.proc>
-    <project.build.outputTimestamp>2025-01-27T08:47:34Z</project.build.outputTimestamp>
-
     <avaje.config.version>4.0</avaje.config.version>
     <avaje.inject.version>11.2-RC2</avaje.inject.version>
     <avaje.jsonb.version>3.0-RC6</avaje.jsonb.version>
@@ -305,6 +303,9 @@
   <profiles>
     <profile>
       <id>central</id>
+      <properties>
+        <project.build.outputTimestamp>2025-01-27T08:47:34Z</project.build.outputTimestamp>
+      </properties>
     </profile>
     <profile>
       <id>default</id>
