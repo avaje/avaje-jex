@@ -1,4 +1,4 @@
-![Supported JVM Versions](https://img.shields.io/badge/JVM-21-brightgreen.svg?&logo=openjdk)
+![Supported JVM Versions](https://img.shields.io/badge/JVM-21+-brightgreen.svg?&logo=openjdk)
 [![Discord](https://img.shields.io/discord/1074074312421683250?color=%237289da&label=discord)](https://discord.gg/Qcqf9R27BR)
 [![Build](https://github.com/avaje/avaje-jex/actions/workflows/build.yml/badge.svg)](https://github.com/avaje/avaje-jex/actions/workflows/build.yml)
 [![JDK EA](https://github.com/avaje/avaje-jex/actions/workflows/jdk-ea.yml/badge.svg)](https://github.com/avaje/avaje-jex/actions/workflows/jdk-ea.yml)
@@ -39,8 +39,11 @@ Features:
 
 The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily use jex with alternate implementations by adding them as a dependency.
 
-An example would be [@robaho's implementation](https://github.com/robaho/httpserver?tab=readme-ov-file#performance) where performance seems to be increased by 10x over the default in certain benchmarks.
+### Robaho
 
+[@robaho's implementation](https://github.com/robaho/httpserver?tab=readme-ov-file#performance) is an ultra-lightweight implementation that seems to increase performance by 10x over the default in certain benchmarks.
+
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.robaho/httpserver.svg?label=robaho.version)](https://mvnrepository.com/artifact/io.github.robaho/httpserver)
 ```xml
 <dependency>
   <groupId>io.avaje</groupId>
@@ -51,7 +54,32 @@ An example would be [@robaho's implementation](https://github.com/robaho/httpser
 <dependency>
   <groupId>io.github.robaho</groupId>
   <artifactId>httpserver</artifactId>
-  <version>1.0.21</version>
+  <version>${robaho.version}</version>
+</dependency>
+```
+
+### Eclipse Jetty
+
+Jetty is a classic embedded server that needs no introduction.
+
+[![Maven Central](https://img.shields.io/maven-central/v/org.eclipse.jetty/jetty-http-spi.svg?label=jetty.version)](https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-http-spi)
+```xml
+<dependency>
+  <groupId>io.avaje</groupId>
+  <artifactId>avaje-jex</artifactId>
+  <version>${jex.version}</version>
+</dependency>
+
+<dependency>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-server</artifactId>
+  <version>${jetty.version}</version>
+</dependency>
+
+<dependency>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-http-spi</artifactId>
+  <version>${jetty.version}</version>
 </dependency>
 ```
 
@@ -60,6 +88,8 @@ An example would be [@robaho's implementation](https://github.com/robaho/httpser
 If you find yourself pining for the JAX-RS style of controllers, you can have avaje http generate jex adapters for your annotated classes.
 
 ### Add dependencies
+
+[![Avaje-HTTP](https://img.shields.io/maven-central/v/io.avaje/avaje-http-api.svg?label=avaje.http.version)](https://mvnrepository.com/artifact/io.avaje/avaje-jex)
 ```xml
 <dependency>
   <groupId>io.avaje</groupId>
