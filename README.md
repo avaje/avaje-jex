@@ -18,6 +18,17 @@ Features:
 - Json SPI
 - Virtual threads enabled by default
 
+## Quick Start
+
+Add dependency:
+```xml
+<dependency>
+  <groupId>io.avaje</groupId>
+  <artifactId>avaje-jex</artifactId>
+  <version>${jex.version}</version>
+</dependency>
+```
+Create Server:
 ```java
     Jex.create()
         .get("/", ctx -> ctx.text("hello"))
@@ -41,7 +52,7 @@ The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily u
 
 ### Robaho
 
-[@robaho's implementation](https://github.com/robaho/httpserver?tab=readme-ov-file#performance) is an ultra-lightweight implementation that seems to increase performance by 10x over the default in certain benchmarks.
+[@robaho's implementation](https://github.com/robaho/httpserver?tab=readme-ov-file#performance) is an ultra-lightweight implementation that seems to increase performance by 10x over the built-in implementation, and 5x over Jetty in certain benchmarks.
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.robaho/httpserver.svg?label=robaho.version)](https://mvnrepository.com/artifact/io.github.robaho/httpserver)
 ```xml
@@ -60,7 +71,7 @@ The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily u
 
 ### Eclipse Jetty
 
-Jetty is a classic embedded server that needs no introduction.
+[Jetty](https://jetty.org/) is a classic embedded server that needs no introduction.
 
 [![Maven Central](https://img.shields.io/maven-central/v/org.eclipse.jetty/jetty-http-spi.svg?label=jetty.version)](https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-http-spi)
 ```xml
