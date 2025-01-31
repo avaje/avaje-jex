@@ -46,54 +46,6 @@ Create Server:
         .start();
 ```
 
-## Alternate `HttpServer` Implementations
-
-The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily use jex with alternate implementations by adding them as a dependency.
-
-### Robaho
-
-[@robaho's implementation](https://github.com/robaho/httpserver?tab=readme-ov-file#performance) is an ultra-lightweight implementation that seems to increase performance by 10x over the built-in implementation, and 5x over Jetty in certain benchmarks.
-
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.robaho/httpserver.svg?label=robaho.version)](https://mvnrepository.com/artifact/io.github.robaho/httpserver)
-```xml
-<dependency>
-  <groupId>io.avaje</groupId>
-  <artifactId>avaje-jex</artifactId>
-  <version>${jex.version}</version>
-</dependency>
-
-<dependency>
-  <groupId>io.github.robaho</groupId>
-  <artifactId>httpserver</artifactId>
-  <version>${robaho.version}</version>
-</dependency>
-```
-
-### Eclipse Jetty
-
-[Jetty](https://jetty.org/) is a classic embedded server that needs no introduction.
-
-[![Maven Central](https://img.shields.io/maven-central/v/org.eclipse.jetty/jetty-http-spi.svg?label=jetty.version)](https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-http-spi)
-```xml
-<dependency>
-  <groupId>io.avaje</groupId>
-  <artifactId>avaje-jex</artifactId>
-  <version>${jex.version}</version>
-</dependency>
-
-<dependency>
-  <groupId>org.eclipse.jetty</groupId>
-  <artifactId>jetty-server</artifactId>
-  <version>${jetty.version}</version>
-</dependency>
-
-<dependency>
-  <groupId>org.eclipse.jetty</groupId>
-  <artifactId>jetty-http-spi</artifactId>
-  <version>${jetty.version}</version>
-</dependency>
-```
-
 ## Use with [Avaje Http](https://avaje.io/http/)
 
 If you find yourself pining for the JAX-RS style of controllers, you can have avaje http generate jex adapters for your annotated classes.
@@ -207,6 +159,55 @@ public class Main {
     Jex.create().routing(services).start();
   }
 }
+```
+
+
+## Alternate `HttpServer` Implementations
+
+The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily use jex with alternate implementations by adding them as a dependency.
+
+### Robaho
+
+[@robaho's httpserver](https://github.com/robaho/httpserver?tab=readme-ov-file#performance) is a zero-dependency implementation that seems to increase performance by 10x over the built-in implementation, and 5x over Jetty in certain benchmarks.
+
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.robaho/httpserver.svg?label=robaho.version)](https://mvnrepository.com/artifact/io.github.robaho/httpserver)
+```xml
+<dependency>
+  <groupId>io.avaje</groupId>
+  <artifactId>avaje-jex</artifactId>
+  <version>${jex.version}</version>
+</dependency>
+
+<dependency>
+  <groupId>io.github.robaho</groupId>
+  <artifactId>httpserver</artifactId>
+  <version>${robaho.version}</version>
+</dependency>
+```
+
+### Eclipse Jetty
+
+[Jetty](https://jetty.org/) is a classic embedded server with a long and distinguished history.
+
+[![Maven Central](https://img.shields.io/maven-central/v/org.eclipse.jetty/jetty-http-spi.svg?label=jetty.version)](https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-http-spi)
+```xml
+<dependency>
+  <groupId>io.avaje</groupId>
+  <artifactId>avaje-jex</artifactId>
+  <version>${jex.version}</version>
+</dependency>
+
+<dependency>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-server</artifactId>
+  <version>${jetty.version}</version>
+</dependency>
+
+<dependency>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-http-spi</artifactId>
+  <version>${jetty.version}</version>
+</dependency>
 ```
 
 See also:
