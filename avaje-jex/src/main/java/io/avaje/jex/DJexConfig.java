@@ -204,8 +204,8 @@ final class DJexConfig implements JexConfig {
   }
 
   @Override
-  public JexConfig serverProvider(HttpServerProvider prov) {
-    this.serverProvider = prov;
+  public JexConfig serverProvider(HttpServerProvider serverProvider) {
+    this.serverProvider = serverProvider;
     return this;
   }
 }

@@ -2,7 +2,6 @@ package io.avaje.jex;
 
 import io.avaje.jex.Context.Cookie;
 import org.junit.jupiter.api.Test;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.Duration;
 
