@@ -5,8 +5,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-import com.sun.net.httpserver.HttpsConfigurator;
-
+import com.sun.net.httpserver.*;
+import com.sun.net.httpserver.spi.HttpServerProvider;
+import com.sun.net.httpserver.HttpServer;
 import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.spi.JexPlugin;
 import io.avaje.jex.spi.JsonService;
@@ -164,6 +165,20 @@ public sealed interface JexConfig permits DJexConfig {
 
   /** Return the schema as http or https. */
   String scheme();
+
+  /**
+   * Provide the provider used to create the {@link HttpServer} instance. If not set, {@link
+   * HttpServerProvider#provider()} will be used to create the server
+   */
+  HttpServerProvider serverProvider();
+
+  /**
+   * Configure Provider used to created {@link HttpServer} instances. If not set, {@link
+   * HttpServerProvider#provider()} will be used to create the server.
+   *
+   * @param serverProvider provider used to create the server
+   */
+  JexConfig serverProvider(HttpServerProvider serverProvider);
 
   /** Return the socket backlog. */
   int socketBacklog();

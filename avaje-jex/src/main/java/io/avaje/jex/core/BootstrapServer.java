@@ -1,13 +1,7 @@
 package io.avaje.jex.core;
 
-import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.HttpsServer;
-
-import io.avaje.jex.AppLifecycle;
-import io.avaje.jex.Jex;
-import io.avaje.jex.JexConfig;
-import io.avaje.jex.routes.RoutesBuilder;
-import io.avaje.jex.routes.SpiRoutes;
+import static java.lang.System.Logger.Level.DEBUG;
+import static java.lang.System.Logger.Level.INFO;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -15,10 +9,17 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
-import static java.lang.System.Logger.Level.DEBUG;
-import static java.lang.System.Logger.Level.INFO;
+import com.sun.net.httpserver.HttpServer;
+
+import io.avaje.jex.AppLifecycle;
+import io.avaje.jex.Jex;
+import io.avaje.jex.JexConfig;
+import io.avaje.jex.routes.RoutesBuilder;
+import io.avaje.jex.routes.SpiRoutes;
 
 public final class BootstrapServer {
+
+  private BootstrapServer() {}
 
   private static final System.Logger log = System.getLogger("io.avaje.jex");
 
@@ -32,25 +33,24 @@ public final class BootstrapServer {
       CoreServiceLoader.plugins().forEach(p -> p.apply(jex));
     }
 
-    final SpiRoutes routes =
-        new RoutesBuilder(jex.routing(), config).build();
+    final SpiRoutes routes = new RoutesBuilder(jex.routing(), config).build();
 
     return start(jex, routes);
   }
 
   static Jex.Server start(Jex jex, SpiRoutes routes) {
-     try {
+    try {
       final var config = jex.config();
       final var socketAddress = createSocketAddress(config);
       final var https = config.httpsConfig();
-
+      final var provider = config.serverProvider();
       final HttpServer server;
       if (https != null) {
-        var httpsServer = HttpsServer.create(socketAddress, config.socketBacklog());
+        var httpsServer = provider.createHttpsServer(socketAddress, config.socketBacklog());
         httpsServer.setHttpsConfigurator(https);
         server = httpsServer;
       } else {
-        server = HttpServer.create(socketAddress, config.socketBacklog());
+        server = provider.createHttpServer(socketAddress, config.socketBacklog());
       }
 
       final var scheme = config.scheme();
@@ -70,12 +70,7 @@ public final class BootstrapServer {
       server.start();
 
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
-      log.log(
-          INFO,
-          "Avaje Jex started {0} on port {1}://{2}",
-          serverClass,
-          scheme,
-          socketAddress);
+      log.log(INFO, "Avaje Jex started {0} on port {1}://{2}", serverClass, scheme, socketAddress);
       log.log(DEBUG, routes);
       return new JdkJexServer(server, jex.lifecycle(), handler);
     } catch (IOException e) {

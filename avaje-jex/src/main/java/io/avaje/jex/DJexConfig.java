@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.spi.HttpServerProvider;
 
 import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.spi.JsonService;
@@ -28,6 +29,7 @@ final class DJexConfig implements JexConfig {
   private final CompressionConfig compression = new CompressionConfig();
   private int bufferInitial = 256;
   private long bufferMax = 1024L;
+  private HttpServerProvider serverProvider;
 
   @Override
   public JexConfig host(String host) {
@@ -193,6 +195,17 @@ final class DJexConfig implements JexConfig {
   @Override
   public JexConfig maxStreamBufferSize(long maxSize) {
     bufferMax = maxSize;
+    return this;
+  }
+
+  @Override
+  public HttpServerProvider serverProvider() {
+    return this.serverProvider != null ? serverProvider : HttpServerProvider.provider();
+  }
+
+  @Override
+  public JexConfig serverProvider(HttpServerProvider serverProvider) {
+    this.serverProvider = serverProvider;
     return this;
   }
 }
