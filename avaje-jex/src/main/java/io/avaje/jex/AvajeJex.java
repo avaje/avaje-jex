@@ -51,7 +51,7 @@ public interface AvajeJex {
     JexConfig config = jex.config();
     config.port(Config.getInt("server.port", config.port()));
     config.contextPath(Config.get("server.context.path", config.contextPath()));
-    config.host(Config.get("server.context.host", config.host()));
+    config.host(Config.getNullable("server.context.host", config.host()));
 
     return jex.start();
   }
