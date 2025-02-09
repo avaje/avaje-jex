@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import io.avaje.jex.Jex;
 import io.avaje.jex.http.BadRequestException;
-import io.avaje.jex.http.ErrorCode;
+import io.avaje.jex.http.HttpStatus;
 import io.avaje.jex.http.HttpResponseException;
 import io.avaje.json.JsonException;
 
@@ -22,7 +22,7 @@ class ExceptionManagerTest {
     final Jex app = Jex.create()
       .routing(routing -> routing
         .get("/", ctx -> {
-          throw new HttpResponseException(ErrorCode.FORBIDDEN.status(), ErrorCode.FORBIDDEN.message());
+          throw new HttpResponseException(HttpStatus.FORBIDDEN_403.status(), "Forbidden");
         })
         .post("/", ctx -> {
           throw new IllegalStateException("foo");

@@ -33,7 +33,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpsExchange;
 
 import io.avaje.jex.Context;
-import io.avaje.jex.http.ErrorCode;
+import io.avaje.jex.http.HttpStatus;
 import io.avaje.jex.http.RedirectException;
 import io.avaje.jex.security.BasicAuthCredentials;
 import io.avaje.jex.security.Role;
@@ -415,7 +415,7 @@ final class JdkContext implements Context {
     header(Constants.LOCATION, location);
     status(statusCode);
     if (mode != Mode.EXCHANGE) {
-      throw new RedirectException(ErrorCode.REDIRECT.message());
+      throw new RedirectException("Redirect");
     } else {
       performRedirect();
     }
