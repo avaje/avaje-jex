@@ -6,7 +6,7 @@ import java.util.Map;
 
 import io.avaje.jex.Context;
 import io.avaje.jex.ExceptionHandler;
-import io.avaje.jex.http.ErrorCode;
+import io.avaje.jex.http.HttpStatus;
 import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.http.InternalServerErrorException;
 
@@ -52,13 +52,13 @@ final class ExceptionManager {
 
   private void unhandledException(JdkContext ctx, Exception e) {
     log.log(ERROR, "Uncaught exception", e);
-    defaultHandling(ctx, new InternalServerErrorException(ErrorCode.INTERNAL_SERVER_ERROR.message()));
+    defaultHandling(ctx, new InternalServerErrorException("Internal Server Error"));
   }
 
   private void defaultHandling(JdkContext ctx, HttpResponseException exception) {
     ctx.status(exception.status());
     var jsonResponse = exception.jsonResponse();
-    if (exception.status() == ErrorCode.REDIRECT.status()) {
+    if (exception.status() == HttpStatus.FOUND_302.status()) {
       ctx.performRedirect();
     } else if (jsonResponse != null) {
       ctx.json(jsonResponse);

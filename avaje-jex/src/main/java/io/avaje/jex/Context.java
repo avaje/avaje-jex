@@ -20,12 +20,13 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
 import io.avaje.jex.core.Constants;
+import io.avaje.jex.http.ContentType;
+import io.avaje.jex.http.HttpStatus;
 import io.avaje.jex.security.BasicAuthCredentials;
 import io.avaje.jex.security.Role;
 
 /** Provides access to functions for handling the request and response. */
 public interface Context {
-
 
   /**
    * Gets the attribute with the specified key from the request.
@@ -93,6 +94,11 @@ public interface Context {
 
   /** Set the response content type. */
   Context contentType(String contentType);
+
+  /** Set the response content type. */
+  default Context contentType(ContentType contentType) {
+    return contentType(contentType.contentType());
+  }
 
   /** Return the request context path. */
   String contextPath();
@@ -422,6 +428,11 @@ public interface Context {
 
   /** Set the status code on the response. */
   Context status(int statusCode);
+
+  /** Set the status code on the response. */
+  default Context status(HttpStatus statusCode) {
+    return status(statusCode.status());
+  }
 
   /** Write plain text content to the response. */
   void text(String content);
