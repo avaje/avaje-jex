@@ -4,6 +4,7 @@ import io.avaje.inject.BeanScope;
 import io.avaje.jex.core.BootstrapServer;
 import io.avaje.jex.spi.*;
 import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.spi.HttpServerProvider;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -57,6 +58,7 @@ final class DJex implements Jex {
     routing.addAll(beanScope.list(Routing.HttpService.class));
     beanScope.getOptional(JsonService.class).ifPresent(this::jsonService);
     beanScope.getOptional(HttpsConfigurator.class).ifPresent(config()::httpsConfig);
+    beanScope.getOptional(HttpServerProvider.class).ifPresent(config()::serverProvider);
     return this;
   }
 
