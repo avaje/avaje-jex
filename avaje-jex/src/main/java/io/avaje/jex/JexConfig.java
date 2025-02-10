@@ -129,11 +129,11 @@ public sealed interface JexConfig permits DJexConfig {
   long maxStreamBufferSize();
 
   /**
-   * Set the maximum size of the response stream buffer. If the response data exceeds this size,
-   * then it will be written to the client using chunked transfer encoding. Otherwise, the response
-   * will be sent using a Content-Length header with the exact size of the response data.
+   * Set the maximum size of the response stream buffer. If the response data exceeds this size, it
+   * will be written to the client using chunked transfer encoding. Otherwise, the response will be
+   * sent using a Content-Length header with the exact size of the response data.
    *
-   * <p>Defaults to 1024
+   * <p>Defaults to 4096
    *
    * @param maxSize The maximum size of the response
    */
