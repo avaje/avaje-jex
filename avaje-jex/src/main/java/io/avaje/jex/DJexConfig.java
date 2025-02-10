@@ -45,10 +45,13 @@ final class DJexConfig implements JexConfig {
 
   @Override
   public JexConfig contextPath(String contextPath) {
-    this.contextPath =
-        contextPath
-            .transform(s -> s.startsWith("/") ? s : "/" + s)
-            .transform(s -> s.endsWith("/") ? s.substring(0, s.lastIndexOf("/")) : s);
+    if (!this.contextPath.equals(contextPath)) {
+
+      this.contextPath =
+          contextPath
+              .transform(s -> s.startsWith("/") ? s : "/" + s)
+              .transform(s -> s.endsWith("/") ? s.substring(0, s.lastIndexOf("/")) : s);
+    }
     return this;
   }
 
