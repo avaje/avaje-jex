@@ -104,7 +104,7 @@ public sealed interface Jex permits DJex {
    * @param roles An array of roles that are associated with this endpoint.
    */
   default Jex put(String path, ExchangeHandler handler, Role... roles) {
-    routing().get(path, handler, roles);
+    routing().put(path, handler, roles);
     return this;
   }
 

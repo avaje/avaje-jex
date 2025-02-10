@@ -16,7 +16,7 @@ final class PathParser {
 
   PathParser(String path, boolean ignoreTrailingSlashes) {
     this.rawPath = path;
-    final RegBuilder regBuilder = new RegBuilder();
+    final RegBuilder regBuilder = new RegBuilder(ignoreTrailingSlashes);
     for (String rawSeg : path.split("/")) {
       if (!rawSeg.isEmpty()) {
         segmentCount++;

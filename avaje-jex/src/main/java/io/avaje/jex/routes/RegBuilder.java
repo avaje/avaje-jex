@@ -10,9 +10,14 @@ import java.util.regex.Pattern;
 final class RegBuilder {
   private final StringJoiner full = new StringJoiner("/");
   private final StringJoiner extract = new StringJoiner("/");
+  private final boolean ignoreTrailingSlashes;
   private boolean trailingSlash;
   private boolean multiSlash;
   private boolean literal = true;
+
+  public RegBuilder(boolean ignoreTrailingSlashes) {
+    this.ignoreTrailingSlashes = ignoreTrailingSlashes;
+  }
 
   void add(PathSegment pathSegment, List<String> paramNames) {
     full.add(pathSegment.asRegexString(false));
@@ -48,6 +53,11 @@ final class RegBuilder {
     if (trailingSlash) {
       parts += "\\/";
     }
+
+    if (!ignoreTrailingSlashes) {
+      return "^/" + parts;
+    }
+
     return "^/" + parts + "/?$";
   }
 
