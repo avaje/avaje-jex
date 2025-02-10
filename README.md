@@ -17,7 +17,7 @@ Features:
 - Compression SPI
 - Json SPI
 - Virtual threads enabled by default
-- Multi-Server with any implementation of `jdk.httpserver` (Jetty, etc)
+- Multi-Server with any implementation of `jdk.httpserver` (Jetty, Robaho, built-in, etc)
 
 ## Quick Start
 
@@ -167,25 +167,6 @@ public class Main {
 
 The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily use jex with alternate implementations by adding them as a dependency.
 
-### Robaho
-
-[@robaho's httpserver](https://github.com/robaho/httpserver?tab=readme-ov-file#performance) is a zero-dependency implementation that seems to increase performance by 10x over the built-in implementation, and 5x over Jetty in certain benchmarks.
-
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.robaho/httpserver.svg?label=robaho.version)](https://mvnrepository.com/artifact/io.github.robaho/httpserver)
-```xml
-<dependency>
-  <groupId>io.avaje</groupId>
-  <artifactId>avaje-jex</artifactId>
-  <version>${jex.version}</version>
-</dependency>
-
-<dependency>
-  <groupId>io.github.robaho</groupId>
-  <artifactId>httpserver</artifactId>
-  <version>${robaho.version}</version>
-</dependency>
-```
-
 ### Eclipse Jetty
 
 [Jetty](https://jetty.org/) is a classic embedded server with a long and distinguished history.
@@ -208,6 +189,25 @@ The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily u
   <groupId>org.eclipse.jetty</groupId>
   <artifactId>jetty-http-spi</artifactId>
   <version>${jetty.version}</version>
+</dependency>
+```
+
+### Robaho
+
+[@robaho's httpserver](https://github.com/robaho/httpserver?tab=readme-ov-file#performance) is a zero-dependency implementation that seems to increase performance by 10x over the built-in implementation, and 5x over Jetty in certain benchmarks.
+
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.robaho/httpserver.svg?label=robaho.version)](https://mvnrepository.com/artifact/io.github.robaho/httpserver)
+```xml
+<dependency>
+  <groupId>io.avaje</groupId>
+  <artifactId>avaje-jex</artifactId>
+  <version>${jex.version}</version>
+</dependency>
+
+<dependency>
+  <groupId>io.github.robaho</groupId>
+  <artifactId>httpserver</artifactId>
+  <version>${robaho.version}</version>
 </dependency>
 ```
 
