@@ -1,6 +1,6 @@
 package io.avaje.jex.core;
 
-import io.avaje.jex.Context;
+import io.avaje.jex.http.Context;
 import io.avaje.jex.spi.TemplateRender;
 
 import java.util.HashMap;

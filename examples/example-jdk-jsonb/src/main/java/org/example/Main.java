@@ -3,9 +3,9 @@ package org.example;
 import java.util.Map;
 import java.util.Set;
 
-import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
 import io.avaje.jex.core.json.JsonbJsonService;
+import io.avaje.jex.http.Context;
 import io.avaje.jsonb.Jsonb;
 
 public class Main {

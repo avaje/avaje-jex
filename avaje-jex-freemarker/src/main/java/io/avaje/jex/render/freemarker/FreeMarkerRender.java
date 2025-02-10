@@ -9,7 +9,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.Version;
-import io.avaje.jex.Context;
+import io.avaje.jex.http.Context;
 import io.avaje.jex.spi.TemplateRender;
 import io.avaje.spi.ServiceProvider;
 

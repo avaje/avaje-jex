@@ -11,12 +11,13 @@ Lightweight (~110KB) wrapper over the JDK's built-in [HTTP server](https://docs.
 
 Features:
 
-- [Context](https://javadoc.io/doc/io.avaje/avaje-jex/latest/io.avaje.jex/io/avaje/jex/Context.html) abstraction over `HttpExchange` to easily retrieve and send request/response data.
+- [Context](https://javadoc.io/doc/io.avaje/avaje-jex/latest/io.avaje.jex/io/avaje/jex/http/Context.html) abstraction over `HttpExchange` to easily retrieve and send request/response data.
 - Fluent API
 - Static resource handling
 - Compression SPI
 - Json SPI
 - Virtual threads enabled by default
+- Multi-Server with any implementation of `jdk.httpserver` (Jetty, etc)
 
 ## Quick Start
 

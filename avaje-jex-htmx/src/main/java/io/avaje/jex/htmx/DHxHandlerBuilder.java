@@ -1,6 +1,6 @@
 package io.avaje.jex.htmx;
 
-import io.avaje.jex.ExchangeHandler;
+import io.avaje.jex.http.ExchangeHandler;
 
 final class DHxHandlerBuilder implements HxHandler.Builder {
 

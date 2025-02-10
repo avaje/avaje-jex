@@ -5,8 +5,8 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import io.avaje.jex.Context;
 import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.http.Context;
 
 final class StaticClassResourceHandler extends AbstractStaticHandler {
 

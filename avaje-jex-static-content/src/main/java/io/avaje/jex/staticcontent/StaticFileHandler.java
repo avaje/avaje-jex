@@ -9,8 +9,8 @@ import java.util.function.Predicate;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import io.avaje.jex.Context;
 import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.http.Context;
 
 final class StaticFileHandler extends AbstractStaticHandler {
 

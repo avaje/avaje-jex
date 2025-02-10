@@ -1,7 +1,8 @@
 package io.avaje.jex;
 
-import io.avaje.jex.Context.Cookie;
 import org.junit.jupiter.api.Test;
+
+import io.avaje.jex.http.Context.Cookie;
 
 import java.time.Duration;
 

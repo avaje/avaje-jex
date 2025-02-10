@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
 
-import io.avaje.jex.HttpFilter;
 import io.avaje.jex.Routing;
+import io.avaje.jex.http.HttpFilter;
 
 final class Routes implements SpiRoutes {
 

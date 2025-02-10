@@ -12,11 +12,11 @@ import java.util.function.Predicate;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import io.avaje.jex.Context;
-import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.compression.CompressedOutputStream;
 import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.http.BadRequestException;
+import io.avaje.jex.http.Context;
+import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.http.NotFoundException;
 
 abstract sealed class AbstractStaticHandler implements ExchangeHandler

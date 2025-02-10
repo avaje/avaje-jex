@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import io.avaje.jex.Context;
-import io.avaje.jex.ExchangeHandler;
 import io.avaje.jex.Jex;
 import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.http.Context;
+import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.security.Role;
 
 final class StaticResourceHandlerBuilder implements StaticContent.Builder, StaticContent {

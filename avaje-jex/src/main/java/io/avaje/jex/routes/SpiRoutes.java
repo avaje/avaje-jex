@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.avaje.jex.ExchangeHandler;
-import io.avaje.jex.HttpFilter;
 import io.avaje.jex.Routing;
+import io.avaje.jex.http.ExchangeHandler;
+import io.avaje.jex.http.HttpFilter;
 import io.avaje.jex.security.Role;
 
 /**
