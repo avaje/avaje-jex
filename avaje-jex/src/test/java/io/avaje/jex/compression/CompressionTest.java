@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import io.avaje.jex.Jex;
 import io.avaje.jex.core.Constants;
 import io.avaje.jex.core.TestPair;
+import io.avaje.jex.http.ContentType;
 
 class CompressionTest {
 
@@ -27,7 +28,8 @@ class CompressionTest {
                     r.get(
                             "/compress",
                             ctx ->
-                                ctx.write(CompressionTest.class.getResourceAsStream("/64KB.json")))
+                                ctx.contentType(ContentType.APPLICATION_JSON)
+                                    .write(CompressionTest.class.getResourceAsStream("/64KB.json")))
                         .get(
                             "/sus",
                             ctx ->

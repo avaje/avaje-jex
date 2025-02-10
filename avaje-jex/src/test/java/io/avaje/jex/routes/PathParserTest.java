@@ -21,7 +21,7 @@ class PathParserTest {
 
     assertTrue(pathParser.matches("/one/1/"));
     assertTrue(pathParser.matches("/one/2/"));
-    assertTrue(pathParser.matches("/one/3//")); // accepts trailing double slash?
+    assertFalse(pathParser.matches("/one/3//")); // accepts trailing double slash?
     assertFalse(pathParser.matches("/one/3///")); // but not triple slash?
     assertFalse(pathParser.matches("/one/1"));
     assertFalse(pathParser.matches("/one/2"));
