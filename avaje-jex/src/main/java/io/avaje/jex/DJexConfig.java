@@ -28,7 +28,7 @@ final class DJexConfig implements JexConfig {
   private boolean useJexSpi = true;
   private final CompressionConfig compression = new CompressionConfig();
   private int bufferInitial = 256;
-  private long bufferMax = 1024L;
+  private long bufferMax = 4096L;
   private HttpServerProvider serverProvider;
 
   @Override
