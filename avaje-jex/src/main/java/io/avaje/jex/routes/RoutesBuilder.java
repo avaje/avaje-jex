@@ -4,9 +4,9 @@ import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import io.avaje.jex.HttpFilter;
 import io.avaje.jex.JexConfig;
 import io.avaje.jex.Routing;
+import io.avaje.jex.http.HttpFilter;
 
 public final class RoutesBuilder {
 

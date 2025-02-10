@@ -3,7 +3,7 @@ package io.avaje.jex.staticcontent;
 import java.net.URLConnection;
 import java.util.function.Predicate;
 
-import io.avaje.jex.Context;
+import io.avaje.jex.http.Context;
 import io.avaje.jex.security.Role;
 import io.avaje.jex.spi.JexPlugin;
 

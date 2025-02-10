@@ -1,6 +1,6 @@
 package io.avaje.jex.htmx;
 
-import io.avaje.jex.Context;
+import io.avaje.jex.http.Context;
 
 /**
  * Defines caching of template content.

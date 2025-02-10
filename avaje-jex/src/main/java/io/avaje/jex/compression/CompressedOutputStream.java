@@ -6,8 +6,8 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-import io.avaje.jex.Context;
 import io.avaje.jex.core.Constants;
+import io.avaje.jex.http.Context;
 
 /**
  * OutputStream implementation that conditionally compresses the output based on configuration and

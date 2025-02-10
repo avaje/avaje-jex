@@ -1,6 +1,6 @@
 package io.avaje.jex.htmx;
 
-import io.avaje.jex.ExchangeHandler;
+import io.avaje.jex.http.ExchangeHandler;
 
 /**
  * Wrap a Handler with filtering for Htmx specific headers.

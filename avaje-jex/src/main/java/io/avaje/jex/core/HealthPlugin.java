@@ -1,8 +1,8 @@
 package io.avaje.jex.core;
 
 import io.avaje.jex.AppLifecycle;
-import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
+import io.avaje.jex.http.Context;
 import io.avaje.jex.spi.JexPlugin;
 
 /**

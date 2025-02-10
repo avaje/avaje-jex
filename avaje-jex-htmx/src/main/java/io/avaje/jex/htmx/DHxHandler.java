@@ -5,8 +5,8 @@ import static io.avaje.jex.htmx.HxHeaders.HX_TARGET;
 import static io.avaje.jex.htmx.HxHeaders.HX_TRIGGER;
 import static io.avaje.jex.htmx.HxHeaders.HX_TRIGGER_NAME;
 
-import io.avaje.jex.Context;
-import io.avaje.jex.ExchangeHandler;
+import io.avaje.jex.http.Context;
+import io.avaje.jex.http.ExchangeHandler;
 
 final class DHxHandler implements ExchangeHandler {
 

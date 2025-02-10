@@ -8,7 +8,7 @@ import java.util.Set;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import io.avaje.jex.HttpFilter;
+import io.avaje.jex.http.HttpFilter;
 import io.avaje.jex.http.NotFoundException;
 import io.avaje.jex.routes.SpiRoutes;
 

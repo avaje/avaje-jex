@@ -1,7 +1,8 @@
 package io.avaje.jex.core;
 
-import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
+import io.avaje.jex.http.Context;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 

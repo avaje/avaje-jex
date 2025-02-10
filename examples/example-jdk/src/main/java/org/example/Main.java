@@ -1,7 +1,8 @@
 package org.example;
 
-import io.avaje.jex.Context;
 import io.avaje.jex.Jex;
+import io.avaje.jex.http.Context;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

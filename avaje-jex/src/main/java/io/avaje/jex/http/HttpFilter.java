@@ -1,4 +1,4 @@
-package io.avaje.jex;
+package io.avaje.jex.http;
 
 import com.sun.net.httpserver.HttpExchange;
 

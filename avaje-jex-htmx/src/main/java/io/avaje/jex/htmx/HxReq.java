@@ -1,7 +1,7 @@
 package io.avaje.jex.htmx;
 
 import io.avaje.htmx.api.HtmxRequest;
-import io.avaje.jex.Context;
+import io.avaje.jex.http.Context;
 
 /**
  * Obtain the HtmxRequest for the given Jex Context.

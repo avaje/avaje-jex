@@ -1,4 +1,4 @@
-package io.avaje.jex;
+package io.avaje.jex.http;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
@@ -20,8 +20,6 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
 import io.avaje.jex.core.Constants;
-import io.avaje.jex.http.ContentType;
-import io.avaje.jex.http.HttpStatus;
 import io.avaje.jex.security.BasicAuthCredentials;
 import io.avaje.jex.security.Role;
 

@@ -1,7 +1,7 @@
 package io.avaje.jex.routes;
 
-import io.avaje.jex.Context;
-import io.avaje.jex.ExchangeHandler;
+import io.avaje.jex.http.Context;
+import io.avaje.jex.http.ExchangeHandler;
 
 final class MultiHandler implements ExchangeHandler {
 

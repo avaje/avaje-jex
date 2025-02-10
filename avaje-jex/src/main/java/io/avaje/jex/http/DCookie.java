@@ -1,4 +1,4 @@
-package io.avaje.jex;
+package io.avaje.jex.http;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

@@ -2,7 +2,7 @@ package io.avaje.jex.spi;
 
 import java.util.Map;
 
-import io.avaje.jex.Context;
+import io.avaje.jex.http.Context;
 
 /**
  * Template rendering typically of html.

@@ -1,4 +1,6 @@
-package io.avaje.jex;
+package io.avaje.jex.http;
+
+import io.avaje.jex.Routing;
 
 /**
  * The routing error handler. Can be mapped to the error cause in {@link Routing}.

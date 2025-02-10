@@ -1,8 +1,8 @@
 package io.avaje.jex.routes;
 
-import io.avaje.jex.ExchangeHandler;
-
 import java.util.*;
+
+import io.avaje.jex.http.ExchangeHandler;
 
 /**
  * Build the RouteIndex.

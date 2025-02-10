@@ -32,7 +32,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpsExchange;
 
-import io.avaje.jex.Context;
+import io.avaje.jex.http.Context;
 import io.avaje.jex.http.HttpStatus;
 import io.avaje.jex.http.RedirectException;
 import io.avaje.jex.security.BasicAuthCredentials;
