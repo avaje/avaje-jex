@@ -29,9 +29,7 @@ public final class BootstrapServer {
       jex.plugin(new HealthPlugin());
     }
 
-    if (config.useSpiPlugins()) {
-      CoreServiceLoader.plugins().forEach(p -> p.apply(jex));
-    }
+    CoreServiceLoader.plugins().forEach(p -> p.apply(jex));
 
     final SpiRoutes routes = new RoutesBuilder(jex.routing(), config).build();
 

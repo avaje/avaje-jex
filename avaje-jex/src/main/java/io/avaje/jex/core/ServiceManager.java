@@ -36,7 +36,6 @@ final class ServiceManager {
   private final ExceptionManager exceptionHandler;
   private final TemplateManager templateManager;
   private final String scheme;
-  private final String contextPath;
   private final int bufferInitial;
   private final long bufferMax;
 
@@ -50,7 +49,6 @@ final class ServiceManager {
       ExceptionManager manager,
       TemplateManager templateManager,
       String scheme,
-      String contextPath,
       long bufferMax,
       int bufferInitial) {
     this.compressionConfig = compressionConfig;
@@ -58,7 +56,6 @@ final class ServiceManager {
     this.exceptionHandler = manager;
     this.templateManager = templateManager;
     this.scheme = scheme;
-    this.contextPath = contextPath;
     this.bufferInitial = bufferInitial;
     this.bufferMax = bufferMax;
   }
@@ -165,10 +162,6 @@ final class ServiceManager {
     return scheme;
   }
 
-  String contextPath() {
-    return contextPath;
-  }
-
   private static final class Builder {
 
     private final Jex jex;
@@ -184,7 +177,6 @@ final class ServiceManager {
           new ExceptionManager(jex.routing().errorHandlers()),
           initTemplateMgr(),
           jex.config().scheme(),
-          jex.config().contextPath(),
           jex.config().maxStreamBufferSize(),
           jex.config().initialStreamBufferSize());
     }
