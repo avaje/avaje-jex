@@ -11,8 +11,8 @@ final class JdkFilter implements HttpFilter {
 
   private final Filter delegate;
 
-  public JdkFilter(Filter delegateFilter) {
-    this.delegate = delegateFilter;
+  public JdkFilter(Filter delegate) {
+    this.delegate = delegate;
   }
 
   @Override
