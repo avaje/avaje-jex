@@ -55,7 +55,6 @@ public interface HttpFilter {
   }
 
   static HttpFilter fromJdkFilter(Filter filter) {
-
     return new JdkFilter(filter);
   }
 }

@@ -11,13 +11,12 @@ final class JdkFilter implements HttpFilter {
 
   private final Filter delegate;
 
-  public JdkFilter(Filter delegate) {
+  JdkFilter(Filter delegate) {
     this.delegate = delegate;
   }
 
   @Override
   public void filter(Context ctx, FilterChain chain) {
-
     try {
       delegate.doFilter(ctx.exchange(), new Chain(List.of(), ex -> chain.proceed()));
     } catch (IOException e) {
