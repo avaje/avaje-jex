@@ -64,7 +64,7 @@ public final class BootstrapServer {
         server.setExecutor(config.executor());
       }
 
-      server.createContext(contextPath, handler);
+      server.createContext(contextPath, handler).getFilters().addAll(config.jdkFilters());
       server.start();
 
       jex.lifecycle().status(AppLifecycle.Status.STARTED);

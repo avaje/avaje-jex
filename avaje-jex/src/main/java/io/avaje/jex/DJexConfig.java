@@ -1,11 +1,15 @@
 package io.avaje.jex;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
+import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.spi.HttpServerProvider;
 
@@ -29,6 +33,7 @@ final class DJexConfig implements JexConfig {
   private int bufferInitial = 256;
   private long bufferMax = 4096L;
   private HttpServerProvider serverProvider;
+  private final List<Filter> jdkFilters = new ArrayList<>();
 
   @Override
   public JexConfig host(String host) {
@@ -128,6 +133,17 @@ final class DJexConfig implements JexConfig {
   @Override
   public boolean ignoreTrailingSlashes() {
     return ignoreTrailingSlashes;
+  }
+
+  @Override
+  public List<Filter> jdkFilters() {
+    return jdkFilters;
+  }
+
+  @Override
+  public JexConfig jdkFilters(Filter... filters) {
+    Collections.addAll(jdkFilters, filters);
+    return this;
   }
 
   @Override

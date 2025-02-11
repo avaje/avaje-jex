@@ -1,15 +1,18 @@
 package io.avaje.jex;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
+import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.spi.HttpServerProvider;
 
 import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.http.HttpFilter;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
@@ -109,6 +112,19 @@ public sealed interface JexConfig permits DJexConfig {
    */
   JexConfig initialStreamBufferSize(int initialSize);
 
+  /** The current jdk {@link Filter}s */
+  List<Filter> jdkFilters();
+
+  /**
+   * Adds jdk {@link Filter}s to the underlying HttpServer Context.
+   *
+   * <p>This is for compatibility with existing classes that implement {@link Filter} from the jdk. See {@link
+   * Routing#filter(HttpFilter)} for creating jex filters
+   *
+   * @param filters the filters to add to the underlying server
+   */
+  JexConfig jdkFilters(Filter... filters);
+
   /** Returns the configured JSON service. */
   JsonService jsonService();
 
@@ -185,5 +201,4 @@ public sealed interface JexConfig permits DJexConfig {
    *     default value is used
    */
   JexConfig socketBacklog(int backlog);
-
 }
