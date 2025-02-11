@@ -32,7 +32,7 @@ class FilterTest {
                         .before(ctx -> ctx.header("before-all", "set"))
                         .filter(
                             (ctx, chain) -> {
-                              if (ctx.url().contains("/two/")) {
+                              if (ctx.path().contains("/two/")) {
                                 ctx.header("before-two", "set");
                               }
                               chain.proceed();
@@ -41,7 +41,7 @@ class FilterTest {
                         .filter(
                             (ctx, chain) -> {
                               chain.proceed();
-                              if (ctx.url().contains("/two/")) {
+                              if (ctx.path().contains("/two/")) {
                                 afterTwo.set("set");
                               }
                             })

@@ -20,7 +20,7 @@ class RedirectTest {
                     routing
                         .filter(
                             (ctx, chain) -> {
-                              if (ctx.url().contains("/other/")) ctx.redirect("/two?from=filter");
+                              if (ctx.path().contains("/other/")) ctx.redirect("/two?from=filter");
                               chain.proceed();
                             })
                         .get("/one", ctx -> ctx.text("one"))
