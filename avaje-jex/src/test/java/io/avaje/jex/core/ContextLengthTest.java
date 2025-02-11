@@ -16,8 +16,9 @@ class ContextLengthTest {
     var app = Jex.create()
       .routing(routing -> routing
         .post("/", ctx -> ctx.text("contentLength:" + ctx.contentLength() + " type:" + ctx.contentType()))
-        .get("/url", ctx -> ctx.text("url:" + ctx.url()))
-        .get("/fullUrl", ctx -> ctx.text("fullUrl:" + ctx.fullUrl()))
+        .get("/uri/{param}", ctx -> ctx.text("uri:" + ctx.uri()))
+        .get("/matchedPath/{param}", ctx -> ctx.text("matchedPath:" + ctx.matchedPath()))
+        .get("/fullUrl/{param}", ctx -> ctx.text("fullUrl:" + ctx.fullUrl()))
         .get("/contextPath", ctx -> ctx.text("contextPath:" + ctx.contextPath()))
         .get("/userAgent", ctx -> ctx.text("userAgent:" + ctx.userAgent()))
       );
@@ -50,36 +51,52 @@ class ContextLengthTest {
   }
 
   @Test
-  void url() {
+  void uri() {
     HttpResponse<String> res = pair.request()
-      .path("url")
+      .path("uri")
+      .path("uriTest")
       .queryParam("a", "av")
       .GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.body()).isEqualTo("url:http://localhost:" + pair.port() + "/url");
+    assertThat(res.body()).isEqualTo("uri:/uri/uriTest?a=av");
   }
 
   @Test
   void fullUrl_no_queryString() {
     HttpResponse<String> res = pair.request()
       .path("fullUrl")
+      .path("noQuery")
       .GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.body()).isEqualTo("fullUrl:http://localhost:" + pair.port() + "/fullUrl");
+    assertThat(res.body()).isEqualTo("fullUrl:http://localhost:" + pair.port() + "/fullUrl/noQuery");
   }
 
   @Test
   void fullUrl_queryString() {
     HttpResponse<String> res = pair.request()
       .path("fullUrl")
+      .path("query")
       .queryParam("a", "av")
       .queryParam("b", "bv")
       .GET().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.body()).isEqualTo("fullUrl:http://localhost:" + pair.port() + "/fullUrl?a=av&b=bv");
+    assertThat(res.body()).isEqualTo("fullUrl:http://localhost:" + pair.port() + "/fullUrl/query?a=av&b=bv");
+  }
+
+  @Test
+  void matchedPath() {
+    HttpResponse<String> res = pair.request()
+      .path("matchedPath")
+      .path("query")
+      .queryParam("a", "av")
+      .queryParam("b", "bv")
+      .GET().asString();
+
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).isEqualTo("matchedPath:/matchedPath/{param}");
   }
 
   @Test

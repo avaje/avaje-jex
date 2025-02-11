@@ -25,7 +25,6 @@ final class DJexConfig implements JexConfig {
   private JsonService jsonService;
   private final Map<String, TemplateRender> renderers = new HashMap<>();
   private HttpsConfigurator httpsConfig;
-  private boolean useJexSpi = true;
   private final CompressionConfig compression = new CompressionConfig();
   private int bufferInitial = 256;
   private long bufferMax = 4096L;
@@ -166,17 +165,6 @@ final class DJexConfig implements JexConfig {
   @Override
   public CompressionConfig compression() {
     return compression;
-  }
-
-  @Override
-  public DJexConfig disableSpiPlugins() {
-    useJexSpi = false;
-    return this;
-  }
-
-  @Override
-  public boolean useSpiPlugins() {
-    return useJexSpi;
   }
 
   @Override

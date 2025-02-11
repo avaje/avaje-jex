@@ -5,11 +5,11 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-import com.sun.net.httpserver.*;
-import com.sun.net.httpserver.spi.HttpServerProvider;
 import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.spi.HttpServerProvider;
+
 import io.avaje.jex.compression.CompressionConfig;
-import io.avaje.jex.spi.JexPlugin;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
@@ -42,12 +42,6 @@ public sealed interface JexConfig permits DJexConfig {
    * @param contextPath The context path
    */
   JexConfig contextPath(String contextPath);
-
-  /**
-   * Disables auto-configuring the current instance with {@link JexPlugin} loaded using the
-   * ServiceLoader.
-   */
-  JexConfig disableSpiPlugins();
 
   /**
    * Executor for serving requests. Defaults to a {@link
@@ -192,6 +186,4 @@ public sealed interface JexConfig permits DJexConfig {
    */
   JexConfig socketBacklog(int backlog);
 
-  /** Return true if SPI plugins should be loaded and registered. */
-  boolean useSpiPlugins();
 }

@@ -14,6 +14,7 @@ import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -41,11 +42,10 @@ import io.avaje.jex.security.Role;
 final class JdkContext implements Context {
 
   private static final String UTF8 = "UTF8";
-  private static final int SC_MOVED_TEMPORARILY = 302;
   private static final String SET_COOKIE = "Set-Cookie";
   private static final String COOKIE = "Cookie";
   private final ServiceManager mgr;
-  private final String path;
+  private final String matchedPath;
   private final Map<String, String> pathParams;
   private final Map<String, Object> attributes = new HashMap<>();
   private final Set<Role> roles;
@@ -67,7 +67,7 @@ final class JdkContext implements Context {
     this.mgr = mgr;
     this.roles = roles;
     this.exchange = exchange;
-    this.path = path;
+    this.matchedPath = path;
     this.pathParams = pathParams;
   }
 
@@ -80,7 +80,7 @@ final class JdkContext implements Context {
     this.mgr = mgr;
     this.roles = roles;
     this.exchange = exchange;
-    this.path = path;
+    this.matchedPath = path;
     this.pathParams = null;
   }
 
@@ -173,7 +173,7 @@ final class JdkContext implements Context {
 
   @Override
   public String contextPath() {
-    return mgr.contextPath();
+    return exchange.getHttpContext().getPath();
   }
 
   @Override
@@ -310,7 +310,7 @@ final class JdkContext implements Context {
 
   @Override
   public String matchedPath() {
-    return path;
+    return matchedPath;
   }
 
   @Override
@@ -333,7 +333,7 @@ final class JdkContext implements Context {
 
   @Override
   public String path() {
-    return path;
+    return exchange.getRequestURI().getPath();
   }
 
   @Override
@@ -407,7 +407,7 @@ final class JdkContext implements Context {
 
   @Override
   public void redirect(String location) {
-    redirect(location, SC_MOVED_TEMPORARILY);
+    redirect(location, HttpStatus.FOUND_302.status());
   }
 
   @Override
@@ -490,8 +490,8 @@ final class JdkContext implements Context {
   }
 
   @Override
-  public String url() {
-    return scheme() + "://" + host() + path;
+  public URI uri() {
+    return exchange.getRequestURI();
   }
 
   @Override

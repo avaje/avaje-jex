@@ -6,6 +6,7 @@ import static java.util.Collections.emptyMap;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Iterator;
@@ -165,9 +166,7 @@ public interface Context {
 
   /** Return the full request url, including query string (if present) */
   default String fullUrl() {
-    final String url = url();
-    final String qs = queryString();
-    return qs == null ? url : url + '?' + qs;
+    return scheme() + "://" + host() + uri().toString();
   }
 
   /**
@@ -435,8 +434,8 @@ public interface Context {
   /** Write plain text content to the response. */
   void text(String content);
 
-  /** Return the request url. */
-  String url();
+  /** Return the request uri. */
+  URI uri();
 
   /** Return the request user agent, or null. */
   default String userAgent() {
