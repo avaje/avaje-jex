@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import com.sun.net.httpserver.Filter;
+
 import io.avaje.jex.http.Context;
 import io.avaje.jex.http.ExceptionHandler;
 import io.avaje.jex.http.ExchangeHandler;
@@ -122,6 +124,11 @@ public sealed interface Routing permits DefaultRouting {
 
   /** Add a filter for all matched requests. */
   Routing filter(HttpFilter handler);
+
+  /** Add a filter for all matched requests. */
+  default Routing filter(Filter handler) {
+    return filter(HttpFilter.fromJdkFilter(handler));
+  }
 
   /** Add a pre-processing filter for all matched requests. */
   default Routing before(Consumer<Context> handler) {
