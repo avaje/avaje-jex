@@ -1,5 +1,6 @@
 package io.avaje.jex.http;
 
+import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpExchange;
 
 /**
@@ -51,5 +52,12 @@ public interface HttpFilter {
      * the application's {@linkplain HttpExchange exchange} handler will not be invoked.
      */
     void proceed();
+  }
+
+  /**
+   * Convert the JDK Filter into a Jex HttpFilter.
+   */
+  static HttpFilter fromJdkFilter(Filter filter) {
+    return new JdkFilter(filter);
   }
 }

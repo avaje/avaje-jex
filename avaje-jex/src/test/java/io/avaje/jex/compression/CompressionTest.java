@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
-import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 
 import org.junit.jupiter.api.AfterAll;
