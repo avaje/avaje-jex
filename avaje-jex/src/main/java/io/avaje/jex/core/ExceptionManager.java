@@ -56,6 +56,11 @@ final class ExceptionManager {
   }
 
   private void defaultHandling(JdkContext ctx, HttpResponseException exception) {
+    if (ctx.responseSent()) {
+      // if already sent headers, can't send again
+      return;
+    }
+
     ctx.status(exception.status());
     var jsonResponse = exception.jsonResponse();
     if (exception.status() == HttpStatus.FOUND_302.status()) {
