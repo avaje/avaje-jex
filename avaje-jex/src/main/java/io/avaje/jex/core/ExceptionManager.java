@@ -56,9 +56,8 @@ final class ExceptionManager {
   }
 
   private void defaultHandling(JdkContext ctx, HttpResponseException exception) {
-
-    //if already sent headers, can't send again
     if (ctx.responseSent()) {
+      // if already sent headers, can't send again
       return;
     }
 
