@@ -55,7 +55,7 @@ public interface HttpFilter {
   }
 
   /**
-   * Convert the JDK Filter into a Jex HttpFilter.
+   * Convert a JDK {@link Filter} into a Jex HttpFilter.
    */
   static HttpFilter fromJdkFilter(Filter filter) {
     return new JdkFilter(filter);

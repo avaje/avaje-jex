@@ -4,7 +4,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.joining;
 
-abstract class PathSegment {
+abstract sealed class PathSegment {
 
   abstract String asRegexString(boolean extract);
 
@@ -35,7 +35,7 @@ abstract class PathSegment {
     }
   }
 
-  private abstract static class Parameter extends PathSegment {
+  private abstract static sealed class Parameter extends PathSegment {
     private final String name;
     private final String regex;
 

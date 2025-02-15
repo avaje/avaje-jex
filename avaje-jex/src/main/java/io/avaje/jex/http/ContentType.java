@@ -1,7 +1,7 @@
 package io.avaje.jex.http;
 
+/** Common Content Types */
 public enum ContentType {
-
   TEXT_PLAIN("text/plain"),
   TEXT_CSS("text/css"),
   TEXT_CSV("text/csv"),

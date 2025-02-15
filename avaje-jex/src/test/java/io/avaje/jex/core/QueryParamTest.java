@@ -21,6 +21,7 @@ class QueryParamTest {
         .get("/queryParamMap", ctx -> ctx.text("qpm: "+ctx.queryParamMap()))
         .get("/queryParams", ctx -> ctx.text("qps: "+ctx.queryParams("a")))
         .get("/queryString", ctx -> ctx.text("qs: "+ctx.queryString()))
+        .get("/plus/{plus}", ctx -> ctx.text(ctx.pathParam("plus")+ctx.queryParam("plus")))
         .get("/scheme", ctx -> ctx.text("scheme: "+ctx.scheme()))
       );
     return TestPair.create(app);
@@ -134,6 +135,15 @@ class QueryParamTest {
       .GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("qs: foo=f1&bar=b1&bar=b2");
+  }
+
+  @Test
+  void plus() {
+    HttpResponse<String> res = pair.request().path("plus/+")
+      .queryParam("plus","+")
+      .GET().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).isEqualTo("++");
   }
 
   @Test

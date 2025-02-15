@@ -92,12 +92,12 @@ public interface Context {
   String contentType();
 
   /** Set the response content type. */
-  Context contentType(String contentType);
-
-  /** Set the response content type. */
   default Context contentType(ContentType contentType) {
     return contentType(contentType.contentType());
   }
+
+  /** Set the response content type. */
+  Context contentType(String contentType);
 
   /** Return the request context path. */
   String contextPath();
@@ -424,12 +424,12 @@ public interface Context {
   int status();
 
   /** Set the status code on the response. */
-  Context status(int statusCode);
-
-  /** Set the status code on the response. */
   default Context status(HttpStatus statusCode) {
     return status(statusCode.status());
   }
+
+  /** Set the status code on the response. */
+  Context status(int statusCode);
 
   /** Write plain text content to the response. */
   void text(String content);
@@ -462,7 +462,6 @@ public interface Context {
    * @param content The string content to write.
    */
   void write(String content);
-
 
   /**
    * This interface represents a cookie used in HTTP communication. Cookies are small pieces of data
