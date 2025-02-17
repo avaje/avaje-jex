@@ -31,15 +31,19 @@ final class DJexConfig implements JexConfig {
   private HttpServerProvider serverProvider;
 
   @Override
-  public JexConfig host(String host) {
-    this.host = host;
+  public CompressionConfig compression() {
+    return compression;
+  }
+
+  @Override
+  public JexConfig compression(Consumer<CompressionConfig> consumer) {
+    consumer.accept(compression);
     return this;
   }
 
   @Override
-  public JexConfig port(int port) {
-    this.port = port;
-    return this;
+  public String contextPath() {
+    return contextPath;
   }
 
   @Override
@@ -51,36 +55,6 @@ final class DJexConfig implements JexConfig {
               .transform(s -> s.startsWith("/") ? s : "/" + s)
               .transform(s -> s.endsWith("/") ? s.substring(0, s.lastIndexOf("/")) : s);
     }
-    return this;
-  }
-
-  @Override
-  public JexConfig socketBacklog(int socketBacklog) {
-    this.socketBacklog = socketBacklog;
-    return this;
-  }
-
-  @Override
-  public JexConfig health(boolean health) {
-    this.health = health;
-    return this;
-  }
-
-  @Override
-  public JexConfig ignoreTrailingSlashes(boolean ignoreTrailingSlashes) {
-    this.ignoreTrailingSlashes = ignoreTrailingSlashes;
-    return this;
-  }
-
-  @Override
-  public JexConfig jsonService(JsonService jsonService) {
-    this.jsonService = jsonService;
-    return this;
-  }
-
-  @Override
-  public JexConfig renderer(String extension, TemplateRender renderer) {
-    renderers.put(extension, renderer);
     return this;
   }
 
@@ -101,48 +75,25 @@ final class DJexConfig implements JexConfig {
   }
 
   @Override
-  public String host() {
-    return host;
-  }
-
-  @Override
-  public int port() {
-    return port;
-  }
-
-  @Override
-  public String contextPath() {
-    return contextPath;
-  }
-
-  @Override
-  public int socketBacklog() {
-    return socketBacklog;
-  }
-
-  @Override
   public boolean health() {
     return health;
   }
 
   @Override
-  public boolean ignoreTrailingSlashes() {
-    return ignoreTrailingSlashes;
+  public JexConfig health(boolean health) {
+    this.health = health;
+    return this;
   }
 
   @Override
-  public JsonService jsonService() {
-    return jsonService;
+  public String host() {
+    return host;
   }
 
   @Override
-  public Map<String, TemplateRender> renderers() {
-    return renderers;
-  }
-
-  @Override
-  public String scheme() {
-    return httpsConfig == null ? "http" : "https";
+  public JexConfig host(String host) {
+    this.host = host;
+    return this;
   }
 
   @Override
@@ -157,19 +108,14 @@ final class DJexConfig implements JexConfig {
   }
 
   @Override
-  public JexConfig compression(Consumer<CompressionConfig> consumer) {
-    consumer.accept(compression);
+  public boolean ignoreTrailingSlashes() {
+    return ignoreTrailingSlashes;
+  }
+
+  @Override
+  public JexConfig ignoreTrailingSlashes(boolean ignoreTrailingSlashes) {
+    this.ignoreTrailingSlashes = ignoreTrailingSlashes;
     return this;
-  }
-
-  @Override
-  public CompressionConfig compression() {
-    return compression;
-  }
-
-  @Override
-  public long maxStreamBufferSize() {
-    return bufferMax;
   }
 
   @Override
@@ -184,9 +130,52 @@ final class DJexConfig implements JexConfig {
   }
 
   @Override
+  public JsonService jsonService() {
+    return jsonService;
+  }
+
+  @Override
+  public JexConfig jsonService(JsonService jsonService) {
+    this.jsonService = jsonService;
+    return this;
+  }
+
+  @Override
+  public long maxStreamBufferSize() {
+    return bufferMax;
+  }
+
+  @Override
   public JexConfig maxStreamBufferSize(long maxSize) {
     bufferMax = maxSize;
     return this;
+  }
+
+  @Override
+  public int port() {
+    return port;
+  }
+
+  @Override
+  public JexConfig port(int port) {
+    this.port = port;
+    return this;
+  }
+
+  @Override
+  public JexConfig renderer(String extension, TemplateRender renderer) {
+    renderers.put(extension, renderer);
+    return this;
+  }
+
+  @Override
+  public Map<String, TemplateRender> renderers() {
+    return renderers;
+  }
+
+  @Override
+  public String scheme() {
+    return httpsConfig == null ? "http" : "https";
   }
 
   @Override
@@ -197,6 +186,17 @@ final class DJexConfig implements JexConfig {
   @Override
   public JexConfig serverProvider(HttpServerProvider serverProvider) {
     this.serverProvider = serverProvider;
+    return this;
+  }
+
+  @Override
+  public int socketBacklog() {
+    return socketBacklog;
+  }
+
+  @Override
+  public JexConfig socketBacklog(int socketBacklog) {
+    this.socketBacklog = socketBacklog;
     return this;
   }
 }
