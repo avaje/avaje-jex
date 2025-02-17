@@ -8,14 +8,15 @@ import java.time.format.DateTimeFormatter;
 
 final class DCookie implements Context.Cookie {
 
-  private static final ZonedDateTime EXPIRED = ZonedDateTime.of(LocalDateTime.of(2000, 1, 1, 0, 0, 0), ZoneId.of("GMT"));
+  private static final ZonedDateTime EXPIRED =
+      ZonedDateTime.of(LocalDateTime.of(2000, 1, 1, 0, 0, 0), ZoneId.of("GMT"));
   private static final DateTimeFormatter RFC_1123_DATE_TIME = DateTimeFormatter.RFC_1123_DATE_TIME;
   private static final String PARAM_SEPARATOR = "; ";
   private final String name; // NAME= ... "$Name" style is reserved
   private final String value; // value of NAME
   private String domain; // ;Domain=VALUE ... domain that sees cookie
   private ZonedDateTime expires;
-  private Duration maxAge;// = -1; // ;Max-Age=VALUE ... cookies auto-expire
+  private Duration maxAge; // = -1; // ;Max-Age=VALUE ... cookies auto-expire
   private String path; // ;Path=VALUE ... URLs that see the cookie
   private SameSite sameSite; // ;SameSite=Strict|Lax|None
   private boolean secure; // ;Secure ... e.g. use SSL

@@ -185,5 +185,4 @@ public interface JexConfig {
    *     default value is used
    */
   JexConfig socketBacklog(int backlog);
-
 }

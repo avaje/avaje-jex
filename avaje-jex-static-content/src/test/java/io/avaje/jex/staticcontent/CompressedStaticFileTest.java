@@ -28,7 +28,8 @@ class CompressedStaticFileTest {
             .plugin(StaticContent.createCP("/logback.xml").route("/single").build())
             .plugin(
                 StaticContent.createFile("src/test/resources/logback.xml")
-                    .route("/singleFile").build());
+                    .route("/singleFile")
+                    .build());
 
     return TestPair.create(app);
   }
@@ -40,9 +41,7 @@ class CompressedStaticFileTest {
   }
 
   private static StaticContent.Builder defaultCP() {
-    return StaticContent.createCP("/public")
-      .directoryIndex("index.html")
-      .preCompress();
+    return StaticContent.createCP("/public").directoryIndex("index.html").preCompress();
   }
 
   @AfterAll

@@ -11,10 +11,9 @@ import io.avaje.jex.Jex;
 /**
  * avaje-inject-test plugin that:
  *
- * - Detects when a http client is being used in a test
- * - Starts Jex server on random port
- * - Creates the appropriate client for the port (to be injected into the test class)
- * - Shutdown the server on test completion (Plugin.Scope close)
+ * <p>- Detects when a http client is being used in a test - Starts Jex server on random port -
+ * Creates the appropriate client for the port (to be injected into the test class) - Shutdown the
+ * server on test completion (Plugin.Scope close)
  */
 public final class JexInjectPlugin implements Plugin {
 
@@ -45,8 +44,8 @@ public final class JexInjectPlugin implements Plugin {
 
   /**
    * Create a scope.
-   * <p>
-   * The scope will contain a server + client pair.
+   *
+   * <p>The scope will contain a server + client pair.
    */
   @Override
   public Scope createScope(BeanScope beanScope) {
@@ -59,19 +58,19 @@ public final class JexInjectPlugin implements Plugin {
     private final HttpClient httpClient;
 
     LocalScope(BeanScope beanScope) {
-      Jex jex = beanScope.getOptional(Jex.class)
-        .orElse(Jex.create())
-        .configureWith(beanScope)
-        .port(0);
+      Jex jex =
+          beanScope.getOptional(Jex.class).orElse(Jex.create()).configureWith(beanScope).port(0);
 
       // get a HttpClientContext.Builder provided by dependency injection test scope or new one up
       this.server = jex.start();
       int port = server.port();
-      this.httpClient = beanScope.getOptional(HttpClient.Builder.class)
-        .orElse(HttpClient.builder())
-        .configureWith(beanScope)
-        .baseUrl("http://localhost:" + port)
-        .build();
+      this.httpClient =
+          beanScope
+              .getOptional(HttpClient.Builder.class)
+              .orElse(HttpClient.builder())
+              .configureWith(beanScope)
+              .baseUrl("http://localhost:" + port)
+              .build();
     }
 
     @Override

@@ -13,11 +13,10 @@ class HealthPluginOffTest {
   static TestPair pair = init();
 
   static TestPair init() {
-    final Jex app = Jex.create()
-      .config(config -> config.health(false))
-      .routing(routing -> routing
-        .get("/", ctx -> ctx.text("hello"))
-      );
+    final Jex app =
+        Jex.create()
+            .config(config -> config.health(false))
+            .routing(routing -> routing.get("/", ctx -> ctx.text("hello")));
 
     return TestPair.create(app);
   }
@@ -45,5 +44,4 @@ class HealthPluginOffTest {
     HttpResponse<String> res = pair.request().path("health/readiness").GET().asString();
     assertThat(res.statusCode()).isEqualTo(404);
   }
-
 }

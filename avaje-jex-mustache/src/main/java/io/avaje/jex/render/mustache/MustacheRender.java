@@ -27,7 +27,7 @@ public class MustacheRender implements TemplateRender {
 
   @Override
   public String[] defaultExtensions() {
-    return new String[]{"mustache"};
+    return new String[] {"mustache"};
   }
 
   @Override

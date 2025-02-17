@@ -5,10 +5,7 @@ import io.avaje.jex.Jex;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.spi.JexPlugin;
 
-/**
- * Health plugin with liveness and readiness support based on
- * the application lifecycle support.
- */
+/** Health plugin with liveness and readiness support based on the application lifecycle support. */
 final class HealthPlugin implements JexPlugin {
 
   private AppLifecycle lifecycle;

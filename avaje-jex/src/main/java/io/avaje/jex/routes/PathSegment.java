@@ -81,8 +81,8 @@ abstract sealed class PathSegment {
     @Override
     String asRegexString(boolean extract) {
       return segments.stream()
-        .map(pathSegment -> pathSegment.asRegexString(extract))
-        .collect(joining());
+          .map(pathSegment -> pathSegment.asRegexString(extract))
+          .collect(joining());
     }
 
     @Override
@@ -133,5 +133,4 @@ abstract sealed class PathSegment {
       paramNames.add(null); // null for wildcard
     }
   }
-
 }
