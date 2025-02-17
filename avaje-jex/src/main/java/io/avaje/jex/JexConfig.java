@@ -1,24 +1,22 @@
 package io.avaje.jex;
 
+import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.spi.HttpServerProvider;
+import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.spi.JsonService;
+import io.avaje.jex.spi.TemplateRender;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.HttpsConfigurator;
-import com.sun.net.httpserver.spi.HttpServerProvider;
-
-import io.avaje.jex.compression.CompressionConfig;
-import io.avaje.jex.spi.JsonService;
-import io.avaje.jex.spi.TemplateRender;
-
 /**
  * Jex configuration interface.
  *
- * <p>Provides a fluent API for configuring Jex's various settings, including port, host, health
- * endpoint, trailing slash handling, JSON service, template renderers, executor service, HTTPS
- * configuration, compression, and plugin loading.
+ * <p>Provides a fluent API for configuring Jex's various settings, including port, host, health endpoint, trailing
+ * slash handling, JSON service, template renderers, executor service, HTTPS configuration, compression, and plugin
+ * loading.
  */
 public sealed interface JexConfig permits DJexConfig {
 
@@ -43,10 +41,7 @@ public sealed interface JexConfig permits DJexConfig {
    */
   JexConfig contextPath(String contextPath);
 
-  /**
-   * Executor for serving requests. Defaults to a {@link
-   * Executors#newVirtualThreadPerTaskExecutor()}
-   */
+  /** Executor for serving requests. Defaults to a {@link Executors#newVirtualThreadPerTaskExecutor()} */
   Executor executor();
 
   /**
@@ -100,8 +95,8 @@ public sealed interface JexConfig permits DJexConfig {
   int initialStreamBufferSize();
 
   /**
-   * Set the initial size of the response stream buffer. If exceeded, the buffer will expand until
-   * it reaches the maximum configured size
+   * Set the initial size of the response stream buffer. If exceeded, the buffer will expand until it reaches the
+   * maximum configured size
    *
    * <p>Defaults to 256
    *
@@ -123,9 +118,9 @@ public sealed interface JexConfig permits DJexConfig {
   long maxStreamBufferSize();
 
   /**
-   * Set the maximum size of the response stream buffer. If the response data exceeds this size, it
-   * will be written to the client using chunked transfer encoding. Otherwise, the response will be
-   * sent using a Content-Length header with the exact size of the response data.
+   * Set the maximum size of the response stream buffer. If the response data exceeds this size, it will be written to
+   * the client using chunked transfer encoding. Otherwise, the response will be sent using a Content-Length header
+   * with the exact size of the response data.
    *
    * <p>Defaults to 4096
    *
@@ -139,8 +134,7 @@ public sealed interface JexConfig permits DJexConfig {
   /**
    * Sets the port number on which the HttpServer will listen for incoming requests. *
    *
-   * <p>The default value is 8080. If The port is set to 0, the server will randomly choose an
-   * available port.
+   * <p>The default value is 8080. If The port is set to 0, the server will randomly choose an available port.
    *
    * @param port The port number.
    */
@@ -161,14 +155,14 @@ public sealed interface JexConfig permits DJexConfig {
   String scheme();
 
   /**
-   * Provide the provider used to create the {@link HttpServer} instance. If not set, {@link
-   * HttpServerProvider#provider()} will be used to create the server
+   * Provide the provider used to create the {@link HttpServer} instance. If not set,
+   * {@link HttpServerProvider#provider()} will be used to create the server
    */
   HttpServerProvider serverProvider();
 
   /**
-   * Configure Provider used to created {@link HttpServer} instances. If not set, {@link
-   * HttpServerProvider#provider()} will be used to create the server.
+   * Configure Provider used to created {@link HttpServer} instances. If not set,
+   * {@link HttpServerProvider#provider()} will be used to create the server.
    *
    * @param serverProvider provider used to create the server
    */
@@ -178,11 +172,10 @@ public sealed interface JexConfig permits DJexConfig {
   int socketBacklog();
 
   /**
-   * Set the socket backlog. If this value is less than or equal to zero, then a system default
-   * value is used
+   * Set the socket backlog. If this value is less than or equal to zero, then a system default value is used
    *
-   * @param backlog the socket backlog. If this value is less than or equal to zero, then a system
-   *     default value is used
+   * @param backlog the socket backlog. If this value is less than or equal to zero, then a system default value is
+   *     used
    */
   JexConfig socketBacklog(int backlog);
 }

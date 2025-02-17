@@ -1,8 +1,8 @@
 package io.avaje.jex.http;
 
 /**
- * Throwing an uncaught {@code HttpResponseException} will interrupt http processing and set the
- * status code and response body with the given message or json body
+ * Throwing an uncaught {@code HttpResponseException} will interrupt http processing and set the status code and
+ * response body with the given message or json body
  */
 public class HttpResponseException extends RuntimeException {
 

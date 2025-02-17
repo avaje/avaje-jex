@@ -1,10 +1,9 @@
 package io.avaje.jex.test;
 
-import java.util.Random;
-
 import io.avaje.http.client.HttpClient;
 import io.avaje.http.client.HttpClientRequest;
 import io.avaje.jex.Jex;
+import java.util.Random;
 
 /** Server and Client pair for a test. */
 public class TestPair {

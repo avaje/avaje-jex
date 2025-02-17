@@ -16,8 +16,7 @@ final class RouteIndex {
 
   RouteIndex(List<SpiRoutes.Entry> wildcards, List<List<SpiRoutes.Entry>> pathEntries) {
     this.wildcardEntries = wildcards.toArray(new SpiRoutes.Entry[0]);
-    this.entries =
-        pathEntries.stream().map(RouteIndex::toEntry).toList().toArray(new IndexEntry[0]);
+    this.entries = pathEntries.stream().map(RouteIndex::toEntry).toList().toArray(new IndexEntry[0]);
   }
 
   @Override

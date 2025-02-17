@@ -1,8 +1,7 @@
 package io.avaje.jex.routes;
 
-import java.util.*;
-
 import io.avaje.jex.http.ExchangeHandler;
+import java.util.*;
 
 /** Build the RouteIndex. */
 final class RouteIndexBuild {
@@ -50,28 +49,25 @@ final class RouteIndexBuild {
         // add literal paths to the beginning
         list.addFirst(entry);
       } else {
-        pathMap.computeIfAbsent(entry.matchPath(), k -> new ArrayList<>(2)).add(entry);
+        pathMap.computeIfAbsent(entry.matchPath(), k -> new ArrayList<>(2))
+            .add(entry);
       }
     }
 
     List<SpiRoutes.Entry> build() {
       List<SpiRoutes.Entry> result = new ArrayList<>(list.size() + pathMap.size());
       result.addAll(list);
-      pathMap
-          .values()
-          .forEach(
-              pathList -> {
-                if (pathList.size() == 1) {
-                  result.add(pathList.getFirst());
-                } else {
-                  ExchangeHandler[] handlers =
-                      pathList.stream()
-                          .map(SpiRoutes.Entry::handler)
-                          .toList()
-                          .toArray(new ExchangeHandler[0]);
-                  result.add(pathList.getFirst().multiHandler(handlers));
-                }
-              });
+      pathMap.values().forEach(pathList -> {
+        if (pathList.size() == 1) {
+          result.add(pathList.getFirst());
+        } else {
+          ExchangeHandler[] handlers = pathList.stream()
+              .map(SpiRoutes.Entry::handler)
+              .toList()
+              .toArray(new ExchangeHandler[0]);
+          result.add(pathList.getFirst().multiHandler(handlers));
+        }
+      });
       return result;
     }
   }
