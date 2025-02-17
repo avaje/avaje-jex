@@ -1,8 +1,7 @@
 package io.avaje.jex.spi;
 
-import java.util.Map;
-
 import io.avaje.jex.http.Context;
+import java.util.Map;
 
 /**
  * Template rendering typically of html.
@@ -14,8 +13,8 @@ public non-sealed interface TemplateRender extends JexExtension {
   /**
    * Return the extensions this template renders for by default.
    *
-   * <p>When the template render is not explicitly registered, it can be automatically registered
-   * via ServiceLoader with the provided extensions by default.
+   * <p>When the template render is not explicitly registered, it can be automatically registered via ServiceLoader
+   * with the provided extensions by default.
    */
   String[] defaultExtensions();
 

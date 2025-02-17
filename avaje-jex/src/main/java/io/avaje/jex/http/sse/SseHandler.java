@@ -1,13 +1,12 @@
 package io.avaje.jex.http.sse;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.util.function.Consumer;
-
 import io.avaje.jex.core.Constants;
 import io.avaje.jex.http.BadRequestException;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.http.ExchangeHandler;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.function.Consumer;
 
 /** Handler that configures a request for Server Sent Events */
 final class SseHandler implements ExchangeHandler {

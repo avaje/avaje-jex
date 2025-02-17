@@ -1,13 +1,12 @@
 package io.avaje.jex.routes;
 
+import io.avaje.jex.Routing;
+import io.avaje.jex.http.HttpFilter;
 import java.lang.System.Logger.Level;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
-
-import io.avaje.jex.Routing;
-import io.avaje.jex.http.HttpFilter;
 
 final class Routes implements SpiRoutes {
 

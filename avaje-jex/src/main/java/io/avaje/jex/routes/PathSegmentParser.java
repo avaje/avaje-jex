@@ -1,11 +1,11 @@
 package io.avaje.jex.routes;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
-
-import static java.util.stream.Collectors.toList;
 
 final class PathSegmentParser {
 
@@ -60,14 +60,13 @@ final class PathSegmentParser {
     for (String token : tokens) {
       appendedTokens.append(token);
       if (!segment.startsWith(appendedTokens.toString())) {
-        throw new IllegalArgumentException(
-            "Path ["
-                + rawPath
-                + "] has illegal segment ["
-                + segment
-                + "] starting at position ["
-                + position
-                + "]");
+        throw new IllegalArgumentException("Path ["
+            + rawPath
+            + "] has illegal segment ["
+            + segment
+            + "] starting at position ["
+            + position
+            + "]");
       }
       position += token.length();
       segments.add(tokenSegment(token));
@@ -113,14 +112,13 @@ final class PathSegmentParser {
   private void checkAdjacentViolations() {
     for (String adjacentViolation : ADJACENT_VIOLATIONS) {
       if (segment.contains(adjacentViolation)) {
-        throw new IllegalArgumentException(
-            "Path ["
-                + rawPath
-                + "] has illegal segment ["
-                + segment
-                + "] that contains ["
-                + adjacentViolation
-                + "]");
+        throw new IllegalArgumentException("Path ["
+            + rawPath
+            + "] has illegal segment ["
+            + segment
+            + "] that contains ["
+            + adjacentViolation
+            + "]");
       }
     }
   }

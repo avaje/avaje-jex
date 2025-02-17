@@ -5,11 +5,10 @@ import java.net.URL;
 /**
  * Loading resources from the classpath or module path.
  *
- * <p>When not specified Avaje Jex provides a default implementation that looks to find resources
- * using the class loader associated with the ClassResourceLoader.
+ * <p>When not specified Avaje Jex provides a default implementation that looks to find resources using the class loader
+ * associated with the ClassResourceLoader.
  *
- * <p>As a fallback, {@link ClassLoader#getSystemResourceAsStream(String)} is used if the loader
- * returns null.
+ * <p>As a fallback, {@link ClassLoader#getSystemResourceAsStream(String)} is used if the loader returns null.
  */
 public interface ClassResourceLoader {
 

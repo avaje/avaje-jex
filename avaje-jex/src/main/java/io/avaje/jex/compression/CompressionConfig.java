@@ -9,15 +9,14 @@ public final class CompressionConfig {
 
   private static final int HTTP_PACKET_SIZE = 1500;
 
-  private static final Set<String> excludedMimeTypes =
-      Set.of(
-          "application/compress",
-          "application/zip",
-          "application/gzip",
-          "application/bzip2",
-          "application/brotli",
-          "application/x-xz",
-          "application/x-rar-compressed");
+  private static final Set<String> excludedMimeTypes = Set.of(
+      "application/compress",
+      "application/zip",
+      "application/gzip",
+      "application/bzip2",
+      "application/brotli",
+      "application/x-xz",
+      "application/x-rar-compressed");
 
   private boolean enabled = true;
 
@@ -72,8 +71,7 @@ public final class CompressionConfig {
   public CompressionConfig minSizeForCompression(int minSizeForCompression) {
     this.minSizeForCompression = minSizeForCompression;
     if (minSizeForCompression < HTTP_PACKET_SIZE) {
-      throw new IllegalArgumentException(
-          "Compression should only happen on payloads bigger than an http packet");
+      throw new IllegalArgumentException("Compression should only happen on payloads bigger than an http packet");
     }
     return this;
   }
