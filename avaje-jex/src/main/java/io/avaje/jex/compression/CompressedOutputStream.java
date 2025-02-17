@@ -1,18 +1,14 @@
 package io.avaje.jex.compression;
 
+import io.avaje.jex.core.Constants;
+import io.avaje.jex.http.Context;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-import io.avaje.jex.core.Constants;
-import io.avaje.jex.http.Context;
-
-/**
- * OutputStream implementation that conditionally compresses the output based on configuration and
- * request headers.
- */
+/** OutputStream implementation that conditionally compresses the output based on configuration and request headers. */
 public final class CompressedOutputStream extends OutputStream {
 
   private final int minSizeForCompression;
@@ -23,8 +19,7 @@ public final class CompressedOutputStream extends OutputStream {
   private OutputStream compressedStream;
   private boolean compressionDecided;
 
-  public CompressedOutputStream(
-      CompressionConfig compression, Context ctx, OutputStream originStream) {
+  public CompressedOutputStream(CompressionConfig compression, Context ctx, OutputStream originStream) {
     this.minSizeForCompression = compression.minSizeForCompression();
     this.compression = compression;
     this.ctx = ctx;

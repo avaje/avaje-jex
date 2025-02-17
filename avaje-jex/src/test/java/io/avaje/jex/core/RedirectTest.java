@@ -1,32 +1,25 @@
 package io.avaje.jex.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.avaje.jex.Jex;
+import java.net.http.HttpResponse;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-
-import java.net.http.HttpResponse;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class RedirectTest {
 
   static TestPair pair = init();
 
   static TestPair init() {
-    var app =
-        Jex.create()
-            .routing(
-                routing ->
-                    routing
-                        .filter(
-                            (ctx, chain) -> {
-                              if (ctx.path().contains("/other/")) ctx.redirect("/two?from=filter");
-                              chain.proceed();
-                            })
-                        .get("/one", ctx -> ctx.text("one"))
-                        .get("/two", ctx -> ctx.text("two"))
-                        .get("/redirect/me", ctx -> ctx.redirect("/one?from=handler"))
-                        .get("/other/me", ctx -> ctx.text("never hit")));
+    var app = Jex.create().routing(routing -> routing.filter((ctx, chain) -> {
+          if (ctx.path().contains("/other/")) ctx.redirect("/two?from=filter");
+          chain.proceed();
+        })
+        .get("/one", ctx -> ctx.text("one"))
+        .get("/two", ctx -> ctx.text("two"))
+        .get("/redirect/me", ctx -> ctx.redirect("/one?from=handler"))
+        .get("/other/me", ctx -> ctx.text("never hit")));
     return TestPair.create(app);
   }
 

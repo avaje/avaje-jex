@@ -3,6 +3,14 @@ package io.avaje.jex.http;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import io.avaje.jex.core.Constants;
+import io.avaje.jex.core.json.JsonbOutput;
+import io.avaje.jex.security.BasicAuthCredentials;
+import io.avaje.jex.security.Role;
+import io.avaje.jex.spi.JsonService;
+import io.avaje.jsonb.JsonType;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
@@ -14,18 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
-
 import javax.net.ssl.SSLSession;
-
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpExchange;
-
-import io.avaje.jex.core.Constants;
-import io.avaje.jex.core.json.JsonbOutput;
-import io.avaje.jex.security.BasicAuthCredentials;
-import io.avaje.jex.security.Role;
-import io.avaje.jex.spi.JsonService;
-import io.avaje.jsonb.JsonType;
 
 /** Provides access to functions for handling the request and response. */
 public interface Context {
@@ -50,8 +47,7 @@ public interface Context {
   /**
    * Gets basic-auth credentials from the request.
    *
-   * @return The Base64 decoded username and password from the Authorization header, or null if no
-   *     header is sent
+   * @return The Base64 decoded username and password from the Authorization header, or null if no header is sent
    * @throws IllegalStateException if the Authorization header is malformed
    */
   BasicAuthCredentials basicAuthCredentials();
@@ -204,8 +200,7 @@ public interface Context {
   /**
    * Sets the response headers using the provided map.
    *
-   * @param headers A map containing the header names as keys and their corresponding values as
-   *     lists.
+   * @param headers A map containing the header names as keys and their corresponding values as lists.
    * @return The updated context object.
    */
   Context headerMap(Map<String, List<String>> headers);
@@ -258,16 +253,14 @@ public interface Context {
   }
 
   /**
-   * Write the stream as a JSON stream with new line delimiters {@literal
-   * application/x-json-stream}.
+   * Write the stream as a JSON stream with new line delimiters {@literal application/x-json-stream}.
    *
    * @param iterator The iterator of beans to write as json
    */
   <E> void jsonStream(Iterator<E> iterator);
 
   /**
-   * Write the stream as a JSON stream with new line delimiters {@literal
-   * application/x-json-stream}.
+   * Write the stream as a JSON stream with new line delimiters {@literal application/x-json-stream}.
    *
    * @param stream The stream of beans to write as json
    */
@@ -295,8 +288,8 @@ public interface Context {
   String method();
 
   /**
-   * Return the outputStream to write content. It is expected that the {@link #contentType(String)}
-   * has been set prior to obtaining and writing to the outputStream.
+   * Return the outputStream to write content. It is expected that the {@link #contentType(String)} has been set prior
+   * to obtaining and writing to the outputStream.
    *
    * @return The outputStream to write content to.
    */
@@ -494,9 +487,9 @@ public interface Context {
   void write(String content);
 
   /**
-   * This interface represents a cookie used in HTTP communication. Cookies are small pieces of data
-   * sent from a server to a web browser and stored on the user's computer. They can be used to
-   * store information about a user's session, preferences, or other data.
+   * This interface represents a cookie used in HTTP communication. Cookies are small pieces of data sent from a
+   * server to a web browser and stored on the user's computer. They can be used to store information about a user's
+   * session, preferences, or other data.
    */
   interface Cookie {
 
@@ -508,8 +501,8 @@ public interface Context {
     }
 
     /**
-     * Creates and returns a new expired cookie with the given name. This cookie will be sent to the
-     * browser but will be immediately discarded. It's useful for removing existing cookies.
+     * Creates and returns a new expired cookie with the given name. This cookie will be sent to the browser but
+     * will be immediately discarded. It's useful for removing existing cookies.
      *
      * @param name The name of the cookie.
      * @return A new expired cookie with the given name.
@@ -562,19 +555,18 @@ public interface Context {
     /**
      * Indicates if the HttpOnly attribute is enabled for this cookie.
      *
-     * <p>The HttpOnly attribute ensures that the cookie is inaccessible to JavaScript, helping to
-     * mitigate cross-site scripting (XSS) attacks.
+     * <p>The HttpOnly attribute ensures that the cookie is inaccessible to JavaScript, helping to mitigate
+     * cross-site scripting (XSS) attacks.
      *
-     * @return {@code true} if the cookie has the HttpOnly attribute enabled, {@code false}
-     *     otherwise
+     * @return {@code true} if the cookie has the HttpOnly attribute enabled, {@code false} otherwise
      */
     boolean httpOnly();
 
     /**
      * Sets the HttpOnly attribute for this cookie.
      *
-     * <p>When enabled, the cookie will not be accessible via client-side scripts, providing
-     * additional security against XSS attacks.
+     * <p>When enabled, the cookie will not be accessible via client-side scripts, providing additional security
+     * against XSS attacks.
      *
      * @param httpOnly {@code true} to enable the HttpOnly attribute, {@code false} to disable it
      * @return this cookie instance with the updated HttpOnly attribute
@@ -582,16 +574,16 @@ public interface Context {
     Cookie httpOnly(boolean httpOnly);
 
     /**
-     * Returns the maximum age (in seconds) of this cookie. An expired cookie (maxAge of 0) will be
-     * deleted immediately by the browser.
+     * Returns the maximum age (in seconds) of this cookie. An expired cookie (maxAge of 0) will be deleted
+     * immediately by the browser.
      *
      * @return The maximum age of the cookie in seconds, or null if not set.
      */
     Duration maxAge();
 
     /**
-     * Sets the maximum age (in seconds) of this cookie. An expired cookie (maxAge of 0) will be
-     * deleted immediately by the browser.
+     * Sets the maximum age (in seconds) of this cookie. An expired cookie (maxAge of 0) will be deleted immediately
+     * by the browser.
      *
      * @param maxAge The maximum age of the cookie in seconds.
      * @return A new cookie instance with the updated maxAge.
@@ -612,16 +604,16 @@ public interface Context {
     Cookie partitioned(boolean partitioned);
 
     /**
-     * Returns the path on the server for which this cookie is valid. Cookies are only sent to the
-     * browser if the URL path starts with this value.
+     * Returns the path on the server for which this cookie is valid. Cookies are only sent to the browser if the
+     * URL path starts with this value.
      *
      * @return The path associated with the cookie, or null if not set.
      */
     String path();
 
     /**
-     * Sets the path on the server for which this cookie is valid. Cookies are only sent to the
-     * browser if the URL path starts with this value.
+     * Sets the path on the server for which this cookie is valid. Cookies are only sent to the browser if the URL
+     * path starts with this value.
      *
      * @param path The path on the server for which the cookie should be valid.
      * @return A new cookie instance with the updated path.

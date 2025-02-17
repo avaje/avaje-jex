@@ -4,7 +4,6 @@ import io.avaje.http.client.HttpClient;
 import io.avaje.http.client.HttpClientRequest;
 import io.avaje.http.client.JacksonBodyAdapter;
 import io.avaje.jex.Jex;
-
 import java.time.Duration;
 import java.util.Random;
 
@@ -50,12 +49,11 @@ public class TestPair {
     var jexServer = app.port(port).start();
 
     var url = "http://localhost:" + port;
-    var client =
-        HttpClient.builder()
-            .baseUrl(url)
-            .bodyAdapter(new JacksonBodyAdapter())
-            .requestTimeout(Duration.ofMinutes(2))
-            .build();
+    var client = HttpClient.builder()
+        .baseUrl(url)
+        .bodyAdapter(new JacksonBodyAdapter())
+        .requestTimeout(Duration.ofMinutes(2))
+        .build();
 
     return new TestPair(port, jexServer, client);
   }

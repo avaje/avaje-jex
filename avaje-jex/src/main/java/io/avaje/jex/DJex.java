@@ -1,11 +1,10 @@
 package io.avaje.jex;
 
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.spi.HttpServerProvider;
 import io.avaje.inject.BeanScope;
 import io.avaje.jex.core.BootstrapServer;
 import io.avaje.jex.spi.*;
-import com.sun.net.httpserver.HttpsConfigurator;
-import com.sun.net.httpserver.spi.HttpServerProvider;
-
 import java.util.*;
 import java.util.function.Consumer;
 

@@ -1,11 +1,9 @@
 package io.avaje.jex.core;
 
-import java.lang.System.Logger.Level;
-
 import com.sun.net.httpserver.HttpServer;
-
 import io.avaje.jex.AppLifecycle;
 import io.avaje.jex.Jex;
+import java.lang.System.Logger.Level;
 
 final class JdkJexServer implements Jex.Server {
 
