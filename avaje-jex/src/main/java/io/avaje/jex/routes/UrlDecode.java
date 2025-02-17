@@ -1,13 +1,17 @@
 package io.avaje.jex.routes;
 
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-final class UrlDecode {
+public final class UrlDecode {
 
-  static String decode(String s) {
-    return URLDecoder.decode(s.replace("+", "%2B"), UTF_8).replace("%2B", "+");
+  public static String decode(String s) {
+    return decode(s, UTF_8);
   }
 
+  public static String decode(String s, Charset charset) {
+    return URLDecoder.decode(s.replace("+", "%2B"), charset).replace("%2B", "+");
+  }
 }

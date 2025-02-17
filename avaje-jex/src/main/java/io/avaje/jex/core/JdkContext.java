@@ -41,7 +41,6 @@ import io.avaje.jex.security.Role;
 
 final class JdkContext implements Context {
 
-  private static final String UTF8 = "UTF8";
   private static final String SET_COOKIE = "Set-Cookie";
   private static final String COOKIE = "Cookie";
   private final ServiceManager mgr;
@@ -56,7 +55,7 @@ final class JdkContext implements Context {
   private Map<String, String> cookieMap;
   private int statusCode;
 
-  private String characterEncoding;
+  private Charset characterEncoding;
 
   JdkContext(
       ServiceManager mgr,
@@ -120,7 +119,7 @@ final class JdkContext implements Context {
 
   @Override
   public String body() {
-    return new String(bodyAsBytes(), Charset.forName(characterEncoding()));
+    return new String(bodyAsBytes(), characterEncoding());
   }
 
   @Override
@@ -147,7 +146,7 @@ final class JdkContext implements Context {
     return mgr.fromJson(beanType, bodyAsInputStream());
   }
 
-  private String characterEncoding() {
+  private Charset characterEncoding() {
     if (characterEncoding == null) {
       characterEncoding = mgr.requestCharset(this);
     }
@@ -389,7 +388,7 @@ final class JdkContext implements Context {
 
   private Map<String, List<String>> queryParams() {
     if (queryParams == null) {
-      queryParams = mgr.parseParamMap(queryString(), UTF8);
+      queryParams = mgr.parseParamMap(queryString(), StandardCharsets.UTF_8);
     }
     return queryParams;
   }

@@ -2,11 +2,10 @@ package io.avaje.jex.core;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UncheckedIOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.System.Logger.Level;
 import java.lang.reflect.Type;
-import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -22,6 +21,7 @@ import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.core.json.JacksonJsonService;
 import io.avaje.jex.core.json.JsonbJsonService;
 import io.avaje.jex.http.Context;
+import io.avaje.jex.routes.UrlDecode;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
@@ -29,7 +29,6 @@ import io.avaje.jex.spi.TemplateRender;
 final class ServiceManager {
 
   private static final System.Logger log = System.getLogger("io.avaje.jex");
-  private static final String UTF_8 = "UTF-8";
 
   private final CompressionConfig compressionConfig;
   private final JsonService jsonService;
@@ -120,42 +119,38 @@ final class ServiceManager {
     templateManager.render(ctx, name, model);
   }
 
-  String requestCharset(Context ctx) {
+  Charset requestCharset(Context ctx) {
     return parseCharset(ctx.header(Constants.CONTENT_TYPE));
   }
 
-  static String parseCharset(String header) {
+  static Charset parseCharset(String header) {
     if (header != null) {
       for (String val : header.split(";")) {
         val = val.trim();
         if (val.regionMatches(true, 0, "charset", 0, "charset".length())) {
-          return val.split("=")[1].trim();
+          return Charset.forName(val.split("=")[1].trim());
         }
       }
     }
-    return UTF_8;
+    return StandardCharsets.UTF_8;
   }
 
-  Map<String, List<String>> formParamMap(Context ctx, String charset) {
+  Map<String, List<String>> formParamMap(Context ctx, Charset charset) {
     return parseParamMap(ctx.body(), charset);
   }
 
-  Map<String, List<String>> parseParamMap(String body, String charset) {
+  Map<String, List<String>> parseParamMap(String body, Charset charset) {
     if (body == null || body.isEmpty()) {
       return Collections.emptyMap();
     }
-    try {
-      Map<String, List<String>> map = new LinkedHashMap<>();
-      for (String pair : body.split("&")) {
-        final String[] split1 = pair.split("=", 2);
-        String key = URLDecoder.decode(split1[0], charset);
-        String val = split1.length > 1 ? URLDecoder.decode(split1[1], charset) : "";
-        map.computeIfAbsent(key, s -> new ArrayList<>()).add(val);
-      }
-      return map;
-    } catch (UnsupportedEncodingException e) {
-      throw new UncheckedIOException(e);
+    Map<String, List<String>> map = new LinkedHashMap<>();
+    for (String pair : body.split("&")) {
+      final String[] split1 = pair.split("=", 2);
+      String key = UrlDecode.decode(split1[0], charset);
+      String val = split1.length > 1 ? UrlDecode.decode(split1[1], charset) : "";
+      map.computeIfAbsent(key, s -> new ArrayList<>()).add(val);
     }
+    return map;
   }
 
   String scheme() {
