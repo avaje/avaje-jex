@@ -1,8 +1,8 @@
 package io.avaje.jex.routes;
 
-import java.util.List;
-
 import static java.util.stream.Collectors.joining;
+
+import java.util.List;
 
 abstract sealed class PathSegment {
 
@@ -81,8 +81,8 @@ abstract sealed class PathSegment {
     @Override
     String asRegexString(boolean extract) {
       return segments.stream()
-        .map(pathSegment -> pathSegment.asRegexString(extract))
-        .collect(joining());
+          .map(pathSegment -> pathSegment.asRegexString(extract))
+          .collect(joining());
     }
 
     @Override
@@ -133,5 +133,4 @@ abstract sealed class PathSegment {
       paramNames.add(null); // null for wildcard
     }
   }
-
 }

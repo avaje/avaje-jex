@@ -1,5 +1,12 @@
 package io.avaje.jex.staticcontent;
 
+import com.sun.net.httpserver.HttpExchange;
+import io.avaje.jex.compression.CompressedOutputStream;
+import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.http.BadRequestException;
+import io.avaje.jex.http.Context;
+import io.avaje.jex.http.ExchangeHandler;
+import io.avaje.jex.http.NotFoundException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,15 +16,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
-
-import com.sun.net.httpserver.HttpExchange;
-
-import io.avaje.jex.compression.CompressedOutputStream;
-import io.avaje.jex.compression.CompressionConfig;
-import io.avaje.jex.http.BadRequestException;
-import io.avaje.jex.http.Context;
-import io.avaje.jex.http.ExchangeHandler;
-import io.avaje.jex.http.NotFoundException;
 
 abstract sealed class AbstractStaticHandler implements ExchangeHandler
     permits StaticFileHandler, StaticClassResourceHandler {

@@ -2,14 +2,12 @@ package io.avaje.jex.staticcontent;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.net.http.HttpResponse;
-import java.time.Duration;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
-
 import io.avaje.jex.Jex;
 import io.avaje.jex.test.TestPair;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 class CompressedStaticFileTest {
 
@@ -28,7 +26,8 @@ class CompressedStaticFileTest {
             .plugin(StaticContent.ofClassPath("/logback.xml").route("/single").build())
             .plugin(
                 StaticContent.ofFile("src/test/resources/logback.xml")
-                    .route("/singleFile").build());
+                    .route("/singleFile")
+                    .build());
 
     return TestPair.create(app);
   }
@@ -40,9 +39,7 @@ class CompressedStaticFileTest {
   }
 
   private static StaticContent.Builder defaultCP() {
-    return StaticContent.ofClassPath("/public")
-      .directoryIndex("index.html")
-      .preCompress();
+    return StaticContent.ofClassPath("/public").directoryIndex("index.html").preCompress();
   }
 
   @AfterAll

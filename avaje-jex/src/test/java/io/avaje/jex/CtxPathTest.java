@@ -2,12 +2,10 @@ package io.avaje.jex;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.avaje.jex.core.TestPair;
 import java.net.http.HttpResponse;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-
-import io.avaje.jex.core.TestPair;
 
 class CtxPathTest {
 

@@ -1,15 +1,13 @@
 package io.avaje.jex;
 
-import java.util.Map;
-import java.util.function.Consumer;
-
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.spi.HttpServerProvider;
-
 import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
+import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Jex configuration interface.
@@ -170,5 +168,4 @@ public interface JexConfig {
    *     default value is used
    */
   JexConfig socketBacklog(int backlog);
-
 }

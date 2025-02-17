@@ -8,22 +8,16 @@ import java.util.stream.Stream;
 
 final class RouteIndex {
 
-  /**
-   * Partition entries by the number of path segments.
-   */
+  /** Partition entries by the number of path segments. */
   private final IndexEntry[] entries;
 
-  /**
-   * Wildcard/splat based route entries.
-   */
+  /** Wildcard/splat based route entries. */
   private final SpiRoutes.Entry[] wildcardEntries;
 
   RouteIndex(List<SpiRoutes.Entry> wildcards, List<List<SpiRoutes.Entry>> pathEntries) {
     this.wildcardEntries = wildcards.toArray(new SpiRoutes.Entry[0]);
-    this.entries = pathEntries.stream()
-      .map(RouteIndex::toEntry)
-      .toList()
-      .toArray(new IndexEntry[0]);
+    this.entries =
+        pathEntries.stream().map(RouteIndex::toEntry).toList().toArray(new IndexEntry[0]);
   }
 
   @Override
@@ -37,7 +31,8 @@ final class RouteIndex {
                     .flatMap(Arrays::stream)
                     .map(Object::toString),
                 Arrays.stream(wildcardEntries).map(Object::toString))
-            .sorted().collect(joining(", "))
+            .sorted()
+            .collect(joining(", "))
         + '}';
   }
 

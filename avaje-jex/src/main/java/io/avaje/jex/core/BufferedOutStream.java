@@ -1,10 +1,9 @@
 package io.avaje.jex.core;
 
+import com.sun.net.httpserver.HttpExchange;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import com.sun.net.httpserver.HttpExchange;
 
 final class BufferedOutStream extends OutputStream {
 

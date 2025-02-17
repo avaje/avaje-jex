@@ -1,9 +1,9 @@
 package io.avaje.jex.routes;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class UrlDecode {
 

@@ -1,22 +1,19 @@
 package io.avaje.jex.core;
 
+import static java.util.Collections.emptyMap;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Collections.emptyMap;
-
-/**
- * Parse cookies based on RFC6265 skipping parameters.
- */
+/** Parse cookies based on RFC6265 skipping parameters. */
 final class CookieParser {
 
   private static final String QUOTE = "\"";
   private static final char[] QUOTE_CHARS = QUOTE.toCharArray();
 
-  private CookieParser() {
-  }
+  private CookieParser() {}
 
   private static final String RFC2965_VERSION = "$Version";
   private static final String RFC2965_PATH = "$Path";
@@ -71,14 +68,13 @@ final class CookieParser {
   }
 
   private static boolean ignore(String name) {
-    return (RFC2965_PATH.equalsIgnoreCase(name) || RFC2965_DOMAIN.equalsIgnoreCase(name)
-      || RFC2965_PORT.equalsIgnoreCase(name) || RFC2965_VERSION.equalsIgnoreCase(name));
+    return (RFC2965_PATH.equalsIgnoreCase(name)
+        || RFC2965_DOMAIN.equalsIgnoreCase(name)
+        || RFC2965_PORT.equalsIgnoreCase(name)
+        || RFC2965_VERSION.equalsIgnoreCase(name));
   }
 
-
-  /**
-   * Unwrap double-quotes if present.
-   */
+  /** Unwrap double-quotes if present. */
   private static String unwrap(String value) {
     if (value.length() >= 2 && '"' == value.charAt(0) && '"' == value.charAt(value.length() - 1)) {
       return value.substring(1, value.length() - 1);
@@ -86,9 +82,7 @@ final class CookieParser {
     return value;
   }
 
-  /**
-   * Tokenize with quoted sub-sequences.
-   */
+  /** Tokenize with quoted sub-sequences. */
   static List<String> tokenize(char separator, String text) {
     StringBuilder token = new StringBuilder();
     List<String> result = new ArrayList<>();

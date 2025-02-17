@@ -67,30 +67,22 @@ final class PathParser {
     return PathSegmentParser.parse(segment, rawPath);
   }
 
-  /**
-   * Return the raw path that was parsed (match path).
-   */
+  /** Return the raw path that was parsed (match path). */
   String raw() {
     return rawPath;
   }
 
-  /**
-   * Return the number of path segments.
-   */
+  /** Return the number of path segments. */
   int segmentCount() {
     return segmentCount;
   }
 
-  /**
-   * Return true if one of the segments is wildcard or slash accepting.
-   */
+  /** Return true if one of the segments is wildcard or slash accepting. */
   boolean multiSlash() {
     return multiSlash;
   }
 
-  /**
-   * Return true if all path segments are literal.
-   */
+  /** Return true if all path segments are literal. */
   boolean literal() {
     return literal;
   }

@@ -2,13 +2,11 @@ package io.avaje.jex.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.nio.file.DirectoryIteratorException;
-
 import io.avaje.jex.Jex;
 import io.avaje.jex.Routing;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.http.ExceptionHandler;
-
+import java.nio.file.DirectoryIteratorException;
 import org.junit.jupiter.api.Test;
 
 class DefaultErrorHandlingTest {

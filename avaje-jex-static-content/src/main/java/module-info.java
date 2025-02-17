@@ -1,5 +1,6 @@
 /**
- * Defines the Static Content API for serving static resources with Jex - see {@link io.avaje.jex.staticcontent.StaticContent}.
+ * Defines the Static Content API for serving static resources with Jex - see {@link
+ * io.avaje.jex.staticcontent.StaticContent}.
  *
  * <pre>{@code
  * var staticContent = StaticContentService.createCP("/public").httpPath("/").directoryIndex("index.html");
@@ -13,9 +14,7 @@
  * }</pre>
  */
 module io.avaje.jex.staticcontent {
-
   exports io.avaje.jex.staticcontent;
 
   requires transitive io.avaje.jex;
-
 }

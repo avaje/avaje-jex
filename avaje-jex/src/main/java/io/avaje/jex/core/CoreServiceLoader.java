@@ -1,14 +1,13 @@
 package io.avaje.jex.core;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ServiceLoader;
-
 import io.avaje.jex.spi.JexExtension;
 import io.avaje.jex.spi.JexPlugin;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.ServiceLoader;
 
 /** Loads SPI Services. */
 final class CoreServiceLoader {

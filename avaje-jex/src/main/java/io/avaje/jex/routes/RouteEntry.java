@@ -1,11 +1,10 @@
 package io.avaje.jex.routes;
 
+import io.avaje.jex.http.ExchangeHandler;
+import io.avaje.jex.security.Role;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
-
-import io.avaje.jex.http.ExchangeHandler;
-import io.avaje.jex.security.Role;
 
 final class RouteEntry implements SpiRoutes.Entry {
 
