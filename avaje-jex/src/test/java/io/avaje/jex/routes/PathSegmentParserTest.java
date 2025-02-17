@@ -36,7 +36,8 @@ class PathSegmentParserTest {
 
   @Test
   void matchMulti() {
-    assertThat(multi("before{id:[0-9]+}<foo>after")).containsExactly("before", "{id:[0-9]+}", "<foo>", "after");
+    assertThat(multi("before{id:[0-9]+}<foo>after"))
+        .containsExactly("before", "{id:[0-9]+}", "<foo>", "after");
 
     assertThat(multi("a-<foo>-b")).containsExactly("a-", "<foo>", "-b");
     assertThat(multi("a-{foo}-b")).containsExactly("a-", "{foo}", "-b");

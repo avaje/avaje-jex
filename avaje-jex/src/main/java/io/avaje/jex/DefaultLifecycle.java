@@ -117,5 +117,4 @@ final class DefaultLifecycle implements AppLifecycle {
       return Integer.compare(order, other.order);
     }
   }
-
 }

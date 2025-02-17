@@ -18,9 +18,7 @@ class FreeMarkerRenderTest {
 
   static TestPair init() {
     final List<Routing.HttpService> services = List.of(new NoModel(), new WithModel());
-    var app = Jex.create()
-      .routing(services)
-      .register(new FreeMarkerRender(), "ftl");
+    var app = Jex.create().routing(services).register(new FreeMarkerRender(), "ftl");
     return TestPair.create(app);
   }
 

@@ -28,14 +28,14 @@ class StaticFileTest {
             .plugin(StaticContent.createCP("/logback.xml").route("/single").build())
             .plugin(
                 StaticContent.createFile("src/test/resources/logback.xml")
-                    .route("/singleFile").build());
+                    .route("/singleFile")
+                    .build());
 
     return TestPair.create(app);
   }
 
   private static StaticContent.Builder defaultFile() {
-    return StaticContent.createFile("src/test/resources/public")
-        .directoryIndex("index.html");
+    return StaticContent.createFile("src/test/resources/public").directoryIndex("index.html");
   }
 
   private static StaticContent.Builder defaultCP() {

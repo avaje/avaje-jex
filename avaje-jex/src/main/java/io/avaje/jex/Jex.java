@@ -35,7 +35,6 @@ public sealed interface Jex permits DJex {
    * Create Jex.
    *
    * <pre>{@code
-   *
    * final Jex.Server app = Jex.create()
    *   .routing(routing -> routing
    *     .get("/", ctx -> ctx.text("hello world"))
@@ -188,7 +187,6 @@ public sealed interface Jex permits DJex {
    *
    * @param path the common path prefix
    * @param group the function to register the rout handlers
-   *
    */
   default Jex group(String path, HttpService group) {
     routing().group(path, group);
@@ -234,7 +232,8 @@ public sealed interface Jex permits DJex {
   /**
    * Sets the port number on which the Jex server will listen for incoming requests.
    *
-   * <p>The default value is 8080. If The port is set to 0, the server will randomly choose an available port.
+   * <p>The default value is 8080. If The port is set to 0, the server will randomly choose an
+   * available port.
    *
    * @param port The port number to use.
    */

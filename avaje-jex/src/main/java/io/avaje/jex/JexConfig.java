@@ -185,5 +185,4 @@ public sealed interface JexConfig permits DJexConfig {
    *     default value is used
    */
   JexConfig socketBacklog(int backlog);
-
 }

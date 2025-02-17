@@ -15,10 +15,8 @@ import io.avaje.jex.spi.JexExtension;
  * }</pre>
  *
  * @uses JexExtension
- *
  */
 module io.avaje.jex {
-
   exports io.avaje.jex;
   exports io.avaje.jex.compression;
   exports io.avaje.jex.http;

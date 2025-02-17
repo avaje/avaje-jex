@@ -46,7 +46,6 @@ public sealed interface Routing permits DefaultRouting {
    *
    * @param path the common path prefix
    * @param group the function to register the rout handlers
-   *
    */
   Routing group(String path, HttpService group);
 
