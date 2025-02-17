@@ -1,14 +1,13 @@
 package io.avaje.jex.routes;
 
-import org.assertj.core.api.ThrowableAssertAlternative;
-import org.junit.jupiter.api.Test;
-
-import java.util.Map;
-
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Map;
+import org.assertj.core.api.ThrowableAssertAlternative;
+import org.junit.jupiter.api.Test;
 
 class PathParserTest {
 
@@ -87,8 +86,7 @@ class PathParserTest {
   @Test
   void illegalPath_adjacentViolation() {
     asList("/one/*<a>/after", "*{", "}*", "*<", ">*")
-        .forEach(
-            path -> assertThrows(IllegalArgumentException.class, () -> new PathParser(path, true)));
+        .forEach(path -> assertThrows(IllegalArgumentException.class, () -> new PathParser(path, true)));
   }
 
   @Test
@@ -354,18 +352,15 @@ class PathParserTest {
   void matchMulti_when_illegalSegments_expect_IllegalArgumentException() {
 
     expectParseError("some/a-<foo<bar>>-b")
-        .withMessage(
-            "Path [some/a-<foo<bar>>-b] has illegal segment [a-<foo<bar>>-b] starting at position"
-                + " [2]");
+        .withMessage("Path [some/a-<foo<bar>>-b] has illegal segment [a-<foo<bar>>-b] starting at position"
+            + " [2]");
 
     expectParseError("some/before/more-{foo{bar}}-b/after")
-        .withMessage(
-            "Path [some/before/more-{foo{bar}}-b/after] has illegal segment [more-{foo{bar}}-b]"
-                + " starting at position [5]");
+        .withMessage("Path [some/before/more-{foo{bar}}-b/after] has illegal segment [more-{foo{bar}}-b]"
+            + " starting at position [5]");
   }
 
   private ThrowableAssertAlternative<IllegalArgumentException> expectParseError(String path) {
-    return assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> new PathParser(path, true));
+    return assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new PathParser(path, true));
   }
 }

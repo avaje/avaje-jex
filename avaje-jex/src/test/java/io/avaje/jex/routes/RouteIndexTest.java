@@ -3,7 +3,6 @@ package io.avaje.jex.routes;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Set;
-
 import org.junit.jupiter.api.Test;
 
 class RouteIndexTest {

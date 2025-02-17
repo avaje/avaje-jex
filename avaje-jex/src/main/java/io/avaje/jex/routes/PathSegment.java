@@ -1,8 +1,8 @@
 package io.avaje.jex.routes;
 
-import java.util.List;
-
 import static java.util.stream.Collectors.joining;
+
+import java.util.List;
 
 abstract sealed class PathSegment {
 

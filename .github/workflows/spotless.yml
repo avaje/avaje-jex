@@ -2,7 +2,6 @@ name: Spotless Check
 on: [push, workflow_dispatch]
 
 concurrency:
-    group: "${{ github.workflow }}-${{ github.event.number || github.ref }}"
     cancel-in-progress: true
 jobs:
   check:
@@ -19,4 +18,4 @@ jobs:
           java-version: 21
           distribution: 'zulu'
       - name: Run Spotless Check
-        run:  mvn --batch-mode --no-transfer-progress spotless:check ${{ inputs.maven-args }}
+        run:  mvn --batch-mode --no-transfer-progress spotless:check

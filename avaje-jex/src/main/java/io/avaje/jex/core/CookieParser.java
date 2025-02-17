@@ -1,11 +1,11 @@
 package io.avaje.jex.core;
 
+import static java.util.Collections.emptyMap;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.Collections.emptyMap;
 
 /** Parse cookies based on RFC6265 skipping parameters. */
 final class CookieParser {

@@ -1,12 +1,11 @@
 package io.avaje.jex.staticcontent;
 
+import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.http.Context;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.function.Predicate;
-
-import io.avaje.jex.compression.CompressionConfig;
-import io.avaje.jex.http.Context;
 
 final class StaticClassResourceHandler extends AbstractStaticHandler {
 
@@ -25,14 +24,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
       URL singleFile,
       boolean precompress,
       CompressionConfig compressionConfig) {
-    super(
-        urlPrefix,
-        filesystemRoot,
-        mimeTypes,
-        headers,
-        skipFilePredicate,
-        precompress,
-        compressionConfig);
+    super(urlPrefix, filesystemRoot, mimeTypes, headers, skipFilePredicate, precompress, compressionConfig);
 
     this.resourceLoader = resourceLoader;
     this.indexFile = indexFile;
