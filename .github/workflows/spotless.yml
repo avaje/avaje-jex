@@ -1,7 +1,11 @@
-name: Auto-Format
+name: Spotless Check
 on: [push, workflow_dispatch]
+
+concurrency:
+    group: "${{ github.workflow }}-${{ github.event.number || github.ref }}"
+    cancel-in-progress: true
 jobs:
-  format:
+  check:
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -14,7 +18,5 @@ jobs:
         with:
           java-version: 21
           distribution: 'zulu'
-      - name: Format Code
-        uses: axel-op/googlejavaformat-action@v3
-        with:
-          args: "--skip-sorting-imports --replace"
+      - name: Run Spotless Check
+        run:  mvn --batch-mode --no-transfer-progress spotless:check ${{ inputs.maven-args }}
