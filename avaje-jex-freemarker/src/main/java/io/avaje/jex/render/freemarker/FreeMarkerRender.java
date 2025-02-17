@@ -34,7 +34,7 @@ public class FreeMarkerRender implements TemplateRender {
 
   @Override
   public String[] defaultExtensions() {
-    return new String[]{"ftl"};
+    return new String[] {"ftl"};
   }
 
   @Override

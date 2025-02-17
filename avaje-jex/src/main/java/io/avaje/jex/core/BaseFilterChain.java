@@ -13,7 +13,8 @@ final class BaseFilterChain implements FilterChain {
   private final JdkContext ctx;
   private final ServiceManager mgr;
 
-  BaseFilterChain(Iterator<HttpFilter> filters, ExchangeHandler handler, JdkContext ctx, ServiceManager mgr) {
+  BaseFilterChain(
+      Iterator<HttpFilter> filters, ExchangeHandler handler, JdkContext ctx, ServiceManager mgr) {
     this.filters = filters;
     this.handler = handler;
     this.ctx = ctx;

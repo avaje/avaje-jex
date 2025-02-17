@@ -30,7 +30,8 @@ final class DHxHandler implements ExchangeHandler {
   }
 
   private boolean matched(Context ctx) {
-    if ((target != null && notMatched(ctx.header(HX_TARGET), target)) || (trigger != null && notMatched(ctx.header(HX_TRIGGER), trigger))) {
+    if ((target != null && notMatched(ctx.header(HX_TARGET), target))
+        || (trigger != null && notMatched(ctx.header(HX_TRIGGER), trigger))) {
       return false;
     }
     return triggerName == null || !notMatched(ctx.header(HX_TRIGGER_NAME), triggerName);
@@ -39,5 +40,4 @@ final class DHxHandler implements ExchangeHandler {
   private boolean notMatched(String header, String matchValue) {
     return header == null || !matchValue.equals(header);
   }
-
 }

@@ -13,14 +13,10 @@ final class Routes implements SpiRoutes {
 
   private static final System.Logger log = System.getLogger("io.avaje.jex");
 
-  /**
-   * The "real" handlers by http method.
-   */
+  /** The "real" handlers by http method. */
   private final EnumMap<Routing.Type, RouteIndex> typeMap;
 
-  /**
-   * The filters.
-   */
+  /** The filters. */
   private final List<HttpFilter> filters;
 
   private final AtomicLong noRouteCounter = new AtomicLong();
@@ -57,7 +53,7 @@ final class Routes implements SpiRoutes {
   @Override
   public void waitForIdle(long maxSeconds) {
     log.log(Level.DEBUG, "stopping server with maxWaitSeconds {0}", maxSeconds);
-    maxWaitAttempts(maxSeconds * 20);  // 50 millis per attempt
+    maxWaitAttempts(maxSeconds * 20); // 50 millis per attempt
     park50Millis();
     if (!maxWaitAttempts(5)) {
       log.log(Level.WARNING, "Active requests still in process");

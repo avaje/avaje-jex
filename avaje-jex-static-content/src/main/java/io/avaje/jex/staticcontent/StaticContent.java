@@ -9,22 +9,21 @@ import io.avaje.jex.spi.JexPlugin;
 
 /**
  * Static content resource handler.
+ *
  * <pre>{@code
+ * var staticContent = StaticContent.createFile("src/test/resources/public")
+ *    .directoryIndex("index.html")
+ *    .preCompress()
+ *    .build()
  *
- *  var staticContent = StaticContent.createFile("src/test/resources/public")
- *     .directoryIndex("index.html")
- *     .preCompress()
- *     .build()
- *
- *  Jex.create()
- *    .plugin(staticContent)
- *    .port(8080)
- *    .start();
+ * Jex.create()
+ *   .plugin(staticContent)
+ *   .port(8080)
+ *   .start();
  *
  * }</pre>
  */
-public sealed interface StaticContent extends JexPlugin
-  permits StaticResourceHandlerBuilder {
+public sealed interface StaticContent extends JexPlugin permits StaticResourceHandlerBuilder {
 
   /**
    * Create and return a new static content class path configuration.
@@ -36,8 +35,8 @@ public sealed interface StaticContent extends JexPlugin
   }
 
   /**
-   * Create and return a new static content class path configuration with the
-   * `/public` directory as the root.
+   * Create and return a new static content class path configuration with the `/public` directory as
+   * the root.
    */
   static Builder createCP() {
     return StaticResourceHandlerBuilder.builder("/public/");
@@ -52,11 +51,8 @@ public sealed interface StaticContent extends JexPlugin
     return StaticResourceHandlerBuilder.builder(resourceRoot).file();
   }
 
-  /**
-   * Builder for StaticContent.
-   */
-  sealed interface Builder
-    permits StaticResourceHandlerBuilder {
+  /** Builder for StaticContent. */
+  sealed interface Builder permits StaticResourceHandlerBuilder {
 
     /**
      * Sets the HTTP route for the static resource handler.
@@ -97,9 +93,9 @@ public sealed interface StaticContent extends JexPlugin
      * Adds a new MIME type mapping to the configuration. (Default: uses {@link
      * URLConnection#getFileNameMap()}
      *
-     * @param ext      the file extension (e.g., "html", "css", "js")
+     * @param ext the file extension (e.g., "html", "css", "js")
      * @param mimeType the corresponding MIME type (e.g., "text/html", "text/css",
-     *                 "application/javascript")
+     *     "application/javascript")
      * @return the updated configuration
      */
     Builder putMimeTypeMapping(String ext, String mimeType);
@@ -107,7 +103,7 @@ public sealed interface StaticContent extends JexPlugin
     /**
      * Adds a new response header to the configuration.
      *
-     * @param key   the header name
+     * @param key the header name
      * @param value the header value
      * @return the updated configuration
      */
@@ -121,9 +117,7 @@ public sealed interface StaticContent extends JexPlugin
      */
     Builder skipFilePredicate(Predicate<Context> skipFilePredicate);
 
-    /**
-     * Build and return the StaticContent.
-     */
+    /** Build and return the StaticContent. */
     StaticContent build();
   }
 }

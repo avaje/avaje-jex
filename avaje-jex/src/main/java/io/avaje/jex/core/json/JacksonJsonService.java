@@ -25,7 +25,7 @@ public final class JacksonJsonService implements JsonService {
   /** Create with defaults for Jackson */
   public JacksonJsonService() {
     this.mapper =
-      new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
   /** Create with a Jackson instance that might have custom configuration. */
@@ -46,8 +46,8 @@ public final class JacksonJsonService implements JsonService {
   public <T> T fromJson(Type type, InputStream is) {
     try {
       final var javaType =
-        javaTypes.computeIfAbsent(
-          type.getTypeName(), k -> mapper.getTypeFactory().constructType(type));
+          javaTypes.computeIfAbsent(
+              type.getTypeName(), k -> mapper.getTypeFactory().constructType(type));
 
       return mapper.readValue(is, javaType);
     } catch (IOException e) {

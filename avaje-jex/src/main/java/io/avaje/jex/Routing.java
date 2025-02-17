@@ -47,7 +47,6 @@ public interface Routing {
    *
    * @param path the common path prefix
    * @param group the function to register the rout handlers
-   *
    */
   Routing group(String path, HttpService group);
 
