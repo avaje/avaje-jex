@@ -21,8 +21,31 @@ final class DJex implements Jex {
   }
 
   @Override
-  public Jex config(Consumer<JexConfig> configure) {
-    configure.accept(config);
+  public Jex routing(Routing.HttpService routes) {
+    routing.add(routes);
+    return this;
+  }
+
+  @Override
+  public Jex routing(Collection<Routing.HttpService> routes) {
+    routing.addAll(routes);
+    return this;
+  }
+
+  @Override
+  public Routing routing() {
+    return routing;
+  }
+
+  @Override
+  public Jex jsonService(JsonService jsonService) {
+    config.jsonService(jsonService);
+    return this;
+  }
+
+  @Override
+  public Jex plugin(JexPlugin plugin) {
+    plugin.apply(this);
     return this;
   }
 
@@ -40,31 +63,20 @@ final class DJex implements Jex {
   }
 
   @Override
-  public Jex contextPath(String contextPath) {
-    config.contextPath(contextPath);
-    return this;
-  }
-
-  @Override
-  public Jex jsonService(JsonService jsonService) {
-    config.jsonService(jsonService);
-    return this;
-  }
-
-  @Override
-  public AppLifecycle lifecycle() {
-    return lifecycle;
-  }
-
-  @Override
-  public Jex plugin(JexPlugin plugin) {
-    plugin.apply(this);
+  public Jex config(Consumer<JexConfig> configure) {
+    configure.accept(config);
     return this;
   }
 
   @Override
   public Jex port(int port) {
     config.port(port);
+    return this;
+  }
+
+  @Override
+  public Jex contextPath(String contextPath) {
+    config.contextPath(contextPath);
     return this;
   }
 
@@ -77,20 +89,8 @@ final class DJex implements Jex {
   }
 
   @Override
-  public Routing routing() {
-    return routing;
-  }
-
-  @Override
-  public Jex routing(Collection<Routing.HttpService> routes) {
-    routing.addAll(routes);
-    return this;
-  }
-
-  @Override
-  public Jex routing(Routing.HttpService routes) {
-    routing.add(routes);
-    return this;
+  public AppLifecycle lifecycle() {
+    return lifecycle;
   }
 
   @Override
