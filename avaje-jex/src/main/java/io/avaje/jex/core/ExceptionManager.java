@@ -75,12 +75,7 @@ final class ExceptionManager {
   }
 
   private String asJsonContent(HttpResponseException e) {
-    return "{\"title\": "
-        + jsonEscape(e.getMessage())
-        + ", "
-        + "\"status\": "
-        + e.status()
-        + "}";
+    return "{\"title\": " + jsonEscape(e.getMessage()) + ", " + "\"status\": " + e.status() + "}";
   }
 
   private String jsonEscape(String message) {

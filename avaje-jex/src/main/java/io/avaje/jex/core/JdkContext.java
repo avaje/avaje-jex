@@ -72,11 +72,7 @@ final class JdkContext implements Context {
   }
 
   /** Create when no route matched. */
-  JdkContext(
-      ServiceManager mgr,
-      HttpExchange exchange,
-      String path,
-      Set<Role> roles) {
+  JdkContext(ServiceManager mgr, HttpExchange exchange, String path, Set<Role> roles) {
     this.mgr = mgr;
     this.roles = roles;
     this.exchange = exchange;
@@ -506,7 +502,8 @@ final class JdkContext implements Context {
 
   @Override
   public void write(InputStream is) {
-    try (is; var os = outputStream()) {
+    try (is;
+        var os = outputStream()) {
       is.transferTo(os);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
