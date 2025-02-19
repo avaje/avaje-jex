@@ -494,16 +494,6 @@ final class JdkContext implements Context {
   }
 
   @Override
-  public void write(byte[] bytes) {
-    try (var os = exchange.getResponseBody()) {
-      exchange.sendResponseHeaders(statusCode(), bytes.length == 0 ? -1 : bytes.length);
-      os.write(bytes);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
-
-  @Override
   public void write(byte[] bufferBytes, int length) {
     try (var os = exchange.getResponseBody()) {
       exchange.sendResponseHeaders(statusCode(), length == 0 ? -1 : length);

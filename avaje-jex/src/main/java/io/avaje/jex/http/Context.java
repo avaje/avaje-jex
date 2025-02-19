@@ -21,8 +21,10 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
 import io.avaje.jex.core.Constants;
+import io.avaje.jex.core.json.JsonbOutput;
 import io.avaje.jex.security.BasicAuthCredentials;
 import io.avaje.jex.security.Role;
+import io.avaje.jsonb.JsonType;
 
 /** Provides access to functions for handling the request and response. */
 public interface Context {
@@ -246,6 +248,17 @@ public interface Context {
   void json(Object bean);
 
   /**
+   * Optimized json write using avaje jsonb
+   *
+   * @param jsonType the serializer for the value.
+   * @param value the pojo to serialize
+   */
+  default <T> void json(JsonType<T> jsonType, T value) {
+    contentType(ContentType.APPLICATION_JSON);
+    jsonType.toJson(value, JsonbOutput.of(this));
+  }
+
+  /**
    * Write the stream as a JSON stream with new line delimiters {@literal
    * application/x-json-stream}.
    *
@@ -447,17 +460,19 @@ public interface Context {
    *
    * @param bytes The byte array to write.
    */
-  void write(byte[] bytes);
+  default void write(byte[] bytes) {
+    write(bytes, bytes.length);
+  }
 
   /**
-   * Writes the first bytes from this buffer directly to the response.
+   * Writes the bytes from this buffer directly to the response.
    *
    * <p>The bytes written will be from position 0 to length.
    *
-   * @param bufferBytes The byte array to write.
+   * @param bytes The byte array to write.
    * @param length The number of bytes to write from the buffer.
    */
-  void write(byte[] bufferBytes, int length);
+  void write(byte[] bytes, int length);
 
   /**
    * Writes the content from the given InputStream directly to the response body.
