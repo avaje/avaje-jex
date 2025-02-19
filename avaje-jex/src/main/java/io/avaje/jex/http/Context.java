@@ -253,7 +253,7 @@ public interface Context {
    * @param jsonType the serializer for the value.
    * @param value the pojo to serialize
    */
-  default <T> void json(JsonType<T> jsonType, T value) {
+  default <T> void jsonb(JsonType<T> jsonType, T value) {
     contentType(ContentType.APPLICATION_JSON);
     jsonType.toJson(value, JsonbOutput.of(this));
   }
@@ -465,14 +465,14 @@ public interface Context {
   }
 
   /**
-   * Writes the bytes from this buffer directly to the response.
+   * Writes the given length of bytes from this buffer directly to the response.
    *
    * <p>The bytes written will be from position 0 to length.
    *
-   * @param bytes The byte array to write.
+   * @param bufferBytes The byte array to write.
    * @param length The number of bytes to write from the buffer.
    */
-  void write(byte[] bytes, int length);
+  void write(byte[] bufferBytes, int length);
 
   /**
    * Writes the content from the given InputStream directly to the response body.
