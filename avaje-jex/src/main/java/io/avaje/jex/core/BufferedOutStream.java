@@ -15,7 +15,6 @@ final class BufferedOutStream extends OutputStream {
   private long count;
 
   BufferedOutStream(JdkContext context, int initial, long max) {
-
     this.context = context;
     this.max = max;
     this.buffer = new ByteArrayOutputStream(initial);
