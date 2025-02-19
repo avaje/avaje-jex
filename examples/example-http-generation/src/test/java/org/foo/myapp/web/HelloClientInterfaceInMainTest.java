@@ -11,7 +11,7 @@ import jakarta.inject.Inject;
 /**
  * A `@Client` interface lives in src/main - not usually expected.
  */
-@Client.Import(types =HelloApi.class)
+@Client.Import(HelloApi.class)
 @InjectTest
 class HelloClientInterfaceInMainTest {
 

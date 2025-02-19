@@ -17,7 +17,7 @@ import jakarta.inject.Inject;
  * Using Client.Import we get the client code generated in src/test.
  * Actually in target/generated-test-sources/ ...
  */
-@Client.Import(types = HiApi.class)
+@Client.Import(HiApi.class)
 @InjectTest
 class HelloClientInterfaceViaImportTest {
 
