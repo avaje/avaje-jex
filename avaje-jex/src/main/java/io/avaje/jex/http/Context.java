@@ -254,8 +254,7 @@ public interface Context {
    * @param value the pojo to serialize
    */
   default <T> void jsonb(JsonType<T> jsonType, T value) {
-    contentType(ContentType.APPLICATION_JSON);
-    jsonType.toJson(value, JsonbOutput.of(this));
+    jsonType.toJson(value, JsonbOutput.of(this.contentType(ContentType.APPLICATION_JSON)));
   }
 
   /**
