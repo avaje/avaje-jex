@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Stream;
 
+import io.avaje.jex.core.json.JsonbOutput;
 import io.avaje.jsonb.Json;
 import io.avaje.jsonb.JsonType;
 import io.avaje.jsonb.Jsonb;
@@ -58,6 +59,13 @@ public class JsonTest {
                   var result = HelloDto.rob();
                   jsonTypeHelloDto.toJson(result, ctx.outputStream());
                 })
+            .get(
+              "/usingJsonOutput",
+              ctx -> {
+                ctx.status(200).contentType("application/json");
+                var result = HelloDto.fi();
+                jsonTypeHelloDto.toJson(result, JsonbOutput.of(ctx));
+              })
             .get("/iterate", ctx -> ctx.jsonStream(ITERATOR))
             .get("/stream", ctx -> ctx.jsonStream(HELLO_BEANS.stream()))
             .post("/", ctx -> ctx.text("bean[" + ctx.bodyAsClass(HelloDto.class) + "]"));
@@ -116,6 +124,21 @@ public class JsonTest {
       .bean(HelloDto.class);
     assertThat(bean.id).isEqualTo(42);
     assertThat(bean.name).isEqualTo("rob");
+  }
+
+  @Test
+  void usingJsonOutput() {
+    var hres = pair.request().path("usingJsonOutput")
+      .GET()
+      .as(HelloDto.class);
+
+    assertThat(hres.statusCode()).isEqualTo(200);
+    final HttpHeaders headers = hres.headers();
+    assertThat(headers.firstValue("Content-Type").orElseThrow()).isEqualTo("application/json");
+
+    var bean = hres.body();
+    assertThat(bean.id).isEqualTo(45);
+    assertThat(bean.name).isEqualTo("fi");
   }
 
 

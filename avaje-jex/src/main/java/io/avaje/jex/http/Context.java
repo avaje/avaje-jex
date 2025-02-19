@@ -450,6 +450,16 @@ public interface Context {
   void write(byte[] bytes);
 
   /**
+   * Writes the first bytes from this buffer directly to the response.
+   *
+   * <p>The bytes written will be from position 0 to length.
+   *
+   * @param bufferBytes The byte array to write.
+   * @param length The number of bytes to write from the buffer.
+   */
+  void write(byte[] bufferBytes, int length);
+
+  /**
    * Writes the content from the given InputStream directly to the response body.
    *
    * @param is The input stream containing the content to write.

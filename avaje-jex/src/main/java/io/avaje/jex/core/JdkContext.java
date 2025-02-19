@@ -504,6 +504,16 @@ final class JdkContext implements Context {
   }
 
   @Override
+  public void write(byte[] bufferBytes, int length) {
+    try (var os = exchange.getResponseBody()) {
+      exchange.sendResponseHeaders(statusCode(), length == 0 ? -1 : length);
+      os.write(bufferBytes, 0, length);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  @Override
   public void write(InputStream is) {
     try (is; var os = outputStream()) {
       is.transferTo(os);
