@@ -21,8 +21,7 @@ public sealed interface AppLifecycle permits DefaultLifecycle {
   void onShutdown(Runnable onShutdown);
 
   /**
-   * Registers a runnable to be executed when the application server is shutting down, with a
-   * specific order.
+   * Registers a runnable to be executed when the application server is shutting down, with a specific order.
    *
    * <p>Runnables with lower order values will be executed first.
    *
@@ -36,8 +35,7 @@ public sealed interface AppLifecycle permits DefaultLifecycle {
   /**
    * Registers a runnable as a shutdown hook with the JVM.
    *
-   * <p>This runnable will be executed when the JVM is shutting down, regardless of the application
-   * server's state.
+   * <p>This runnable will be executed when the JVM is shutting down, regardless of the application server's state.
    *
    * @param onShutdown The runnable to register as a shutdown hook.
    */

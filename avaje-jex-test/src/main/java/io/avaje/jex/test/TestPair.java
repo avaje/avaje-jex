@@ -1,14 +1,11 @@
 package io.avaje.jex.test;
 
-import java.util.Random;
-
 import io.avaje.http.client.HttpClient;
 import io.avaje.http.client.HttpClientRequest;
 import io.avaje.jex.Jex;
+import java.util.Random;
 
-/**
- * Server and Client pair for a test.
- */
+/** Server and Client pair for a test. */
 public class TestPair {
 
   private final int port;
@@ -39,18 +36,14 @@ public class TestPair {
     return client.url().build();
   }
 
-  /**
-   * Create a Server and Client pair for a given set of tests.
-   */
+  /** Create a Server and Client pair for a given set of tests. */
   public static TestPair create(Jex app) {
 
     int port = 10000 + new Random().nextInt(1000);
     var jexServer = app.port(port).start();
 
     var url = "http://localhost:" + port;
-    var client = HttpClient.builder()
-      .baseUrl(url)
-      .build();
+    var client = HttpClient.builder().baseUrl(url).build();
 
     return new TestPair(port, jexServer, client);
   }

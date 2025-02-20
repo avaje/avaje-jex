@@ -13,7 +13,5 @@ public class HelloBean {
     this.name = name;
   }
 
-  public HelloBean() {
-
-  }
+  public HelloBean() {}
 }

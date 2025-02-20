@@ -1,5 +1,9 @@
 package io.avaje.jex;
 
+import io.avaje.jex.http.ExceptionHandler;
+import io.avaje.jex.http.ExchangeHandler;
+import io.avaje.jex.http.HttpFilter;
+import io.avaje.jex.security.Role;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,11 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import io.avaje.jex.http.ExceptionHandler;
-import io.avaje.jex.http.ExchangeHandler;
-import io.avaje.jex.http.HttpFilter;
-import io.avaje.jex.security.Role;
 
 final class DefaultRouting implements Routing {
 

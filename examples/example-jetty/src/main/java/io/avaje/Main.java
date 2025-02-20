@@ -8,10 +8,13 @@ public class Main {
 
     Jex.create()
         .get("/", ctx -> ctx.text("" + Thread.currentThread().isVirtual()))
-        .get("/one", ctx -> {
-          System.out.println("one");
+        .get(
+            "/one",
+            ctx -> {
+              System.out.println("one");
 
-          ctx.text("one");})
+              ctx.text("one");
+            })
         .get(
             "/two/{name}",
             ctx -> {

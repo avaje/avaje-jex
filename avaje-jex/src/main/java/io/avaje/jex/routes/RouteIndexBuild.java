@@ -1,22 +1,15 @@
 package io.avaje.jex.routes;
 
+import io.avaje.jex.http.ExchangeHandler;
 import java.util.*;
 
-import io.avaje.jex.http.ExchangeHandler;
-
-/**
- * Build the RouteIndex.
- */
+/** Build the RouteIndex. */
 final class RouteIndexBuild {
 
-  /**
-   * Partition entries by the number of path segments.
-   */
+  /** Partition entries by the number of path segments. */
   private final RouteIndexBuild.Entry[] entries = new RouteIndexBuild.Entry[6];
 
-  /**
-   * Wildcard/splat based route entries.
-   */
+  /** Wildcard/splat based route entries. */
   private final List<SpiRoutes.Entry> wildcardEntries = new ArrayList<>();
 
   RouteIndexBuild() {
@@ -37,9 +30,7 @@ final class RouteIndexBuild {
     }
   }
 
-  /**
-   * Build and return the RouteIndex.
-   */
+  /** Build and return the RouteIndex. */
   RouteIndex build() {
     final List<List<SpiRoutes.Entry>> pathEntries = new ArrayList<>();
     for (Entry entry : entries) {
@@ -51,14 +42,15 @@ final class RouteIndexBuild {
   private static class Entry {
 
     private final List<SpiRoutes.Entry> list = new ArrayList<>();
-    private final Map<String,List<SpiRoutes.Entry>> pathMap = new LinkedHashMap<>();
+    private final Map<String, List<SpiRoutes.Entry>> pathMap = new LinkedHashMap<>();
 
     void add(SpiRoutes.Entry entry) {
       if (entry.literal()) {
         // add literal paths to the beginning
         list.addFirst(entry);
       } else {
-        pathMap.computeIfAbsent(entry.matchPath(), k -> new ArrayList<>(2)).add(entry);
+        pathMap.computeIfAbsent(entry.matchPath(), k -> new ArrayList<>(2))
+            .add(entry);
       }
     }
 
@@ -70,9 +62,9 @@ final class RouteIndexBuild {
           result.add(pathList.getFirst());
         } else {
           ExchangeHandler[] handlers = pathList.stream()
-            .map(SpiRoutes.Entry::handler)
-            .toList()
-            .toArray(new ExchangeHandler[0]);
+              .map(SpiRoutes.Entry::handler)
+              .toList()
+              .toArray(new ExchangeHandler[0]);
           result.add(pathList.getFirst().multiHandler(handlers));
         }
       });
