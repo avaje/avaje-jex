@@ -66,7 +66,7 @@ public interface Context {
    */
   byte[] bodyAsBytes();
 
-  /***
+  /**
    * Return the request body as bean.
    *
    * @param beanType The bean type
@@ -80,7 +80,7 @@ public interface Context {
    */
   InputStream bodyAsInputStream();
 
-  /***
+  /**
    * Return the request body as bean.
    *
    * @param beanType The bean type
@@ -154,7 +154,7 @@ public interface Context {
   /** Return the first form param value for the specified key or the default value. */
   default String formParam(String key, String defaultValue) {
     final List<String> values = formParamMap().get(key);
-    return values == null || values.isEmpty() ? defaultValue : values.get(0);
+    return values == null || values.isEmpty() ? defaultValue : values.getFirst();
   }
 
   /** Returns a map with all the form param keys and values. */
