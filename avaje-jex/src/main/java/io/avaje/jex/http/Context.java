@@ -21,8 +21,10 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
 import io.avaje.jex.core.Constants;
+import io.avaje.jex.core.json.JsonbOutput;
 import io.avaje.jex.security.BasicAuthCredentials;
 import io.avaje.jex.security.Role;
+import io.avaje.jsonb.JsonType;
 
 /** Provides access to functions for handling the request and response. */
 public interface Context {
@@ -246,6 +248,16 @@ public interface Context {
   void json(Object bean);
 
   /**
+   * Optimized json write using avaje jsonb
+   *
+   * @param jsonType the serializer for the value.
+   * @param value the pojo to serialize
+   */
+  default <T> void jsonb(JsonType<T> jsonType, T value) {
+    jsonType.toJson(value, JsonbOutput.of(this.contentType(ContentType.APPLICATION_JSON)));
+  }
+
+  /**
    * Write the stream as a JSON stream with new line delimiters {@literal
    * application/x-json-stream}.
    *
@@ -447,10 +459,12 @@ public interface Context {
    *
    * @param bytes The byte array to write.
    */
-  void write(byte[] bytes);
+  default void write(byte[] bytes) {
+    write(bytes, bytes.length);
+  }
 
   /**
-   * Writes the first bytes from this buffer directly to the response.
+   * Writes the given length of bytes from this buffer directly to the response.
    *
    * <p>The bytes written will be from position 0 to length.
    *
