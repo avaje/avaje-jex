@@ -1,4 +1,4 @@
-package io.avaje.jex.http.sse;
+package io.avaje.jex;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -8,6 +8,7 @@ import io.avaje.jex.core.Constants;
 import io.avaje.jex.http.BadRequestException;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.http.ExchangeHandler;
+import io.avaje.jex.http.sse.SseClient;
 
 /** Handler that configures a request for Server Sent Events */
 public class SseHandler implements ExchangeHandler {
@@ -33,7 +34,7 @@ public class SseHandler implements ExchangeHandler {
     headers.add("Cache-Control", "no-cache");
     headers.add("X-Accel-Buffering", "no"); // See https://serverfault.com/a/801629
 
-    try (var sse = new SseClient(ctx)) {
+    try (var sse = SseClient.of(ctx)) {
       exchange.sendResponseHeaders(200, 0);
       consumer.accept(sse);
     } catch (final IOException e) {

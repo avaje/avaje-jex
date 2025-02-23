@@ -13,7 +13,6 @@ import io.avaje.jex.http.ExceptionHandler;
 import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.http.HttpFilter;
 import io.avaje.jex.http.sse.SseClient;
-import io.avaje.jex.http.sse.SseHandler;
 import io.avaje.jex.security.Role;
 
 /** Routing abstraction. */
