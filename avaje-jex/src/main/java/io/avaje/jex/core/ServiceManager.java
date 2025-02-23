@@ -67,6 +67,10 @@ final class ServiceManager {
     return out;
   }
 
+  JsonService jsonService() {
+    return jsonService;
+  }
+
   <T> T fromJson(Class<T> type, InputStream is) {
     return jsonService.fromJson(type, is);
   }

@@ -9,6 +9,8 @@ import io.avaje.jex.http.Context;
 import io.avaje.jex.http.ExceptionHandler;
 import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.http.HttpFilter;
+import io.avaje.jex.http.sse.SseClient;
+import io.avaje.jex.http.sse.SseHandler;
 import io.avaje.jex.security.Role;
 import io.avaje.jex.spi.JexPlugin;
 import io.avaje.jex.spi.JsonService;
@@ -142,6 +144,17 @@ public sealed interface Jex permits DJex {
   default Jex options(String path, ExchangeHandler handler, Role... roles) {
     routing().options(path, handler, roles);
     return this;
+  }
+
+  /**
+   * Adds an SSE handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The sse handler to invoke when a GET request matches the path.
+   * @param roles An array of roles that are associated with this endpoint.
+   */
+  default Jex sse(String path, Consumer<SseClient> handler, Role... roles) {
+    return get(path, new SseHandler(handler), roles);
   }
 
   /** Add a filter for all matched requests. */

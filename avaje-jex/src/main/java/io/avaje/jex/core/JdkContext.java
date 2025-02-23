@@ -38,6 +38,7 @@ import io.avaje.jex.http.HttpStatus;
 import io.avaje.jex.http.RedirectException;
 import io.avaje.jex.security.BasicAuthCredentials;
 import io.avaje.jex.security.Role;
+import io.avaje.jex.spi.JsonService;
 
 final class JdkContext implements Context {
 
@@ -515,5 +516,10 @@ final class JdkContext implements Context {
   @Override
   public void write(String content) {
     write(content.getBytes(StandardCharsets.UTF_8));
+  }
+
+  @Override
+  public JsonService jsonService() {
+    return mgr.jsonService();
   }
 }
