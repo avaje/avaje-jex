@@ -22,10 +22,9 @@ public class SseHandler implements ExchangeHandler {
   @Override
   public void handle(Context ctx) throws Exception {
 
-    if (ctx.header(Constants.ACCEPT) == null
-        && !TEXT_EVENT_STREAM.equals(ctx.header(Constants.ACCEPT)))
+    if (!TEXT_EVENT_STREAM.equals(ctx.header(Constants.ACCEPT))) {
       throw new BadRequestException("SSE Requests must have an 'Accept: text/event-stream' header");
-
+    }
     final var exchange = ctx.exchange();
     final var headers = exchange.getResponseHeaders();
     headers.add(Constants.CONTENT_TYPE, TEXT_EVENT_STREAM);
