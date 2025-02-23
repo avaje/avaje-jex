@@ -1,8 +1,10 @@
 package io.avaje.jex.http.sse;
 
 import java.io.Closeable;
+import java.util.function.Consumer;
 
 import io.avaje.jex.http.Context;
+import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.spi.JsonService;
 
 /**
@@ -16,13 +18,9 @@ import io.avaje.jex.spi.JsonService;
  */
 public sealed interface SseClient extends Closeable permits SseClientImpl {
 
-  /**
-   * @param ctx
-   * @return the new SseClient instance
-   */
-  static SseClient of(Context ctx) {
-
-    return new SseClientImpl(ctx);
+  /** Return an SseClient handler. */
+  static ExchangeHandler handler(Consumer<SseClient> consumer) {
+    return new SseHandler(consumer);
   }
 
   /** Close the SseClient and release keepAlive block if any */

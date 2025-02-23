@@ -153,7 +153,7 @@ public sealed interface Jex permits DJex {
    * @param roles An array of roles that are associated with this endpoint.
    */
   default Jex sse(String path, Consumer<SseClient> handler, Role... roles) {
-    return get(path, new SseHandler(handler), roles);
+    return get(path, SseClient.handler(handler), roles);
   }
 
   /** Add a filter for all matched requests. */
