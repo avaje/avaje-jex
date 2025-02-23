@@ -24,6 +24,17 @@ public non-sealed interface JsonService extends JexExtension {
   void toJson(Object bean, OutputStream os);
 
   /**
+   * **Writes a Java Object as a JSON string**
+   *
+   * <p>Serializes a Java object into JSON string format and writes the resulting JSON to the specified
+   * output stream.
+   *
+   * @param bean the Java object to be serialized
+   * @return the serialized JSON string
+   */
+  String toJsonString(Object bean);
+
+  /**
    * **Reads JSON from an InputStream**
    *
    * <p>Reads a JSON-formatted input stream and deserializes it into a Java object of the specified

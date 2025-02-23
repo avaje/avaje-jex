@@ -24,6 +24,7 @@ import io.avaje.jex.core.Constants;
 import io.avaje.jex.core.json.JsonbOutput;
 import io.avaje.jex.security.BasicAuthCredentials;
 import io.avaje.jex.security.Role;
+import io.avaje.jex.spi.JsonService;
 import io.avaje.jsonb.JsonType;
 
 /** Provides access to functions for handling the request and response. */
@@ -153,7 +154,7 @@ public interface Context {
 
   /** Return the first form param value for the specified key or the default value. */
   default String formParam(String key, String defaultValue) {
-    final List<String> values = formParamMap().get(key);
+    final var values = formParamMap().get(key);
     return values == null || values.isEmpty() ? defaultValue : values.getFirst();
   }
 
@@ -162,7 +163,7 @@ public interface Context {
 
   /** Return the form params for the specified key, or empty list. */
   default List<String> formParams(String key) {
-    final List<String> values = formParamMap().get(key);
+    final var values = formParamMap().get(key);
     return values != null ? values : emptyList();
   }
 
@@ -272,6 +273,13 @@ public interface Context {
    * @param stream The stream of beans to write as json
    */
   <E> void jsonStream(Stream<E> stream);
+
+  /**
+   * Returns the configured {@link JsonService} instance.}
+   *
+   * @return The json service if configured. null otherwise.
+   */
+  JsonService jsonService();
 
   /**
    * Returns the matched path as a raw expression, without any parameter substitution.

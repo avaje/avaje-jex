@@ -7,13 +7,14 @@
 [![javadoc](https://javadoc.io/badge2/io.avaje/avaje-jex/javadoc.svg?color=purple)](https://javadoc.io/doc/io.avaje/avaje-jex)
 
 # [Avaje-Jex](https://avaje.io/jex/)
-Lightweight (~110KB) wrapper over the JDK's built-in [HTTP server](https://docs.oracle.com/en/java/javase/23/docs/api/jdk.httpserver/module-summary.html).
+Lightweight (~120KB) wrapper over the JDK's built-in [HTTP server](https://docs.oracle.com/en/java/javase/23/docs/api/jdk.httpserver/module-summary.html).
 
 Features:
 
 - [Context](https://javadoc.io/doc/io.avaje/avaje-jex/latest/io.avaje.jex/io/avaje/jex/http/Context.html) abstraction over `HttpExchange` to easily retrieve and send request/response data.
 - Fluent API
 - Static resource handling
+- Server Sent Events
 - Compression SPI
 - Json SPI
 - Virtual threads enabled by default

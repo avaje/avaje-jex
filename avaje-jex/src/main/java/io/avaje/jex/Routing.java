@@ -12,6 +12,7 @@ import io.avaje.jex.http.Context;
 import io.avaje.jex.http.ExceptionHandler;
 import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.http.HttpFilter;
+import io.avaje.jex.http.sse.SseClient;
 import io.avaje.jex.security.Role;
 
 /** Routing abstraction. */
@@ -146,6 +147,17 @@ public sealed interface Routing permits DefaultRouting {
           chain.proceed();
           handler.accept(ctx);
         });
+  }
+
+  /**
+   * Adds an SSE handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The sse handler to invoke when a GET request matches the path.
+   * @param roles An array of roles that are associated with this endpoint.
+   */
+  default Routing sse(String path, Consumer<SseClient> consumer, Role... roles) {
+    return get(path, new SseHandler(consumer), roles);
   }
 
   /** Return all the registered handlers. */

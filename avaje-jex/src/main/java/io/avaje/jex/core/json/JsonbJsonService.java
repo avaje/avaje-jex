@@ -41,6 +41,11 @@ public final class JsonbJsonService implements JsonService {
   }
 
   @Override
+  public String toJsonString(Object bean) {
+    return jsonb.toJson(bean);
+  }
+
+  @Override
   public <T> void toJsonStream(Iterator<T> iterator, OutputStream os) {
     try (JsonWriter writer = jsonb.writer(os)) {
       writer.pretty(false);

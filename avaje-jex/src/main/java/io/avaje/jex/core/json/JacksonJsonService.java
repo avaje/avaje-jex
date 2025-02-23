@@ -74,6 +74,15 @@ public final class JacksonJsonService implements JsonService {
   }
 
   @Override
+  public String toJsonString(Object bean) {
+    try {
+      return mapper.writeValueAsString(bean);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  @Override
   public <T> void toJsonStream(Iterator<T> iterator, OutputStream os) {
     final JsonGenerator generator;
     try {
