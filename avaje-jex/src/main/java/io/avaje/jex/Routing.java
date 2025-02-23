@@ -156,8 +156,8 @@ public sealed interface Routing permits DefaultRouting {
    * @param handler The sse handler to invoke when a GET request matches the path.
    * @param roles An array of roles that are associated with this endpoint.
    */
-  default Routing sse(String path, Consumer<SseClient> consumer, Role... roles) {
-    return get(path, new SseHandler(consumer), roles);
+  default Routing sse(String path, Consumer<SseClient> handler, Role... roles) {
+    return get(path, SseClient.handler(handler), roles);
   }
 
   /** Return all the registered handlers. */
