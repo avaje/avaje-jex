@@ -11,12 +11,12 @@ import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.http.sse.SseClient;
 
 /** Handler that configures a request for Server Sent Events */
-public class SseHandler implements ExchangeHandler {
+class SseHandler implements ExchangeHandler {
 
   private static final String TEXT_EVENT_STREAM = "text/event-stream";
   private final Consumer<SseClient> consumer;
 
-  public SseHandler(Consumer<SseClient> consumer) {
+  SseHandler(Consumer<SseClient> consumer) {
     this.consumer = consumer;
   }
 
