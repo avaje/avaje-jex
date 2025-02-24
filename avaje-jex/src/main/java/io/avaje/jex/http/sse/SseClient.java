@@ -16,7 +16,7 @@ import io.avaje.jex.spi.JsonService;
  * connection is automatically closed if the client disconnects or if an error occurs during event
  * emission.
  */
-public sealed interface SseClient extends Closeable permits SseClientImpl {
+public interface SseClient extends Closeable {
 
   /** Return an SseClient handler. */
   static ExchangeHandler handler(Consumer<SseClient> consumer) {
