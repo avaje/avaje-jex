@@ -1,11 +1,11 @@
 package io.avaje.jex;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.spi.HttpServerProvider;
 
@@ -20,10 +20,27 @@ import io.avaje.jex.spi.TemplateRender;
  * endpoint, trailing slash handling, JSON service, template renderers, executor service, HTTPS
  * configuration, compression, and plugin loading.
  */
-public sealed interface JexConfig permits DJexConfig {
+public final class JexConfig {
+
+  private int port = 8080;
+  private String contextPath = "/";
+  private String host;
+  private int socketBacklog = 0;
+  private boolean health = true;
+  private boolean ignoreTrailingSlashes = true;
+  private Executor executor;
+  private JsonService jsonService;
+  private final Map<String, TemplateRender> renderers = new HashMap<>();
+  private HttpsConfigurator httpsConfig;
+  private final CompressionConfig compression = new CompressionConfig();
+  private int bufferInitial = 256;
+  private long bufferMax = 4096L;
+  private HttpServerProvider serverProvider;
 
   /** Returns the configured compression settings. */
-  CompressionConfig compression();
+  public CompressionConfig compression() {
+    return compression;
+  }
 
   /**
    * Configures compression settings using a consumer function.
@@ -31,73 +48,118 @@ public sealed interface JexConfig permits DJexConfig {
    * @param consumer The consumer function to configure compression settings.
    * @return The updated configuration.
    */
-  JexConfig compression(Consumer<CompressionConfig> consumer);
+  public JexConfig compression(Consumer<CompressionConfig> consumer) {
+    consumer.accept(compression);
+    return this;
+  }
 
   /** Return the contextPath. (Defaults to "/") */
-  String contextPath();
+  public String contextPath() {
+    return contextPath;
+  }
 
   /**
    * Set the contextPath passed to the underlying HttpServer. (defaults to "/")
    *
    * @param contextPath The context path
    */
-  JexConfig contextPath(String contextPath);
+  public JexConfig contextPath(String contextPath) {
+    if (!this.contextPath.equals(contextPath)) {
+      this.contextPath =
+          contextPath
+              .transform(s -> s.startsWith("/") ? s : "/" + s)
+              .transform(s -> s.endsWith("/") ? s.substring(0, s.lastIndexOf("/")) : s);
+    }
+    return this;
+  }
 
   /**
    * Executor for serving requests. Defaults to a {@link
    * Executors#newVirtualThreadPerTaskExecutor()}
    */
-  Executor executor();
+  public Executor executor() {
+    if (executor == null) {
+      executor =
+          Executors.newThreadPerTaskExecutor(
+              Thread.ofVirtual().name("avaje-jex-http-", 0).factory());
+    }
+    return executor;
+  }
 
   /**
    * Sets the executor service used to handle incoming requests.
    *
    * @param executor The executor service.
    */
-  JexConfig executor(Executor executor);
+  public JexConfig executor(Executor executor) {
+    this.executor = executor;
+    return this;
+  }
 
   /** Returns whether the health endpoint is enabled. */
-  boolean health();
+  public boolean health() {
+    return health;
+  }
 
   /**
    * Enables/Disables the default health endpoint.
    *
    * @param health whether to enable/disable.
    */
-  JexConfig health(boolean health);
+  public JexConfig health(boolean health) {
+    this.health = health;
+    return this;
+  }
 
   /** Returns the configured host. */
-  String host();
+  public String host() {
+    return host;
+  }
 
   /**
    * Set the host on which the HttpServer will bind to. Defaults to any local address.
    *
    * @param host The host.
    */
-  JexConfig host(String host);
+  public JexConfig host(String host) {
+    this.host = host;
+    return this;
+  }
 
   /** Return the {@link HttpsConfigurator} if https is enabled. */
-  HttpsConfigurator httpsConfig();
+  public HttpsConfigurator httpsConfig() {
+    return httpsConfig;
+  }
 
   /**
    * Enable https with the provided {@link HttpsConfigurator}
    *
    * @param https The HTTPS configuration.
    */
-  JexConfig httpsConfig(HttpsConfigurator https);
+  public JexConfig httpsConfig(HttpsConfigurator https) {
+    this.httpsConfig = https;
+    return this;
+  }
 
   /** Returns whether trailing slashes in request URIs are ignored. */
-  boolean ignoreTrailingSlashes();
+  public boolean ignoreTrailingSlashes() {
+    return ignoreTrailingSlashes;
+  }
 
   /**
    * Configures whether trailing slashes in request URIs should be ignored.
    *
    * @param ignoreTrailingSlashes whether to enable/disable trailing slashes.
    */
-  JexConfig ignoreTrailingSlashes(boolean ignoreTrailingSlashes);
+  public JexConfig ignoreTrailingSlashes(boolean ignoreTrailingSlashes) {
+    this.ignoreTrailingSlashes = ignoreTrailingSlashes;
+    return this;
+  }
 
   /** The initial size of the response buffer */
-  int initialStreamBufferSize();
+  public int initialStreamBufferSize() {
+    return bufferInitial;
+  }
 
   /**
    * Set the initial size of the response stream buffer. If exceeded, the buffer will expand until
@@ -107,20 +169,30 @@ public sealed interface JexConfig permits DJexConfig {
    *
    * @param initialSize The initial size of the response buffer
    */
-  JexConfig initialStreamBufferSize(int initialSize);
+  public JexConfig initialStreamBufferSize(int initialSize) {
+    bufferInitial = initialSize;
+    return this;
+  }
 
   /** Returns the configured JSON service. */
-  JsonService jsonService();
+  public JsonService jsonService() {
+    return jsonService;
+  }
 
   /**
    * Sets the JSON service used for (de)serialization.
    *
    * @param jsonService The json service instance.
    */
-  JexConfig jsonService(JsonService jsonService);
+  public JexConfig jsonService(JsonService jsonService) {
+    this.jsonService = jsonService;
+    return this;
+  }
 
   /** the maximum size of the response stream buffer. */
-  long maxStreamBufferSize();
+  public long maxStreamBufferSize() {
+    return bufferMax;
+  }
 
   /**
    * Set the maximum size of the response stream buffer. If the response data exceeds this size, it
@@ -131,10 +203,15 @@ public sealed interface JexConfig permits DJexConfig {
    *
    * @param maxSize The maximum size of the response
    */
-  JexConfig maxStreamBufferSize(long maxSize);
+  public JexConfig maxStreamBufferSize(long maxSize) {
+    bufferMax = maxSize;
+    return this;
+  }
 
   /** Returns the configured port number. (Defaults to 8080 if not set) */
-  int port();
+  public int port() {
+    return port;
+  }
 
   /**
    * Sets the port number on which the HttpServer will listen for incoming requests. *
@@ -144,7 +221,10 @@ public sealed interface JexConfig permits DJexConfig {
    *
    * @param port The port number.
    */
-  JexConfig port(int port);
+  public JexConfig port(int port) {
+    this.port = port;
+    return this;
+  }
 
   /**
    * Registers a template renderer for a specific file extension.
@@ -152,19 +232,28 @@ public sealed interface JexConfig permits DJexConfig {
    * @param extension The file extension.
    * @param renderer The template renderer implementation.
    */
-  JexConfig renderer(String extension, TemplateRender renderer);
+  public JexConfig renderer(String extension, TemplateRender renderer) {
+    renderers.put(extension, renderer);
+    return this;
+  }
 
   /** Returns a map of registered template renderers, keyed by file extension. */
-  Map<String, TemplateRender> renderers();
+  public Map<String, TemplateRender> renderers() {
+    return renderers;
+  }
 
   /** Return the schema as http or https. */
-  String scheme();
+  public String scheme() {
+    return httpsConfig == null ? "http" : "https";
+  }
 
   /**
    * Provide the provider used to create the {@link HttpServer} instance. If not set, {@link
    * HttpServerProvider#provider()} will be used to create the server
    */
-  HttpServerProvider serverProvider();
+  public HttpServerProvider serverProvider() {
+    return this.serverProvider != null ? serverProvider : HttpServerProvider.provider();
+  }
 
   /**
    * Configure Provider used to created {@link HttpServer} instances. If not set, {@link
@@ -172,10 +261,15 @@ public sealed interface JexConfig permits DJexConfig {
    *
    * @param serverProvider provider used to create the server
    */
-  JexConfig serverProvider(HttpServerProvider serverProvider);
+  public JexConfig serverProvider(HttpServerProvider serverProvider) {
+    this.serverProvider = serverProvider;
+    return this;
+  }
 
   /** Return the socket backlog. */
-  int socketBacklog();
+  public int socketBacklog() {
+    return socketBacklog;
+  }
 
   /**
    * Set the socket backlog. If this value is less than or equal to zero, then a system default
@@ -184,6 +278,8 @@ public sealed interface JexConfig permits DJexConfig {
    * @param backlog the socket backlog. If this value is less than or equal to zero, then a system
    *     default value is used
    */
-  JexConfig socketBacklog(int backlog);
-
+  public JexConfig socketBacklog(int backlog) {
+    this.socketBacklog = backlog;
+    return this;
+  }
 }

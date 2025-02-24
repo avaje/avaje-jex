@@ -3,8 +3,12 @@ package io.avaje.jex;
 import java.util.Collection;
 import java.util.function.Consumer;
 
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.spi.HttpServerProvider;
+
 import io.avaje.inject.BeanScope;
 import io.avaje.jex.Routing.HttpService;
+import io.avaje.jex.core.BootstrapServer;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.http.ExceptionHandler;
 import io.avaje.jex.http.ExchangeHandler;
@@ -16,7 +20,7 @@ import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
 /**
- * Create configure and start Jex.
+ * Create, configure and start Jex.
  *
  * <pre>{@code
  * final Jex.Server app = Jex.create()
@@ -30,13 +34,18 @@ import io.avaje.jex.spi.TemplateRender;
  *
  * }</pre>
  */
-public sealed interface Jex permits DJex {
+public final class Jex {
+
+  private final Routing routing = new DefaultRouting();
+  private final AppLifecycle lifecycle = new AppLifecycle();
+  private final JexConfig config = new JexConfig();
+
+  private Jex() {}
 
   /**
    * Create Jex.
    *
    * <pre>{@code
-   *
    * final Jex.Server app = Jex.create()
    *   .routing(routing -> routing
    *     .get("/", ctx -> ctx.text("hello world"))
@@ -48,8 +57,8 @@ public sealed interface Jex permits DJex {
    *
    * }</pre>
    */
-  static Jex create() {
-    return new DJex();
+  public static Jex create() {
+    return new Jex();
   }
 
   /**
@@ -57,21 +66,29 @@ public sealed interface Jex permits DJex {
    *
    * @param routes The HTTP service to add.
    */
-  Jex routing(Routing.HttpService routes);
+  public Jex routing(Routing.HttpService routes) {
+    routing.add(routes);
+    return this;
+  }
 
   /**
    * Adds multiple HTTP routes and their associated handlers to the Jex routing configuration.
    *
    * @param routes A collection of HTTP services to add.
    */
-  Jex routing(Collection<Routing.HttpService> routes);
+  public Jex routing(Collection<Routing.HttpService> routes) {
+    routing.addAll(routes);
+    return this;
+  }
 
   /**
    * Returns the routing configuration object, allowing for further customization.
    *
    * @return The routing configuration object.
    */
-  Routing routing();
+  public Routing routing() {
+    return routing;
+  }
 
   /**
    * Adds a GET handler to the route configuration.
@@ -80,7 +97,7 @@ public sealed interface Jex permits DJex {
    * @param handler The handler to invoke when a GET request matches the path.
    * @param roles An array of roles that are associated with this endpoint.
    */
-  default Jex get(String path, ExchangeHandler handler, Role... roles) {
+  public Jex get(String path, ExchangeHandler handler, Role... roles) {
     routing().get(path, handler, roles);
     return this;
   }
@@ -92,7 +109,7 @@ public sealed interface Jex permits DJex {
    * @param handler The handler to invoke when a POST request matches the path.
    * @param roles An array of roles that are associated with this endpoint.
    */
-  default Jex post(String path, ExchangeHandler handler, Role... roles) {
+  public Jex post(String path, ExchangeHandler handler, Role... roles) {
     routing().post(path, handler, roles);
     return this;
   }
@@ -104,7 +121,7 @@ public sealed interface Jex permits DJex {
    * @param handler The handler to invoke when a PUT request matches the path.
    * @param roles An array of roles that are associated with this endpoint.
    */
-  default Jex put(String path, ExchangeHandler handler, Role... roles) {
+  public Jex put(String path, ExchangeHandler handler, Role... roles) {
     routing().put(path, handler, roles);
     return this;
   }
@@ -116,7 +133,7 @@ public sealed interface Jex permits DJex {
    * @param handler The handler to invoke when a PATCH request matches the path.
    * @param roles An array of roles that are associated with this endpoint.
    */
-  default Jex patch(String path, ExchangeHandler handler, Role... roles) {
+  public Jex patch(String path, ExchangeHandler handler, Role... roles) {
     routing().patch(path, handler, roles);
     return this;
   }
@@ -128,7 +145,7 @@ public sealed interface Jex permits DJex {
    * @param handler The handler to invoke when a DELETE request matches the path.
    * @param roles An array of roles that are associated with this endpoint.
    */
-  default Jex delete(String path, ExchangeHandler handler, Role... roles) {
+  public Jex delete(String path, ExchangeHandler handler, Role... roles) {
     routing().delete(path, handler, roles);
     return this;
   }
@@ -140,7 +157,7 @@ public sealed interface Jex permits DJex {
    * @param handler The handler to invoke when an OPTIONS request matches the path.
    * @param roles An array of roles that are associated with this endpoint.
    */
-  default Jex options(String path, ExchangeHandler handler, Role... roles) {
+  public Jex options(String path, ExchangeHandler handler, Role... roles) {
     routing().options(path, handler, roles);
     return this;
   }
@@ -152,24 +169,24 @@ public sealed interface Jex permits DJex {
    * @param handler The sse handler to invoke when a GET request matches the path.
    * @param roles An array of roles that are associated with this endpoint.
    */
-  default Jex sse(String path, Consumer<SseClient> handler, Role... roles) {
+  public Jex sse(String path, Consumer<SseClient> handler, Role... roles) {
     return get(path, SseClient.handler(handler), roles);
   }
 
   /** Add a filter for all matched requests. */
-  default Jex filter(HttpFilter handler) {
+  public Jex filter(HttpFilter handler) {
     routing().filter(handler);
     return this;
   }
 
   /** Add a pre-processing filter for all matched requests. */
-  default Jex before(Consumer<Context> handler) {
+  public Jex before(Consumer<Context> handler) {
     routing().before(handler);
     return this;
   }
 
   /** Add a post-processing filter for all matched requests. */
-  default Jex after(Consumer<Context> handler) {
+  public Jex after(Consumer<Context> handler) {
     routing().after(handler);
     return this;
   }
@@ -182,7 +199,7 @@ public sealed interface Jex permits DJex {
    * @param handler the error handler
    * @param <T> exception type
    */
-  default <T extends Exception> Jex error(Class<T> exceptionClass, ExceptionHandler<T> handler) {
+  public <T extends Exception> Jex error(Class<T> exceptionClass, ExceptionHandler<T> handler) {
     routing().error(exceptionClass, handler);
     return this;
   }
@@ -200,9 +217,8 @@ public sealed interface Jex permits DJex {
    *
    * @param path the common path prefix
    * @param group the function to register the rout handlers
-   *
    */
-  default Jex group(String path, HttpService group) {
+  public Jex group(String path, HttpService group) {
     routing().group(path, group);
     return this;
   }
@@ -212,14 +228,20 @@ public sealed interface Jex permits DJex {
    *
    * @param jsonService The JSON service to use.
    */
-  Jex jsonService(JsonService jsonService);
+  public Jex jsonService(JsonService jsonService) {
+    config.jsonService(jsonService);
+    return this;
+  }
 
   /**
    * Adds a plugin to the Jex instance, extending its functionality.
    *
    * @param plugin The plugin to add.
    */
-  Jex plugin(JexPlugin plugin);
+  public Jex plugin(JexPlugin plugin) {
+    plugin.apply(this);
+    return this;
+  }
 
   /**
    * Configures the Jex instance using a dependency injection scope from Avaje-Inject.
@@ -230,7 +252,17 @@ public sealed interface Jex permits DJex {
    * @param beanScope The Avaje-Inject BeanScope containing the dependencies.
    * @return The configured Jex instance.
    */
-  Jex configureWith(BeanScope beanScope);
+  public Jex configureWith(BeanScope beanScope) {
+    lifecycle.onShutdown(beanScope::close);
+    for (JexPlugin plugin : beanScope.list(JexPlugin.class)) {
+      plugin.apply(this);
+    }
+    routing.addAll(beanScope.list(Routing.HttpService.class));
+    beanScope.getOptional(JsonService.class).ifPresent(this::jsonService);
+    beanScope.getOptional(HttpsConfigurator.class).ifPresent(config()::httpsConfig);
+    beanScope.getOptional(HttpServerProvider.class).ifPresent(config()::serverProvider);
+    return this;
+  }
 
   /**
    * Configures the Jex instance using a functional approach.
@@ -241,16 +273,23 @@ public sealed interface Jex permits DJex {
    * @param configure A consumer lambda that accepts a {@link JexConfig} instance for configuration.
    * @return The configured Jex instance.
    */
-  Jex config(Consumer<JexConfig> configure);
+  public Jex config(Consumer<JexConfig> configure) {
+    configure.accept(config);
+    return this;
+  }
 
   /**
    * Sets the port number on which the Jex server will listen for incoming requests.
    *
-   * <p>The default value is 8080. If The port is set to 0, the server will randomly choose an available port.
+   * <p>The default value is 8080. If The port is set to 0, the server will randomly choose an
+   * available port.
    *
    * @param port The port number to use.
    */
-  Jex port(int port);
+  public Jex port(int port) {
+    config.port(port);
+    return this;
+  }
 
   /**
    * Sets the context path for the Jex application.
@@ -260,7 +299,10 @@ public sealed interface Jex permits DJex {
    * @param contextPath The context path to use.
    * @return The updated Jex instance.
    */
-  Jex contextPath(String contextPath);
+  public Jex contextPath(String contextPath) {
+    config.contextPath(contextPath);
+    return this;
+  }
 
   /**
    * Explicitly register a template renderer.
@@ -271,19 +313,30 @@ public sealed interface Jex permits DJex {
    * @param renderer The template renderer to register
    * @param extensions The extensions the renderer is used for
    */
-  Jex register(TemplateRender renderer, String... extensions);
+  public Jex register(TemplateRender renderer, String... extensions) {
+    for (String extension : extensions) {
+      config.renderer(extension, renderer);
+    }
+    return this;
+  }
 
   /** Return the application lifecycle support. */
-  AppLifecycle lifecycle();
+  public AppLifecycle lifecycle() {
+    return lifecycle;
+  }
 
   /** Return the configuration. */
-  JexConfig config();
+  public JexConfig config() {
+    return config;
+  }
 
   /** Start the server. */
-  Jex.Server start();
+  public Server start() {
+    return BootstrapServer.start(this);
+  }
 
   /** The running server. */
-  interface Server {
+  public interface Server {
 
     /**
      * Register a function to execute LAST on shutdown after all the normal lifecycle shutdown
