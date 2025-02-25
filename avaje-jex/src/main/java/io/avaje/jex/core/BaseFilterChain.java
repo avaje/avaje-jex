@@ -1,10 +1,9 @@
 package io.avaje.jex.core;
 
-import java.util.Iterator;
-
 import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.http.HttpFilter;
 import io.avaje.jex.http.HttpFilter.FilterChain;
+import java.util.Iterator;
 
 final class BaseFilterChain implements FilterChain {
 

@@ -1,16 +1,14 @@
 package io.avaje.jex.core;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import io.avaje.jex.http.HttpFilter;
+import io.avaje.jex.http.NotFoundException;
+import io.avaje.jex.routes.SpiRoutes;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-
-import io.avaje.jex.http.HttpFilter;
-import io.avaje.jex.http.NotFoundException;
-import io.avaje.jex.routes.SpiRoutes;
 
 final class RoutingHandler implements HttpHandler {
 

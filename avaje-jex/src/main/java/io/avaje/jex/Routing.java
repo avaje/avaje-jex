@@ -1,19 +1,17 @@
 package io.avaje.jex;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
-
 import com.sun.net.httpserver.Filter;
-
 import io.avaje.jex.http.Context;
 import io.avaje.jex.http.ExceptionHandler;
 import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.http.HttpFilter;
 import io.avaje.jex.http.sse.SseClient;
 import io.avaje.jex.security.Role;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 
 /** Routing abstraction. */
 public interface Routing {
@@ -25,8 +23,8 @@ public interface Routing {
   Routing addAll(Collection<Routing.HttpService> routes);
 
   /**
-   * Registers an exception handler that handles the given type of exceptions. This will replace an
-   * existing error handler for the same exception class.
+   * Registers an exception handler that handles the given type of exceptions. This will replace an existing error
+   * handler for the same exception class.
    *
    * @param exceptionClass the type of exception to handle by this handler
    * @param handler the error handler
@@ -47,7 +45,6 @@ public interface Routing {
    *
    * @param path the common path prefix
    * @param group the function to register the rout handlers
-   *
    */
   Routing group(String path, HttpService group);
 
@@ -133,20 +130,18 @@ public interface Routing {
 
   /** Add a pre-processing filter for all matched requests. */
   default Routing before(Consumer<Context> handler) {
-    return filter(
-        (ctx, chain) -> {
-          handler.accept(ctx);
-          chain.proceed();
-        });
+    return filter((ctx, chain) -> {
+      handler.accept(ctx);
+      chain.proceed();
+    });
   }
 
   /** Add a post-processing filter for all matched requests. */
   default Routing after(Consumer<Context> handler) {
-    return filter(
-        (ctx, chain) -> {
-          chain.proceed();
-          handler.accept(ctx);
-        });
+    return filter((ctx, chain) -> {
+      chain.proceed();
+      handler.accept(ctx);
+    });
   }
 
   /**

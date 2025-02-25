@@ -4,24 +4,21 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.avaje.jex.Jex;
+import io.avaje.jex.core.json.JacksonJsonService;
+import io.avaje.jex.core.json.JsonbOutput;
+import io.avaje.jsonb.Json;
+import io.avaje.jsonb.JsonType;
+import io.avaje.jsonb.Jsonb;
+import io.avaje.jsonb.Types;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Stream;
-
-import io.avaje.jex.core.json.JsonbOutput;
-import io.avaje.jsonb.Json;
-import io.avaje.jsonb.JsonType;
-import io.avaje.jsonb.Jsonb;
-import io.avaje.jsonb.Types;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-
-import io.avaje.jex.Jex;
-import io.avaje.jex.core.json.JacksonJsonService;
 
 public class JsonTest {
 
@@ -38,37 +35,30 @@ public class JsonTest {
   static final JsonType<HelloDto> jsonTypeHelloDto = jsonb.type(HelloDto.class);
 
   @Json
-  public record Generic<T>(T value){}
+  public record Generic<T>(T value) {}
 
   static TestPair init() {
-    Jex app =
-        Jex.create()
-            .jsonService(new JacksonJsonService())
-            .get("/", ctx -> ctx.status(200).json(HelloDto.rob()))
-            .post(
-                "/generic",
-                ctx -> {
-                  var type = Types.newParameterizedType(Generic.class, String.class);
-                  String value = ctx.<Generic<String>>bodyAsType(type).value;
-                  ctx.text(value);
-                })
-            .get(
-                "/usingOutputStream",
-                ctx -> {
-                  ctx.status(200).contentType("application/json");
-                  var result = HelloDto.rob();
-                  jsonTypeHelloDto.toJson(result, ctx.outputStream());
-                })
-            .get(
-              "/usingJsonOutput",
-              ctx -> {
-                ctx.status(200).contentType("application/json");
-                var result = HelloDto.fi();
-                jsonTypeHelloDto.toJson(result, JsonbOutput.of(ctx));
-              })
-            .get("/iterate", ctx -> ctx.jsonStream(ITERATOR))
-            .get("/stream", ctx -> ctx.jsonStream(HELLO_BEANS.stream()))
-            .post("/", ctx -> ctx.text("bean[" + ctx.bodyAsClass(HelloDto.class) + "]"));
+    Jex app = Jex.create()
+        .jsonService(new JacksonJsonService())
+        .get("/", ctx -> ctx.status(200).json(HelloDto.rob()))
+        .post("/generic", ctx -> {
+          var type = Types.newParameterizedType(Generic.class, String.class);
+          String value = ctx.<Generic<String>>bodyAsType(type).value;
+          ctx.text(value);
+        })
+        .get("/usingOutputStream", ctx -> {
+          ctx.status(200).contentType("application/json");
+          var result = HelloDto.rob();
+          jsonTypeHelloDto.toJson(result, ctx.outputStream());
+        })
+        .get("/usingJsonOutput", ctx -> {
+          ctx.status(200).contentType("application/json");
+          var result = HelloDto.fi();
+          jsonTypeHelloDto.toJson(result, JsonbOutput.of(ctx));
+        })
+        .get("/iterate", ctx -> ctx.jsonStream(ITERATOR))
+        .get("/stream", ctx -> ctx.jsonStream(HELLO_BEANS.stream()))
+        .post("/", ctx -> ctx.text("bean[" + ctx.bodyAsClass(HelloDto.class) + "]"));
 
     return TestPair.create(app);
   }
@@ -81,15 +71,12 @@ public class JsonTest {
   @Test
   void get() {
 
-    var bean = pair.request()
-      .GET()
-      .bean(HelloDto.class);
+    var bean = pair.request().GET().bean(HelloDto.class);
 
     assertThat(bean.id).isEqualTo(42);
     assertThat(bean.name).isEqualTo("rob");
 
-    final HttpResponse<String> hres = pair.request()
-      .GET().asString();
+    final HttpResponse<String> hres = pair.request().GET().asString();
 
     final HttpHeaders headers = hres.headers();
     assertThat(headers.firstValue("Content-Type").orElseThrow()).isEqualTo("application/json");
@@ -98,7 +85,8 @@ public class JsonTest {
   @Test
   void generic() {
     var generic = new Generic<>("stringy");
-    var bean = pair.request().path("generic").body(generic).POST().asString().body();
+    var bean =
+        pair.request().path("generic").body(generic).POST().asString().body();
 
     assertThat(bean).isEqualTo(generic.value);
   }
@@ -106,31 +94,24 @@ public class JsonTest {
   @Test
   void usingOutputStream() {
 
-    var bean = pair.request().path("usingOutputStream")
-      .GET()
-      .bean(HelloDto.class);
+    var bean = pair.request().path("usingOutputStream").GET().bean(HelloDto.class);
 
     assertThat(bean.id).isEqualTo(42);
     assertThat(bean.name).isEqualTo("rob");
 
-    final HttpResponse<String> hres = pair.request()
-      .GET().asString();
+    final HttpResponse<String> hres = pair.request().GET().asString();
 
     final HttpHeaders headers = hres.headers();
     assertThat(headers.firstValue("Content-Type").orElseThrow()).isEqualTo("application/json");
 
-    bean = pair.request().path("usingOutputStream")
-      .GET()
-      .bean(HelloDto.class);
+    bean = pair.request().path("usingOutputStream").GET().bean(HelloDto.class);
     assertThat(bean.id).isEqualTo(42);
     assertThat(bean.name).isEqualTo("rob");
   }
 
   @Test
   void usingJsonOutput() {
-    var hres = pair.request().path("usingJsonOutput")
-      .GET()
-      .as(HelloDto.class);
+    var hres = pair.request().path("usingJsonOutput").GET().as(HelloDto.class);
 
     assertThat(hres.statusCode()).isEqualTo(200);
     final HttpHeaders headers = hres.headers();
@@ -141,13 +122,9 @@ public class JsonTest {
     assertThat(bean.name).isEqualTo("fi");
   }
 
-
   @Test
   void stream_viaIterator() {
-    final Stream<HelloDto> beanStream = pair.request()
-      .path("iterate")
-      .GET()
-      .stream(HelloDto.class);
+    final Stream<HelloDto> beanStream = pair.request().path("iterate").GET().stream(HelloDto.class);
 
     // expect client gets the expected stream of beans
     assertCollectedStream(beanStream);
@@ -158,10 +135,7 @@ public class JsonTest {
 
   @Test
   void stream() {
-    final Stream<HelloDto> beanStream = pair.request()
-      .path("stream")
-      .GET()
-      .stream(HelloDto.class);
+    final Stream<HelloDto> beanStream = pair.request().path("stream").GET().stream(HelloDto.class);
 
     assertCollectedStream(beanStream);
   }
@@ -185,9 +159,7 @@ public class JsonTest {
     dto.id = 42;
     dto.name = "rob was here";
 
-    var res = pair.request()
-      .body(dto)
-      .POST().asString();
+    var res = pair.request().body(dto).POST().asString();
 
     assertThat(res.body()).isEqualTo("bean[id:42 name:rob was here]");
     assertThat(res.statusCode()).isEqualTo(200);
@@ -195,12 +167,9 @@ public class JsonTest {
     dto.id = 99;
     dto.name = "fi";
 
-    res = pair.request()
-      .body(dto)
-      .POST().asString();
+    res = pair.request().body(dto).POST().asString();
 
     assertThat(res.body()).isEqualTo("bean[id:99 name:fi]");
     assertThat(res.statusCode()).isEqualTo(200);
   }
-
 }

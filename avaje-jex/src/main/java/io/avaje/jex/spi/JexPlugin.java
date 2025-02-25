@@ -3,8 +3,7 @@ package io.avaje.jex.spi;
 import io.avaje.jex.Jex;
 
 /**
- * A plugin that can register things like routes, exception handlers and configure the current Jex
- * instance.
+ * A plugin that can register things like routes, exception handlers and configure the current Jex instance.
  *
  * @see JexExtension SPI registration details.
  */
