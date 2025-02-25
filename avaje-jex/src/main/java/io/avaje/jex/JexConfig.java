@@ -20,7 +20,7 @@ import io.avaje.jex.spi.TemplateRender;
  * endpoint, trailing slash handling, JSON service, template renderers, executor service, HTTPS
  * configuration, compression, and plugin loading.
  */
-public sealed interface JexConfig permits DJexConfig {
+public interface JexConfig {
 
   /** Returns the configured compression settings. */
   CompressionConfig compression();

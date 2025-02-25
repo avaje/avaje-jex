@@ -16,7 +16,7 @@ import io.avaje.jex.http.sse.SseClient;
 import io.avaje.jex.security.Role;
 
 /** Routing abstraction. */
-public sealed interface Routing permits DefaultRouting {
+public interface Routing {
 
   /** Add the routes provided by the given HttpService. */
   Routing add(Routing.HttpService service);

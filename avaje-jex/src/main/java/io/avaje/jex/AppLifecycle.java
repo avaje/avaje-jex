@@ -1,7 +1,7 @@
 package io.avaje.jex;
 
 /** Defines the lifecycle configuration for an application. */
-public sealed interface AppLifecycle permits DefaultLifecycle {
+public interface AppLifecycle {
 
   /** Represents the possible states of the application server. */
   enum Status {

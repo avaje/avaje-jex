@@ -30,7 +30,7 @@ import io.avaje.jex.spi.TemplateRender;
  *
  * }</pre>
  */
-public sealed interface Jex permits DJex {
+public interface Jex {
 
   /**
    * Create Jex.
