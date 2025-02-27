@@ -42,6 +42,14 @@ public interface SseClient extends Closeable {
   void keepAlive();
 
   /**
+   * Add a callback that will be called either when connection is closed through {@link #close()},
+   * or when the {@link Emitter} is detected as closed.
+   *
+   * @param task task to run
+   */
+  void onClose(Runnable task);
+
+  /**
    * Attempt to send a comment. If the {@link Emitter} fails to emit (remote client has
    * disconnected), the {@link #close()} function will be called instead.
    */

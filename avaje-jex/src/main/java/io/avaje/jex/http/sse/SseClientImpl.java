@@ -20,6 +20,7 @@ final class SseClientImpl implements SseClient {
   private final JsonService jsonService;
   private final Context ctx;
   private CompletableFuture<?> blockingFuture;
+  private Runnable closeCallback = () -> {};
 
   SseClientImpl(Context ctx) {
     this.emitter = new Emitter(ctx.exchange().getResponseBody());
@@ -28,8 +29,15 @@ final class SseClientImpl implements SseClient {
   }
 
   @Override
+  public void onClose(Runnable task) {
+    this.closeCallback = task;
+  }
+
+  @Override
   public void close() {
-    if (terminated.getAndSet(true) && blockingFuture != null) {
+    if (terminated.getAndSet(true)) return;
+    closeCallback.run();
+    if (blockingFuture != null) {
       blockingFuture.complete(null);
     }
   }
