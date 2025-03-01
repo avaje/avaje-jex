@@ -26,8 +26,8 @@ public non-sealed interface JsonService extends JexExtension {
   /**
    * **Writes a Java Object as a JSON string**
    *
-   * <p>Serializes a Java object into JSON string format and writes the resulting JSON to the specified
-   * output stream.
+   * <p>Serializes a Java object into JSON string format and writes the resulting JSON to the
+   * specified output stream.
    *
    * @param bean the Java object to be serialized
    * @return the serialized JSON string
@@ -66,5 +66,7 @@ public non-sealed interface JsonService extends JexExtension {
    * @param iterator the stream of objects to be serialized
    * @param os the output stream to write the JSON-Stream data to
    */
-  <E> void toJsonStream(Iterator<E> iterator, OutputStream os);
+  default <E> void toJsonStream(Iterator<E> iterator, OutputStream os) {
+    throw new UnsupportedOperationException("toJsonStream is unimplemented in this JsonService");
+  }
 }
