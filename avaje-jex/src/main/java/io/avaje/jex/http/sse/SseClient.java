@@ -1,20 +1,18 @@
 package io.avaje.jex.http.sse;
 
-import java.io.Closeable;
-import java.util.function.Consumer;
-
 import io.avaje.jex.http.Context;
 import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.spi.JsonService;
+import java.io.Closeable;
+import java.util.function.Consumer;
 
 /**
- * A client for Server-Sent Events (SSE). This class handles the setup of the SSE connection,
- * sending events and comments to the client, and managing the lifecycle of the connection. It
- * ensures proper headers are set and provides methods for sending various types of data.
+ * A client for Server-Sent Events (SSE). This class handles the setup of the SSE connection, sending events and
+ * comments to the client, and managing the lifecycle of the connection. It ensures proper headers are set and provides
+ * methods for sending various types of data.
  *
- * <p>This class implements {@link Closeable} to allow for proper resource management. The
- * connection is automatically closed if the client disconnects or if an error occurs during event
- * emission.
+ * <p>This class implements {@link Closeable} to allow for proper resource management. The connection is automatically
+ * closed if the client disconnects or if an error occurs during event emission.
  */
 public interface SseClient extends Closeable {
 
@@ -35,23 +33,22 @@ public interface SseClient extends Closeable {
   Context ctx();
 
   /**
-   * By blocking the SSE connection, you can share this client outside the handler to notify it from
-   * other sources. Keep in mind that this function will block the handler until the SSE client is
-   * released by another thread.
+   * By blocking the SSE connection, you can share this client outside the handler to notify it from other sources.
+   * Keep in mind that this function will block the handler until the SSE client is released by another thread.
    */
   void keepAlive();
 
   /**
-   * Add a callback that will be called either when connection is closed through {@link #close()},
-   * or when the {@link Emitter} is detected as closed.
+   * Add a callback that will be called either when connection is closed through {@link #close()}, or when the
+   * {@link Emitter} is detected as closed.
    *
    * @param task task to run
    */
   void onClose(Runnable task);
 
   /**
-   * Attempt to send a comment. If the {@link Emitter} fails to emit (remote client has
-   * disconnected), the {@link #close()} function will be called instead.
+   * Attempt to send a comment. If the {@link Emitter} fails to emit (remote client has disconnected), the
+   * {@link #close()} function will be called instead.
    */
   void sendComment(String comment);
 
@@ -62,19 +59,19 @@ public interface SseClient extends Closeable {
   void sendEvent(String event, Object data);
 
   /**
-   * Attempt to send an event. If the {@link Emitter} fails to emit (remote client has
-   * disconnected), the {@link #close()} function will be called instead.
+   * Attempt to send an event. If the {@link Emitter} fails to emit (remote client has disconnected), the
+   * {@link #close()} function will be called instead.
    *
    * @param event The name of the event.
-   * @param data The data to send in the event. This can be a String, an InputStream, or any object
-   *     that can be serialized to JSON using the configured {@link JsonService}.
+   * @param data The data to send in the event. This can be a String, an InputStream, or any object that can be
+   *     serialized to JSON using the configured {@link JsonService}.
    * @param id The ID of the event.
    */
   void sendEvent(String event, Object data, String id);
 
   /**
-   * Returns true if {@link #close()} has been called. This can either be by the user, or by Jex
-   * upon detecting that the {@link Emitter} is closed.
+   * Returns true if {@link #close()} has been called. This can either be by the user, or by Jex upon detecting that
+   * the {@link Emitter} is closed.
    */
   boolean terminated();
 }
