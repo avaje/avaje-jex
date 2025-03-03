@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * `@Client` interface in src/test for testing - ok but `@Client.Import` is probably
- * better if we want a common shared interface between server and client (e.g. loom).
+ * `@Client` interface in src/test for testing - ok but `@Client.Import` is probably better if we
+ * want a common shared interface between server and client (e.g. loom).
  */
 @InjectTest
 class HelloClientInterfaceInTestTest {
@@ -26,5 +26,4 @@ class HelloClientInterfaceInTestTest {
     String hi = client.hi();
     assertThat(hi).isEqualTo("hisay+yo");
   }
-
 }

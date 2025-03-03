@@ -1,10 +1,5 @@
 package io.avaje.jex.render.freemarker;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UncheckedIOException;
-import java.util.Map;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -12,6 +7,10 @@ import freemarker.template.Version;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.spi.TemplateRender;
 import io.avaje.spi.ServiceProvider;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UncheckedIOException;
+import java.util.Map;
 
 @ServiceProvider
 public class FreeMarkerRender implements TemplateRender {
@@ -34,7 +33,7 @@ public class FreeMarkerRender implements TemplateRender {
 
   @Override
   public String[] defaultExtensions() {
-    return new String[]{"ftl"};
+    return new String[] {"ftl"};
   }
 
   @Override

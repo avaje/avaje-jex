@@ -1,23 +1,20 @@
 package io.avaje.jex.core;
 
-import io.avaje.jex.Jex;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
-
-import java.net.http.HttpResponse;
-import java.util.Optional;
-
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import io.avaje.jex.Jex;
+import java.net.http.HttpResponse;
+import java.util.Optional;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 class ContextTest {
 
   static TestPair pair = init();
 
   static TestPair init() {
-    final Jex app = Jex.create()
-      .routing(routing -> routing
-        .get("/", ctx -> ctx.text("ze-get"))
+    final Jex app = Jex.create().routing(routing -> routing.get("/", ctx -> ctx.text("ze-get"))
         .post("/", ctx -> ctx.text("ze-post"))
         .get("/header", ctx -> {
           ctx.header("From-My-Server", "Set-By-Server");
@@ -34,7 +31,16 @@ class ContextTest {
           requireNonNull(ip);
           ctx.text("ip:" + ip);
         })
-        .get("/method", ctx -> ctx.text("method:" + ctx.method() + " path:" + ctx.path() + " protocol:" + ctx.protocol() + " port:" + ctx.port()))
+        .get(
+            "/method",
+            ctx -> ctx.text("method:"
+                + ctx.method()
+                + " path:"
+                + ctx.path()
+                + " protocol:"
+                + ctx.protocol()
+                + " port:"
+                + ctx.port()))
         .post("/echo", ctx -> ctx.text("req-body[" + ctx.body() + "]"))
         .get("/{a}/{b}", ctx -> ctx.text("ze-get-" + ctx.pathParamMap()))
         .post("/{a}/{b}", ctx -> ctx.text("ze-post-" + ctx.pathParamMap()))
@@ -65,9 +71,11 @@ class ContextTest {
 
   @Test
   void ctx_header_getSet() {
-    HttpResponse<String> res = pair.request().path("header")
-      .header("From-My-Client", "client-value")
-      .GET().asString();
+    HttpResponse<String> res = pair.request()
+        .path("header")
+        .header("From-My-Client", "client-value")
+        .GET()
+        .asString();
 
     final Optional<String> serverSetHeader = res.headers().firstValue("From-My-Server");
     assertThat(serverSetHeader.get()).isEqualTo("Set-By-Server");
@@ -76,10 +84,12 @@ class ContextTest {
 
   @Test
   void ctx_headerMap() {
-    HttpResponse<String> res = pair.request().path("headerMap")
-      .header("X-Foo", "a")
-      .header("X-Bar", "b")
-      .GET().asString();
+    HttpResponse<String> res = pair.request()
+        .path("headerMap")
+        .header("X-Foo", "a")
+        .header("X-Bar", "b")
+        .GET()
+        .asString();
 
     assertThat(res.body()).contains("X-foo=a"); // not maintaining case?
     assertThat(res.body()).contains("X-bar=b");
@@ -87,55 +97,48 @@ class ContextTest {
 
   @Test
   void ctx_status() {
-    HttpResponse<String> res = pair.request().path("status")
-      .GET().asString();
+    HttpResponse<String> res = pair.request().path("status").GET().asString();
 
     assertThat(res.body()).isEqualTo("status:201");
   }
 
   @Test
   void ctx_host() {
-    HttpResponse<String> res = pair.request().path("host")
-      .GET().asString();
+    HttpResponse<String> res = pair.request().path("host").GET().asString();
 
     assertThat(res.body()).contains("host:localhost");
   }
 
   @Test
   void ctx_ip() {
-    HttpResponse<String> res = pair.request().path("ip")
-      .GET().asString();
+    HttpResponse<String> res = pair.request().path("ip").GET().asString();
 
     assertThat(res.body()).isEqualTo("ip:127.0.0.1");
   }
 
-
   @Test
   void ctx_methodPathPortProtocol() {
-    HttpResponse<String> res = pair.request().path("method")
-      .GET().asString();
+    HttpResponse<String> res = pair.request().path("method").GET().asString();
 
     assertThat(res.body()).isEqualTo("method:GET path:/method protocol:HTTP/1.1 port:" + pair.port());
   }
 
   @Test
   void post_body() {
-    HttpResponse<String> res = pair.request().path("echo").body("simple").POST().asString();
+    HttpResponse<String> res =
+        pair.request().path("echo").body("simple").POST().asString();
     assertThat(res.body()).isEqualTo("req-body[simple]");
   }
 
   @Test
   void get_path_path() {
-    var res = pair.request()
-      .path("A").path("B").GET().asString();
+    var res = pair.request().path("A").path("B").GET().asString();
 
     assertThat(res.body()).isEqualTo("ze-get-{a=A, b=B}");
 
-    res = pair.request()
-      .path("one").path("bar").body("simple").POST().asString();
+    res = pair.request().path("one").path("bar").body("simple").POST().asString();
 
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.body()).isEqualTo("ze-post-{a=one, b=bar}");
   }
-
 }

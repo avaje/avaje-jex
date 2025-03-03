@@ -1,19 +1,18 @@
 package io.avaje.jex.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.avaje.http.client.HttpClient;
 import io.avaje.http.client.JacksonBodyAdapter;
 import io.avaje.jex.AppLifecycle;
 import io.avaje.jex.Jex;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import java.net.http.HttpResponse;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 class HealthPluginTest {
 
@@ -25,21 +24,19 @@ class HealthPluginTest {
   @BeforeAll
   static void setup() {
     jex = Jex.create()
-      .routing(routing -> routing
-        .get("/", ctx -> {
+        .routing(routing -> routing.get("/", ctx -> {
           final String one = ctx.header("one");
           Map<String, String> obj = new LinkedHashMap<>();
           obj.put("one", one);
           ctx.json(obj);
-        })
-      )
-      .port(port);
+        }))
+        .port(port);
 
-    server =  jex.start();
+    server = jex.start();
     client = HttpClient.builder()
-      .baseUrl("http://localhost:"+port)
-      .bodyAdapter(new JacksonBodyAdapter())
-      .build();
+        .baseUrl("http://localhost:" + port)
+        .bodyAdapter(new JacksonBodyAdapter())
+        .build();
   }
 
   @AfterAll
@@ -49,9 +46,8 @@ class HealthPluginTest {
 
   @Test
   void get() {
-    final HttpResponse<String> hres = client.request()
-      .header("one", "hello")
-      .GET().asString();
+    final HttpResponse<String> hres =
+        client.request().header("one", "hello").GET().asString();
     assertThat(hres.statusCode()).isEqualTo(200);
   }
 
@@ -91,7 +87,6 @@ class HealthPluginTest {
   }
 
   private HttpResponse<String> ready(String s) {
-    return client.request().path(s)
-      .GET().asString();
+    return client.request().path(s).GET().asString();
   }
 }

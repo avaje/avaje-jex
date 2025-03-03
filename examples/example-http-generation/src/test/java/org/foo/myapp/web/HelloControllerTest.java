@@ -9,9 +9,7 @@ import java.net.http.HttpResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Using a raw HttpClient - not bad.
- */
+/** Using a raw HttpClient - not bad. */
 @InjectTest
 class HelloControllerTest {
 
@@ -19,11 +17,8 @@ class HelloControllerTest {
 
   @Test
   void hello() {
-    HttpResponse<String> hello = client.request().path("hello")
-      .GET()
-      .asString();
+    HttpResponse<String> hello = client.request().path("hello").GET().asString();
 
     assertThat(hello.statusCode()).isEqualTo(200);
   }
-
 }

@@ -1,8 +1,5 @@
 package io.avaje.jex;
 
-import java.util.Collection;
-import java.util.function.Consumer;
-
 import io.avaje.inject.BeanScope;
 import io.avaje.jex.Routing.HttpService;
 import io.avaje.jex.http.Context;
@@ -14,6 +11,8 @@ import io.avaje.jex.security.Role;
 import io.avaje.jex.spi.JexPlugin;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * Create configure and start Jex.
@@ -36,7 +35,6 @@ public interface Jex {
    * Create Jex.
    *
    * <pre>{@code
-   *
    * final Jex.Server app = Jex.create()
    *   .routing(routing -> routing
    *     .get("/", ctx -> ctx.text("hello world"))
@@ -175,8 +173,8 @@ public interface Jex {
   }
 
   /**
-   * Registers an exception handler that handles the given type of exceptions. This will replace an
-   * existing error handler for the same exception class.
+   * Registers an exception handler that handles the given type of exceptions. This will replace an existing error
+   * handler for the same exception class.
    *
    * @param exceptionClass the type of exception to handle by this handler
    * @param handler the error handler
@@ -200,7 +198,6 @@ public interface Jex {
    *
    * @param path the common path prefix
    * @param group the function to register the rout handlers
-   *
    */
   default Jex group(String path, HttpService group) {
     routing().group(path, group);
@@ -224,8 +221,8 @@ public interface Jex {
   /**
    * Configures the Jex instance using a dependency injection scope from Avaje-Inject.
    *
-   * <p>This method allows you to leverage the Avaje-Inject framework to provide dependencies like
-   * Handlers, StaticResources, and Plugins to the Jex instance.
+   * <p>This method allows you to leverage the Avaje-Inject framework to provide dependencies like Handlers,
+   * StaticResources, and Plugins to the Jex instance.
    *
    * @param beanScope The Avaje-Inject BeanScope containing the dependencies.
    * @return The configured Jex instance.
@@ -235,8 +232,8 @@ public interface Jex {
   /**
    * Configures the Jex instance using a functional approach.
    *
-   * <p>The provided consumer lambda allows you to customize the Jex configuration, such as setting
-   * the port, compression, and other options.
+   * <p>The provided consumer lambda allows you to customize the Jex configuration, such as setting the port,
+   * compression, and other options.
    *
    * @param configure A consumer lambda that accepts a {@link JexConfig} instance for configuration.
    * @return The configured Jex instance.
@@ -265,8 +262,8 @@ public interface Jex {
   /**
    * Explicitly register a template renderer.
    *
-   * <p>Note that if not explicitly registered TemplateRender's can be automatically registered via
-   * ServiceLoader just by including them to the class path.
+   * <p>Note that if not explicitly registered TemplateRender's can be automatically registered via ServiceLoader just
+   * by including them to the class path.
    *
    * @param renderer The template renderer to register
    * @param extensions The extensions the renderer is used for
@@ -286,8 +283,7 @@ public interface Jex {
   interface Server {
 
     /**
-     * Register a function to execute LAST on shutdown after all the normal lifecycle shutdown
-     * functions have run.
+     * Register a function to execute LAST on shutdown after all the normal lifecycle shutdown functions have run.
      *
      * <p>Typically, we desire to shut down logging (e.g. Log4J) last.
      */

@@ -16,15 +16,16 @@ public class Main {
   public static void main(String[] args) {
 
     Jex.create()
-      //.attribute(Executor.class, Executors.newVirtualThreadExecutor())
-      .routing(routing -> routing
-        .get("/", ctx -> ctx.text("hello"))
-        .get("/foo/{id}", Main::fooBean)
-        .get("/delay", Main::delay)
-        .get("/dump", ctx -> dumpThreadCount())
-      )
-      .port(7004)
-      .start();
+        // .attribute(Executor.class, Executors.newVirtualThreadExecutor())
+        .routing(
+            routing ->
+                routing
+                    .get("/", ctx -> ctx.text("hello"))
+                    .get("/foo/{id}", Main::fooBean)
+                    .get("/delay", Main::delay)
+                    .get("/dump", ctx -> dumpThreadCount()))
+        .port(7004)
+        .start();
   }
 
   private static void fooBean(Context ctx) {
