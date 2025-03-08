@@ -15,8 +15,15 @@ class MustacheRenderTest {
   static TestPair pair1 = init(false);
 
   static TestPair init(boolean explicit) {
-    var app = Jex.create().routing(routing -> routing.get("/noModel", ctx -> ctx.render("one.mustache"))
-        .get("/withModel", ctx -> ctx.render("two.mustache", Map.of("message", "hello"))));
+    var app =
+        Jex.create()
+            .routing(
+                routing ->
+                    routing
+                        .get("/noModel", ctx -> ctx.render("one.mustache"))
+                        .get(
+                            "/withModel",
+                            ctx -> ctx.render("two.mustache", Map.of("message", "hello"))));
     if (explicit) {
       app.register(new MustacheRender(), "mustache");
     }

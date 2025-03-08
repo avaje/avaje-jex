@@ -12,16 +12,26 @@ class NestedRoutesTest {
   static TestPair pair = init();
 
   static TestPair init() {
-    Jex app = Jex.create().routing(routing -> routing.get("/", ctx -> ctx.text("hello"))
-        .group("api", g -> {
-          g.get("/", ctx -> ctx.text("apiRoot"));
-          g.get("{id}", ctx -> ctx.text("api-" + ctx.pathParam("id")));
-        })
-        .group("extra", g -> {
-          g.get("/", ctx -> ctx.text("extraRoot"));
-          g.get("{id}", ctx -> ctx.text("extra-id-" + ctx.pathParam("id")));
-          g.get("more/{id}", ctx -> ctx.text("extraMore-" + ctx.pathParam("id")));
-        }));
+    Jex app =
+        Jex.create()
+            .routing(
+                routing ->
+                    routing
+                        .get("/", ctx -> ctx.text("hello"))
+                        .group(
+                            "api",
+                            g -> {
+                              g.get("/", ctx -> ctx.text("apiRoot"));
+                              g.get("{id}", ctx -> ctx.text("api-" + ctx.pathParam("id")));
+                            })
+                        .group(
+                            "extra",
+                            g -> {
+                              g.get("/", ctx -> ctx.text("extraRoot"));
+                              g.get("{id}", ctx -> ctx.text("extra-id-" + ctx.pathParam("id")));
+                              g.get(
+                                  "more/{id}", ctx -> ctx.text("extraMore-" + ctx.pathParam("id")));
+                            }));
     return TestPair.create(app);
   }
 

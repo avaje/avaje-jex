@@ -70,10 +70,12 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
 
   protected String lookupMime(String path) {
     var lower = path.toLowerCase();
-    return Objects.requireNonNullElseGet(MIME_MAP.getContentTypeFor(path), () -> {
-      String ext = getExt(lower);
-      return mimeTypes.getOrDefault(ext, "application/octet-stream");
-    });
+    return Objects.requireNonNullElseGet(
+        MIME_MAP.getContentTypeFor(path),
+        () -> {
+          String ext = getExt(lower);
+          return mimeTypes.getOrDefault(ext, "application/octet-stream");
+        });
   }
 
   protected boolean isCached(final String path) {

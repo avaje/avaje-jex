@@ -49,11 +49,12 @@ public class TestPair {
     var jexServer = app.port(port).start();
 
     var url = "http://localhost:" + port;
-    var client = HttpClient.builder()
-        .baseUrl(url)
-        .bodyAdapter(new JacksonBodyAdapter())
-        .requestTimeout(Duration.ofMinutes(2))
-        .build();
+    var client =
+        HttpClient.builder()
+            .baseUrl(url)
+            .bodyAdapter(new JacksonBodyAdapter())
+            .requestTimeout(Duration.ofMinutes(2))
+            .build();
 
     return new TestPair(port, jexServer, client);
   }

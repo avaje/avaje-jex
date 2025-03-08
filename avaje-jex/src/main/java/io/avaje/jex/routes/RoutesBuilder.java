@@ -19,15 +19,15 @@ public final class RoutesBuilder {
     final var buildMap = new LinkedHashMap<Routing.Type, RouteIndexBuild>();
     this.contextPath = config.contextPath().transform(s -> "/".equals(s) ? "" : s);
     for (var handler : routing.handlers()) {
-      buildMap.computeIfAbsent(handler.getType(), h -> new RouteIndexBuild())
-          .add(convert(handler));
+      buildMap.computeIfAbsent(handler.getType(), h -> new RouteIndexBuild()).add(convert(handler));
     }
     buildMap.forEach((key, value) -> typeMap.put(key, value.build()));
     filters = List.copyOf(routing.filters());
   }
 
   private SpiRoutes.Entry convert(Routing.Entry handler) {
-    final PathParser pathParser = new PathParser(contextPath + handler.getPath(), ignoreTrailingSlashes);
+    final PathParser pathParser =
+        new PathParser(contextPath + handler.getPath(), ignoreTrailingSlashes);
     return new RouteEntry(pathParser, handler.getHandler(), handler.getRoles());
   }
 

@@ -74,7 +74,8 @@ public final class BootstrapServer {
     }
   }
 
-  private static InetSocketAddress createSocketAddress(JexConfig config) throws UnknownHostException {
+  private static InetSocketAddress createSocketAddress(JexConfig config)
+      throws UnknownHostException {
     final var inetAddress = config.host() == null ? null : InetAddress.getByName(config.host());
     return new InetSocketAddress(inetAddress, config.port());
   }

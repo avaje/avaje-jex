@@ -24,7 +24,14 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
       URL singleFile,
       boolean precompress,
       CompressionConfig compressionConfig) {
-    super(urlPrefix, filesystemRoot, mimeTypes, headers, skipFilePredicate, precompress, compressionConfig);
+    super(
+        urlPrefix,
+        filesystemRoot,
+        mimeTypes,
+        headers,
+        skipFilePredicate,
+        precompress,
+        compressionConfig);
 
     this.resourceLoader = resourceLoader;
     this.indexFile = indexFile;

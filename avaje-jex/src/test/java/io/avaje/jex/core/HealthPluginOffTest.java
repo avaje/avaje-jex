@@ -12,9 +12,10 @@ class HealthPluginOffTest {
   static TestPair pair = init();
 
   static TestPair init() {
-    final Jex app = Jex.create()
-        .config(config -> config.health(false))
-        .routing(routing -> routing.get("/", ctx -> ctx.text("hello")));
+    final Jex app =
+        Jex.create()
+            .config(config -> config.health(false))
+            .routing(routing -> routing.get("/", ctx -> ctx.text("hello")));
 
     return TestPair.create(app);
   }

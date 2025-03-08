@@ -23,8 +23,8 @@ public interface Routing {
   Routing addAll(Collection<Routing.HttpService> routes);
 
   /**
-   * Registers an exception handler that handles the given type of exceptions. This will replace an existing error
-   * handler for the same exception class.
+   * Registers an exception handler that handles the given type of exceptions. This will replace an
+   * existing error handler for the same exception class.
    *
    * @param exceptionClass the type of exception to handle by this handler
    * @param handler the error handler
@@ -130,18 +130,20 @@ public interface Routing {
 
   /** Add a pre-processing filter for all matched requests. */
   default Routing before(Consumer<Context> handler) {
-    return filter((ctx, chain) -> {
-      handler.accept(ctx);
-      chain.proceed();
-    });
+    return filter(
+        (ctx, chain) -> {
+          handler.accept(ctx);
+          chain.proceed();
+        });
   }
 
   /** Add a post-processing filter for all matched requests. */
   default Routing after(Consumer<Context> handler) {
-    return filter((ctx, chain) -> {
-      chain.proceed();
-      handler.accept(ctx);
-    });
+    return filter(
+        (ctx, chain) -> {
+          chain.proceed();
+          handler.accept(ctx);
+        });
   }
 
   /**

@@ -15,7 +15,8 @@ import java.util.function.Predicate;
 final class StaticResourceHandlerBuilder implements StaticContent.Builder, StaticContent {
 
   private static final String FAILED_TO_LOCATE_FILE = "Failed to locate file: ";
-  private static final String DIRECTORY_INDEX_FAILURE = "Failed to locate Directory Index Resource: ";
+  private static final String DIRECTORY_INDEX_FAILURE =
+      "Failed to locate Directory Index Resource: ";
   private static final Predicate<Context> NO_OP_PREDICATE = ctx -> false;
   private static final ClassResourceLoader DEFAULT_LOADER = new DefaultResourceLoader();
 
@@ -49,17 +50,20 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
   }
 
   ExchangeHandler createHandler(CompressionConfig compress) {
-    path = Objects.requireNonNull(path)
-        .transform(this::prependSlash)
-        .transform(s -> s.endsWith("/*") ? s.substring(0, s.length() - 2) : s);
+    path =
+        Objects.requireNonNull(path)
+            .transform(this::prependSlash)
+            .transform(s -> s.endsWith("/*") ? s.substring(0, s.length() - 2) : s);
 
     root = isClasspath ? root.transform(this::prependSlash) : root;
     if (isClasspath && "/".equals(root)) {
-      throw new IllegalArgumentException("Cannot serve full classpath, please configure a classpath prefix");
+      throw new IllegalArgumentException(
+          "Cannot serve full classpath, please configure a classpath prefix");
     }
 
     if (root.endsWith("/") && directoryIndex == null) {
-      throw new IllegalArgumentException("Directory Index file is required when serving directories");
+      throw new IllegalArgumentException(
+          "Directory Index file is required when serving directories");
     }
 
     if (!isClasspath) {
@@ -147,7 +151,15 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
     }
 
     return new StaticFileHandler(
-        path, fsRoot, mimeTypes, headers, skipFilePredicate, dirIndex, singleFile, precompress, compress);
+        path,
+        fsRoot,
+        mimeTypes,
+        headers,
+        skipFilePredicate,
+        dirIndex,
+        singleFile,
+        precompress,
+        compress);
   }
 
   private StaticClassResourceHandler classPathHandler(CompressionConfig compress) {

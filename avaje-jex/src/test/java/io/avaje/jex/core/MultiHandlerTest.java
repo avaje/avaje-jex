@@ -12,23 +12,36 @@ class MultiHandlerTest {
   static TestPair pair = init();
 
   static TestPair init() {
-    Jex app = Jex.create().routing(routing -> routing.get("/hi", ctx4 -> {
-          if (ctx4.header("Hx-Request") != null) {
-            ctx4.text("HxResponse");
-          }
-        })
-        .get("/hi", ctx -> ctx.text("NormalResponse"))
-        .get("/hi/{id}", ctx3 -> {
-          if (ctx3.header("Hx-Request") != null) {
-            ctx3.text("HxResponse|" + ctx3.pathParam("id"));
-          }
-        })
-        .get("/hi/{id}", ctx2 -> {
-          if (ctx2.header("H2-Request") != null) {
-            ctx2.text("H2Response|" + ctx2.pathParam("id"));
-          }
-        })
-        .get("/hi/{id}", ctx1 -> ctx1.text("NormalResponse|" + ctx1.pathParam("id"))));
+    Jex app =
+        Jex.create()
+            .routing(
+                routing ->
+                    routing
+                        .get(
+                            "/hi",
+                            ctx4 -> {
+                              if (ctx4.header("Hx-Request") != null) {
+                                ctx4.text("HxResponse");
+                              }
+                            })
+                        .get("/hi", ctx -> ctx.text("NormalResponse"))
+                        .get(
+                            "/hi/{id}",
+                            ctx3 -> {
+                              if (ctx3.header("Hx-Request") != null) {
+                                ctx3.text("HxResponse|" + ctx3.pathParam("id"));
+                              }
+                            })
+                        .get(
+                            "/hi/{id}",
+                            ctx2 -> {
+                              if (ctx2.header("H2-Request") != null) {
+                                ctx2.text("H2Response|" + ctx2.pathParam("id"));
+                              }
+                            })
+                        .get(
+                            "/hi/{id}",
+                            ctx1 -> ctx1.text("NormalResponse|" + ctx1.pathParam("id"))));
     return TestPair.create(app);
   }
 

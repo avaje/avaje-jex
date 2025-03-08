@@ -20,27 +20,32 @@ class HeadersTest {
 
   @BeforeAll
   static void setup() {
-    server = Jex.create()
-        .routing(routing -> routing.get("/", ctx -> {
-          final String one = ctx.header("one");
-          Map<String, String> obj = new LinkedHashMap<>();
-          obj.put("one", one);
-          ctx.json(obj);
-        }))
-        .port(port)
-        .start();
+    server =
+        Jex.create()
+            .routing(
+                routing ->
+                    routing.get(
+                        "/",
+                        ctx -> {
+                          final String one = ctx.header("one");
+                          Map<String, String> obj = new LinkedHashMap<>();
+                          obj.put("one", one);
+                          ctx.json(obj);
+                        }))
+            .port(port)
+            .start();
 
-    client = HttpClient.builder()
-        .baseUrl("http://localhost:" + port)
-        .bodyAdapter(new JacksonBodyAdapter())
-        .build();
+    client =
+        HttpClient.builder()
+            .baseUrl("http://localhost:" + port)
+            .bodyAdapter(new JacksonBodyAdapter())
+            .build();
   }
 
   @Test
   void get() {
 
-    final HttpResponse<String> hres =
-        client.request().header("one", "hello").GET().asString();
+    final HttpResponse<String> hres = client.request().header("one", "hello").GET().asString();
 
     assertThat(hres.statusCode()).isEqualTo(200);
     assertThat(hres.body()).isEqualTo("{\"one\":\"hello\"}");

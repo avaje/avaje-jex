@@ -60,13 +60,14 @@ final class PathSegmentParser {
     for (String token : tokens) {
       appendedTokens.append(token);
       if (!segment.startsWith(appendedTokens.toString())) {
-        throw new IllegalArgumentException("Path ["
-            + rawPath
-            + "] has illegal segment ["
-            + segment
-            + "] starting at position ["
-            + position
-            + "]");
+        throw new IllegalArgumentException(
+            "Path ["
+                + rawPath
+                + "] has illegal segment ["
+                + segment
+                + "] starting at position ["
+                + position
+                + "]");
       }
       position += token.length();
       segments.add(tokenSegment(token));
@@ -112,13 +113,14 @@ final class PathSegmentParser {
   private void checkAdjacentViolations() {
     for (String adjacentViolation : ADJACENT_VIOLATIONS) {
       if (segment.contains(adjacentViolation)) {
-        throw new IllegalArgumentException("Path ["
-            + rawPath
-            + "] has illegal segment ["
-            + segment
-            + "] that contains ["
-            + adjacentViolation
-            + "]");
+        throw new IllegalArgumentException(
+            "Path ["
+                + rawPath
+                + "] has illegal segment ["
+                + segment
+                + "] that contains ["
+                + adjacentViolation
+                + "]");
       }
     }
   }

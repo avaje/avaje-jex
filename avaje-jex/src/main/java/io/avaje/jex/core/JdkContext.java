@@ -56,7 +56,11 @@ final class JdkContext implements Context {
   private Charset characterEncoding;
 
   JdkContext(
-      ServiceManager mgr, HttpExchange exchange, String path, Map<String, String> pathParams, Set<Role> roles) {
+      ServiceManager mgr,
+      HttpExchange exchange,
+      String path,
+      Map<String, String> pathParams,
+      Set<Role> roles) {
     this.mgr = mgr;
     this.roles = roles;
     this.exchange = exchange;
@@ -184,9 +188,7 @@ final class JdkContext implements Context {
 
   @Override
   public Context cookie(String name, String value, int maxAge) {
-    header(
-        SET_COOKIE,
-        Cookie.of(name, value).maxAge(Duration.ofSeconds(maxAge)).toString());
+    header(SET_COOKIE, Cookie.of(name, value).maxAge(Duration.ofSeconds(maxAge)).toString());
     return this;
   }
 

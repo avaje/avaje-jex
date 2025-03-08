@@ -15,10 +15,14 @@ class ContextUtilTest {
 
   @Test
   void parseCharset_caseCheck() {
-    assertThat(ServiceManager.parseCharset("app/foo; charset=Us-AsCiI")).isEqualTo(StandardCharsets.US_ASCII);
-    assertThat(ServiceManager.parseCharset("app/foo;charset=Us-AsCiI")).isEqualTo(StandardCharsets.US_ASCII);
-    assertThat(ServiceManager.parseCharset("app/foo;charset = Us-AsCiI ")).isEqualTo(StandardCharsets.US_ASCII);
-    assertThat(ServiceManager.parseCharset("app/foo;charset = Us-AsCiI;")).isEqualTo(StandardCharsets.US_ASCII);
+    assertThat(ServiceManager.parseCharset("app/foo; charset=Us-AsCiI"))
+        .isEqualTo(StandardCharsets.US_ASCII);
+    assertThat(ServiceManager.parseCharset("app/foo;charset=Us-AsCiI"))
+        .isEqualTo(StandardCharsets.US_ASCII);
+    assertThat(ServiceManager.parseCharset("app/foo;charset = Us-AsCiI "))
+        .isEqualTo(StandardCharsets.US_ASCII);
+    assertThat(ServiceManager.parseCharset("app/foo;charset = Us-AsCiI;"))
+        .isEqualTo(StandardCharsets.US_ASCII);
     assertThat(ServiceManager.parseCharset("app/foo;charset = Us-AsCiI;other=junk"))
         .isEqualTo(StandardCharsets.US_ASCII);
   }

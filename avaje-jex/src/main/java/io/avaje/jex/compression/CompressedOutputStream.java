@@ -8,7 +8,10 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-/** OutputStream implementation that conditionally compresses the output based on configuration and request headers. */
+/**
+ * OutputStream implementation that conditionally compresses the output based on configuration and
+ * request headers.
+ */
 public final class CompressedOutputStream extends OutputStream {
 
   private final int minSizeForCompression;
@@ -19,7 +22,8 @@ public final class CompressedOutputStream extends OutputStream {
   private OutputStream compressedStream;
   private boolean compressionDecided;
 
-  public CompressedOutputStream(CompressionConfig compression, Context ctx, OutputStream originStream) {
+  public CompressedOutputStream(
+      CompressionConfig compression, Context ctx, OutputStream originStream) {
     this.minSizeForCompression = compression.minSizeForCompression();
     this.compression = compression;
     this.ctx = ctx;

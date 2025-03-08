@@ -5,8 +5,8 @@ import io.avaje.jex.http.ExchangeHandler;
 /**
  * Wrap a Handler with filtering for Htmx specific headers.
  *
- * <p>The underlying Handler will not be invoked unless the request is a Htmx request and matches the required
- * attributes.
+ * <p>The underlying Handler will not be invoked unless the request is a Htmx request and matches
+ * the required attributes.
  */
 public interface HxHandler {
 

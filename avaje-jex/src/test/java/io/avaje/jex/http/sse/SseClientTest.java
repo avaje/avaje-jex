@@ -19,39 +19,51 @@ class SseClientTest {
   static final AtomicReference<SseClient> afterTwo = new AtomicReference<>();
 
   static TestPair init() {
-    final var app = Jex.create()
-        .jsonService(new JacksonJsonService())
-        .sse("/sse", sse -> {
-          for (var i = 0; i < 4; i++) {
-            sse.sendEvent("count", "hi", i + "");
-          }
-        })
-        .sse("/is", sse -> {
-          for (var i = 0; i < 2; i++) {
-            sse.sendEvent(
-                "count",
-                new ByteArrayInputStream(("IS val " + 1).getBytes(StandardCharsets.UTF_8)),
-                i + "");
-          }
-        })
-        .sse("/json", sse -> {
-          for (var i = 0; i < 2; i++) {
-            sse.sendEvent("count", new JsonContent(i), i + "");
-          }
-        })
-        .sse("/keepAlive", sse -> {
-          Thread.startVirtualThread(() -> {
-            for (var i = 0; i < 2; i++) {
-              sse.sendComment("Sent And Closed");
-              sse.close();
-            }
-          });
-          sse.keepAlive();
-        })
-        .sse("/multi", sse -> {
-          sse.sendEvent("multi\nline");
-          sse.sendComment("multi\nline");
-        });
+    final var app =
+        Jex.create()
+            .jsonService(new JacksonJsonService())
+            .sse(
+                "/sse",
+                sse -> {
+                  for (var i = 0; i < 4; i++) {
+                    sse.sendEvent("count", "hi", i + "");
+                  }
+                })
+            .sse(
+                "/is",
+                sse -> {
+                  for (var i = 0; i < 2; i++) {
+                    sse.sendEvent(
+                        "count",
+                        new ByteArrayInputStream(("IS val " + 1).getBytes(StandardCharsets.UTF_8)),
+                        i + "");
+                  }
+                })
+            .sse(
+                "/json",
+                sse -> {
+                  for (var i = 0; i < 2; i++) {
+                    sse.sendEvent("count", new JsonContent(i), i + "");
+                  }
+                })
+            .sse(
+                "/keepAlive",
+                sse -> {
+                  Thread.startVirtualThread(
+                      () -> {
+                        for (var i = 0; i < 2; i++) {
+                          sse.sendComment("Sent And Closed");
+                          sse.close();
+                        }
+                      });
+                  sse.keepAlive();
+                })
+            .sse(
+                "/multi",
+                sse -> {
+                  sse.sendEvent("multi\nline");
+                  sse.sendComment("multi\nline");
+                });
 
     return TestPair.create(app);
   }
@@ -65,13 +77,14 @@ class SseClientTest {
 
   @Test
   void testSse() {
-    final var response = pair.request()
-        .path("sse")
-        .header(Constants.ACCEPT, "text/event-stream")
-        .GET()
-        .asLines()
-        .body()
-        .toList();
+    final var response =
+        pair.request()
+            .path("sse")
+            .header(Constants.ACCEPT, "text/event-stream")
+            .GET()
+            .asLines()
+            .body()
+            .toList();
     assertThat(response).hasSize(16);
 
     final var expected =
@@ -97,16 +110,18 @@ data: hi
 
   @Test
   void testSseInputStream() {
-    final var response = pair.request()
-        .path("is")
-        .header(Constants.ACCEPT, "text/event-stream")
-        .GET()
-        .asLines()
-        .body()
-        .toList();
+    final var response =
+        pair.request()
+            .path("is")
+            .header(Constants.ACCEPT, "text/event-stream")
+            .GET()
+            .asLines()
+            .body()
+            .toList();
     assertThat(response).hasSize(8);
 
-    final var expected = """
+    final var expected =
+        """
 id: 0
 event: count
 data: IS val 1
@@ -120,16 +135,18 @@ data: IS val 1
 
   @Test
   void testSseJson() {
-    final var response = pair.request()
-        .path("json")
-        .header(Constants.ACCEPT, "text/event-stream")
-        .GET()
-        .asLines()
-        .body()
-        .toList();
+    final var response =
+        pair.request()
+            .path("json")
+            .header(Constants.ACCEPT, "text/event-stream")
+            .GET()
+            .asLines()
+            .body()
+            .toList();
     assertThat(response).hasSize(8);
 
-    final var expected = """
+    final var expected =
+        """
 id: 0
 event: count
 data: {"value":0}
@@ -143,24 +160,27 @@ data: {"value":1}
 
   @Test
   void testKeepAlive() {
-    final var response = pair.request()
-        .path("keepAlive")
-        .header(Constants.ACCEPT, "text/event-stream")
-        .GET()
-        .asString()
-        .body();
+    final var response =
+        pair.request()
+            .path("keepAlive")
+            .header(Constants.ACCEPT, "text/event-stream")
+            .GET()
+            .asString()
+            .body();
     assertThat(response).isEqualTo(": Sent And Closed\n");
   }
 
   @Test
   void testMultiLineData() {
-    final var response = pair.request()
-        .path("multi")
-        .header(Constants.ACCEPT, "text/event-stream")
-        .GET()
-        .asString()
-        .body();
-    final var expected = """
+    final var response =
+        pair.request()
+            .path("multi")
+            .header(Constants.ACCEPT, "text/event-stream")
+            .GET()
+            .asString()
+            .body();
+    final var expected =
+        """
 event: message
 data: multi
 data: line

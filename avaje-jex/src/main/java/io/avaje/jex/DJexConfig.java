@@ -48,9 +48,10 @@ final class DJexConfig implements JexConfig {
   public JexConfig contextPath(String contextPath) {
     if (!this.contextPath.equals(contextPath)) {
 
-      this.contextPath = contextPath
-          .transform(s -> s.startsWith("/") ? s : "/" + s)
-          .transform(s -> s.endsWith("/") ? s.substring(0, s.lastIndexOf("/")) : s);
+      this.contextPath =
+          contextPath
+              .transform(s -> s.startsWith("/") ? s : "/" + s)
+              .transform(s -> s.endsWith("/") ? s.substring(0, s.lastIndexOf("/")) : s);
     }
     return this;
   }
@@ -58,8 +59,9 @@ final class DJexConfig implements JexConfig {
   @Override
   public Executor executor() {
     if (executor == null) {
-      executor = Executors.newThreadPerTaskExecutor(
-          Thread.ofVirtual().name("avaje-jex-http-", 0).factory());
+      executor =
+          Executors.newThreadPerTaskExecutor(
+              Thread.ofVirtual().name("avaje-jex-http-", 0).factory());
     }
     return executor;
   }

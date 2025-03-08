@@ -25,7 +25,14 @@ final class StaticFileHandler extends AbstractStaticHandler {
       File singleFile,
       boolean precompress,
       CompressionConfig compressionConfig) {
-    super(urlPrefix, filesystemRoot, mimeTypes, headers, skipFilePredicate, precompress, compressionConfig);
+    super(
+        urlPrefix,
+        filesystemRoot,
+        mimeTypes,
+        headers,
+        skipFilePredicate,
+        precompress,
+        compressionConfig);
     this.indexFile = welcomeFile;
     this.singleFile = singleFile;
   }

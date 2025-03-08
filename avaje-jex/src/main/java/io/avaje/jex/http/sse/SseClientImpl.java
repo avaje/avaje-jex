@@ -92,8 +92,7 @@ final class SseClientImpl implements SseClient {
         switch (data) {
           case final InputStream is -> is;
           case final String s -> new ByteArrayInputStream(s.getBytes(UTF_8));
-          default -> new ByteArrayInputStream(
-              jsonService.toJsonString(data).getBytes(UTF_8));
+          default -> new ByteArrayInputStream(jsonService.toJsonString(data).getBytes(UTF_8));
         };
 
     emitter.emit(event, inputStream, id);

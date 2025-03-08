@@ -20,27 +20,35 @@ class JdkFilterTest {
   static final AtomicReference<String> afterTwo = new AtomicReference<>();
 
   static TestPair init() {
-    final Jex app = Jex.create().routing(routing -> routing.get("/", ctx -> ctx.text("roo"))
-        .get("/noResponse", ctx -> {})
-        .get("/one", ctx -> ctx.text("one"))
-        .get("/two", ctx -> ctx.text("two"))
-        .get("/two/{id}", ctx -> ctx.text("two-id"))
-        .filter(Filter.beforeHandler(
-            "before", ex -> ex.getResponseHeaders().set("before-all", "set")))
-        .filter((ctx, chain) -> {
-          if (ctx.path().contains("/two/")) {
-            ctx.header("before-two", "set");
-          }
-          chain.proceed();
-        })
-        .filter(Filter.afterHandler("after", ex -> afterAll.set("set")))
-        .filter((ctx, chain) -> {
-          chain.proceed();
-          if (ctx.path().contains("/two/")) {
-            afterTwo.set("set");
-          }
-        })
-        .get("/dummy", ctx -> ctx.text("dummy")));
+    final Jex app =
+        Jex.create()
+            .routing(
+                routing ->
+                    routing
+                        .get("/", ctx -> ctx.text("roo"))
+                        .get("/noResponse", ctx -> {})
+                        .get("/one", ctx -> ctx.text("one"))
+                        .get("/two", ctx -> ctx.text("two"))
+                        .get("/two/{id}", ctx -> ctx.text("two-id"))
+                        .filter(
+                            Filter.beforeHandler(
+                                "before", ex -> ex.getResponseHeaders().set("before-all", "set")))
+                        .filter(
+                            (ctx, chain) -> {
+                              if (ctx.path().contains("/two/")) {
+                                ctx.header("before-two", "set");
+                              }
+                              chain.proceed();
+                            })
+                        .filter(Filter.afterHandler("after", ex -> afterAll.set("set")))
+                        .filter(
+                            (ctx, chain) -> {
+                              chain.proceed();
+                              if (ctx.path().contains("/two/")) {
+                                afterTwo.set("set");
+                              }
+                            })
+                        .get("/dummy", ctx -> ctx.text("dummy")));
 
     return TestPair.create(app);
   }

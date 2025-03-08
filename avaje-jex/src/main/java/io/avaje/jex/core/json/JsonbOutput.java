@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * avaje-jsonb output that allows for writing fixed length content straight from the avaje-jsonb buffer, avoiding the
- * jex side buffer.
+ * avaje-jsonb output that allows for writing fixed length content straight from the avaje-jsonb
+ * buffer, avoiding the jex side buffer.
  */
 public final class JsonbOutput implements JsonOutput {
 

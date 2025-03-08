@@ -26,7 +26,8 @@ class CookieParserTest {
   @Test
   void rfc2965() {
     String header =
-        "$version=1; foo=bar; $Domain=google.com, aaa=bbb, c=cool; $Domain=google.com;" + " $Path=\"/foo\"";
+        "$version=1; foo=bar; $Domain=google.com, aaa=bbb, c=cool; $Domain=google.com;"
+            + " $Path=\"/foo\"";
     Map<String, String> cookies = CookieParser.parse(header);
     assertThat(cookies.get("foo")).isEqualTo("bar");
     assertThat(cookies.get("aaa")).isEqualTo("bbb");
@@ -36,7 +37,8 @@ class CookieParserTest {
 
   @Test
   void unquote() {
-    Map<String, String> cookies = CookieParser.parse("foo=\"bar\"; aaa=bbb; c=\"what_the_hell\"; aaa=\"ccc\"");
+    Map<String, String> cookies =
+        CookieParser.parse("foo=\"bar\"; aaa=bbb; c=\"what_the_hell\"; aaa=\"ccc\"");
     assertThat(cookies.get("foo")).isEqualTo("bar");
     assertThat(cookies.get("aaa")).isEqualTo("ccc");
     assertThat(cookies).hasSize(3);

@@ -14,8 +14,15 @@ class FreeMarkerServiceLoaderTest {
   static TestPair pair = init();
 
   static TestPair init() {
-    var app = Jex.create().routing(routing -> routing.get("/noModel", ctx -> ctx.render("one.ftl"))
-        .get("/withModel", ctx -> ctx.render("two.ftl", Map.of("message", "hello"))));
+    var app =
+        Jex.create()
+            .routing(
+                routing ->
+                    routing
+                        .get("/noModel", ctx -> ctx.render("one.ftl"))
+                        .get(
+                            "/withModel",
+                            ctx -> ctx.render("two.ftl", Map.of("message", "hello"))));
     // not explicitly registered so auto registered via service loader
     return TestPair.create(app);
   }

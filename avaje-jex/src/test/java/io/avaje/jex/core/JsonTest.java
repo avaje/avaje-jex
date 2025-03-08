@@ -38,27 +38,34 @@ public class JsonTest {
   public record Generic<T>(T value) {}
 
   static TestPair init() {
-    Jex app = Jex.create()
-        .jsonService(new JacksonJsonService())
-        .get("/", ctx -> ctx.status(200).json(HelloDto.rob()))
-        .post("/generic", ctx -> {
-          var type = Types.newParameterizedType(Generic.class, String.class);
-          String value = ctx.<Generic<String>>bodyAsType(type).value;
-          ctx.text(value);
-        })
-        .get("/usingOutputStream", ctx -> {
-          ctx.status(200).contentType("application/json");
-          var result = HelloDto.rob();
-          jsonTypeHelloDto.toJson(result, ctx.outputStream());
-        })
-        .get("/usingJsonOutput", ctx -> {
-          ctx.status(200).contentType("application/json");
-          var result = HelloDto.fi();
-          jsonTypeHelloDto.toJson(result, JsonbOutput.of(ctx));
-        })
-        .get("/iterate", ctx -> ctx.jsonStream(ITERATOR))
-        .get("/stream", ctx -> ctx.jsonStream(HELLO_BEANS.stream()))
-        .post("/", ctx -> ctx.text("bean[" + ctx.bodyAsClass(HelloDto.class) + "]"));
+    Jex app =
+        Jex.create()
+            .jsonService(new JacksonJsonService())
+            .get("/", ctx -> ctx.status(200).json(HelloDto.rob()))
+            .post(
+                "/generic",
+                ctx -> {
+                  var type = Types.newParameterizedType(Generic.class, String.class);
+                  String value = ctx.<Generic<String>>bodyAsType(type).value;
+                  ctx.text(value);
+                })
+            .get(
+                "/usingOutputStream",
+                ctx -> {
+                  ctx.status(200).contentType("application/json");
+                  var result = HelloDto.rob();
+                  jsonTypeHelloDto.toJson(result, ctx.outputStream());
+                })
+            .get(
+                "/usingJsonOutput",
+                ctx -> {
+                  ctx.status(200).contentType("application/json");
+                  var result = HelloDto.fi();
+                  jsonTypeHelloDto.toJson(result, JsonbOutput.of(ctx));
+                })
+            .get("/iterate", ctx -> ctx.jsonStream(ITERATOR))
+            .get("/stream", ctx -> ctx.jsonStream(HELLO_BEANS.stream()))
+            .post("/", ctx -> ctx.text("bean[" + ctx.bodyAsClass(HelloDto.class) + "]"));
 
     return TestPair.create(app);
   }
@@ -85,8 +92,7 @@ public class JsonTest {
   @Test
   void generic() {
     var generic = new Generic<>("stringy");
-    var bean =
-        pair.request().path("generic").body(generic).POST().asString().body();
+    var bean = pair.request().path("generic").body(generic).POST().asString().body();
 
     assertThat(bean).isEqualTo(generic.value);
   }

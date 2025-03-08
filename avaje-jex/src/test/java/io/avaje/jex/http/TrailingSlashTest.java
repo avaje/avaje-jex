@@ -13,9 +13,10 @@ class TrailingSlashTest {
   static TestPair pair = init();
 
   static TestPair init() {
-    final Jex app = Jex.create()
-        .config(c -> c.socketBacklog(0).ignoreTrailingSlashes(false))
-        .get("/slash", ctx -> {});
+    final Jex app =
+        Jex.create()
+            .config(c -> c.socketBacklog(0).ignoreTrailingSlashes(false))
+            .get("/slash", ctx -> {});
 
     return TestPair.create(app);
   }
