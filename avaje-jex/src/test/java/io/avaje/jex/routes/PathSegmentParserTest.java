@@ -1,12 +1,12 @@
 package io.avaje.jex.routes;
 
-import org.junit.jupiter.api.Test;
-
 import static io.avaje.jex.routes.PathSegmentParser.matchParamWithRegex;
 import static io.avaje.jex.routes.PathSegmentParser.multi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 class PathSegmentParserTest {
 
@@ -36,7 +36,8 @@ class PathSegmentParserTest {
 
   @Test
   void matchMulti() {
-    assertThat(multi("before{id:[0-9]+}<foo>after")).containsExactly("before", "{id:[0-9]+}", "<foo>", "after");
+    assertThat(multi("before{id:[0-9]+}<foo>after"))
+        .containsExactly("before", "{id:[0-9]+}", "<foo>", "after");
 
     assertThat(multi("a-<foo>-b")).containsExactly("a-", "<foo>", "-b");
     assertThat(multi("a-{foo}-b")).containsExactly("a-", "{foo}", "-b");

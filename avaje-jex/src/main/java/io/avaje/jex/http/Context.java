@@ -3,6 +3,14 @@ package io.avaje.jex.http;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import io.avaje.jex.core.Constants;
+import io.avaje.jex.core.json.JsonbOutput;
+import io.avaje.jex.security.BasicAuthCredentials;
+import io.avaje.jex.security.Role;
+import io.avaje.jex.spi.JsonService;
+import io.avaje.jsonb.JsonType;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
@@ -14,18 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
-
 import javax.net.ssl.SSLSession;
-
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpExchange;
-
-import io.avaje.jex.core.Constants;
-import io.avaje.jex.core.json.JsonbOutput;
-import io.avaje.jex.security.BasicAuthCredentials;
-import io.avaje.jex.security.Role;
-import io.avaje.jex.spi.JsonService;
-import io.avaje.jsonb.JsonType;
 
 /** Provides access to functions for handling the request and response. */
 public interface Context {
@@ -50,9 +47,8 @@ public interface Context {
   /**
    * Gets basic-auth credentials from the request.
    *
-   * @return The Base64 decoded username and password from the
-   * Authorization header, or null if no header is sent
-   *
+   * @return The Base64 decoded username and password from the Authorization header, or null if no
+   *     header is sent
    * @throws IllegalStateException if the Authorization header is malformed
    */
   BasicAuthCredentials basicAuthCredentials();
@@ -95,12 +91,12 @@ public interface Context {
   String contentType();
 
   /** Set the response content type. */
-  Context contentType(String contentType);
-
-  /** Set the response content type. */
   default Context contentType(ContentType contentType) {
     return contentType(contentType.contentType());
   }
+
+  /** Set the response content type. */
+  Context contentType(String contentType);
 
   /** Return the request context path. */
   String contextPath();
@@ -296,9 +292,8 @@ public interface Context {
   String method();
 
   /**
-   * Return the outputStream to write content. It is expected that
-   * the {@link #contentType(String)} has been set prior to obtaining
-   * and writing to the outputStream.
+   * Return the outputStream to write content. It is expected that the {@link #contentType(String)}
+   * has been set prior to obtaining and writing to the outputStream.
    *
    * @return The outputStream to write content to.
    */
@@ -444,12 +439,12 @@ public interface Context {
   int status();
 
   /** Set the status code on the response. */
-  Context status(int statusCode);
-
-  /** Set the status code on the response. */
   default Context status(HttpStatus statusCode) {
     return status(statusCode.status());
   }
+
+  /** Set the status code on the response. */
+  Context status(int statusCode);
 
   /** Write plain text content to the response. */
   void text(String content);
@@ -495,7 +490,6 @@ public interface Context {
    */
   void write(String content);
 
-
   /**
    * This interface represents a cookie used in HTTP communication. Cookies are small pieces of data
    * sent from a server to a web browser and stored on the user's computer. They can be used to
@@ -503,11 +497,11 @@ public interface Context {
    */
   interface Cookie {
 
-    /**
-     * Cookie SameSite options.
-     */
+    /** Cookie SameSite options. */
     enum SameSite {
-     Strict, Lax, None
+      Strict,
+      Lax,
+      None
     }
 
     /**
@@ -608,14 +602,10 @@ public interface Context {
      */
     String name();
 
-    /**
-     * Indicates if the Partitioned attribute is enabled for this cookie.
-     */
+    /** Indicates if the Partitioned attribute is enabled for this cookie. */
     boolean partitioned();
 
-    /**
-     * Set the Partitioned attribute for this cookie.
-     */
+    /** Set the Partitioned attribute for this cookie. */
     Cookie partitioned(boolean partitioned);
 
     /**
@@ -635,14 +625,10 @@ public interface Context {
      */
     Cookie path(String path);
 
-    /**
-     * Return the SameSite setting.
-     */
+    /** Return the SameSite setting. */
     SameSite sameSite();
 
-    /**
-     * Set the SameSite setting for this cookie.
-     */
+    /** Set the SameSite setting for this cookie. */
     Cookie sameSite(SameSite sameSite);
 
     /**

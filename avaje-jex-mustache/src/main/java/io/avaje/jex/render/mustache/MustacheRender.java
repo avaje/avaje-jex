@@ -2,11 +2,9 @@ package io.avaje.jex.render.mustache;
 
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
-
 import io.avaje.jex.http.Context;
 import io.avaje.jex.spi.TemplateRender;
 import io.avaje.spi.ServiceProvider;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
@@ -27,7 +25,7 @@ public class MustacheRender implements TemplateRender {
 
   @Override
   public String[] defaultExtensions() {
-    return new String[]{"mustache"};
+    return new String[] {"mustache"};
   }
 
   @Override

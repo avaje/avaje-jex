@@ -1,17 +1,16 @@
 package io.avaje.jex.staticcontent;
 
+import io.avaje.jex.Jex;
+import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.http.Context;
+import io.avaje.jex.http.ExchangeHandler;
+import io.avaje.jex.security.Role;
 import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
-
-import io.avaje.jex.Jex;
-import io.avaje.jex.compression.CompressionConfig;
-import io.avaje.jex.http.Context;
-import io.avaje.jex.http.ExchangeHandler;
-import io.avaje.jex.security.Role;
 
 final class StaticResourceHandlerBuilder implements StaticContent.Builder, StaticContent {
 

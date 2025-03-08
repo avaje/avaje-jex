@@ -1,16 +1,15 @@
 package io.avaje.jex.core;
 
-import io.avaje.jex.Jex;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import io.avaje.jex.Jex;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpResponse;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.LockSupport;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 class FilterTest {
 

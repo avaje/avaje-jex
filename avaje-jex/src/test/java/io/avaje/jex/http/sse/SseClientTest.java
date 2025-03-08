@@ -2,17 +2,15 @@ package io.avaje.jex.http.sse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
-
 import io.avaje.jex.Jex;
 import io.avaje.jex.core.Constants;
 import io.avaje.jex.core.TestPair;
 import io.avaje.jex.core.json.JacksonJsonService;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.atomic.AtomicReference;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 class SseClientTest {
 
@@ -91,22 +89,22 @@ class SseClientTest {
 
     final var expected =
         """
-      	id: 0
-      	event: count
-      	data: hi
+id: 0
+event: count
+data: hi
 
-      	id: 1
-      	event: count
-      	data: hi
+id: 1
+event: count
+data: hi
 
-      	id: 2
-      	event: count
-      	data: hi
+id: 2
+event: count
+data: hi
 
-      	id: 3
-      	event: count
-      	data: hi
-      	""";
+id: 3
+event: count
+data: hi
+""";
     assertThat(String.join("\n", response)).isEqualTo(expected);
   }
 
@@ -124,14 +122,14 @@ class SseClientTest {
 
     final var expected =
         """
-  	id: 0
-  	event: count
-  	data: IS val 1
+id: 0
+event: count
+data: IS val 1
 
-  	id: 1
-  	event: count
-  	data: IS val 1
-  	""";
+id: 1
+event: count
+data: IS val 1
+""";
     assertThat(String.join("\n", response)).isEqualTo(expected);
   }
 
@@ -149,14 +147,14 @@ class SseClientTest {
 
     final var expected =
         """
-  	id: 0
-  	event: count
-  	data: {"value":0}
+id: 0
+event: count
+data: {"value":0}
 
-  	id: 1
-  	event: count
-  	data: {"value":1}
-  	""";
+id: 1
+event: count
+data: {"value":1}
+""";
     assertThat(String.join("\n", response)).isEqualTo(expected);
   }
 
@@ -183,13 +181,13 @@ class SseClientTest {
             .body();
     final var expected =
         """
- 	event: message
- 	data: multi
- 	data: line
+event: message
+data: multi
+data: line
 
- 	: multi
- 	: line
- 	""";
+: multi
+: line
+""";
     assertThat(response).isEqualTo(expected);
   }
 }

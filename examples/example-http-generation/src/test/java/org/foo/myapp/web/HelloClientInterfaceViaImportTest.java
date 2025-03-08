@@ -14,8 +14,8 @@ import jakarta.inject.Inject;
 /**
  * HiApi is a 'server' interface.
  *
- * Using Client.Import we get the client code generated in src/test.
- * Actually in target/generated-test-sources/ ...
+ * <p>Using Client.Import we get the client code generated in src/test. Actually in
+ * target/generated-test-sources/ ...
  */
 @Client.Import(HiApi.class)
 @InjectTest

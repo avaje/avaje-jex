@@ -1,11 +1,10 @@
 package io.avaje.jex.http.sse;
 
-import java.io.Closeable;
-import java.util.function.Consumer;
-
 import io.avaje.jex.http.Context;
 import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.spi.JsonService;
+import java.io.Closeable;
+import java.util.function.Consumer;
 
 /**
  * A client for Server-Sent Events (SSE). This class handles the setup of the SSE connection,

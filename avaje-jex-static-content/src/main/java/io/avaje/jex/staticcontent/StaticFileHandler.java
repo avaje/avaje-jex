@@ -1,16 +1,14 @@
 package io.avaje.jex.staticcontent;
 
+import com.sun.net.httpserver.HttpExchange;
+import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.http.Context;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 import java.util.function.Predicate;
-
-import com.sun.net.httpserver.HttpExchange;
-
-import io.avaje.jex.compression.CompressionConfig;
-import io.avaje.jex.http.Context;
 
 final class StaticFileHandler extends AbstractStaticHandler {
 

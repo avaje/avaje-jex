@@ -1,11 +1,11 @@
 package io.avaje.jex.routes;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
-
-import static java.util.stream.Collectors.toList;
 
 final class PathSegmentParser {
 
@@ -60,7 +60,14 @@ final class PathSegmentParser {
     for (String token : tokens) {
       appendedTokens.append(token);
       if (!segment.startsWith(appendedTokens.toString())) {
-        throw new IllegalArgumentException("Path [" + rawPath + "] has illegal segment [" + segment + "] starting at position [" + position + "]");
+        throw new IllegalArgumentException(
+            "Path ["
+                + rawPath
+                + "] has illegal segment ["
+                + segment
+                + "] starting at position ["
+                + position
+                + "]");
       }
       position += token.length();
       segments.add(tokenSegment(token));
@@ -93,22 +100,27 @@ final class PathSegmentParser {
   }
 
   static List<String> multi(String input) {
-    return MATCH_MULTI.matcher(input).results()
-      .map(MatchResult::group)
-      .collect(toList());
+    return MATCH_MULTI.matcher(input).results().map(MatchResult::group).collect(toList());
   }
 
   static boolean matchLiteral(String segment) {
     return segment.indexOf('<') == -1
-      && segment.indexOf('{') == -1
-      && segment.indexOf('>') == -1
-      && segment.indexOf('}') == -1;
+        && segment.indexOf('{') == -1
+        && segment.indexOf('>') == -1
+        && segment.indexOf('}') == -1;
   }
 
   private void checkAdjacentViolations() {
     for (String adjacentViolation : ADJACENT_VIOLATIONS) {
       if (segment.contains(adjacentViolation)) {
-        throw new IllegalArgumentException("Path [" + rawPath + "] has illegal segment [" + segment + "] that contains [" + adjacentViolation + "]");
+        throw new IllegalArgumentException(
+            "Path ["
+                + rawPath
+                + "] has illegal segment ["
+                + segment
+                + "] that contains ["
+                + adjacentViolation
+                + "]");
       }
     }
   }
@@ -130,5 +142,4 @@ final class PathSegmentParser {
     // last char matches and no prior matching char
     return segment.indexOf(c) == segment.length() - 1;
   }
-
 }

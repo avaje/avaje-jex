@@ -10,27 +10,30 @@ import io.avaje.jsonb.Jsonb;
 
 public class Main {
 
-  private static final  System.Logger log = System.getLogger("org.example");
+  private static final System.Logger log = System.getLogger("org.example");
 
   public static void main(String[] args) {
 
     Jsonb jsonb = Jsonb.builder().build();
 
     Jex.create()
-      .config(config -> config.jsonService(new JsonbJsonService(jsonb)))
-      //.attribute(Executor.class, Executors.newVirtualThreadPerTaskExecutor())
-      .routing(routing -> routing
-        .get("/", ctx -> ctx.text("hello world"))
-        .get("/kevin", Main::version)
-        .get("/foo/{id}", Main::fooBean)
-        .get("/delay", Main::delay)
-        .get("/dump", ctx -> {
-          dumpThreadCount();
-          ctx.text("done");
-        })
-      )
-      .port(7003)
-      .start();
+        .config(config -> config.jsonService(new JsonbJsonService(jsonb)))
+        // .attribute(Executor.class, Executors.newVirtualThreadPerTaskExecutor())
+        .routing(
+            routing ->
+                routing
+                    .get("/", ctx -> ctx.text("hello world"))
+                    .get("/kevin", Main::version)
+                    .get("/foo/{id}", Main::fooBean)
+                    .get("/delay", Main::delay)
+                    .get(
+                        "/dump",
+                        ctx -> {
+                          dumpThreadCount();
+                          ctx.text("done");
+                        }))
+        .port(7003)
+        .start();
   }
 
   private static void version(Context ctx) {
