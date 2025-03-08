@@ -302,18 +302,10 @@
           <version>2.44.2</version>
           <configuration>
             <java>
-              <palantirJavaFormat>
-                <style>PALANTIR</style>
+              <googleJavaFormat>
                 <formatJavadoc>true</formatJavadoc>
-              </palantirJavaFormat>
-              <indent>
-                <tabs>true</tabs>
-                <spacesPerTab>4</spacesPerTab>
-              </indent>
-              <indent>
-                <spaces>true</spaces>
-                <spacesPerTab>2</spacesPerTab>
-              </indent>
+              </googleJavaFormat>
+              <removeUnusedImports />
             </java>
           </configuration>
         </plugin>
