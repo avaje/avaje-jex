@@ -1,8 +1,6 @@
 package io.avaje.jex.core;
 
-import io.avaje.jex.Jex;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.http.HttpHeaders;
 import java.net.http.HttpResponse;
@@ -10,7 +8,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.LockSupport;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
+
+import io.avaje.jex.Jex;
 
 class FilterTest {
 
@@ -25,7 +26,11 @@ class FilterTest {
                 routing ->
                     routing
                         .get("/", ctx -> ctx.text("roo"))
-                        .get("/noResponse", ctx -> {})
+                        .get(
+                            "/noResponse",
+                            ctx -> {
+                              ctx.header("Content-Type", "");
+                            })
                         .get("/one", ctx -> ctx.text("one"))
                         .get("/two", ctx -> ctx.text("two"))
                         .get("/two/{id}", ctx -> ctx.text("two-id"))

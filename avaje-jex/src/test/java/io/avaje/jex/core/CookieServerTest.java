@@ -1,15 +1,15 @@
 package io.avaje.jex.core;
 
-import io.avaje.jex.Jex;
-import io.avaje.jex.http.Context;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
+
+import io.avaje.jex.Jex;
+import io.avaje.jex.http.Context;
 
 class CookieServerTest {
 
@@ -28,7 +28,7 @@ class CookieServerTest {
           ctx.cookie(httpCookie).text("ok");
         })
       );
-    return TestPair.create(app, 9001);
+    return TestPair.create(app);
   }
 
   @AfterAll
