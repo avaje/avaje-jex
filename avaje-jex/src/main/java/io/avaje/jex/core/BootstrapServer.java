@@ -66,9 +66,15 @@ public final class BootstrapServer {
 
       server.createContext(contextPath, handler);
       server.start();
-
+      var actualAddress = server.getAddress();
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
-      log.log(INFO, "Avaje Jex started {0} on port {1}://{2}", serverClass, scheme, socketAddress);
+      log.log(
+          INFO,
+          "Avaje Jex started {0} on port {1}://{2}:{3,number,#}",
+          serverClass,
+          scheme,
+          actualAddress.getHostName(),
+          actualAddress.getPort());
       log.log(DEBUG, routes);
       return new JdkJexServer(server, jex.lifecycle(), handler);
     } catch (IOException e) {
