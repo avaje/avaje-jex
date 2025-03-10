@@ -1,5 +1,6 @@
 open module example.http.generation {
 
+  requires io.avaje.config;
   requires io.avaje.jsonb;
   requires io.avaje.http.api;
   requires io.avaje.jex;
