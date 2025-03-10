@@ -182,12 +182,6 @@ The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily u
 
 <dependency>
   <groupId>org.eclipse.jetty</groupId>
-  <artifactId>jetty-server</artifactId>
-  <version>${jetty.version}</version>
-</dependency>
-
-<dependency>
-  <groupId>org.eclipse.jetty</groupId>
   <artifactId>jetty-http-spi</artifactId>
   <version>${jetty.version}</version>
 </dependency>

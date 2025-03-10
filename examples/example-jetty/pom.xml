@@ -9,19 +9,13 @@
   <dependencies>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-server</artifactId>
-      <version>12.0.17</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-http-spi</artifactId>
       <version>12.0.17</version>
     </dependency>
+    
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-jex</artifactId>
-      <version>3.0-RC20</version>
     </dependency>
 
     <dependency>
