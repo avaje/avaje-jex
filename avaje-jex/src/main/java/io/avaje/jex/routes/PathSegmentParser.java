@@ -5,18 +5,16 @@ import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
-import static java.util.stream.Collectors.toList;
-
 final class PathSegmentParser {
 
   private static final PathSegment WILDCARD = new PathSegment.Wildcard();
 
   private static final String[] ADJACENT_VIOLATIONS = {"*{", "*<", "}*", ">*"};
 
-  private static final String NAME_STR = "[a-zA-Z0-9_-]+";
-  private static final String NAME_OPT = "([:][^/^{]+([{][0-9]+[}])?)?"; // Optional regex
-  private static final String SLASH_STR = "[<]" + NAME_STR + "[>]";
-  private static final String PARAM_STR = "[{]" + NAME_STR + NAME_OPT + "[}]";
+  private static final String NAME_STR = "[\\w-]+";
+  private static final String NAME_OPT = "(:[^/^{]+([{]\\d+})?)?"; // Optional regex
+  private static final String SLASH_STR = "<" + NAME_STR + ">";
+  private static final String PARAM_STR = "[{]" + NAME_STR + NAME_OPT + "}";
   private static final String MULTI_STR = "(" + PARAM_STR + "|" + SLASH_STR + "|[*]|" + "[^{</*]+)";
 
   private static final Pattern MATCH_PARAM = Pattern.compile(PARAM_STR);
@@ -93,9 +91,7 @@ final class PathSegmentParser {
   }
 
   static List<String> multi(String input) {
-    return MATCH_MULTI.matcher(input).results()
-      .map(MatchResult::group)
-      .collect(toList());
+    return MATCH_MULTI.matcher(input).results().map(MatchResult::group).toList();
   }
 
   static boolean matchLiteral(String segment) {
@@ -130,5 +126,4 @@ final class PathSegmentParser {
     // last char matches and no prior matching char
     return segment.indexOf(c) == segment.length() - 1;
   }
-
 }
