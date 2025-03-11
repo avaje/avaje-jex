@@ -1,6 +1,6 @@
 package io.avaje.jex.http;
 
-/** Http Error Status codes */
+/** Http Status codes */
 public enum HttpStatus {
 
   // 1xx Informational

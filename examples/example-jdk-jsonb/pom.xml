@@ -4,14 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>avaje-jex-parent</artifactId>
     <groupId>io.avaje</groupId>
+    <artifactId>examples</artifactId>
     <version>3.0-RC21</version>
   </parent>
 
   <groupId>org.example</groupId>
   <artifactId>example-jdk-jsonb</artifactId>
-  <version>1</version>
 
   <properties>
     <maven.compiler.source>21</maven.compiler.source>
