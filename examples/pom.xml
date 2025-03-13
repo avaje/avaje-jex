@@ -5,7 +5,7 @@
   <parent>
     <artifactId>avaje-jex-parent</artifactId>
     <groupId>io.avaje</groupId>
-    <version>3.0-RC21</version>
+    <version>3.0-RC22</version>
   </parent>
 
   <artifactId>examples</artifactId>
