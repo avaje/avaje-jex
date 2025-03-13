@@ -133,11 +133,6 @@ final class JdkContext implements Context {
   }
 
   @Override
-  public <T> T bodyAsClass(Class<T> beanType) {
-    return mgr.fromJson(beanType, bodyAsInputStream());
-  }
-
-  @Override
   public InputStream bodyAsInputStream() {
     return exchange.getRequestBody();
   }
