@@ -37,7 +37,7 @@ public final class JsonbJsonService implements JsonService {
 
   @Override
   public void toJson(Object bean, OutputStream os) {
-    jsonb.toJson(bean, os);
+    jsonb.toJson(bean, new NoFlushJsonOutput(os));
   }
 
   @Override
