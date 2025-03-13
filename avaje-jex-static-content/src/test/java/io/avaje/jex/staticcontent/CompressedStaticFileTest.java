@@ -25,22 +25,22 @@ class CompressedStaticFileTest {
             .plugin(defaultFile().route("/indexWildFile/*").build())
             .plugin(defaultCP().route("/sus/").build())
             .plugin(defaultFile().route("/susFile/*").build())
-            .plugin(StaticContent.createCP("/logback.xml").route("/single").build())
+            .plugin(StaticContent.ofClassPath("/logback.xml").route("/single").build())
             .plugin(
-                StaticContent.createFile("src/test/resources/logback.xml")
+                StaticContent.ofFile("src/test/resources/logback.xml")
                     .route("/singleFile").build());
 
     return TestPair.create(app);
   }
 
   private static StaticContent.Builder defaultFile() {
-    return StaticContent.createFile("src/test/resources/public")
+    return StaticContent.ofFile("src/test/resources/public")
         .directoryIndex("index.html")
         .preCompress();
   }
 
   private static StaticContent.Builder defaultCP() {
-    return StaticContent.createCP("/public")
+    return StaticContent.ofClassPath("/public")
       .directoryIndex("index.html")
       .preCompress();
   }

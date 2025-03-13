@@ -31,7 +31,7 @@ public sealed interface StaticContent extends JexPlugin
    *
    * @param resourceRoot The file to serve, or the directory the files are located in.
    */
-  static Builder createCP(String resourceRoot) {
+  static Builder ofClassPath(String resourceRoot) {
     return StaticResourceHandlerBuilder.builder(resourceRoot);
   }
 
@@ -39,7 +39,7 @@ public sealed interface StaticContent extends JexPlugin
    * Create and return a new static content class path configuration with the
    * `/public` directory as the root.
    */
-  static Builder createCP() {
+  static Builder ofClassPath() {
     return StaticResourceHandlerBuilder.builder("/public/");
   }
 
@@ -48,7 +48,7 @@ public sealed interface StaticContent extends JexPlugin
    *
    * @param resourceRoot The path of the file to serve, or the directory the files are located in.
    */
-  static Builder createFile(String resourceRoot) {
+  static Builder ofFile(String resourceRoot) {
     return StaticResourceHandlerBuilder.builder(resourceRoot).file();
   }
 
