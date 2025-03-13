@@ -26,11 +26,6 @@ public final class JsonbJsonService implements JsonService {
   }
 
   @Override
-  public <T> T fromJson(Class<T> clazz, InputStream is) {
-    return jsonb.type(clazz).fromJson(is);
-  }
-
-  @Override
   public <T> T fromJson(Type clazz, InputStream is) {
     return jsonb.<T>type(clazz).fromJson(is);
   }

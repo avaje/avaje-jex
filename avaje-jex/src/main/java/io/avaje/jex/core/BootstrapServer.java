@@ -70,7 +70,8 @@ public final class BootstrapServer {
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
       log.log(
           INFO,
-          "Avaje Jex started {0} on port {1}://{2}:{3,number,#}",
+          "Avaje Jex {0} started {1} on {2}://{3}:{4,number,#}",
+          BootstrapServer.class.getPackage().getImplementationVersion(),
           serverClass,
           scheme,
           actualAddress.getHostName(),
