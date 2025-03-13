@@ -1,10 +1,10 @@
 package io.avaje.jex.core.json;
 
-import io.avaje.jex.http.Context;
-import io.avaje.json.stream.JsonOutput;
-
 import java.io.IOException;
 import java.io.OutputStream;
+
+import io.avaje.jex.http.Context;
+import io.avaje.json.stream.JsonOutput;
 
 /**
  * avaje-jsonb output that allows for writing fixed length content
@@ -43,10 +43,8 @@ public final class JsonbOutput implements JsonOutput {
   }
 
   @Override
-  public void flush() throws IOException {
-    if (os != null) {
-      os.flush();
-    }
+  public void flush() {
+    // shouldn't manually flush
   }
 
   @Override
