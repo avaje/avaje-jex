@@ -222,7 +222,7 @@ final class JdkContext implements Context {
 
   private String header(Headers headers, String name) {
     final List<String> values = headers.get(name);
-    return (values == null || values.isEmpty()) ? null : values.getFirst();
+    return values == null || values.isEmpty() ? null : values.getFirst();
   }
 
   @Override
