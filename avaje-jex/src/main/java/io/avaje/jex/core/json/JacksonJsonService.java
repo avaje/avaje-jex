@@ -58,15 +58,13 @@ public final class JacksonJsonService implements JsonService {
   @Override
   public void toJson(Object bean, OutputStream os) {
     try {
-      try (JsonGenerator generator = mapper.createGenerator(os)) {
+      try (var generator = mapper.createGenerator(os)) {
         // only flush to underlying OutputStream on success
         generator.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
         generator.disable(JsonGenerator.Feature.FLUSH_PASSED_TO_STREAM);
         generator.disable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT);
         mapper.writeValue(generator, bean);
-        generator.flush();
       }
-      os.flush();
       os.close();
     } catch (IOException e) {
       throw new UncheckedIOException(e);
@@ -84,17 +82,10 @@ public final class JacksonJsonService implements JsonService {
 
   @Override
   public <T> void toJsonStream(Iterator<T> iterator, OutputStream os) {
-    final JsonGenerator generator;
-    try {
-      generator = mapper.createGenerator(os);
+    try (var generator = mapper.createGenerator(os)) {
       generator.setPrettyPrinter(null);
-      try {
-        while (iterator.hasNext()) {
-          write(iterator, generator);
-        }
-      } finally {
-        generator.flush();
-        generator.close();
+      while (iterator.hasNext()) {
+        write(iterator, generator);
       }
     } catch (IOException e) {
       throw new UncheckedIOException(e);
