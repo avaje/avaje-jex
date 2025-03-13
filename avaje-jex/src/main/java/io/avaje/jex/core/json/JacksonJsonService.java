@@ -34,15 +34,6 @@ public final class JacksonJsonService implements JsonService {
   }
 
   @Override
-  public <T> T fromJson(Class<T> type, InputStream is) {
-    try {
-      return mapper.readValue(is, type);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
-
-  @Override
   public <T> T fromJson(Type type, InputStream is) {
     try {
       final var javaType =

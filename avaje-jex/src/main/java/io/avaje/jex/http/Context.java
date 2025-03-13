@@ -72,7 +72,9 @@ public interface Context {
    *
    * @param beanType The bean type
    */
-  <T> T bodyAsClass(Class<T> beanType);
+  default <T> T bodyAsClass(Class<T> beanType) {
+    return bodyAsType(beanType);
+  }
 
   /**
    * Returns the request body as an input stream.
