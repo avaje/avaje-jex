@@ -71,10 +71,6 @@ final class ServiceManager {
     return jsonService;
   }
 
-  <T> T fromJson(Class<T> type, InputStream is) {
-    return jsonService.fromJson(type, is);
-  }
-
   <T> T fromJson(Type type, InputStream is) {
     return jsonService.fromJson(type, is);
   }
