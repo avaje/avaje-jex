@@ -94,12 +94,24 @@ public sealed interface StaticContent extends JexPlugin
     Builder resourceLoader(ClassResourceLoader resourceLoader);
 
     /**
+     * Sets a custom resource loader for loading class/module path resources using the given class.
+     * This is normally used when running the application on the module path when files cannot be
+     * discovered.
+     *
+     * @param clazz the class used to custom load resources
+     * @return the updated configuration
+     */
+    default Builder resourceLoader(Class<?> clazz) {
+      return resourceLoader(ClassResourceLoader.fromClass(clazz));
+    }
+
+    /**
      * Adds a new MIME type mapping to the configuration. (Default: uses {@link
      * URLConnection#getFileNameMap()}
      *
-     * @param ext      the file extension (e.g., "html", "css", "js")
+     * @param ext the file extension (e.g., "html", "css", "js")
      * @param mimeType the corresponding MIME type (e.g., "text/html", "text/css",
-     *                 "application/javascript")
+     *     "application/javascript")
      * @return the updated configuration
      */
     Builder putMimeTypeMapping(String ext, String mimeType);
