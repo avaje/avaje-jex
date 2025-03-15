@@ -291,6 +291,7 @@
           <version>${ebean.version}</version>
           <executions>
             <execution>
+              <?m2e execute onIncremental?>
               <goals>
                 <goal>enhance</goal>
                 <goal>testEnhance</goal>
