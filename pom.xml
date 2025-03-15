@@ -227,6 +227,7 @@
         <version>${avaje.inject.version}</version>
         <executions>
           <execution>
+            <?m2e execute?>
             <phase>process-sources</phase>
             <goals>
               <goal>provides</goal>
@@ -276,6 +277,7 @@
           <version>2.1</version>
           <executions>
             <execution>
+              <?m2e execute onIncremental?>
               <goals>
                 <goal>disable-apt-validation</goal>
                 <goal>add-module-spi</goal>
@@ -289,6 +291,7 @@
           <version>${ebean.version}</version>
           <executions>
             <execution>
+              <?m2e execute onIncremental?>
               <goals>
                 <goal>enhance</goal>
                 <goal>testEnhance</goal>
