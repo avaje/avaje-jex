@@ -55,6 +55,7 @@ final class JdkContext implements Context {
   private Map<String, List<String>> queryParams;
   private Map<String, String> cookieMap;
   private int statusCode;
+  private byte[] bodyBytes;
 
   private Charset characterEncoding;
 
@@ -72,11 +73,7 @@ final class JdkContext implements Context {
   }
 
   /** Create when no route matched. */
-  JdkContext(
-      ServiceManager mgr,
-      HttpExchange exchange,
-      String path,
-      Set<Role> roles) {
+  JdkContext(ServiceManager mgr, HttpExchange exchange, String path, Set<Role> roles) {
     this.mgr = mgr;
     this.roles = roles;
     this.exchange = exchange;
@@ -126,7 +123,10 @@ final class JdkContext implements Context {
   @Override
   public byte[] bodyAsBytes() {
     try {
-      return exchange.getRequestBody().readAllBytes();
+      if (bodyBytes == null) {
+        bodyBytes = exchange.getRequestBody().readAllBytes();
+      }
+      return bodyBytes;
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -139,7 +139,12 @@ final class JdkContext implements Context {
 
   @Override
   public <T> T bodyAsType(Type beanType) {
-    return mgr.fromJson(beanType, bodyAsInputStream());
+    return mgr.fromJson(beanType, bodyAsBytes());
+  }
+
+  @Override
+  public <T> T bodyStreamAsType(Type beanType) {
+    return bodyBytes == null ? mgr.fromJson(beanType, bodyAsInputStream()) : bodyAsType(beanType);
   }
 
   private Charset characterEncoding() {

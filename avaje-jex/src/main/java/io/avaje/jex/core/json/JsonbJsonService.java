@@ -31,6 +31,11 @@ public final class JsonbJsonService implements JsonService {
   }
 
   @Override
+  public <T> T fromJson(Type clazz, byte[] data) {
+    return jsonb.<T>type(clazz).fromJson(data);
+  }
+
+  @Override
   public void toJson(Object bean, OutputStream os) {
     jsonb.toJson(bean, new NoFlushJsonOutput(os));
   }

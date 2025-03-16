@@ -75,6 +75,10 @@ final class ServiceManager {
     return jsonService.fromJson(type, is);
   }
 
+  <T> T fromJson(Type type, byte[] is) {
+    return jsonService.fromJson(type, is);
+  }
+
   void toJson(Object bean, OutputStream os) {
     jsonService.toJson(bean, os);
   }

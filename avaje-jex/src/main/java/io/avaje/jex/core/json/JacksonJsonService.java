@@ -47,6 +47,19 @@ public final class JacksonJsonService implements JsonService {
   }
 
   @Override
+  public <T> T fromJson(Type type, byte[] data) {
+    try {
+      final var javaType =
+          javaTypes.computeIfAbsent(
+              type.getTypeName(), k -> mapper.getTypeFactory().constructType(type));
+
+      return mapper.readValue(data, javaType);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  @Override
   public void toJson(Object bean, OutputStream os) {
     try {
       try (var generator = mapper.createGenerator(os)) {
