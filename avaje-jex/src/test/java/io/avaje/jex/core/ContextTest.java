@@ -137,7 +137,7 @@ class ContextTest {
 
   @Test
   void post_double_json_fail() {
-    HttpResponse<String> res = pair.request().path("doubleJsonStreamFail").body("{}").POST().asString();
+    HttpResponse<String> res = pair.request().path("doubleJsonStream").body("{}").POST().asString();
     assertThat(res.body()).isEqualTo("Internal Server Error");
   }
 
