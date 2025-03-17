@@ -1,5 +1,7 @@
 package io.avaje.jex.staticcontent;
 
+import static io.avaje.jex.core.Constants.CONTENT_TYPE;
+
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -85,7 +87,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
 
   private void sendURL(Context ctx, String urlPath, URL path) {
     try (var fis = path.openStream()) {
-      ctx.header("Content-type", lookupMime(urlPath));
+      ctx.header(CONTENT_TYPE, lookupMime(urlPath));
       ctx.headers(headers);
       if (precompress) {
         addCachedEntry(ctx, urlPath, fis);

@@ -1,5 +1,7 @@
 package io.avaje.jex.staticcontent;
 
+import static io.avaje.jex.core.Constants.CONTENT_TYPE;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -100,7 +102,7 @@ final class StaticFileHandler extends AbstractStaticHandler {
       throws IOException {
     try (var fis = new FileInputStream(canonicalFile)) {
       String mimeType = lookupMime(urlPath);
-      ctx.header("Content-type", mimeType);
+      ctx.header(CONTENT_TYPE, mimeType);
       ctx.headers(headers);
       if (precompress) {
         addCachedEntry(ctx, urlPath, fis);
