@@ -85,7 +85,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
 
   private void sendURL(Context ctx, String urlPath, URL path) {
     try (var fis = path.openStream()) {
-      ctx.header("Content-Type", lookupMime(urlPath));
+      ctx.header("Content-type", lookupMime(urlPath));
       ctx.headers(headers);
       if (precompress) {
         addCachedEntry(ctx, urlPath, fis);

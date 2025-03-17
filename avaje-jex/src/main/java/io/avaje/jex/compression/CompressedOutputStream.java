@@ -34,7 +34,8 @@ public final class CompressedOutputStream extends OutputStream {
   private void decideCompression(int length) throws IOException {
     if (!compressionDecided) {
       boolean compressionAllowed =
-          compressedStream == null && compression.allowsForCompression(ctx.contentType());
+          compressedStream == null
+              && compression.allowsForCompression(ctx.responseHeader(Constants.CONTENT_TYPE));
 
       if (compressionAllowed && length >= minSizeForCompression) {
         Optional<Compressor> compressor;

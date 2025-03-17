@@ -100,7 +100,7 @@ final class StaticFileHandler extends AbstractStaticHandler {
       throws IOException {
     try (var fis = new FileInputStream(canonicalFile)) {
       String mimeType = lookupMime(urlPath);
-      ctx.header("Content-Type", mimeType);
+      ctx.header("Content-type", mimeType);
       ctx.headers(headers);
       if (precompress) {
         addCachedEntry(ctx, urlPath, fis);
