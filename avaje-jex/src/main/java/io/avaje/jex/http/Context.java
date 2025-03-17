@@ -80,6 +80,7 @@ public interface Context {
    * Returns the request body as an input stream.
    *
    * @return The request body as an input stream.
+   * @implNote will return an empty stream if any of the various body methods were called
    */
   InputStream bodyAsInputStream();
 
@@ -89,6 +90,22 @@ public interface Context {
    * @param beanType The bean type
    */
   <T> T bodyAsType(Type beanType);
+  
+  /**
+   * Return the request body as bean using {@link #bodyAsInputStream()}.
+   *
+   * @param beanType The bean type
+   */
+  default <T> T bodyStreamAsClass(Class<T> beanType) {
+    return bodyAsType(beanType);
+  }
+  
+  /**
+   * Return the request body as bean of the given type using {@link #bodyAsInputStream()}.
+   *
+   * @param beanType The bean type
+   */
+  <T> T bodyStreamAsType(Type beanType);
 
   /** Return the request content length. */
   long contentLength();

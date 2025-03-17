@@ -1,14 +1,16 @@
 package io.avaje.jex.core;
 
-import io.avaje.jex.Jex;
+import static java.util.Objects.requireNonNull;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.net.http.HttpResponse;
+import java.util.Map;
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
-import java.net.http.HttpResponse;
-import java.util.Optional;
-
-import static java.util.Objects.requireNonNull;
-import static org.assertj.core.api.Assertions.assertThat;
+import io.avaje.jex.Jex;
 
 class ContextTest {
 
@@ -38,6 +40,15 @@ class ContextTest {
         .post("/echo", ctx -> ctx.text("req-body[" + ctx.body() + "]"))
         .get("/{a}/{b}", ctx -> ctx.text("ze-get-" + ctx.pathParamMap()))
         .post("/{a}/{b}", ctx -> ctx.text("ze-post-" + ctx.pathParamMap()))
+        .post("/doubleJsonStream", ctx -> {
+            ctx.bodyAsInputStream().readAllBytes();
+            ctx.text(ctx.bodyAsClass(Map.class)+"");
+          })
+        .post("/doubleJsonStreamBytes", ctx -> {
+            ctx.body();
+            ctx.text(ctx.bodyAsClass(Map.class)+"");
+          })
+        .post("/doubleString", ctx -> ctx.text(ctx.body() + ctx.body()))
         .get("/status", ctx -> {
           ctx.status(201);
           ctx.text("status:" + ctx.status());
@@ -119,9 +130,27 @@ class ContextTest {
   }
 
   @Test
-  void post_body() {
+  void post_double_string() {
     HttpResponse<String> res = pair.request().path("echo").body("simple").POST().asString();
     assertThat(res.body()).isEqualTo("req-body[simple]");
+  }
+
+  @Test
+  void post_double_json_fail() {
+    HttpResponse<String> res = pair.request().path("doubleJsonStream").body("{}").POST().asString();
+    assertThat(res.body()).isEqualTo("Internal Server Error");
+  }
+
+  @Test
+  void post_double_json_bytes() {
+    HttpResponse<String> res = pair.request().path("doubleJsonStreamBytes").body("{}").POST().asString();
+    assertThat(res.body()).isEqualTo("{}");
+  }
+
+  @Test
+  void post_body() {
+    HttpResponse<String> res = pair.request().path("doubleString").body("simple").POST().asString();
+    assertThat(res.body()).isEqualTo("simplesimple");
   }
 
   @Test
