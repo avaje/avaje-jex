@@ -1,7 +1,5 @@
 package io.avaje.jex.http;
 
-import java.io.IOException;
-
 /**
  * A functional interface representing an HTTP request handler.
  *
@@ -21,7 +19,7 @@ public interface ExchangeHandler {
    * parameters, and body, as well as methods for constructing and sending the response.
    *
    * @param ctx The context object containing the request and response details.
-   * @throws IOException if an I/O error occurs during request processing or response generation.
+   * @throws Exception if an error occurs during request processing or response generation.
    */
   void handle(Context ctx) throws Exception;
 }

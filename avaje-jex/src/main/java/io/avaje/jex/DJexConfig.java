@@ -2,8 +2,6 @@ package io.avaje.jex;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import com.sun.net.httpserver.HttpsConfigurator;
@@ -21,7 +19,6 @@ final class DJexConfig implements JexConfig {
   private int socketBacklog = 0;
   private boolean health = true;
   private boolean ignoreTrailingSlashes = true;
-  private Executor executor;
   private JsonService jsonService;
   private final Map<String, TemplateRender> renderers = new HashMap<>();
   private HttpsConfigurator httpsConfig;
@@ -81,22 +78,6 @@ final class DJexConfig implements JexConfig {
   @Override
   public JexConfig renderer(String extension, TemplateRender renderer) {
     renderers.put(extension, renderer);
-    return this;
-  }
-
-  @Override
-  public Executor executor() {
-    if (executor == null) {
-      executor =
-          Executors.newThreadPerTaskExecutor(
-              Thread.ofVirtual().name("avaje-jex-http-", 0).factory());
-    }
-    return executor;
-  }
-
-  @Override
-  public JexConfig executor(Executor executor) {
-    this.executor = executor;
     return this;
   }
 
