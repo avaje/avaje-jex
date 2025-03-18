@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Avaje Jex Overview</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+    <h1>Avaje Jex</h1>
+
+    <p>
+        Avaje Jex is a wrapper over the JDK's built-in HTTP server, providing an
+        elegant and developer-friendly API for building web applications in Java.
+    </p>
+
+    <h2>Getting Started</h2>
+
+    <p>Here's a simple example to create a basic web server with Jex:</p>
+
+    <pre class="prettyprint">
+Jex.create()
+    .get("/", ctx -> ctx.text("hello"))
+    .get("/one/{id}", ctx -> ctx.text("one-" + ctx.pathParam("id")))
+    .filter(
+        (ctx, chain) -> {
+          System.out.println("before request");
+          chain.proceed();
+          System.out.println("after request");
+        })
+    .error(
+        IllegalStateException.class,
+        (ctx, exception) -> ctx.status(500).text(exception.getMessage()))
+    .port(8080)
+    .start();
+    </pre>
+
+    <h2>Key Concepts</h2>
+
+    <h3>Request Handling</h3>
+    <p>
+        Jex provides three main handler types:
+    </p>
+    <ul>
+        <li><strong>Endpoint Handlers</strong> - Define API endpoints for HTTP methods (GET, POST, etc.)</li>
+        <li><strong>Filters</strong> - Pre/post process requests for authentication, logging, etc.</li>
+        <li><strong>Exception Handlers</strong> - Handle exceptions during request processing</li>
+    </ul>
+
+    <h3>Context Object</h3>
+    <p>
+        The Context object is central to Jex's API, providing methods for:
+    </p>
+    <ul>
+        <li>Reading request data (headers, parameters, body)</li>
+        <li>Setting response data (status, headers, content)</li>
+        <li>Managing cookies</li>
+        <li>Handling request attributes and path information</li>
+    </ul>
+
+    <h3>Path Parameters</h3>
+    <p>
+        Jex supports flexible path parameter options:
+    </p>
+    <pre class="prettyprint">
+// Standard path parameters with {} syntax
+app.get("/hello/{name}", ctx -> ctx.write("Hello: " + ctx.pathParam("name")));
+
+// Path parameters that can include slashes with &lt;&gt; syntax
+app.get("/hello/&lt;name&gt;", ctx -> ctx.write("Hello: " + ctx.pathParam("name")));
+
+// Wildcard parameters
+app.get("/path/*", ctx -> ctx.write("Matched: " + ctx.matchedPath()));
+    </pre>
+
+    <h2>Advanced Features</h2>
+
+    <h3>JSON Support</h3>
+    <p>
+        Jex provides a <code>JsonService</code> SPI for JSON serialization/deserialization, with automatic
+        detection of Jackson or Avaje-jsonb libraries:
+    </p>
+    <pre class="prettyprint">
+Jex.create()
+    .jsonService(new JacksonJsonService())
+    .post(
+        "/json",
+        ctx -> {
+          MyBody body = ctx.bodyAsClass(MyBody.class);
+          ctx.json(new CustomResponse());
+        });
+    </pre>
+
+    <h3>Server-Sent Events</h3>
+    <p>
+        Jex supports Server-Sent Events (SSE) for real-time updates:
+    </p>
+    <pre class="prettyprint">
+app.sse("/sse", client -> {
+    client.sendEvent("connected", "Hello, SSE");
+    client.onClose(() -> System.out.println("Client disconnected"));
+});
+    </pre>
+
+    <h3>Access Management</h3>
+    <p>
+        Jex provides built-in support for role-based access control:
+    </p>
+    <pre class="prettyprint">
+// Custom enum for access roles
+enum Access implements Role {
+  USER,
+  ADMIN
+}
+
+Jex.create()
+    .get("/user", ctx -> ctx.text("user"), Access.USER)
+    .get("/admin", ctx -> ctx.text("admin"), Access.ADMIN)
+    .filter(
+        (ctx, chain) -> {
+          Access userRole = getUserRole(ctx);
+          if (!ctx.routeRoles().contains(userRole)) {
+            throw new HttpResponseException(403, "unauthorized");
+          }
+          chain.proceed();
+        });
+    </pre>
+
+    <h2>Additional Resources</h2>
+    <p>
+        For more informationm visit:
+    </p>
+    <ul>
+        <li><a href="https://avaje.io/jex">Site Documentation</a></li>
+        <li><a href="https://github.com/avaje/avaje-jex">GitHub Repository</a></li>
+    </ul>
+</body>
+</html>
