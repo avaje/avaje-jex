@@ -1,6 +1,8 @@
 package io.avaje.jex;
 
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import com.sun.net.httpserver.HttpServer;
@@ -40,6 +42,19 @@ public interface JexConfig {
    * @param contextPath The context path
    */
   JexConfig contextPath(String contextPath);
+
+  /**
+   * Executor for serving requests. Defaults to a {@link
+   * Executors#newVirtualThreadPerTaskExecutor()}
+   */
+  Executor executor();
+
+  /**
+   * Sets the executor service used to handle incoming requests.
+   *
+   * @param executor The executor service.
+   */
+  JexConfig executor(Executor executor);
 
   /** Returns whether the health endpoint is enabled. */
   boolean health();
