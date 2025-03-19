@@ -2,13 +2,12 @@ package io.avaje.jex.staticcontent;
 
 import static io.avaje.jex.core.Constants.CONTENT_TYPE;
 
+import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.http.Context;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.function.Predicate;
-
-import io.avaje.jex.compression.CompressionConfig;
-import io.avaje.jex.http.Context;
 
 final class StaticClassResourceHandler extends AbstractStaticHandler {
 

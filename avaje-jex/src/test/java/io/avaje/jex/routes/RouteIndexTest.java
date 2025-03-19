@@ -3,7 +3,6 @@ package io.avaje.jex.routes;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Set;
-
 import org.junit.jupiter.api.Test;
 
 class RouteIndexTest {
@@ -83,5 +82,4 @@ class RouteIndexTest {
   private SpiRoutes.Entry entry(String path) {
     return new RouteEntry(new PathParser(path, true), null, Set.of());
   }
-
 }

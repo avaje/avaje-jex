@@ -3,14 +3,10 @@ package io.avaje.jex.htmx;
 import io.avaje.htmx.api.HtmxRequest;
 import io.avaje.jex.http.Context;
 
-/**
- * Obtain the HtmxRequest for the given Jex Context.
- */
+/** Obtain the HtmxRequest for the given Jex Context. */
 public final class HxReq {
 
-  /**
-   * Create given the server request.
-   */
+  /** Create given the server request. */
   public static HtmxRequest of(Context ctx) {
     String header = ctx.header(HxHeaders.HX_REQUEST);
     if (header == null) {

@@ -3,20 +3,18 @@ package io.avaje.jex.core;
 import static java.lang.System.Logger.Level.DEBUG;
 import static java.lang.System.Logger.Level.INFO;
 
+import com.sun.net.httpserver.HttpServer;
+import io.avaje.jex.AppLifecycle;
+import io.avaje.jex.Jex;
+import io.avaje.jex.JexConfig;
+import io.avaje.jex.routes.RoutesBuilder;
+import io.avaje.jex.routes.SpiRoutes;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.Executors;
-
-import com.sun.net.httpserver.HttpServer;
-
-import io.avaje.jex.AppLifecycle;
-import io.avaje.jex.Jex;
-import io.avaje.jex.JexConfig;
-import io.avaje.jex.routes.RoutesBuilder;
-import io.avaje.jex.routes.SpiRoutes;
 
 public final class BootstrapServer {
 

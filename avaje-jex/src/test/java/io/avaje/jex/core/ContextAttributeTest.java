@@ -1,13 +1,12 @@
 package io.avaje.jex.core;
 
-import io.avaje.jex.Jex;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import io.avaje.jex.Jex;
 import java.net.http.HttpResponse;
 import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 class ContextAttributeTest {
 

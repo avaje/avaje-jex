@@ -1,5 +1,15 @@
 package io.avaje.jex.core;
 
+import io.avaje.jex.Jex;
+import io.avaje.jex.Routing;
+import io.avaje.jex.compression.CompressedOutputStream;
+import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.core.json.JacksonJsonService;
+import io.avaje.jex.core.json.JsonbJsonService;
+import io.avaje.jex.http.Context;
+import io.avaje.jex.routes.UrlDecode;
+import io.avaje.jex.spi.JsonService;
+import io.avaje.jex.spi.TemplateRender;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.System.Logger.Level;
@@ -13,17 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-
-import io.avaje.jex.Jex;
-import io.avaje.jex.Routing;
-import io.avaje.jex.compression.CompressedOutputStream;
-import io.avaje.jex.compression.CompressionConfig;
-import io.avaje.jex.core.json.JacksonJsonService;
-import io.avaje.jex.core.json.JsonbJsonService;
-import io.avaje.jex.http.Context;
-import io.avaje.jex.routes.UrlDecode;
-import io.avaje.jex.spi.JsonService;
-import io.avaje.jex.spi.TemplateRender;
 
 /** Core service methods available to Context implementations. */
 final class ServiceManager {

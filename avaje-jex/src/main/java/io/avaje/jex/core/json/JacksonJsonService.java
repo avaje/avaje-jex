@@ -1,5 +1,10 @@
 package io.avaje.jex.core.json;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.avaje.jex.spi.JsonService;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,13 +14,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.avaje.jex.spi.JsonService;
-
 /** Jackson JsonService */
 public final class JacksonJsonService implements JsonService {
 
@@ -24,7 +22,8 @@ public final class JacksonJsonService implements JsonService {
 
   /** Create with defaults for Jackson */
   public JacksonJsonService() {
-    this.mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    this.mapper =
+        new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
   /** Create with a Jackson instance that might have custom configuration. */
@@ -53,7 +52,8 @@ public final class JacksonJsonService implements JsonService {
   }
 
   private JavaType javaType(Type type) {
-    return javaTypes.computeIfAbsent(type.getTypeName(), k -> mapper.getTypeFactory().constructType(type));
+    return javaTypes.computeIfAbsent(
+        type.getTypeName(), k -> mapper.getTypeFactory().constructType(type));
   }
 
   @Override

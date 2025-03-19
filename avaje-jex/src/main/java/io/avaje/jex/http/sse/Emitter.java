@@ -33,8 +33,7 @@ final class Emitter {
       }
       write("event: " + event + NEW_LINE);
 
-      try (var reader =
-          new BufferedReader(new InputStreamReader(data, StandardCharsets.UTF_8))) {
+      try (var reader = new BufferedReader(new InputStreamReader(data, StandardCharsets.UTF_8))) {
         String line;
         while ((line = reader.readLine()) != null) {
           write("data: " + line + NEW_LINE);

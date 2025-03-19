@@ -2,14 +2,13 @@ package io.avaje.jex.http.sse;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import io.avaje.jex.http.Context;
+import io.avaje.jex.spi.JsonService;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.System.Logger.Level;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import io.avaje.jex.http.Context;
-import io.avaje.jex.spi.JsonService;
 
 final class SseClientImpl implements SseClient {
 

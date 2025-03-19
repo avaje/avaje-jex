@@ -1,14 +1,13 @@
 package io.avaje.jex.render.mustache;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.avaje.jex.Jex;
 import io.avaje.jex.test.TestPair;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
-
 import java.net.http.HttpResponse;
 import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 class MustacheRenderTest {
 
@@ -16,11 +15,15 @@ class MustacheRenderTest {
   static TestPair pair1 = init(false);
 
   static TestPair init(boolean explicit) {
-    var app = Jex.create()
-      .routing(routing -> routing
-        .get("/noModel", ctx -> ctx.render("one.mustache"))
-        .get("/withModel", ctx -> ctx.render("two.mustache", Map.of("message", "hello")))
-      );
+    var app =
+        Jex.create()
+            .routing(
+                routing ->
+                    routing
+                        .get("/noModel", ctx -> ctx.render("one.mustache"))
+                        .get(
+                            "/withModel",
+                            ctx -> ctx.render("two.mustache", Map.of("message", "hello"))));
     if (explicit) {
       app.register(new MustacheRender(), "mustache");
     }

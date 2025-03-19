@@ -7,6 +7,15 @@ import static io.avaje.jex.core.Constants.TEXT_PLAIN_UTF8;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpsExchange;
+import io.avaje.jex.http.Context;
+import io.avaje.jex.http.HttpStatus;
+import io.avaje.jex.http.RedirectException;
+import io.avaje.jex.security.BasicAuthCredentials;
+import io.avaje.jex.security.Role;
+import io.avaje.jex.spi.JsonService;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,19 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
-
 import javax.net.ssl.SSLSession;
-
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpsExchange;
-
-import io.avaje.jex.http.Context;
-import io.avaje.jex.http.HttpStatus;
-import io.avaje.jex.http.RedirectException;
-import io.avaje.jex.security.BasicAuthCredentials;
-import io.avaje.jex.security.Role;
-import io.avaje.jex.spi.JsonService;
 
 final class JdkContext implements Context {
 
@@ -506,7 +503,8 @@ final class JdkContext implements Context {
 
   @Override
   public void write(InputStream is) {
-    try (is; var os = outputStream()) {
+    try (is;
+        var os = outputStream()) {
       is.transferTo(os);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
