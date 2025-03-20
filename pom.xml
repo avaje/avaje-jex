@@ -44,6 +44,7 @@
     <module>avaje-jex-mustache</module>
     <module>avaje-jex-htmx</module>
     <module>avaje-jex-static-content</module>
+    <module>avaje-jex-helidon-spi</module>
   </modules>
 
   <dependencyManagement>
