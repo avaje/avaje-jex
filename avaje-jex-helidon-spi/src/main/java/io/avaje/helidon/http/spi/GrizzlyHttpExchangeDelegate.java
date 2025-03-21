@@ -55,10 +55,10 @@ public class GrizzlyHttpExchangeDelegate extends HttpExchange {
 
   private Response response;
 
-  GrizzlyHttpExchangeDelegate(HttpContext httpSpiContext, Request request) {
+  GrizzlyHttpExchangeDelegate(HttpContext httpSpiContext, Request request, Response response) {
     this.context = httpSpiContext;
     this.request = request;
-    this.response = request.getResponse();
+    this.response = response;
     this.inputStream = request.getInputStream();
     this.outputStream = response.getOutputStream();
   }

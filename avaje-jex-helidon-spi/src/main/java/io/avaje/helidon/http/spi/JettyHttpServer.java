@@ -14,7 +14,6 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.http.server.ServerConfiguration;
 
-import com.sun.jdi.connect.Connector;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -134,14 +133,14 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpServer {
   }
 
   private void cleanUpConnectors() {
-    for (Map.Entry<String, Connector> stringConnectorEntry : _connectors.entrySet()) {
-      Connector connector = stringConnectorEntry.getValue();
+    for (var stringConnectorEntry : _connectors.entrySet()) {
+      var connector = stringConnectorEntry.getValue();
       try {
-        connector.stop();
+        connector.shutdownNow();
       } catch (Exception ex) {
-        LOG.warn("Unable to stop connector {}", connector, ex);
+        LOG.log(Level.WARNING, "Unable to stop connector {}", connector, ex);
       }
-      _server.removeConnector(connector);
+      _server.removeListener(stringConnectorEntry.getKey());
     }
     _connectors.clear();
   }
