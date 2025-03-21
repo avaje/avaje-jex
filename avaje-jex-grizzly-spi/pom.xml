@@ -11,6 +11,12 @@
   <artifactId>avaje-jex-grizzly-spi</artifactId>
 
   <dependencies>
+  
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-jex</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>org.glassfish.grizzly</groupId>
       <artifactId>grizzly-http-server</artifactId>

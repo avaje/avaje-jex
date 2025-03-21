@@ -60,7 +60,7 @@ final class RoutingHandler implements HttpHandler {
   }
 
   private void handleNoResponse(HttpExchange exchange) throws IOException {
-    if (exchange.getResponseCode() == -1) {
+    if (exchange.getResponseCode() < 1) {
       exchange.sendResponseHeaders(204, -1);
     }
   }
