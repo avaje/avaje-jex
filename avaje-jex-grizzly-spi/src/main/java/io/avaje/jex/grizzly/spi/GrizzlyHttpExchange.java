@@ -1,4 +1,4 @@
-package io.avaje.helidon.http.spi;
+package io.avaje.jex.grizzly.spi;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,10 +14,10 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpPrincipal;
 
-public class JettyHttpExchange extends HttpExchange implements JettyExchange {
+final class GrizzlyHttpExchange extends HttpExchange implements GrizzlyExchange {
   private final GrizzlyHttpExchangeDelegate delegate;
 
-  public JettyHttpExchange(HttpContext context, Request req, Response resp) {
+  public GrizzlyHttpExchange(HttpContext context, Request req, Response resp) {
 
     delegate = new GrizzlyHttpExchangeDelegate(context, req, resp);
   }

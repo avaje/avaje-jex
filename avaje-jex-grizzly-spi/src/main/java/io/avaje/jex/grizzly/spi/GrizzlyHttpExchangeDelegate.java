@@ -1,4 +1,4 @@
-package io.avaje.helidon.http.spi;
+package io.avaje.jex.grizzly.spi;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,8 +18,8 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpPrincipal;
 
-/** Jetty implementation of {@link com.sun.net.httpserver.HttpExchange} */
-public class GrizzlyHttpExchangeDelegate extends HttpExchange {
+final class GrizzlyHttpExchangeDelegate extends HttpExchange {
+
   /** Set of headers that RFC9110 says will not have a value list */
   private static final Set<String> SINGLE_VALUE_HEADERS =
       Set.of(
@@ -141,7 +141,7 @@ public class GrizzlyHttpExchangeDelegate extends HttpExchange {
     } else {
       response.setContentLengthLong(responseLength);
     }
-    
+
     response.setStatus(rCode);
   }
 

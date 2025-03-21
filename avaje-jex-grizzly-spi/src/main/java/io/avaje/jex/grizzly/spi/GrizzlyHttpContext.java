@@ -1,4 +1,4 @@
-package io.avaje.helidon.http.spi;
+package io.avaje.jex.grizzly.spi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,8 +10,7 @@ import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
-/** Jetty implementation of {@link com.sun.net.httpserver.HttpContext} */
-public class JettyHttpContext extends com.sun.net.httpserver.HttpContext {
+final class GrizzlyHttpContext extends com.sun.net.httpserver.HttpContext {
 
   private final GrizzlyHandler grizzlyHandler;
   private final HttpServer server;
@@ -24,7 +23,7 @@ public class JettyHttpContext extends com.sun.net.httpserver.HttpContext {
 
   private String contextPath;
 
-  protected JettyHttpContext(HttpServer server, String contextPath, HttpHandler handler) {
+  protected GrizzlyHttpContext(HttpServer server, String contextPath, HttpHandler handler) {
     this.server = server;
     this.grizzlyHandler = new GrizzlyHandler(this, handler);
     this.contextPath = contextPath;

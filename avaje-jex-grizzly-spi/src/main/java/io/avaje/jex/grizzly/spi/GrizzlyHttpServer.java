@@ -1,11 +1,9 @@
-package io.avaje.helidon.http.spi;
+package io.avaje.jex.grizzly.spi;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.System.Logger.Level;
 import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,23 +17,21 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpsConfigurator;
 
-/** Jetty implementation of {@link com.sun.net.httpserver.HttpServer}. */
-public class JettyHttpServer extends com.sun.net.httpserver.HttpsServer {
+final class GrizzlyHttpServer extends com.sun.net.httpserver.HttpsServer {
   private static final System.Logger LOG =
-      System.getLogger(JettyHttpServer.class.getCanonicalName());
+      System.getLogger(GrizzlyHttpServer.class.getCanonicalName());
   private final HttpServer server;
-  private final Map<String, JettyHttpContext> contexts = new HashMap<>();
   private InetSocketAddress addr;
   private ServerConfiguration httpConfiguration;
   private ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
   private HttpsConfigurator httpsConfig;
 
-  public JettyHttpServer(HttpServer server) {
+  public GrizzlyHttpServer(HttpServer server) {
 
     this(server, server.getServerConfiguration());
   }
 
-  public JettyHttpServer(HttpServer server, ServerConfiguration configuration) {
+  public GrizzlyHttpServer(HttpServer server, ServerConfiguration configuration) {
     this.server = server;
     this.httpConfiguration = configuration;
   }
@@ -81,8 +77,9 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpsServer {
 
   @Override
   public InetSocketAddress getAddress() {
-    if (addr.getPort() == 0 && server.isStarted())
+    if (addr.getPort() == 0 && server.isStarted()) {
       return new InetSocketAddress(addr.getHostString(), server.getListener("rizzly").getPort());
+    }
     return addr;
   }
 
@@ -92,7 +89,6 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpsServer {
     try {
       server.start();
     } catch (IOException e) {
-
       throw new UncheckedIOException(e);
     }
   }
@@ -102,7 +98,7 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpsServer {
     if (executor instanceof ExecutorService service) {
       this.executor = service;
     } else {
-      throw new IllegalArgumentException("Grizzly only accepts ExecutorService");
+      throw new IllegalArgumentException("Grizzly only accepts an instance of ExecutorService");
     }
   }
 
@@ -113,25 +109,18 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpsServer {
 
   @Override
   public void stop(int delay) {
-
-    for (var context : contexts.values()) {
-      httpConfiguration.removeHttpHandler(context.getGrizzlyHandler());
-    }
-    contexts.clear();
-
-    server.shutdown();
+    server.shutdownNow();
   }
 
   @Override
   public HttpContext createContext(String path, HttpHandler httpHandler) {
 
-    JettyHttpContext context = new JettyHttpContext(this, path, httpHandler);
+    GrizzlyHttpContext context = new GrizzlyHttpContext(this, path, httpHandler);
     GrizzlyHandler jettyContextHandler = context.getGrizzlyHandler();
 
     httpConfiguration.addHttpHandler(
         jettyContextHandler, path.transform(this::prependSlash).transform(this::appendSlash));
 
-    contexts.put(path, context);
     return context;
   }
 
@@ -149,16 +138,15 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpsServer {
   }
 
   @Override
-  public void removeContext(String path) throws IllegalArgumentException {
-    JettyHttpContext context = contexts.remove(path);
-    if (context == null) return;
-    GrizzlyHandler handler = context.getGrizzlyHandler();
-    httpConfiguration.removeHttpHandler(handler);
+  public void removeContext(String path) {
+
+    throw new UnsupportedOperationException("notImplemented");
   }
 
   @Override
   public void removeContext(HttpContext context) {
-    removeContext(context.getPath());
+
+    throw new UnsupportedOperationException("notImplemented");
   }
 
   @Override

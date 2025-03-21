@@ -1,8 +1,8 @@
-package io.avaje.helidon.http.spi;
+package io.avaje.jex.grizzly.spi;
 
 import com.sun.net.httpserver.HttpPrincipal;
 
-public interface JettyExchange {
+sealed interface GrizzlyExchange permits GrizzlyHttpExchange, GrizzlyHttpsExchange {
 
   HttpPrincipal getPrincipal();
 

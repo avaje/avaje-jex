@@ -7,6 +7,7 @@
     <artifactId>avaje-jex-parent</artifactId>
     <version>3.0-RC23</version>
   </parent>
+  <version>0.1</version>
   <artifactId>avaje-jex-grizzly-spi</artifactId>
 
   <dependencies>
@@ -15,11 +16,18 @@
       <artifactId>grizzly-http-server</artifactId>
       <version>4.1.0-M1</version>
     </dependency>
-      <dependency>
-        <groupId>io.avaje</groupId>
-        <artifactId>avaje-spi-service</artifactId>
-        <scope>provided</scope>
-        <optional>true</optional>
-      </dependency>
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-spi-service</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-jex-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 </project>

@@ -1,4 +1,4 @@
-package io.avaje.helidon.http.spi;
+package io.avaje.jex.grizzly.spi;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -43,7 +43,7 @@ public class GrizzlyHttpServerProvider extends HttpServerProvider {
       server = new HttpServer();
     }
 
-    JettyHttpServer jettyHttpServer = new JettyHttpServer(server);
+    GrizzlyHttpServer jettyHttpServer = new GrizzlyHttpServer(server);
     if (addr != null) jettyHttpServer.bind(addr, backlog);
     return jettyHttpServer;
   }

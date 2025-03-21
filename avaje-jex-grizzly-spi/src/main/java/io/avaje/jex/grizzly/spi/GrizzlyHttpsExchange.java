@@ -1,4 +1,4 @@
-package io.avaje.helidon.http.spi;
+package io.avaje.jex.grizzly.spi;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,117 +16,106 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpPrincipal;
 import com.sun.net.httpserver.HttpsExchange;
 
+final class GrizzlyHttpsExchange extends HttpsExchange implements GrizzlyExchange {
+  private final GrizzlyHttpExchangeDelegate delegate;
 
-public class JettyHttpsExchange extends HttpsExchange implements JettyExchange {
-  private final GrizzlyHttpExchangeDelegate _delegate;
-
-  public JettyHttpsExchange(HttpContext jaxWsContext, Request req, Response resp) {
-    _delegate = new GrizzlyHttpExchangeDelegate(jaxWsContext, req, resp);
-  }
-
-  @Override
-  public int hashCode() {
-    return _delegate.hashCode();
+  public GrizzlyHttpsExchange(HttpContext jaxWsContext, Request req, Response resp) {
+    delegate = new GrizzlyHttpExchangeDelegate(jaxWsContext, req, resp);
   }
 
   @Override
   public Headers getRequestHeaders() {
-    return _delegate.getRequestHeaders();
+    return delegate.getRequestHeaders();
   }
 
   @Override
   public Headers getResponseHeaders() {
-    return _delegate.getResponseHeaders();
+    return delegate.getResponseHeaders();
   }
 
   @Override
   public URI getRequestURI() {
-    return _delegate.getRequestURI();
+    return delegate.getRequestURI();
   }
 
   @Override
   public String getRequestMethod() {
-    return _delegate.getRequestMethod();
+    return delegate.getRequestMethod();
   }
 
   @Override
   public HttpContext getHttpContext() {
-    return _delegate.getHttpContext();
+    return delegate.getHttpContext();
   }
 
   @Override
   public void close() {
-    _delegate.close();
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return _delegate.equals(obj);
+    delegate.close();
   }
 
   @Override
   public InputStream getRequestBody() {
-    return _delegate.getRequestBody();
+    return delegate.getRequestBody();
   }
 
   @Override
   public OutputStream getResponseBody() {
-    return _delegate.getResponseBody();
+    return delegate.getResponseBody();
   }
 
   @Override
   public void sendResponseHeaders(int rCode, long responseLength) throws IOException {
-    _delegate.sendResponseHeaders(rCode, responseLength);
+    delegate.sendResponseHeaders(rCode, responseLength);
   }
 
   @Override
   public InetSocketAddress getRemoteAddress() {
-    return _delegate.getRemoteAddress();
+    return delegate.getRemoteAddress();
   }
 
   @Override
   public int getResponseCode() {
-    return _delegate.getResponseCode();
+    return delegate.getResponseCode();
   }
 
   @Override
   public InetSocketAddress getLocalAddress() {
-    return _delegate.getLocalAddress();
+    return delegate.getLocalAddress();
   }
 
   @Override
   public String getProtocol() {
-    return _delegate.getProtocol();
+    return delegate.getProtocol();
   }
 
   @Override
   public Object getAttribute(String name) {
-    return _delegate.getAttribute(name);
+    return delegate.getAttribute(name);
   }
 
   @Override
   public void setAttribute(String name, Object value) {
-    _delegate.setAttribute(name, value);
+    delegate.setAttribute(name, value);
   }
 
   @Override
   public void setStreams(InputStream i, OutputStream o) {
-    _delegate.setStreams(i, o);
+    delegate.setStreams(i, o);
   }
 
   @Override
   public HttpPrincipal getPrincipal() {
-    return _delegate.getPrincipal();
+    return delegate.getPrincipal();
   }
 
   @Override
   public void setPrincipal(HttpPrincipal principal) {
-    _delegate.setPrincipal(principal);
+    delegate.setPrincipal(principal);
   }
 
   @Override
   public String toString() {
-    return _delegate.toString();
+    return delegate.toString();
   }
 
   @Override
