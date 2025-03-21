@@ -16,12 +16,11 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpPrincipal;
 import com.sun.net.httpserver.HttpsExchange;
 
-/** */
+
 public class JettyHttpsExchange extends HttpsExchange implements JettyExchange {
   private final GrizzlyHttpExchangeDelegate _delegate;
 
   public JettyHttpsExchange(HttpContext jaxWsContext, Request req, Response resp) {
-    super();
     _delegate = new GrizzlyHttpExchangeDelegate(jaxWsContext, req, resp);
   }
 
