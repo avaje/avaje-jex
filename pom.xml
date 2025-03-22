@@ -39,11 +39,12 @@
 
   <modules>
     <module>avaje-jex</module>
-    <module>avaje-jex-test</module>
     <module>avaje-jex-freemarker</module>
-    <module>avaje-jex-mustache</module>
+    <module>avaje-jex-grizzly-spi</module>
     <module>avaje-jex-htmx</module>
+    <module>avaje-jex-mustache</module>
     <module>avaje-jex-static-content</module>
+    <module>avaje-jex-test</module>
   </modules>
 
   <dependencyManagement>
