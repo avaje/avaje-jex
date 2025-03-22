@@ -37,6 +37,6 @@ jobs:
           ~/.m2
         key: build-${{ env.cache-name }}
     - name: Build with Maven
-      run: mvn clean test -Dcom.sun.net.httpserver.HttpServerProvider=sun.net.httpserver.DefaultHttpServerProvider
+      run: mvn clean test
 
 
