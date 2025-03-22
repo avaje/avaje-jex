@@ -10,6 +10,7 @@
   <artifactId>avaje-jex</artifactId>
 
   <properties>
+  <argLine>-Dcom.sun.net.httpserver.HttpServerProvider=sun.net.httpserver.DefaultHttpServerProvider</argLine>
   </properties>
 
   <dependencies>
@@ -62,6 +63,20 @@
       <artifactId>avaje-http-client</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>io.github.robaho</groupId>
+      <artifactId>httpserver</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-http-spi</artifactId>
+      <version>12.0.18</version>
+      <scope>test</scope>
+    </dependency>
+    
   </dependencies>
 
   <build>
