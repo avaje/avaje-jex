@@ -133,7 +133,7 @@ public class JsonTest {
       .as(HelloDto.class);
 
     assertThat(hres.statusCode()).isEqualTo(200);
-    final HttpHeaders headers = hres.requestHeaders();
+    final HttpHeaders headers = hres.headers();
     assertThat(headers.firstValue("Content-Type").orElseThrow()).isEqualTo("application/json");
 
     var bean = hres.body();
