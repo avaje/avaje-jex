@@ -1,6 +1,7 @@
 package io.avaje.jex.core;
 
 import java.net.http.HttpClient.Version;
+import java.time.Duration;
 
 import io.avaje.http.client.HttpClient;
 import io.avaje.http.client.HttpClientRequest;
@@ -43,7 +44,12 @@ public class TestPair {
     var jexServer = app.port(0).start();
     var port = jexServer.port();
     var url = "http://localhost:" + port;
-    var client = HttpClient.builder().version(Version.HTTP_1_1).baseUrl(url).build();
+    var client =
+        HttpClient.builder()
+            .version(Version.HTTP_1_1)
+            .requestTimeout(Duration.ofDays(1))
+            .baseUrl(url)
+            .build();
 
     return new TestPair(port, jexServer, client);
   }

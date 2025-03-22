@@ -2,7 +2,7 @@ package io.avaje.jex.compression;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -39,7 +39,7 @@ public final class CompressedOutputStream extends OutputStream {
 
       if (compressionAllowed && length >= minSizeForCompression) {
         Optional<Compressor> compressor;
-        compressor = findMatchingCompressor(ctx.header(Constants.ACCEPT_ENCODING));
+        compressor = findMatchingCompressor(ctx.headerValues(Constants.ACCEPT_ENCODING));
         if (compressor.isPresent()) {
           this.compressedStream = compressor.get().compress(originStream);
           ctx.header(Constants.CONTENT_ENCODING, compressor.get().encoding());
@@ -69,9 +69,9 @@ public final class CompressedOutputStream extends OutputStream {
     originStream.close();
   }
 
-  private Optional<Compressor> findMatchingCompressor(String acceptedEncoding) {
-    if (acceptedEncoding != null) {
-      return Arrays.stream(acceptedEncoding.split(","))
+  private Optional<Compressor> findMatchingCompressor(List<String> list) {
+    if (list != null) {
+      return list.stream()
           .map(e -> e.trim().split(";")[0])
           .map(e -> "*".equals(e) ? "gzip" : e.toLowerCase())
           .map(compression::forType)
