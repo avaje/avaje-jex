@@ -2,6 +2,7 @@ package io.avaje.jex.compression;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -69,9 +70,15 @@ public final class CompressedOutputStream extends OutputStream {
     originStream.close();
   }
 
-  private Optional<Compressor> findMatchingCompressor(List<String> list) {
-    if (list != null) {
-      return list.stream()
+  private Optional<Compressor> findMatchingCompressor(List<String> acceptedEncoding) {
+    if (acceptedEncoding != null) {
+      // it seems jetty may handle multi-value headers differently
+      var stream =
+          acceptedEncoding.size() > 1
+              ? acceptedEncoding.stream()
+              : Arrays.stream(acceptedEncoding.getFirst().split(","));
+
+      return stream
           .map(e -> e.trim().split(";")[0])
           .map(e -> "*".equals(e) ? "gzip" : e.toLowerCase())
           .map(compression::forType)
