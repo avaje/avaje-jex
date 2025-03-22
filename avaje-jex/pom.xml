@@ -10,6 +10,7 @@
   <artifactId>avaje-jex</artifactId>
 
   <properties>
+  <argLine>-Dcom.sun.net.httpserver.HttpServerProvider=sun.net.httpserver.DefaultHttpServerProvider</argLine>
   </properties>
 
   <dependencies>
