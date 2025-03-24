@@ -64,12 +64,6 @@
       <artifactId>avaje-http-client</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <dependency>
-      <groupId>io.github.robaho</groupId>
-      <artifactId>httpserver</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <profiles>
