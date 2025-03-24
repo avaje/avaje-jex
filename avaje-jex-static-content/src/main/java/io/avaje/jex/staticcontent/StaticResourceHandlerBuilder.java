@@ -127,7 +127,7 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
   }
 
   private String prependSlash(String s) {
-    return s.startsWith("/") ? s : "/" + s;
+    return s.charAt(0) == '/' ? s : "/" + s;
   }
 
   private String appendSlash(String s) {

@@ -189,7 +189,7 @@ public interface Context {
   /** Return the full request url, including query string (if present) */
   default String fullUrl() {
     var uri = uri().toString();
-    return !uri.startsWith("/") ? uri : scheme() + "://" + host() + uri;
+    return uri.charAt(0) != '/' ? uri : scheme() + "://" + host() + uri;
   }
 
   /**
