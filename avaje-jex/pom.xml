@@ -64,9 +64,19 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-    </plugins>
-  </build>
-
+  <profiles>
+    <profile>
+      <id>robaho</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>io.github.robaho</groupId>
+          <artifactId>httpserver</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 </project>
