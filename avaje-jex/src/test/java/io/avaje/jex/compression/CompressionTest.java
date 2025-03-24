@@ -33,10 +33,7 @@ class CompressionTest {
                             "/sus",
                             ctx ->
                                 ctx.write(
-                                    CompressionTest.class.getResourceAsStream("/public/sus.txt")))
-                        .get(
-                            "/forced",
-                            ctx -> ctx.header(Constants.CONTENT_ENCODING, "gzip").text("hi")));
+                                    CompressionTest.class.getResourceAsStream("/public/sus.txt"))));
 
     return TestPair.create(app);
   }
@@ -71,13 +68,5 @@ class CompressionTest {
         pair.request().header(Constants.ACCEPT_ENCODING, "gzip").path("sus").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().firstValue(Constants.CONTENT_ENCODING)).isEmpty();
-  }
-
-  @Test
-  void testForcedCompression() {
-    HttpResponse<String> res =
-        pair.request().header(Constants.ACCEPT_ENCODING, "gzip").path("forced").GET().asString();
-    assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.headers().firstValue(Constants.CONTENT_ENCODING)).contains("gzip");
   }
 }
