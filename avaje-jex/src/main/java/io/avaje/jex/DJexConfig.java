@@ -48,7 +48,7 @@ final class DJexConfig implements JexConfig {
 
       this.contextPath =
           contextPath
-              .transform(s -> s.startsWith("/") ? s : "/" + s)
+              .transform(s -> s.charAt(0) == '/' ? s : "/" + s)
               .transform(s -> s.endsWith("/") ? s.substring(0, s.lastIndexOf("/")) : s);
     }
     return this;
