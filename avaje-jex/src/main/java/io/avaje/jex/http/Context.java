@@ -193,11 +193,18 @@ public interface Context {
   }
 
   /**
-   * Return the request header.
+   * Return the request header value by name.
    *
-   * @param key The header key
+   * @param key The first value of the header
    */
   String header(String key);
+
+  /**
+   * Return the request headers.
+   *
+   * @param key all values of the header key
+   */
+  List<String> headerValues(String key);
 
   /**
    * Set the response header.
@@ -236,7 +243,14 @@ public interface Context {
    *
    * @return the request headers
    */
-  Headers headers();
+  Headers requestHeaders();
+
+  /**
+   * Return underlying response headers.
+   *
+   * @return the response headers
+   */
+  Headers responseHeaders();
 
   /** Add the response headers using the provided map. */
   default Context headers(Map<String, String> headers) {
@@ -439,6 +453,14 @@ public interface Context {
    * @return The value of the header, or null if not found.
    */
   String responseHeader(String key);
+
+  /**
+   * Returns the value of the specified response header.
+   *
+   * @param key The name of the header.
+   * @return The value of the header, or null if not found.
+   */
+  List<String> responseHeaderValues(String key);
 
   /** Return true if the response has been sent. */
   boolean responseSent();
