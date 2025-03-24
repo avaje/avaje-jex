@@ -34,6 +34,4 @@ jobs:
           ~/.m2
         key: build-${{ env.cache-name }}
     - name: Build with Maven
-      run: mvn clean test -DargLine="-Dcom.sun.net.httpserver.HttpServerProvider=org.eclipse.jetty.http.spi.JettyHttpServerProvider"
-
-
+      run: mvn clean test -Pjetty
