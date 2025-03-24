@@ -34,6 +34,6 @@ jobs:
           ~/.m2
         key: build-${{ env.cache-name }}
     - name: Build with Maven
-      run: mvn clean test -DargLine="-Dcom.sun.net.httpserver.HttpServerProvider=robaho.net.httpserver.DefaultHttpServerProvider"
+      run: mvn clean test -Probaho
 
 
