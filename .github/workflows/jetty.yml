@@ -1,5 +1,5 @@
 
-name: Robaho
+name: Jetty
 
 on:
   push:
@@ -34,4 +34,4 @@ jobs:
           ~/.m2
         key: build-${{ env.cache-name }}
     - name: Build with Maven
-      run: mvn clean test -Probaho
+      run: mvn clean test -Pjetty
