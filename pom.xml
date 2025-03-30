@@ -32,7 +32,7 @@
     <avaje.metrics.version>9.4</avaje.metrics.version>
     <avaje.validator.version>2.9</avaje.validator.version>
     <avaje.record.builder.version>1.2</avaje.record.builder.version>
-    <avaje.spi.version>2.10</avaje.spi.version>
+    <avaje.spi.version>2.11</avaje.spi.version>
     <avaje.prisms.versionn>1.36</avaje.prisms.versionn>
     <ebean.version>15.10.0</ebean.version>
   </properties>
@@ -59,7 +59,7 @@
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-logback-encoder</artifactId>
-        <version>0.11</version>
+        <version>0.12</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
