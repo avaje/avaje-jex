@@ -1,16 +1,13 @@
 
-name: JDK EA
+name: Jetty
 
 on:
   push:
   pull_request:
   workflow_dispatch:
-  schedule:
-    - cron: '12 8 * * 1,3,5'
 
 jobs:
   build:
-
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
@@ -18,16 +15,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java_version: [EA, GA] ## valhalla (fails javadoc)
+        java_version: [21]
         os: [ubuntu-latest]
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Java
-      uses: oracle-actions/setup-java@v1
+    - name: Set up JDK
+      uses: actions/setup-java@v4
       with:
-        website: jdk.java.net
-        release: ${{ matrix.java_version }}
+        java-version: ${{ matrix.java_version }}
+        distribution: 'zulu'
     - name: Maven cache
       uses: actions/cache@v4
       env:
@@ -37,4 +34,4 @@ jobs:
           ~/.m2
         key: build-${{ env.cache-name }}
     - name: Build with Maven
-      run: mvn clean test
+      run: mvn clean test -Pjetty
