@@ -34,7 +34,7 @@
     <avaje.record.builder.version>1.2</avaje.record.builder.version>
     <avaje.spi.version>2.11</avaje.spi.version>
     <avaje.prisms.versionn>1.42</avaje.prisms.versionn>
-    <ebean.version>15.10.0</ebean.version>
+    <ebean.version>15.11.0</ebean.version>
   </properties>
 
   <modules>
@@ -207,7 +207,7 @@
       <dependency>
         <groupId>io.github.robaho</groupId>
         <artifactId>httpserver</artifactId>
-        <version>1.0.23</version>
+        <version>1.0.24</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
