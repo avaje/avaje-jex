@@ -146,6 +146,17 @@ public interface JexConfig {
    */
   JexConfig port(int port);
 
+  /** The configured rangeChunk size */
+  int rangeChunkSize();
+
+  /**
+   * Set the chunk size on range requests, set to a high number to reduce the amount of range
+   * requests (especially for video streaming)
+   *
+   * @param rangeChunkSize chunk size on range requests
+   */
+  JexConfig rangeChunkSize(int rangeChunkSize);
+
   /**
    * Registers a template renderer for a specific file extension.
    *
@@ -185,5 +196,4 @@ public interface JexConfig {
    *     default value is used
    */
   JexConfig socketBacklog(int backlog);
-
 }

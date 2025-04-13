@@ -18,6 +18,11 @@ final class BufferedOutStream extends OutputStream {
     this.context = context;
     this.max = max;
     this.buffer = new ByteArrayOutputStream(initial);
+
+    // if content length is set, skip buffer
+    if (context.responseHeader(Constants.CONTENT_LENGTH) != null) {
+      count = max + 1;
+    }
   }
 
   @Override
@@ -52,7 +57,9 @@ final class BufferedOutStream extends OutputStream {
   /** Use responseLength 0 and chunked response. */
   private void initialiseChunked() throws IOException {
     final HttpExchange exchange = context.exchange();
-    exchange.sendResponseHeaders(context.statusCode(), 0);
+    // if a manual content-length is set, honor that instead of chunking
+    String length = context.responseHeader(Constants.CONTENT_LENGTH);
+    exchange.sendResponseHeaders(context.statusCode(), length == null ? 0 : Long.parseLong(length));
     stream = exchange.getResponseBody();
     // empty the existing buffer
     buffer.writeTo(stream);

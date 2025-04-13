@@ -36,6 +36,7 @@ public final class CompressedOutputStream extends OutputStream {
     if (!compressionDecided) {
       boolean compressionAllowed =
           compressedStream == null
+              && ctx.responseHeader(Constants.CONTENT_RANGE) == null
               && compression.allowsForCompression(ctx.responseHeader(Constants.CONTENT_TYPE));
 
       if (compressionAllowed && length >= minSizeForCompression) {

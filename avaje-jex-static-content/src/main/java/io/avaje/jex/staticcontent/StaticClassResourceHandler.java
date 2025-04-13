@@ -93,7 +93,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
         addCachedEntry(ctx, urlPath, fis);
         return;
       }
-      ctx.write(fis);
+      ctx.rangedWrite(fis);
     } catch (final Exception e) {
       throw404(ctx.exchange());
     }

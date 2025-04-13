@@ -536,4 +536,9 @@ final class JdkContext implements Context {
   public JsonService jsonService() {
     return mgr.jsonService();
   }
+
+  @Override
+  public void rangedWrite(InputStream inputStream, long totalBytes) {
+    mgr.writeRange(this, inputStream, totalBytes);
+  }
 }
