@@ -33,7 +33,6 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpsExchange;
 
-import io.avaje.jex.http.ContentType;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.http.HttpStatus;
 import io.avaje.jex.http.RedirectException;
@@ -71,7 +70,6 @@ final class JdkContext implements Context {
     this.exchange = exchange;
     this.matchedPath = path;
     this.pathParams = pathParams;
-    contentType(ContentType.APPLICATION_OCTET_STREAM);
   }
 
   /** Create when no route matched. */
