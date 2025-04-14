@@ -19,7 +19,7 @@ final class RangeWriter {
     ctx.header(Constants.ACCEPT_RANGES, "bytes");
     final String rangeHeader = ctx.header(Constants.RANGE);
     if (rangeHeader == null) {
-      ctx.contentLength(totalBytes).write(inputStream);
+      ctx.write(inputStream);
       return;
     }
     final List<String> requestedRange =

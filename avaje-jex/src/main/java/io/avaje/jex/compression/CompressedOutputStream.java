@@ -67,8 +67,9 @@ public final class CompressedOutputStream extends OutputStream {
   public void close() throws IOException {
     if (compressedStream != null) {
       compressedStream.close();
+    } else {
+      originStream.close();
     }
-    originStream.close();
   }
 
   private Optional<Compressor> findMatchingCompressor(List<String> acceptedEncoding) {
