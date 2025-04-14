@@ -19,4 +19,9 @@ public final class Constants {
   public static final String TEXT_PLAIN_UTF8 = "text/plain;charset=utf-8";
   public static final String APPLICATION_JSON = "application/json";
   public static final String APPLICATION_X_JSON_STREAM = "application/x-json-stream";
+
+  // range
+  public static final String ACCEPT_RANGES = "Accept-ranges";
+  public static final String RANGE = "Range";
+  public static final String CONTENT_RANGE = "Content-range";
 }

@@ -69,4 +69,23 @@ class CompressionTest {
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().firstValue(Constants.CONTENT_ENCODING)).isEmpty();
   }
+
+  @Test
+  void testCompressionRange() throws IOException {
+    var res =
+        pair.request()
+            .header(Constants.ACCEPT_ENCODING, "deflate, gzip;q=1.0, *;q=0.5")
+            .path("compress")
+            .GET()
+            .asInputStream();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.headers().firstValue(Constants.CONTENT_ENCODING)).contains("gzip");
+
+    var expected = CompressionTest.class.getResourceAsStream("/64KB.json").readAllBytes();
+
+    final var gzipInputStream = new GZIPInputStream(res.body());
+    var decompressed = gzipInputStream.readAllBytes();
+    gzipInputStream.close();
+    assertThat(decompressed).isEqualTo(expected);
+  }
 }

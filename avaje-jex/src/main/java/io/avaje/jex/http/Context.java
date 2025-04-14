@@ -3,8 +3,10 @@ package io.avaje.jex.http;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.time.Duration;
@@ -110,6 +112,11 @@ public interface Context {
   /** Return the request content length. */
   long contentLength();
 
+  /** Manually set the response content length. */
+  default Context contentLength(long length) {
+    return header(Constants.CONTENT_LENGTH, String.valueOf(length));
+  }
+
   /** Return the request content type. */
   String contentType();
 
@@ -190,6 +197,26 @@ public interface Context {
   default String fullUrl() {
     var uri = uri().toString();
     return uri.charAt(0) != '/' ? uri : scheme() + "://" + host() + uri;
+  }
+
+  /**
+   * Reads HTTP Range headers and determines which part of the provided InputStream to write back.
+   *
+   * @param inputStream data to write
+   * @param totalBytes total size of the data
+   */
+  void rangedWrite(InputStream inputStream, long totalBytes);
+
+  /**
+   * Writes input stream to {@link #rangedWrite(InputStream, long)} with currently available data
+   * via {@link InputStream#available}
+   */
+  default void rangedWrite(InputStream inputStream) {
+    try {
+      rangedWrite(inputStream, inputStream.available());
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   /**
