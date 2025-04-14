@@ -10,7 +10,7 @@ import java.util.List;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.http.HttpStatus;
 
-class RangeWriter {
+final class RangeWriter {
 
   private static final int DEFAULT_BUFFER_SIZE = 16384;
 
@@ -62,8 +62,7 @@ class RangeWriter {
     }
   }
 
-  private static void write(OutputStream outputStream, InputStream inputStream, long from, long to)
-      throws IOException {
+  private static void write(OutputStream outputStream, InputStream inputStream, long from, long to) throws IOException {
     byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
     long toSkip = from;
     while (toSkip > 0) {
