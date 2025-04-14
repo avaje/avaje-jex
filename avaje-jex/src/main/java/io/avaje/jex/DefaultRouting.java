@@ -37,7 +37,7 @@ final class DefaultRouting implements Routing {
   }
 
   private String path(String path) {
-    return String.join("", pathDeque) + (path.charAt(0) == '/' || path.isEmpty() ? path : "/" + path);
+    return String.join("", pathDeque) + (path.isEmpty() || path.charAt(0) == '/' ? path : "/" + path);
   }
 
   private void addEndpoints(String path, HttpService group) {
