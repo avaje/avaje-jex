@@ -520,7 +520,7 @@ final class JdkContext implements Context {
 
   @Override
   public void write(InputStream is) {
-    try (is; var os = outputStream()) {
+    try (var os = outputStream()) {
       is.transferTo(os);
     } catch (IOException e) {
       throw new UncheckedIOException(e);

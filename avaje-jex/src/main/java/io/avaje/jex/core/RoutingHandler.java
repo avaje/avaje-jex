@@ -36,6 +36,7 @@ final class RoutingHandler implements HttpHandler {
 
     if (route == null) {
       var ctx = new JdkContext(mgr, exchange, uri, Set.of());
+      ctx.setMode(Mode.EXCHANGE);
       mgr.handleException(
           ctx,
           new NotFoundException(
