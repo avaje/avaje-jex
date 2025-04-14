@@ -1,12 +1,14 @@
 package io.avaje.jex.core;
 
-import io.avaje.jex.Jex;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.http.HttpResponse;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
+
+import io.avaje.jex.Jex;
+import io.avaje.jex.http.NotFoundException;
 
 class RedirectTest {
 
@@ -26,6 +28,7 @@ class RedirectTest {
                         .get("/one", ctx -> ctx.text("one"))
                         .get("/two", ctx -> ctx.text("two"))
                         .get("/redirect/me", ctx -> ctx.redirect("/one?from=handler"))
+                        .error(NotFoundException.class, (ctx, e) -> ctx.redirect("/one?from=error"))
                         .get("/other/me", ctx -> ctx.text("never hit")));
     return TestPair.create(app);
   }
@@ -38,6 +41,13 @@ class RedirectTest {
   @Test
   void redirect_via_handler() {
     HttpResponse<String> res = pair.request().path("redirect/me").GET().asString();
+    assertThat(res.body()).isEqualTo("one");
+    assertThat(res.statusCode()).isEqualTo(200);
+  }
+
+  @Test
+  void redirect_via_error_handler() {
+    HttpResponse<String> res = pair.request().path("redirect/error").GET().asString();
     assertThat(res.body()).isEqualTo("one");
     assertThat(res.statusCode()).isEqualTo(200);
   }
