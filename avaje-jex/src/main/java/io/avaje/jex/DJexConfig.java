@@ -28,7 +28,7 @@ final class DJexConfig implements JexConfig {
   private final CompressionConfig compression = new CompressionConfig();
   private int bufferInitial = 256;
   private long bufferMax = 4096L;
-  private int rangeChunkSize = 131_072;
+  private int rangeChunkSize = 990_000;
   private HttpServerProvider serverProvider;
 
   @Override
