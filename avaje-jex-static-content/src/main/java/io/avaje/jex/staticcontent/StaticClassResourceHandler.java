@@ -2,6 +2,7 @@ package io.avaje.jex.staticcontent;
 
 import static io.avaje.jex.core.Constants.CONTENT_TYPE;
 
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -94,7 +95,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
         return;
       }
       ctx.rangedWrite(fis);
-    } catch (final Exception e) {
+    } catch (final IOException e) {
       throw404(ctx.exchange());
     }
   }

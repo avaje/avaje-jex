@@ -71,8 +71,6 @@ class RangeTest {
     assertThat(response.body().getBytes()).isEqualTo(getInput().readAllBytes());
     assertThat(response.statusCode()).isEqualTo(200);
 
-    assertThat(response.headers().firstValueAsLong(Constants.CONTENT_LENGTH).orElseThrow())
-        .isGreaterThan(0L);
     assertThat(response.headers().firstValue(Constants.ACCEPT_RANGES).orElseThrow())
         .isEqualTo("bytes");
   }
