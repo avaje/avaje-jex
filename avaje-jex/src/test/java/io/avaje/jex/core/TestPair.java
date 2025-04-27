@@ -1,11 +1,10 @@
 package io.avaje.jex.core;
 
-import java.net.http.HttpClient.Version;
-import java.time.Duration;
-
 import io.avaje.http.client.HttpClient;
 import io.avaje.http.client.HttpClientRequest;
 import io.avaje.jex.Jex;
+import java.net.http.HttpClient.Version;
+import java.time.Duration;
 
 /** Server and Client pair for a test. */
 public class TestPair {

@@ -1,14 +1,13 @@
 package io.avaje.jex.core;
 
+import io.avaje.jex.http.Context;
+import io.avaje.jex.http.HttpStatus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.List;
-
-import io.avaje.jex.http.Context;
-import io.avaje.jex.http.HttpStatus;
 
 final class RangeWriter {
 
@@ -55,7 +54,8 @@ final class RangeWriter {
     }
   }
 
-  private static void write(OutputStream outputStream, InputStream inputStream, long from, long to) throws IOException {
+  private static void write(OutputStream outputStream, InputStream inputStream, long from, long to)
+      throws IOException {
     byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
     long toSkip = from;
     while (toSkip > 0) {
