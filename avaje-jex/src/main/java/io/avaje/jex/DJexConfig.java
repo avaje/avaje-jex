@@ -1,13 +1,17 @@
 package io.avaje.jex;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
+
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.spi.HttpServerProvider;
+
 import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
 
 final class DJexConfig implements JexConfig {
 
@@ -17,12 +21,14 @@ final class DJexConfig implements JexConfig {
   private int socketBacklog = 0;
   private boolean health = true;
   private boolean ignoreTrailingSlashes = true;
+  private Executor executor;
   private JsonService jsonService;
   private final Map<String, TemplateRender> renderers = new HashMap<>();
   private HttpsConfigurator httpsConfig;
   private final CompressionConfig compression = new CompressionConfig();
   private int bufferInitial = 256;
   private long bufferMax = 4096L;
+  private int rangeChunkSize = 990_000;
   private HttpServerProvider serverProvider;
 
   @Override
@@ -43,7 +49,7 @@ final class DJexConfig implements JexConfig {
 
       this.contextPath =
           contextPath
-              .transform(s -> s.startsWith("/") ? s : "/" + s)
+              .transform(s -> s.charAt(0) == '/' ? s : "/" + s)
               .transform(s -> s.endsWith("/") ? s.substring(0, s.lastIndexOf("/")) : s);
     }
     return this;
@@ -76,6 +82,22 @@ final class DJexConfig implements JexConfig {
   @Override
   public JexConfig renderer(String extension, TemplateRender renderer) {
     renderers.put(extension, renderer);
+    return this;
+  }
+
+  @Override
+  public Executor executor() {
+    if (executor == null) {
+      executor =
+          Executors.newThreadPerTaskExecutor(
+              Thread.ofVirtual().name("avaje-jex-http-", 0).factory());
+    }
+    return executor;
+  }
+
+  @Override
+  public JexConfig executor(Executor executor) {
+    this.executor = executor;
     return this;
   }
 
@@ -176,6 +198,17 @@ final class DJexConfig implements JexConfig {
   @Override
   public JexConfig serverProvider(HttpServerProvider serverProvider) {
     this.serverProvider = serverProvider;
+    return this;
+  }
+
+  @Override
+  public int rangeChunkSize() {
+    return rangeChunkSize;
+  }
+
+  @Override
+  public JexConfig rangeChunkSize(int rangeChunkSize) {
+    this.rangeChunkSize = rangeChunkSize;
     return this;
   }
 }

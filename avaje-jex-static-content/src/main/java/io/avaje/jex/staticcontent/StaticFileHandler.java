@@ -106,7 +106,7 @@ final class StaticFileHandler extends AbstractStaticHandler {
         addCachedEntry(ctx, urlPath, fis);
         return;
       }
-      ctx.write(fis);
+      ctx.rangedWrite(fis);
     } catch (FileNotFoundException e) {
       throw404(jdkExchange);
     }

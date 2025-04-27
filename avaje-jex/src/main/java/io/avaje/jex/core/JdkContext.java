@@ -218,13 +218,17 @@ final class JdkContext implements Context {
   }
 
   private String header(Headers headers, String name) {
-    final List<String> values = headers.get(name);
-    return values == null || values.isEmpty() ? null : values.getFirst();
+    return headers.getFirst(name);
   }
 
   @Override
   public String header(String key) {
     return header(exchange.getRequestHeaders(), key);
+  }
+
+  @Override
+  public List<String> headerValues(String key) {
+    return exchange.getRequestHeaders().get(key);
   }
 
   @Override
@@ -258,8 +262,18 @@ final class JdkContext implements Context {
   }
 
   @Override
-  public Headers headers() {
+  public Headers requestHeaders() {
     return exchange.getRequestHeaders();
+  }
+
+  @Override
+  public Headers responseHeaders() {
+    return exchange.getResponseHeaders();
+  }
+
+  @Override
+  public List<String> responseHeaderValues(String key) {
+    return exchange.getResponseHeaders().get(key);
   }
 
   @Override
@@ -519,5 +533,10 @@ final class JdkContext implements Context {
   @Override
   public JsonService jsonService() {
     return mgr.jsonService();
+  }
+
+  @Override
+  public void rangedWrite(InputStream inputStream, long totalBytes) {
+    mgr.writeRange(this, inputStream, totalBytes);
   }
 }

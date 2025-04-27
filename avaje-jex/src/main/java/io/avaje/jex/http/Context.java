@@ -3,16 +3,10 @@ package io.avaje.jex.http;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpExchange;
-import io.avaje.jex.core.Constants;
-import io.avaje.jex.core.json.JsonbOutput;
-import io.avaje.jex.security.BasicAuthCredentials;
-import io.avaje.jex.security.Role;
-import io.avaje.jex.spi.JsonService;
-import io.avaje.jsonb.JsonType;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.time.Duration;
@@ -22,7 +16,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
+
 import javax.net.ssl.SSLSession;
+
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+
+import io.avaje.jex.core.Constants;
+import io.avaje.jex.core.json.JsonbOutput;
+import io.avaje.jex.security.BasicAuthCredentials;
+import io.avaje.jex.security.Role;
+import io.avaje.jex.spi.JsonService;
+import io.avaje.jsonb.JsonType;
 
 /** Provides access to functions for handling the request and response. */
 public interface Context {
@@ -47,8 +52,9 @@ public interface Context {
   /**
    * Gets basic-auth credentials from the request.
    *
-   * @return The Base64 decoded username and password from the Authorization header, or null if no
-   *     header is sent
+   * @return The Base64 decoded username and password from the
+   * Authorization header, or null if no header is sent
+   *
    * @throws IllegalStateException if the Authorization header is malformed
    */
   BasicAuthCredentials basicAuthCredentials();
@@ -105,6 +111,11 @@ public interface Context {
 
   /** Return the request content length. */
   long contentLength();
+
+  /** Manually set the response content length. */
+  default Context contentLength(long length) {
+    return header(Constants.CONTENT_LENGTH, String.valueOf(length));
+  }
 
   /** Return the request content type. */
   String contentType();
@@ -184,15 +195,43 @@ public interface Context {
 
   /** Return the full request url, including query string (if present) */
   default String fullUrl() {
-    return scheme() + "://" + host() + uri().toString();
+    var uri = uri().toString();
+    return uri.charAt(0) != '/' ? uri : scheme() + "://" + host() + uri;
   }
 
   /**
-   * Return the request header.
+   * Reads HTTP Range headers and determines which part of the provided InputStream to write back.
    *
-   * @param key The header key
+   * @param inputStream data to write
+   * @param totalBytes total size of the data
+   */
+  void rangedWrite(InputStream inputStream, long totalBytes);
+
+  /**
+   * Writes input stream to {@link #rangedWrite(InputStream, long)} with currently available data
+   * via {@link InputStream#available}
+   */
+  default void rangedWrite(InputStream inputStream) {
+    try {
+      rangedWrite(inputStream, inputStream.available());
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  /**
+   * Return the request header value by name.
+   *
+   * @param key The first value of the header
    */
   String header(String key);
+
+  /**
+   * Return the request headers.
+   *
+   * @param key all values of the header key
+   */
+  List<String> headerValues(String key);
 
   /**
    * Set the response header.
@@ -231,7 +270,14 @@ public interface Context {
    *
    * @return the request headers
    */
-  Headers headers();
+  Headers requestHeaders();
+
+  /**
+   * Return underlying response headers.
+   *
+   * @return the response headers
+   */
+  Headers responseHeaders();
 
   /** Add the response headers using the provided map. */
   default Context headers(Map<String, String> headers) {
@@ -311,8 +357,9 @@ public interface Context {
   String method();
 
   /**
-   * Return the outputStream to write content. It is expected that the {@link #contentType(String)}
-   * has been set prior to obtaining and writing to the outputStream.
+   * Return the outputStream to write content. It is expected that
+   * the {@link #contentType(String)} has been set prior to obtaining
+   * and writing to the outputStream.
    *
    * @return The outputStream to write content to.
    */
@@ -434,6 +481,14 @@ public interface Context {
    */
   String responseHeader(String key);
 
+  /**
+   * Returns the value of the specified response header.
+   *
+   * @param key The name of the header.
+   * @return The value of the header, or null if not found.
+   */
+  List<String> responseHeaderValues(String key);
+
   /** Return true if the response has been sent. */
   boolean responseSent();
 
@@ -509,6 +564,7 @@ public interface Context {
    */
   void write(String content);
 
+
   /**
    * This interface represents a cookie used in HTTP communication. Cookies are small pieces of data
    * sent from a server to a web browser and stored on the user's computer. They can be used to
@@ -516,11 +572,11 @@ public interface Context {
    */
   interface Cookie {
 
-    /** Cookie SameSite options. */
+    /**
+     * Cookie SameSite options.
+     */
     enum SameSite {
-      Strict,
-      Lax,
-      None
+     Strict, Lax, None
     }
 
     /**
@@ -621,10 +677,14 @@ public interface Context {
      */
     String name();
 
-    /** Indicates if the Partitioned attribute is enabled for this cookie. */
+    /**
+     * Indicates if the Partitioned attribute is enabled for this cookie.
+     */
     boolean partitioned();
 
-    /** Set the Partitioned attribute for this cookie. */
+    /**
+     * Set the Partitioned attribute for this cookie.
+     */
     Cookie partitioned(boolean partitioned);
 
     /**
@@ -644,10 +704,14 @@ public interface Context {
      */
     Cookie path(String path);
 
-    /** Return the SameSite setting. */
+    /**
+     * Return the SameSite setting.
+     */
     SameSite sameSite();
 
-    /** Set the SameSite setting for this cookie. */
+    /**
+     * Set the SameSite setting for this cookie.
+     */
     Cookie sameSite(SameSite sameSite);
 
     /**

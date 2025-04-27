@@ -5,6 +5,7 @@ import io.avaje.jex.http.Context;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -34,11 +35,12 @@ public final class CompressedOutputStream extends OutputStream {
     if (!compressionDecided) {
       boolean compressionAllowed =
           compressedStream == null
+              && ctx.responseHeader(Constants.CONTENT_RANGE) == null
               && compression.allowsForCompression(ctx.responseHeader(Constants.CONTENT_TYPE));
 
       if (compressionAllowed && length >= minSizeForCompression) {
         Optional<Compressor> compressor;
-        compressor = findMatchingCompressor(ctx.header(Constants.ACCEPT_ENCODING));
+        compressor = findMatchingCompressor(ctx.headerValues(Constants.ACCEPT_ENCODING));
         if (compressor.isPresent()) {
           this.compressedStream = compressor.get().compress(originStream);
           ctx.header(Constants.CONTENT_ENCODING, compressor.get().encoding());
@@ -64,13 +66,20 @@ public final class CompressedOutputStream extends OutputStream {
   public void close() throws IOException {
     if (compressedStream != null) {
       compressedStream.close();
+    } else {
+      originStream.close();
     }
-    originStream.close();
   }
 
-  private Optional<Compressor> findMatchingCompressor(String acceptedEncoding) {
+  private Optional<Compressor> findMatchingCompressor(List<String> acceptedEncoding) {
     if (acceptedEncoding != null) {
-      return Arrays.stream(acceptedEncoding.split(","))
+      // it seems jetty may handle multi-value headers differently
+      var stream =
+          acceptedEncoding.size() > 1
+              ? acceptedEncoding.stream()
+              : Arrays.stream(acceptedEncoding.getFirst().split(","));
+
+      return stream
           .map(e -> e.trim().split(";")[0])
           .map(e -> "*".equals(e) ? "gzip" : e.toLowerCase())
           .map(compression::forType)

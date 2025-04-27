@@ -12,7 +12,7 @@ class CtxPathTest {
   static final TestPair pair = init();
 
   static TestPair init() {
-    final Jex app = Jex.create().contextPath("/ctx/").get("/", ctx -> ctx.text("ctx"));
+    final Jex app = Jex.create().contextPath("/ctx/").get("", ctx -> ctx.text("ctx"));
 
     return TestPair.create(app);
   }

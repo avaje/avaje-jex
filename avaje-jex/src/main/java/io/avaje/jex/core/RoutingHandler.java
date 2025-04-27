@@ -34,10 +34,10 @@ final class RoutingHandler implements HttpHandler {
 
     if (route == null) {
       var ctx = new JdkContext(mgr, exchange, uri, Set.of());
+      ctx.setMode(Mode.EXCHANGE);
       mgr.handleException(
-          ctx,
-          new NotFoundException(
-              "No route matching http method %s, with path %s".formatted(routeType.name(), uri)));
+        ctx,
+        new NotFoundException("No route matching http method %s, with path %s".formatted(routeType.name(), uri)));
     } else {
       route.inc();
       try {
@@ -58,7 +58,7 @@ final class RoutingHandler implements HttpHandler {
   }
 
   private void handleNoResponse(HttpExchange exchange) throws IOException {
-    if (exchange.getResponseCode() == -1) {
+    if (exchange.getResponseCode() < 1) {
       exchange.sendResponseHeaders(204, -1);
     }
   }

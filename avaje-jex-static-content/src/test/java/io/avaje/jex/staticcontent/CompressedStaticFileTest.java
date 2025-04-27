@@ -23,7 +23,7 @@ class CompressedStaticFileTest {
             .plugin(defaultFile().route("/indexWildFile/*").build())
             .plugin(defaultCP().route("/sus/").build())
             .plugin(defaultFile().route("/susFile/*").build())
-            .plugin(StaticContent.ofClassPath("/logback.xml").route("/single").build())
+            .plugin(StaticContent.ofClassPath("/logback.xml").route("/").build())
             .plugin(
                 StaticContent.ofFile("src/test/resources/logback.xml")
                     .route("/singleFile")
@@ -87,10 +87,16 @@ class CompressedStaticFileTest {
 
   @Test
   void getSingleFileCP() {
-    pair.request().path("single").GET().asString();
-    HttpResponse<String> res = pair.request().path("single").GET().asString();
+    pair.request().GET().asString();
+    HttpResponse<String> res = pair.request().GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().firstValue("Content-Type").orElseThrow()).contains("xml");
+  }
+
+  @Test
+  void get404() {
+    HttpResponse<String> res = pair.request().path("unknown").path("index.html").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(404);
   }
 
   @Test

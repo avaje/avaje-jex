@@ -41,6 +41,11 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
 
   @Override
   public void apply(Jex jex) {
+
+    path =
+        Objects.requireNonNull(path)
+            .transform(s -> path.endsWith("/") && directoryIndex != null ? path + "*" : path);
+
     jex.get(path, createHandler(jex.config().compression()), roles);
   }
 
@@ -51,8 +56,7 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
 
   ExchangeHandler createHandler(CompressionConfig compress) {
     path =
-        Objects.requireNonNull(path)
-            .transform(this::prependSlash)
+        path.transform(this::prependSlash)
             .transform(s -> s.endsWith("/*") ? s.substring(0, s.length() - 2) : s);
 
     root = isClasspath ? root.transform(this::prependSlash) : root;
@@ -75,7 +79,7 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
 
   @Override
   public StaticResourceHandlerBuilder route(String path, Role... roles) {
-    this.path = path.endsWith("/") ? path + "*" : path;
+    this.path = path;
     this.roles = roles;
     return this;
   }
@@ -122,7 +126,7 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
   }
 
   private String prependSlash(String s) {
-    return s.startsWith("/") ? s : "/" + s;
+    return s.charAt(0) == '/' ? s : "/" + s;
   }
 
   private String appendSlash(String s) {

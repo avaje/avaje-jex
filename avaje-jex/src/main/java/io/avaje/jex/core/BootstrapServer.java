@@ -14,7 +14,6 @@ import java.io.UncheckedIOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.util.concurrent.Executors;
 
 public final class BootstrapServer {
 
@@ -60,9 +59,7 @@ public final class BootstrapServer {
       // jetty's server does not support setExecutor with virtual threads (VT)
       // as it has it's own impl that will auto-use VTs
       if (!serverClass.getName().contains("jetty")) {
-        server.setExecutor(
-            Executors.newThreadPerTaskExecutor(
-                Thread.ofVirtual().name("avaje-jex-http-", 0).factory()));
+        server.setExecutor(config.executor());
       }
 
       server.createContext(contextPath, handler);

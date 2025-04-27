@@ -36,6 +36,7 @@ final class ServiceManager {
   private final String scheme;
   private final int bufferInitial;
   private final long bufferMax;
+  private final int rangeChunks;
 
   static ServiceManager create(Jex jex) {
     return new Builder(jex).build();
@@ -48,7 +49,8 @@ final class ServiceManager {
       TemplateManager templateManager,
       String scheme,
       long bufferMax,
-      int bufferInitial) {
+      int bufferInitial,
+      int rangeChunks) {
     this.compressionConfig = compressionConfig;
     this.jsonService = jsonService;
     this.exceptionHandler = manager;
@@ -56,6 +58,7 @@ final class ServiceManager {
     this.scheme = scheme;
     this.bufferInitial = bufferInitial;
     this.bufferMax = bufferMax;
+    this.rangeChunks = rangeChunks;
   }
 
   OutputStream createOutputStream(JdkContext jdkContext) {
@@ -94,6 +97,10 @@ final class ServiceManager {
     } finally {
       maybeClose(iterator);
     }
+  }
+
+  void writeRange(Context ctx, InputStream is, long totalBytes) {
+    RangeWriter.write(ctx, is, totalBytes, rangeChunks);
   }
 
   void maybeClose(Object iterator) {
@@ -176,7 +183,8 @@ final class ServiceManager {
           initTemplateMgr(),
           jex.config().scheme(),
           jex.config().maxStreamBufferSize(),
-          jex.config().initialStreamBufferSize());
+          jex.config().initialStreamBufferSize(),
+          jex.config().rangeChunkSize());
     }
 
     JsonService initJsonService() {

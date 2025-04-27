@@ -1,13 +1,17 @@
 package io.avaje.jex;
 
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
+
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.spi.HttpServerProvider;
+
 import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
-import java.util.Map;
-import java.util.function.Consumer;
 
 /**
  * Jex configuration interface.
@@ -38,6 +42,19 @@ public interface JexConfig {
    * @param contextPath The context path
    */
   JexConfig contextPath(String contextPath);
+
+  /**
+   * Executor for serving requests. Defaults to a {@link
+   * Executors#newVirtualThreadPerTaskExecutor()}
+   */
+  Executor executor();
+
+  /**
+   * Sets the executor service used to handle incoming requests.
+   *
+   * @param executor The executor service.
+   */
+  JexConfig executor(Executor executor);
 
   /** Returns whether the health endpoint is enabled. */
   boolean health();
@@ -128,6 +145,17 @@ public interface JexConfig {
    * @param port The port number.
    */
   JexConfig port(int port);
+
+  /** The configured rangeChunk size */
+  int rangeChunkSize();
+
+  /**
+   * Set the chunk size on range requests, set to a high number to reduce the amount of range
+   * requests (especially for video streaming)
+   *
+   * @param rangeChunkSize chunk size on range requests
+   */
+  JexConfig rangeChunkSize(int rangeChunkSize);
 
   /**
    * Registers a template renderer for a specific file extension.

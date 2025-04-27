@@ -76,9 +76,9 @@ final class PathSegmentParser {
   private PathSegment tokenSegment(String token) {
     if ("*".equals(token)) {
       return WILDCARD;
-    } else if (token.startsWith("<")) {
+    } else if (token.charAt(0) == '<') {
       return slashAccepting(token);
-    } else if (token.startsWith("{")) {
+    } else if (token.charAt(0) == '{') {
       return slashIgnoring(token);
     } else {
       return new PathSegment.Literal(token);
