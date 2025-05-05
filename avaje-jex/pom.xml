@@ -89,7 +89,7 @@
         <dependency>
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-http-spi</artifactId>
-          <version>12.0.19</version>
+          <version>12.0.20</version>
           <scope>test</scope>
         </dependency>
       </dependencies>
