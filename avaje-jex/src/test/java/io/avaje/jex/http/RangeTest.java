@@ -2,18 +2,16 @@ package io.avaje.jex.http;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.avaje.jex.Jex;
+import io.avaje.jex.core.Constants;
+import io.avaje.jex.core.TestPair;
 import java.io.ByteArrayInputStream;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-
-import io.avaje.jex.Jex;
-import io.avaje.jex.core.Constants;
-import io.avaje.jex.core.TestPair;
 
 class RangeTest {
 
@@ -24,14 +22,11 @@ class RangeTest {
     final Jex app =
         Jex.create()
             .config(c -> c.rangeChunkSize(chunkSize))
-            .get(
-                "/range",
-                ctx -> ctx.contentType(ContentType.VIDEO_MPEG).rangedWrite(getInput()))
+            .get("/range", ctx -> ctx.contentType(ContentType.VIDEO_MPEG).rangedWrite(getInput()))
             .get(
                 "/range-noaudiovideo",
                 ctx ->
-                    ctx.contentType(ContentType.APPLICATION_OCTET_STREAM)
-                        .rangedWrite(getInput()))
+                    ctx.contentType(ContentType.APPLICATION_OCTET_STREAM).rangedWrite(getInput()))
             .get(
                 "/range-large",
                 ctx -> {
@@ -142,7 +137,6 @@ class RangeTest {
         .isEqualTo(available - chunkSize);
 
     assertThat(response.statusCode()).isEqualTo(HttpStatus.OK_200.status());
-
   }
 
   @Test

@@ -1,5 +1,9 @@
 package io.avaje.jex.grizzly.spi;
 
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpContext;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpPrincipal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,14 +13,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
-
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpContext;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpPrincipal;
 
 final class GrizzlyHttpExchangeDelegate extends HttpExchange {
 

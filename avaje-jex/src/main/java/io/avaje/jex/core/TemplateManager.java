@@ -2,42 +2,33 @@ package io.avaje.jex.core;
 
 import io.avaje.jex.http.Context;
 import io.avaje.jex.spi.TemplateRender;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Render templates typically as html.
- */
+/** Render templates typically as html. */
 final class TemplateManager {
 
   private final Map<String, TemplateRender> map = new HashMap<>();
   private final Set<Class<?>> renderTypes = new HashSet<>();
 
-  /**
-   * Register all the extension renderer pairs.
-   */
+  /** Register all the extension renderer pairs. */
   void register(Map<String, TemplateRender> source) {
     map.putAll(source);
     map.values().forEach(templateRender -> renderTypes.add(templateRender.getClass()));
   }
 
-  /**
-   * Auto register via ServiceLoader if it has not already been explicitly registered.
-   */
+  /** Auto register via ServiceLoader if it has not already been explicitly registered. */
   void registerDefault(TemplateRender render) {
     if (!renderTypes.contains(render.getClass())) {
       for (String extension : render.defaultExtensions()) {
-        map.computeIfAbsent(extension, k->render);
+        map.computeIfAbsent(extension, k -> render);
       }
     }
   }
 
-  /**
-   * Register an extension and renderer.
-   */
+  /** Register an extension and renderer. */
   void register(String extn, TemplateRender renderer) {
     map.put(extn, renderer);
   }
@@ -45,8 +36,8 @@ final class TemplateManager {
   /**
    * Render the template and model typically as html to the context.
    *
-   * @param ctx   The context to render the template to
-   * @param name  The name of the template
+   * @param ctx The context to render the template to
+   * @param name The name of the template
    * @param model The model key value pairs to render use with the template
    */
   void render(Context ctx, String name, Map<String, Object> model) {
@@ -65,5 +56,4 @@ final class TemplateManager {
     final int pos = name.indexOf('.');
     return pos == -1 ? null : name.substring(pos + 1);
   }
-
 }

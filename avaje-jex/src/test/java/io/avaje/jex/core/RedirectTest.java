@@ -2,13 +2,11 @@ package io.avaje.jex.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.net.http.HttpResponse;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
-
 import io.avaje.jex.Jex;
 import io.avaje.jex.http.NotFoundException;
+import java.net.http.HttpResponse;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 class RedirectTest {
 

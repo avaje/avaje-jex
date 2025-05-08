@@ -2,14 +2,12 @@ package io.avaje.jex.staticcontent;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.net.http.HttpResponse;
-import java.time.Duration;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
-
 import io.avaje.jex.Jex;
 import io.avaje.jex.test.TestPair;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 class StaticFileTest {
 

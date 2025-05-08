@@ -1,8 +1,5 @@
 package io.avaje.jex;
 
-import java.util.Collection;
-import java.util.function.Consumer;
-
 import io.avaje.inject.BeanScope;
 import io.avaje.jex.Routing.HttpService;
 import io.avaje.jex.http.Context;
@@ -14,6 +11,8 @@ import io.avaje.jex.security.Role;
 import io.avaje.jex.spi.JexPlugin;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * Create configure and start Jex.
@@ -36,7 +35,6 @@ public interface Jex {
    * Create Jex.
    *
    * <pre>{@code
-   *
    * final Jex.Server app = Jex.create()
    *   .routing(routing -> routing
    *     .get("/", ctx -> ctx.text("hello world"))
@@ -200,7 +198,6 @@ public interface Jex {
    *
    * @param path the common path prefix
    * @param group the function to register the rout handlers
-   *
    */
   default Jex group(String path, HttpService group) {
     routing().group(path, group);
@@ -246,7 +243,8 @@ public interface Jex {
   /**
    * Sets the port number on which the Jex server will listen for incoming requests.
    *
-   * <p>The default value is 8080. If The port is set to 0, the server will randomly choose an available port.
+   * <p>The default value is 8080. If The port is set to 0, the server will randomly choose an
+   * available port.
    *
    * @param port The port number to use.
    */

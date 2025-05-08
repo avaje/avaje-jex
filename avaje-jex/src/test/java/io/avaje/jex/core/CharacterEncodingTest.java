@@ -1,23 +1,28 @@
 package io.avaje.jex.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.avaje.jex.Jex;
+import java.net.http.HttpResponse;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-
-import java.net.http.HttpResponse;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class CharacterEncodingTest {
 
   static TestPair pair = init();
 
   static TestPair init() {
-    Jex app = Jex.create()
-      .routing(routing -> routing
-        .get("/text", ctx -> ctx.contentType("text/plain;charset=utf-8").write("суп из капусты"))
-        .get("/json", ctx -> ctx.json("白菜湯"))
-        .get("/html", ctx -> ctx.html("kålsuppe")));
+    Jex app =
+        Jex.create()
+            .routing(
+                routing ->
+                    routing
+                        .get(
+                            "/text",
+                            ctx ->
+                                ctx.contentType("text/plain;charset=utf-8").write("суп из капусты"))
+                        .get("/json", ctx -> ctx.json("白菜湯"))
+                        .get("/html", ctx -> ctx.html("kålsuppe")));
 
     return TestPair.create(app);
   }
@@ -45,5 +50,4 @@ class CharacterEncodingTest {
   private String contentType(HttpResponse<String> res) {
     return res.headers().firstValue("Content-Type").get();
   }
-
 }

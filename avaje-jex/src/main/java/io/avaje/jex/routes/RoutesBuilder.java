@@ -1,12 +1,11 @@
 package io.avaje.jex.routes;
 
-import java.util.EnumMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-
 import io.avaje.jex.JexConfig;
 import io.avaje.jex.Routing;
 import io.avaje.jex.http.HttpFilter;
+import java.util.EnumMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public final class RoutesBuilder {
 

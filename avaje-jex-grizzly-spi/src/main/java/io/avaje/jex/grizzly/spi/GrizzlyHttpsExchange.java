@@ -1,20 +1,17 @@
 package io.avaje.jex.grizzly.spi;
 
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpContext;
+import com.sun.net.httpserver.HttpPrincipal;
+import com.sun.net.httpserver.HttpsExchange;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
-
 import javax.net.ssl.SSLSession;
-
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
-
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpContext;
-import com.sun.net.httpserver.HttpPrincipal;
-import com.sun.net.httpserver.HttpsExchange;
 
 final class GrizzlyHttpsExchange extends HttpsExchange implements GrizzlyExchange {
   private final GrizzlyHttpExchangeDelegate delegate;

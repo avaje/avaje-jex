@@ -2,12 +2,11 @@ package io.avaje.jex.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
-
 import io.avaje.http.client.BasicAuthIntercept;
 import io.avaje.jex.Jex;
 import io.avaje.jex.core.TestPair;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 class BasicAuthCredentialsTest {
 
@@ -53,5 +52,4 @@ class BasicAuthCredentialsTest {
     var res = req.GET().asDiscarding();
     assertThat(res.statusCode()).isEqualTo(401);
   }
-
 }

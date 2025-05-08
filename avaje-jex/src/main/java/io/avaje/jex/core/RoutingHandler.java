@@ -1,16 +1,14 @@
 package io.avaje.jex.core;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import io.avaje.jex.http.HttpFilter;
+import io.avaje.jex.http.NotFoundException;
+import io.avaje.jex.routes.SpiRoutes;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-
-import io.avaje.jex.http.HttpFilter;
-import io.avaje.jex.http.NotFoundException;
-import io.avaje.jex.routes.SpiRoutes;
 
 final class RoutingHandler implements HttpHandler {
 
@@ -38,8 +36,9 @@ final class RoutingHandler implements HttpHandler {
       var ctx = new JdkContext(mgr, exchange, uri, Set.of());
       ctx.setMode(Mode.EXCHANGE);
       mgr.handleException(
-        ctx,
-        new NotFoundException("No route matching http method %s, with path %s".formatted(routeType.name(), uri)));
+          ctx,
+          new NotFoundException(
+              "No route matching http method %s, with path %s".formatted(routeType.name(), uri)));
     } else {
       route.inc();
       try {

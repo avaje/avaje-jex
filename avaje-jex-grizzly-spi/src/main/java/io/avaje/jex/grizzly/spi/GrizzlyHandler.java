@@ -1,15 +1,13 @@
 package io.avaje.jex.grizzly.spi;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-
-import org.glassfish.grizzly.http.server.Request;
-import org.glassfish.grizzly.http.server.Response;
-
 import com.sun.net.httpserver.Filter.Chain;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import org.glassfish.grizzly.http.server.Request;
+import org.glassfish.grizzly.http.server.Response;
 
 final class GrizzlyHandler extends org.glassfish.grizzly.http.server.HttpHandler {
 
