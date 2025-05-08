@@ -28,14 +28,14 @@ class StaticFileTest {
             .plugin(StaticContent.ofClassPath("/logback.xml").route("/single").build())
             .plugin(
                 StaticContent.ofFile("src/test/resources/logback.xml")
-                    .route("/singleFile").build());
+                    .route("/singleFile")
+                    .build());
 
     return TestPair.create(app);
   }
 
   private static StaticContent.Builder defaultFile() {
-    return StaticContent.ofFile("src/test/resources/public")
-        .directoryIndex("index.html");
+    return StaticContent.ofFile("src/test/resources/public").directoryIndex("index.html");
   }
 
   private static StaticContent.Builder defaultCP() {
@@ -120,5 +120,21 @@ class StaticFileTest {
   void testFileTraversal() {
     HttpResponse<String> res = pair.request().path("indexWildFile/../traverse").GET().asString();
     assertThat(res.statusCode()).isEqualTo(400);
+  }
+
+  @Test
+  void testUrlEncoding() {
+    HttpResponse<String> res =
+        pair.request().path("sus").path("Extinction%20Party.txt").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).contains("I'm the gift");
+  }
+
+  @Test
+  void testUrlEncodingFile() {
+    HttpResponse<String> res =
+        pair.request().path("susFile").path("Extinction%20Party.txt").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.body()).contains("I'm the gift");
   }
 }
