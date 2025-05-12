@@ -29,10 +29,10 @@
     <avaje.inject.version>11.5</avaje.inject.version>
     <avaje.jsonb.version>3.4</avaje.jsonb.version>
     <avaje.http.version>3.3</avaje.http.version>
-    <avaje.metrics.version>9.5</avaje.metrics.version>
+    <avaje.metrics.version>9.6</avaje.metrics.version>
     <avaje.validator.version>2.11</avaje.validator.version>
     <avaje.record.builder.version>1.2</avaje.record.builder.version>
-    <avaje.spi.version>2.12</avaje.spi.version>
+    <avaje.spi.version>2.13</avaje.spi.version>
     <avaje.prisms.versionn>1.42</avaje.prisms.versionn>
     <ebean.version>15.11.0</ebean.version>
   </properties>
@@ -280,7 +280,7 @@
         <plugin>
           <groupId>io.avaje</groupId>
           <artifactId>avaje-provides-maven-plugin</artifactId>
-          <version>2.2</version>
+          <version>2.3</version>
           <executions>
             <execution>
               <?m2e execute onIncremental?>
