@@ -1,9 +1,8 @@
 package io.avaje.jex.core.json;
 
+import io.avaje.json.stream.JsonOutput;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import io.avaje.json.stream.JsonOutput;
 
 final class NoFlushJsonOutput implements JsonOutput {
 

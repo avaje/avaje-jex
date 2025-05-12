@@ -34,29 +34,32 @@ public interface HxHeaders {
    * @see <a href="https://htmx.org/reference/#request_headers">HX-Prompt</a>
    */
   String HX_PROMPT = "HX-Prompt";
+
   /**
    * Only present and {@code true} if the request is issued by htmx.
    *
    * @see <a href="https://htmx.org/reference/#request_headers">HX-Request</a>
    */
   String HX_REQUEST = "HX-Request";
+
   /**
    * The {@code id} of the target element if it exists.
    *
    * @see <a href="https://htmx.org/reference/#request_headers">HX-Target</a>
    */
   String HX_TARGET = "HX-Target";
+
   /**
    * The {@code name} of the triggered element if it exists
    *
    * @see <a href="https://htmx.org/reference/#request_headers">HX-Trigger-Name</a>
    */
   String HX_TRIGGER_NAME = "HX-Trigger-Name";
+
   /**
    * The {@code id} of the triggered element if it exists.
    *
    * @see <a href="https://htmx.org/reference/#request_headers">HX-Trigger</a>
    */
   String HX_TRIGGER = "HX-Trigger";
-
 }

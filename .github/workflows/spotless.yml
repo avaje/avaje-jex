@@ -1,0 +1,22 @@
+name: Spotless Check
+on: [push, workflow_dispatch]
+
+concurrency:
+    group: "${{ github.workflow }}-${{ github.event.number || github.ref }}"
+    cancel-in-progress: true
+jobs:
+  check:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'zulu'
+      - name: Run Spotless Check
+        run:  mvn --batch-mode --no-transfer-progress spotless:check

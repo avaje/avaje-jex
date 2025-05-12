@@ -1,14 +1,11 @@
 package io.avaje.jex.grizzly.spi;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-
-import org.glassfish.grizzly.http.server.HttpServer;
-
 import com.sun.net.httpserver.HttpsServer;
 import com.sun.net.httpserver.spi.HttpServerProvider;
-
 import io.avaje.spi.ServiceProvider;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import org.glassfish.grizzly.http.server.HttpServer;
 
 @ServiceProvider
 public class GrizzlyHttpServerProvider extends HttpServerProvider {

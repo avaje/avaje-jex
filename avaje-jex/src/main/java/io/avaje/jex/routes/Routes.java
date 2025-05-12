@@ -1,26 +1,21 @@
 package io.avaje.jex.routes;
 
+import io.avaje.jex.Routing;
+import io.avaje.jex.http.HttpFilter;
 import java.lang.System.Logger.Level;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
 
-import io.avaje.jex.Routing;
-import io.avaje.jex.http.HttpFilter;
-
 final class Routes implements SpiRoutes {
 
   private static final System.Logger log = System.getLogger("io.avaje.jex");
 
-  /**
-   * The "real" handlers by http method.
-   */
+  /** The "real" handlers by http method. */
   private final EnumMap<Routing.Type, RouteIndex> typeMap;
 
-  /**
-   * The filters.
-   */
+  /** The filters. */
   private final List<HttpFilter> filters;
 
   private final AtomicLong noRouteCounter = new AtomicLong();
@@ -57,7 +52,7 @@ final class Routes implements SpiRoutes {
   @Override
   public void waitForIdle(long maxSeconds) {
     log.log(Level.DEBUG, "stopping server with maxWaitSeconds {0}", maxSeconds);
-    maxWaitAttempts(maxSeconds * 20);  // 50 millis per attempt
+    maxWaitAttempts(maxSeconds * 20); // 50 millis per attempt
     park50Millis();
     if (!maxWaitAttempts(5)) {
       log.log(Level.WARNING, "Active requests still in process");

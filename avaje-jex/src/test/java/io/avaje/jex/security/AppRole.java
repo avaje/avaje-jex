@@ -1,10 +1,9 @@
 package io.avaje.jex.security;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.avaje.config.Config;
 import io.avaje.jex.http.Context;
+import java.util.HashMap;
+import java.util.Map;
 
 public enum AppRole implements Role {
   ANYONE("", ""),

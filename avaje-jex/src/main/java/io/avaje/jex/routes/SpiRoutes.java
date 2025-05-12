@@ -1,102 +1,65 @@
 package io.avaje.jex.routes;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import io.avaje.jex.Routing;
 import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.http.HttpFilter;
 import io.avaje.jex.security.Role;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-/**
- * Route matching and filter handling.
- */
+/** Route matching and filter handling. */
 public sealed interface SpiRoutes permits Routes {
 
-  /**
-   * Find the matching handler entry given the type and request URI.
-   */
+  /** Find the matching handler entry given the type and request URI. */
   Entry match(Routing.Type type, String pathInfo);
 
-  /**
-   * Increment active request count for no route match.
-   */
+  /** Increment active request count for no route match. */
   void inc();
 
-  /**
-   * Decrement active request count for no route match.
-   */
+  /** Decrement active request count for no route match. */
   void dec();
 
-  /**
-   * Return the active request count.
-   */
+  /** Return the active request count. */
   long activeRequests();
 
-  /**
-   * Wait for no active requests.
-   */
+  /** Wait for no active requests. */
   void waitForIdle(long maxSeconds);
 
-  /**
-   * Get filters
-   */
+  /** Get filters */
   List<HttpFilter> filters();
 
-  /**
-   * A route entry.
-   */
+  /** A route entry. */
   interface Entry {
 
-    /**
-     * Return true if it matches the request URI.
-     */
+    /** Return true if it matches the request URI. */
     boolean matches(String requestUri);
 
-    /**
-     * Handler for the request.
-     */
+    /** Handler for the request. */
     ExchangeHandler handler();
 
-    /**
-     * Return the path parameter map given the uri.
-     */
+    /** Return the path parameter map given the uri. */
     Map<String, String> pathParams(String uri);
 
-    /**
-     * Return the raw path expression.
-     */
+    /** Return the raw path expression. */
     String matchPath();
 
-    /**
-     * Return the segment count.
-     */
+    /** Return the segment count. */
     int segmentCount();
 
-    /**
-     * Return true if one of the segments is the wildcard match or accepting slashes.
-     */
+    /** Return true if one of the segments is the wildcard match or accepting slashes. */
     boolean multiSlash();
 
-    /**
-     * Return true if all segments are literal.
-     */
+    /** Return true if all segments are literal. */
     boolean literal();
 
-    /**
-     * Increment active request count for the route.
-     */
+    /** Increment active request count for the route. */
     void inc();
 
-    /**
-     * Decrement active request count for the route.
-     */
+    /** Decrement active request count for the route. */
     void dec();
 
-    /**
-     * Return the active request count for the route.
-     */
+    /** Return the active request count for the route. */
     long activeRequests();
 
     /** Return the authentication roles for the route. */
@@ -105,5 +68,4 @@ public sealed interface SpiRoutes permits Routes {
     /** Create and return a new Entry with multiple handlers. */
     Entry multiHandler(ExchangeHandler[] handlers);
   }
-
 }

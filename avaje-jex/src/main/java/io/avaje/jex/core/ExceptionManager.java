@@ -2,13 +2,12 @@ package io.avaje.jex.core;
 
 import static java.lang.System.Logger.Level.ERROR;
 
-import java.util.Map;
-
-import io.avaje.jex.http.HttpStatus;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.http.ExceptionHandler;
 import io.avaje.jex.http.HttpResponseException;
+import io.avaje.jex.http.HttpStatus;
 import io.avaje.jex.http.InternalServerErrorException;
+import java.util.Map;
 
 final class ExceptionManager {
 
@@ -75,12 +74,7 @@ final class ExceptionManager {
   }
 
   private String asJsonContent(HttpResponseException e) {
-    return "{\"title\": "
-        + jsonEscape(e.getMessage())
-        + ", "
-        + "\"status\": "
-        + e.status()
-        + "}";
+    return "{\"title\": " + jsonEscape(e.getMessage()) + ", " + "\"status\": " + e.status() + "}";
   }
 
   private String jsonEscape(String message) {

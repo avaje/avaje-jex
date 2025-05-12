@@ -1,23 +1,21 @@
 package io.avaje.jex.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.avaje.jex.Jex;
+import java.net.http.HttpResponse;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-
-import java.net.http.HttpResponse;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class HealthPluginOffTest {
 
   static TestPair pair = init();
 
   static TestPair init() {
-    final Jex app = Jex.create()
-      .config(config -> config.health(false))
-      .routing(routing -> routing
-        .get("/", ctx -> ctx.text("hello"))
-      );
+    final Jex app =
+        Jex.create()
+            .config(config -> config.health(false))
+            .routing(routing -> routing.get("/", ctx -> ctx.text("hello")));
 
     return TestPair.create(app);
   }
@@ -45,5 +43,4 @@ class HealthPluginOffTest {
     HttpResponse<String> res = pair.request().path("health/readiness").GET().asString();
     assertThat(res.statusCode()).isEqualTo(404);
   }
-
 }

@@ -2,17 +2,15 @@ package io.avaje.jex.http.sse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
-
 import io.avaje.jex.Jex;
 import io.avaje.jex.core.Constants;
 import io.avaje.jex.core.TestPair;
 import io.avaje.jex.core.json.JacksonJsonService;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.atomic.AtomicReference;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 class SseClientTest {
 
