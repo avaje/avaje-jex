@@ -11,6 +11,7 @@ import java.net.UnknownHostException;
 
 import com.sun.net.httpserver.HttpServer;
 
+import io.avaje.applog.AppLog;
 import io.avaje.jex.AppLifecycle;
 import io.avaje.jex.Jex;
 import io.avaje.jex.JexConfig;
@@ -21,7 +22,7 @@ public final class BootstrapServer {
 
   private BootstrapServer() {}
 
-  private static final System.Logger log = System.getLogger("io.avaje.jex");
+  private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
   public static Jex.Server start(Jex jex) {
     final var config = jex.config();

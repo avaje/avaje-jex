@@ -8,6 +8,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import io.avaje.applog.AppLog;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.http.server.ServerConfiguration;
@@ -19,7 +20,7 @@ import com.sun.net.httpserver.HttpsConfigurator;
 
 final class GrizzlyHttpServer extends com.sun.net.httpserver.HttpsServer {
   private static final System.Logger LOG =
-      System.getLogger(GrizzlyHttpServer.class.getCanonicalName());
+      AppLog.getLogger(GrizzlyHttpServer.class.getCanonicalName());
   private final HttpServer server;
   private InetSocketAddress addr;
   private ServerConfiguration httpConfiguration;
