@@ -4,6 +4,7 @@ import static java.lang.System.Logger.Level.ERROR;
 
 import java.util.Map;
 
+import io.avaje.applog.AppLog;
 import io.avaje.jex.http.HttpStatus;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.http.ExceptionHandler;
@@ -14,7 +15,7 @@ final class ExceptionManager {
 
   private static final String APPLICATION_JSON = "application/json";
 
-  private static final System.Logger log = System.getLogger("io.avaje.jex");
+  private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
   private final Map<Class<?>, ExceptionHandler<?>> handlers;
 

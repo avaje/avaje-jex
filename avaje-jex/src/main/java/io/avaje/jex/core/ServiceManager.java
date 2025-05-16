@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import io.avaje.applog.AppLog;
 import io.avaje.jex.Jex;
 import io.avaje.jex.Routing;
 import io.avaje.jex.compression.CompressedOutputStream;
@@ -28,7 +29,7 @@ import io.avaje.jex.spi.TemplateRender;
 /** Core service methods available to Context implementations. */
 final class ServiceManager {
 
-  private static final System.Logger log = System.getLogger("io.avaje.jex");
+  private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
   private final CompressionConfig compressionConfig;
   private final JsonService jsonService;

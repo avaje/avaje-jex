@@ -8,12 +8,13 @@ import java.lang.System.Logger.Level;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import io.avaje.applog.AppLog;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.spi.JsonService;
 
 final class SseClientImpl implements SseClient {
 
-  private static final System.Logger log = System.getLogger(SseClient.class.getCanonicalName());
+  private static final System.Logger log = AppLog.getLogger(SseClient.class.getCanonicalName());
 
   private final AtomicBoolean terminated = new AtomicBoolean(false);
   private final Emitter emitter;

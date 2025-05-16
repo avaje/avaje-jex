@@ -4,12 +4,13 @@ import java.lang.System.Logger.Level;
 
 import com.sun.net.httpserver.HttpServer;
 
+import io.avaje.applog.AppLog;
 import io.avaje.jex.AppLifecycle;
 import io.avaje.jex.Jex;
 
 final class JdkJexServer implements Jex.Server {
 
-  private static final System.Logger log = System.getLogger("io.avaje.jex");
+  private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
   private final HttpServer server;
   private final AppLifecycle lifecycle;

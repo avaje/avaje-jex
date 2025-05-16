@@ -30,6 +30,7 @@ module io.avaje.jex {
 
   requires transitive java.net.http;
   requires transitive jdk.httpserver;
+  requires transitive io.avaje.applog;
   requires static com.fasterxml.jackson.core;
   requires static com.fasterxml.jackson.databind;
   requires static io.avaje.jsonb;

@@ -3,6 +3,7 @@ package org.example;
 import java.util.Map;
 import java.util.Set;
 
+import io.avaje.applog.AppLog;
 import io.avaje.jex.Jex;
 import io.avaje.jex.core.json.JsonbJsonService;
 import io.avaje.jex.http.Context;
@@ -10,7 +11,7 @@ import io.avaje.jsonb.Jsonb;
 
 public class Main {
 
-  private static final  System.Logger log = System.getLogger("org.example");
+  private static final  System.Logger log = AppLog.getLogger("org.example");
 
   public static void main(String[] args) {
 

@@ -12,6 +12,7 @@ module io.avaje.jex.grizzly {
 
   requires static io.avaje.spi;
   requires static java.net.http;
+  requires io.avaje.applog;
 
-  provides HttpServerProvider with io.avaje.jex.grizzly.spi.GrizzlyHttpServerProvider;
+    provides HttpServerProvider with io.avaje.jex.grizzly.spi.GrizzlyHttpServerProvider;
 }
