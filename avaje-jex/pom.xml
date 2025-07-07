@@ -6,10 +6,11 @@
   <parent>
     <groupId>io.avaje</groupId>
     <artifactId>avaje-jex-parent</artifactId>
-    <version>3.2</version>
+    <version>3.3-RC1</version>
   </parent>
 
   <artifactId>avaje-jex</artifactId>
+  <name>avaje-jex</name>
 
   <properties>
   </properties>
