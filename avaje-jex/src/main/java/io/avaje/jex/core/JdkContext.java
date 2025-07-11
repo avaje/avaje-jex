@@ -34,6 +34,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpsExchange;
 
 import io.avaje.jex.http.Context;
+import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.http.HttpStatus;
 import io.avaje.jex.http.RedirectException;
 import io.avaje.jex.security.BasicAuthCredentials;
@@ -124,6 +125,14 @@ final class JdkContext implements Context {
   public byte[] bodyAsBytes() {
     try {
       if (bodyBytes == null) {
+        var contentLength = contentLength();
+        long maxRequestSize = mgr.maxRequestSize();
+        if (contentLength > maxRequestSize || contentLength < 0) {
+          throw new HttpResponseException(
+              HttpStatus.REQUEST_ENTITY_TOO_LARGE_413.status(),
+              "Body content length unknown or greater than max configured size (%s bytes)"
+                  .formatted(maxRequestSize));
+        }
         bodyBytes = exchange.getRequestBody().readAllBytes();
       }
       return bodyBytes;
@@ -157,7 +166,7 @@ final class JdkContext implements Context {
   @Override
   public long contentLength() {
     final String len = header(Constants.CONTENT_LENGTH);
-    return len == null ? 0 : Long.parseLong(len);
+    return len == null ? -1 : Long.parseLong(len);
   }
 
   @Override
