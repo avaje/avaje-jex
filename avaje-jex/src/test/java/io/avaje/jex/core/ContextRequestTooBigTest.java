@@ -46,7 +46,6 @@ class ContextRequestTooBigTest {
     HttpURLConnection connection =
         (HttpURLConnection) URI.create(pair.url()).toURL().openConnection();
 
-    // 3. Configure the connection for a POST request
     connection.setRequestMethod("POST");
     connection.setDoOutput(true);
     connection.setChunkedStreamingMode(2);
