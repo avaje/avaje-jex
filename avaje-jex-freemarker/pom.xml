@@ -4,10 +4,11 @@
   <parent>
     <artifactId>avaje-jex-parent</artifactId>
     <groupId>io.avaje</groupId>
-    <version>3.2</version>
+    <version>3.3-RC1</version>
   </parent>
 
   <artifactId>avaje-jex-freemarker</artifactId>
+  <name>avaje-jex-freemarker</name>
 
   <properties>
     <freemarker.version>2.3.34</freemarker.version>
