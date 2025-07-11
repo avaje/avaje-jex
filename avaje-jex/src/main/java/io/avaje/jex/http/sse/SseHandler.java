@@ -2,6 +2,7 @@ package io.avaje.jex.http.sse;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import io.avaje.jex.core.Constants;
@@ -22,7 +23,9 @@ final class SseHandler implements ExchangeHandler {
   @Override
   public void handle(Context ctx) throws Exception {
 
-    if (!TEXT_EVENT_STREAM.equals(ctx.header(Constants.ACCEPT))) {
+    if (!Optional.ofNullable(ctx.header(Constants.ACCEPT))
+        .filter(s -> s.contains(TEXT_EVENT_STREAM))
+        .isPresent()) {
       throw new BadRequestException("SSE Requests must have an 'Accept: text/event-stream' header");
     }
     final var exchange = ctx.exchange();
