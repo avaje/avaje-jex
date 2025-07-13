@@ -172,7 +172,7 @@ final class ServiceManager {
     return scheme;
   }
 
-  public long maxRequestSize() {
+  long maxRequestSize() {
     return maxRequestSize;
   }
 
