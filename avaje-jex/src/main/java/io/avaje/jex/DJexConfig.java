@@ -29,6 +29,7 @@ final class DJexConfig implements JexConfig {
   private int bufferInitial = 256;
   private long bufferMax = 4096L;
   private int rangeChunkSize = 990_000;
+  private long maxRequestSize = 1_000_000L;
   private HttpServerProvider serverProvider;
 
   @Override
@@ -210,5 +211,16 @@ final class DJexConfig implements JexConfig {
   public JexConfig rangeChunkSize(int rangeChunkSize) {
     this.rangeChunkSize = rangeChunkSize;
     return this;
+  }
+
+  @Override
+  public JexConfig maxRequestSize(long maxRequestSize) {
+    this.maxRequestSize = maxRequestSize;
+    return this;
+  }
+
+  @Override
+  public long maxRequestSize() {
+    return maxRequestSize;
   }
 }
