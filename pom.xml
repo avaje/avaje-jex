@@ -28,7 +28,7 @@
     <maven.compiler.proc>full</maven.compiler.proc>
     <avaje.config.version>4.1</avaje.config.version>
     <avaje.inject.version>11.5</avaje.inject.version>
-    <avaje.jsonb.version>3.5</avaje.jsonb.version>
+    <avaje.jsonb.version>3.6</avaje.jsonb.version>
     <avaje.http.version>3.3</avaje.http.version>
     <avaje.metrics.version>9.7</avaje.metrics.version>
     <avaje.validator.version>2.12</avaje.validator.version>
@@ -75,7 +75,7 @@
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-logback-encoder</artifactId>
-        <version>0.13</version>
+        <version>1.0</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
