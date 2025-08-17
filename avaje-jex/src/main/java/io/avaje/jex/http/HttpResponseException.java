@@ -15,7 +15,7 @@ public class HttpResponseException extends RuntimeException {
    * @param status  the http status to send
    */
   public HttpResponseException(HttpStatus status) {
-    super(status, status.message());
+    this(status, status.message());
   }
 
   /**
@@ -25,7 +25,7 @@ public class HttpResponseException extends RuntimeException {
    * @param message the exception message that will be sent back in the response
    */
   public HttpResponseException(HttpStatus status, String message) {
-    super(status.status(), message);
+    this(status.status(), message);
   }
   
   /**
