@@ -10,6 +10,25 @@ public class HttpResponseException extends RuntimeException {
   private final Object jsonResponse;
 
   /**
+   * Create with a status and use the default message for that status.
+   *
+   * @param status  the http status to send
+   */
+  public HttpResponseException(HttpStatus status) {
+    super(status, status.message());
+  }
+
+  /**
+   * Create with a status and message.
+   *
+   * @param status  the http status to send
+   * @param message the exception message that will be sent back in the response
+   */
+  public HttpResponseException(HttpStatus status, String message) {
+    super(status.status(), message);
+  }
+  
+  /**
    * Create with a status and message.
    *
    * @param status  the http status to send
