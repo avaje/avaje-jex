@@ -212,6 +212,11 @@
         <version>3.3-RC2</version>
       </dependency>
       <dependency>
+        <groupId>io.avaje</groupId>
+        <artifactId>avaje-jex-ssl</artifactId>
+        <version>3.3-RC2</version>
+      </dependency>
+      <dependency>
         <groupId>io.github.robaho</groupId>
         <artifactId>httpserver</artifactId>
         <version>1.0.27</version>
