@@ -42,7 +42,8 @@ class TrustConfigTests extends IntegrationTestClass {
               config.pemFromString(
                   Client.SERVER_CERTIFICATE_AS_STRING, Client.SERVER_PRIVATE_KEY_AS_STRING);
               config.withTrustConfig(
-                  trustConfig -> trustConfig.certificateFromString(Client.CLIENT_CERTIFICATE_AS_STRING));
+                  trustConfig ->
+                      trustConfig.certificateFromString(Client.CLIENT_CERTIFICATE_AS_STRING));
             });
 
     Assertions.assertThrows(
@@ -60,7 +61,8 @@ class TrustConfigTests extends IntegrationTestClass {
               config.pemFromString(
                   Client.SERVER_CERTIFICATE_AS_STRING, Client.SERVER_PRIVATE_KEY_AS_STRING);
               config.withTrustConfig(
-                  trustConfig -> trustConfig.certificateFromString(Client.CLIENT_CERTIFICATE_AS_STRING));
+                  trustConfig ->
+                      trustConfig.certificateFromString(Client.CLIENT_CERTIFICATE_AS_STRING));
             });
 
     Assertions.assertThrows(
@@ -126,14 +128,14 @@ class TrustConfigTests extends IntegrationTestClass {
 
   @Test
   void loadingPemFromStringWorks() {
-    trustConfigWorks(trustConfig -> trustConfig.certificateFromString(Client.CLIENT_CERTIFICATE_AS_STRING));
+    trustConfigWorks(
+        trustConfig -> trustConfig.certificateFromString(Client.CLIENT_CERTIFICATE_AS_STRING));
   }
 
   @Test
   void loadingP7bFromStringWorks() {
     trustConfigWorks(
-        trustConfig ->
-            trustConfig.certificateFromString(Client.CLIENT_P7B_CERTIFICATE_AS_STRING));
+        trustConfig -> trustConfig.certificateFromString(Client.CLIENT_P7B_CERTIFICATE_AS_STRING));
   }
 
   @Test
@@ -189,7 +191,6 @@ class TrustConfigTests extends IntegrationTestClass {
 
   private static HttpClient httpsClientBuilder(String clientCertificate, String privateKey) {
     try {
-      // Create SSL context with client certificate
       SSLContext sslContext = createSSLContext();
 
       return HttpClient.builder()
@@ -223,8 +224,6 @@ class TrustConfigTests extends IntegrationTestClass {
 
     SSLContext sslContext = SSLContext.getInstance("TLS");
 
-    // For testing purposes, create a trust-all trust manager
-    // In production, you would properly configure certificates
     TrustManager[] trustAllCerts = {
       new X509TrustManager() {
         @Override
@@ -244,10 +243,7 @@ class TrustConfigTests extends IntegrationTestClass {
       }
     };
 
-    // Note: In a real implementation, you would parse the clientCertificate and privateKey
-    // and create proper KeyManager instances. This is simplified for the conversion.
-    KeyManager[] keyManagers = null; // Would be properly configured with client cert
-
+    KeyManager[] keyManagers = null;
     sslContext.init(keyManagers, trustAllCerts, null);
     return sslContext;
   }
@@ -290,22 +286,15 @@ class TrustConfigTests extends IntegrationTestClass {
 
   /** Creates an SSLContext for client-side connections */
   public static SSLContext createClientSSLContext() throws Exception {
-    // Create KeyStore for client certificate (what we present to server)
     KeyStore clientKeyStore = createClientKeyStore();
-
-    // Create TrustStore for server certificates (what we trust from server)
     KeyStore serverTrustStore = createServerTrustStore();
-
-    // Initialize KeyManagerFactory with client certificates
     KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
     kmf.init(clientKeyStore, Client.KEYSTORE_PASSWORD.toCharArray());
 
-    // Initialize TrustManagerFactory with server certificates
     TrustManagerFactory tmf =
         TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
     tmf.init(serverTrustStore);
 
-    // Create and initialize SSLContext
     SSLContext sslContext = SSLContext.getInstance("TLS");
     sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), new SecureRandom());
 
@@ -317,13 +306,10 @@ class TrustConfigTests extends IntegrationTestClass {
     KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
     keyStore.load(null, null);
 
-    // Load client certificate
     X509Certificate clientCert = loadCertificateFromString(Client.CLIENT_CERTIFICATE_AS_STRING);
 
-    // Load client private key
     PrivateKey clientPrivateKey = loadPrivateKeyFromString(Client.CLIENT_PRIVATE_KEY_AS_STRING);
 
-    // Add client certificate and key to keystore
     keyStore.setKeyEntry(
         "client",
         clientPrivateKey,
@@ -338,7 +324,6 @@ class TrustConfigTests extends IntegrationTestClass {
     KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
     trustStore.load(null, null);
 
-    // Add server certificate to trust store
     X509Certificate serverCert = loadCertificateFromString(Client.SERVER_CERTIFICATE_AS_STRING);
     trustStore.setCertificateEntry("server", serverCert);
     trustStore.setCertificateEntry(
@@ -349,34 +334,29 @@ class TrustConfigTests extends IntegrationTestClass {
 
   /** Loads an X509Certificate from a PEM string */
   private static X509Certificate loadCertificateFromString(String certString) throws Exception {
-    // Remove PEM headers and whitespace
+
     String certData =
         certString
             .replace("-----BEGIN CERTIFICATE-----", "")
             .replace("-----END CERTIFICATE-----", "")
             .replaceAll("\\s", "");
 
-    // Decode base64
     byte[] certBytes = Base64.getDecoder().decode(certData);
 
-    // Create certificate
     CertificateFactory cf = CertificateFactory.getInstance("X.509");
     return (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(certBytes));
   }
 
-  /** Loads a PrivateKey from a PEM string */
   private static PrivateKey loadPrivateKeyFromString(String keyString) throws Exception {
-    // Remove PEM headers and whitespace
+
     String keyData =
         keyString
             .replace("-----BEGIN PRIVATE KEY-----", "")
             .replace("-----END PRIVATE KEY-----", "")
             .replaceAll("\\s", "");
 
-    // Decode base64
     byte[] keyBytes = Base64.getDecoder().decode(keyData);
 
-    // Create private key
     PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
     KeyFactory keyFactory = KeyFactory.getInstance("RSA");
     return keyFactory.generatePrivate(keySpec);
@@ -390,38 +370,32 @@ class TrustConfigTests extends IntegrationTestClass {
     KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
     trustStore.load(null, null);
 
-    // Load P12 file directly (contains both cert and key)
     try (InputStream p12Stream = Client.CLIENT_P12_INPUT_STREAM_SUPPLIER.get()) {
       KeyStore p12Store = KeyStore.getInstance("PKCS12");
       p12Store.load(p12Stream, Client.KEYSTORE_PASSWORD.toCharArray());
 
-      // Copy entries from P12 to our keystore
       String alias = p12Store.aliases().nextElement();
       Key key = p12Store.getKey(alias, Client.KEYSTORE_PASSWORD.toCharArray());
       Certificate[] certChain = p12Store.getCertificateChain(alias);
       keyStore.setKeyEntry("client-p12", key, Client.KEYSTORE_PASSWORD.toCharArray(), certChain);
     }
 
-    // Load JKS file directly
     try (InputStream jksStream = Client.CLIENT_JKS_INPUT_STREAM_SUPPLIER.get()) {
       KeyStore jksStore = KeyStore.getInstance("JKS");
       jksStore.load(jksStream, Client.KEYSTORE_PASSWORD.toCharArray());
 
-      // Copy entries from JKS to our keystore
       String alias = jksStore.aliases().nextElement();
       Key key = jksStore.getKey(alias, Client.KEYSTORE_PASSWORD.toCharArray());
       Certificate[] certChain = jksStore.getCertificateChain(alias);
       keyStore.setKeyEntry("client-jks", key, Client.KEYSTORE_PASSWORD.toCharArray(), certChain);
     }
 
-    // Load PEM certificate for trust store
     try (InputStream pemStream = Client.CLIENT_PEM_INPUT_STREAM_SUPPLIER.get()) {
       CertificateFactory cf = CertificateFactory.getInstance("X.509");
       X509Certificate cert = (X509Certificate) cf.generateCertificate(pemStream);
       trustStore.setCertificateEntry("client-pem", cert);
     }
 
-    // Initialize managers
     KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
     kmf.init(keyStore, Client.KEYSTORE_PASSWORD.toCharArray());
 
@@ -429,7 +403,6 @@ class TrustConfigTests extends IntegrationTestClass {
         TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
     tmf.init(trustStore);
 
-    // Create SSLContext
     SSLContext sslContext = SSLContext.getInstance("TLS");
     sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), new SecureRandom());
 
