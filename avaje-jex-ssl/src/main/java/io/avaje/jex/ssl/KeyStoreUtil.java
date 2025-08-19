@@ -178,7 +178,7 @@ final class KeyStoreUtil {
     try {
       data = inputStream.readAllBytes();
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new SslConfigException("Unable to load KeyStore", e);
     }
 
     // Try to parse as PEM first (check if it contains PEM markers)
