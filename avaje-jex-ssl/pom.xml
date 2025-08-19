@@ -5,9 +5,10 @@
   <parent>
     <groupId>io.avaje</groupId>
     <artifactId>avaje-jex-parent</artifactId>
-    <version>3.3-RC2</version>
+    <version>3.3-RC3</version>
   </parent>
   <artifactId>avaje-jex-ssl</artifactId>
+  <name>avaje-jex-ssl-plugin</name>
   <dependencies>
     <dependency>
       <groupId>io.avaje</groupId>
