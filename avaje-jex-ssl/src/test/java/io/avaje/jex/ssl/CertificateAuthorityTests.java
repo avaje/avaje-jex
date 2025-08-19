@@ -33,22 +33,6 @@ class CertificateAuthorityTests extends IntegrationTestClass {
     assertClientFails(client);
   }
 
-  //  @Test
-  //  void testClientFailsWhenSelfSignedCertificateIsProvidedAndCAIsTrusted() {
-  //    var sslFactory =
-  //        SSLFactory.builder()
-  //            .withIdentityMaterial(
-  //                PemUtils.parseIdentityMaterial(
-  //                    Client.CLIENT_CERTIFICATE_AS_STRING,
-  //                    Client.CLIENT_PRIVATE_KEY_AS_STRING,
-  //                    "".toCharArray()))
-  //            .withTrustingAllCertificatesWithoutValidation()
-  //            .build();
-  //
-  //    var client = createHttpClientWithSSL(sslFactory);
-  //    assertClientFails(client);
-  //  }
-
   @Test
   void testClientFailsWhenCertificateWithoutChainIsProvidedAndCAIsTrusted() {
     var keyManager = PemUtils.loadIdentityMaterial(CLIENT_CER, CLIENT_KEY_NAME);

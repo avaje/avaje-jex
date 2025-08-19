@@ -17,6 +17,7 @@
       <groupId>io.github.hakky54</groupId>
       <artifactId>sslcontext-kickstart-for-pem</artifactId>
       <version>9.1.0</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.avaje</groupId>

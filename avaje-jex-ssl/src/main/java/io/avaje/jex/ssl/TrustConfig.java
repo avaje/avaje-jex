@@ -79,5 +79,4 @@ public interface TrustConfig {
    * @return The updated TrustConfig instance for method chaining.
    */
   TrustConfig trustStoreFromClasspath(String trustStoreFile, String trustStorePassword);
-
 }

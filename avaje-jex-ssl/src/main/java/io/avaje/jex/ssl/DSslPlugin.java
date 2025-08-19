@@ -14,7 +14,7 @@ final class DSslPlugin implements SslPlugin {
 
   DSslPlugin(Consumer<SslConfig> consumer) {
 
-    final DSslConfig config = new DSslConfig();
+    final var config = new DSslConfig();
 
     consumer.accept(config);
     sslConfigurator = TLSFactory.getSslContext(config);

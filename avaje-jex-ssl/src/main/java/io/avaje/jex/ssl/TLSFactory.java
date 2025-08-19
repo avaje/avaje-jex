@@ -23,10 +23,10 @@ final class TLSFactory {
 
   public static SslHttpConfigurator getSslContext(DSslConfig sslConfig) throws SslConfigException {
     try {
-      SSLContext sslContext = createContext(sslConfig);
+      var sslContext = createContext(sslConfig);
 
-      KeyManager[] keyManagers = createKeyManagers(sslConfig);
-      TrustManager[] trustManagers = createTrustManagers(sslConfig);
+      var keyManagers = createKeyManagers(sslConfig);
+      var trustManagers = createTrustManagers(sslConfig);
 
       sslContext.init(keyManagers, trustManagers, new SecureRandom());
 
@@ -39,13 +39,12 @@ final class TLSFactory {
   private static SSLContext createContext(DSslConfig sslConfig) throws NoSuchAlgorithmException {
     if (sslConfig.securityProvider() != null) {
       return SSLContext.getInstance(SSL_PROTOCOL, sslConfig.securityProvider());
-    } else {
-      return SSLContext.getInstance(SSL_PROTOCOL);
     }
+    return SSLContext.getInstance(SSL_PROTOCOL);
   }
 
   private static KeyManager[] createKeyManagers(DSslConfig sslConfig) throws SslConfigException {
-    DSslConfig.LoadedIdentity identityType = sslConfig.loadedIdentity();
+    var identityType = sslConfig.loadedIdentity();
 
     try {
       return switch (identityType) {
@@ -60,7 +59,7 @@ final class TLSFactory {
 
   private static KeyManager[] createKeyManagersFromKeyStore(DSslConfig sslConfig)
       throws NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException {
-    KeyManagerFactory keyManagerFactory = createKeyManagerFactory(sslConfig);
+    var keyManagerFactory = createKeyManagerFactory(sslConfig);
     keyManagerFactory.init(
         sslConfig.keyStore(),
         sslConfig.identityPassword() != null ? sslConfig.identityPassword().toCharArray() : null);
@@ -71,30 +70,29 @@ final class TLSFactory {
       throws NoSuchAlgorithmException {
     if (sslConfig.securityProvider() != null) {
       return KeyManagerFactory.getInstance(KEY_MANAGER_ALGORITHM, sslConfig.securityProvider());
-    } else {
-      return KeyManagerFactory.getInstance(KEY_MANAGER_ALGORITHM);
     }
+    return KeyManagerFactory.getInstance(KEY_MANAGER_ALGORITHM);
   }
 
   private static TrustManager[] createTrustManagers(DSslConfig sslConfig)
       throws SslConfigException {
-    DTrustConfig trustConfig = sslConfig.trustConfig();
+    var trustConfig = sslConfig.trustConfig();
 
     if (trustConfig == null) {
       return null; // Use system default trust managers
     }
 
     try {
-      List<KeyStore> trustStores = trustConfig.keyStores();
-      List<Certificate> certificates = trustConfig.certificates();
+      var trustStores = trustConfig.keyStores();
+      var certificates = trustConfig.certificates();
 
       if (trustStores.isEmpty() && certificates.isEmpty()) {
         return null; // No custom trust configuration
       }
 
-      KeyStore trustStore = createCombinedTrustStore(trustStores, certificates);
+      var trustStore = createCombinedTrustStore(trustStores, certificates);
 
-      TrustManagerFactory trustManagerFactory = createTrustManagerFactory(sslConfig);
+      var trustManagerFactory = createTrustManagerFactory(sslConfig);
       trustManagerFactory.init(trustStore);
 
       return trustManagerFactory.getTrustManagers();
@@ -107,16 +105,15 @@ final class TLSFactory {
       throws NoSuchAlgorithmException {
     if (sslConfig.securityProvider() != null) {
       return TrustManagerFactory.getInstance(TRUST_MANAGER_ALGORITHM, sslConfig.securityProvider());
-    } else {
-      return TrustManagerFactory.getInstance(TRUST_MANAGER_ALGORITHM);
     }
+    return TrustManagerFactory.getInstance(TRUST_MANAGER_ALGORITHM);
   }
 
   private static KeyStore createCombinedTrustStore(
       List<KeyStore> trustStores, List<Certificate> certificates)
       throws KeyStoreException, NoSuchAlgorithmException, CertificateException {
 
-    KeyStore combinedTrustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+    var combinedTrustStore = KeyStore.getInstance(KeyStore.getDefaultType());
     try {
       combinedTrustStore.load(null, null); // Initialize empty keystore
     } catch (Exception e) {
@@ -124,7 +121,7 @@ final class TLSFactory {
     }
 
     // Add certificates from existing trust stores
-    int aliasCounter = 0;
+    var aliasCounter = 0;
     for (KeyStore trustStore : trustStores) {
       aliasCounter = addCertificatesFromKeyStore(combinedTrustStore, trustStore, aliasCounter);
     }
@@ -144,7 +141,7 @@ final class TLSFactory {
     List<String> aliases = java.util.Collections.list(sourceStore.aliases());
     for (String alias : aliases) {
       if (sourceStore.isCertificateEntry(alias)) {
-        Certificate cert = sourceStore.getCertificate(alias);
+        var cert = sourceStore.getCertificate(alias);
         destinationStore.setCertificateEntry("imported-" + aliasCounter, cert);
         aliasCounter++;
       }

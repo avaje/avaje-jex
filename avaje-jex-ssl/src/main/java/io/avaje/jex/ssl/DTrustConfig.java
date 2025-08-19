@@ -34,7 +34,7 @@ class DTrustConfig implements TrustConfig {
 
   @Override
   public TrustConfig certificateFromPath(String certificatePath) {
-    try (InputStream is = Files.newInputStream(Paths.get(certificatePath))) {
+    try (var is = Files.newInputStream(Paths.get(certificatePath))) {
       certificates.addAll(KeyStoreUtil.parseCertificates(is));
     } catch (Exception e) {
       throw new SslConfigException("Failed to load certificates from path: " + certificatePath, e);
@@ -100,7 +100,7 @@ class DTrustConfig implements TrustConfig {
    */
   @Override
   public TrustConfig trustStoreFromPath(String trustStorePath, String trustStorePassword) {
-    try (InputStream is = Files.newInputStream(Paths.get(trustStorePath))) {
+    try (var is = Files.newInputStream(Paths.get(trustStorePath))) {
       keyStores.add(KeyStoreUtil.loadKeyStore(is, trustStorePassword.toCharArray()));
     } catch (Exception e) {
       throw new SslConfigException("Failed to load trust store from path: " + trustStorePath, e);

@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.Provider;
@@ -75,7 +74,7 @@ final class DSslConfig implements SslConfig {
   public void keystoreFromPath(
       String keyStorePath, String keyStorePassword, String identityPassword) {
     try {
-      Path path = Paths.get(keyStorePath);
+      var path = Paths.get(keyStorePath);
       setKeyStore(
           KeyStoreUtil.loadKeyStore(Files.newInputStream(path), keyStorePassword.toCharArray()));
       this.identityPassword = identityPassword != null ? identityPassword : keyStorePassword;
@@ -97,7 +96,7 @@ final class DSslConfig implements SslConfig {
   public void pemFromInputStream(
       InputStream certificateInputStream, InputStream privateKeyInputStream, String password) {
     try {
-      String keyContent = new String(privateKeyInputStream.readAllBytes());
+      var keyContent = new String(privateKeyInputStream.readAllBytes());
       setKeyManager(
           KeyStoreUtil.loadIdentityFromPem(
               certificateInputStream,
@@ -112,9 +111,9 @@ final class DSslConfig implements SslConfig {
   public void pemFromPath(String certificatePath, String privateKeyPath, String password) {
     try (var certContent = Files.newInputStream(Paths.get(certificatePath))) {
 
-      Path keyPath = Paths.get(privateKeyPath);
+      var keyPath = Paths.get(privateKeyPath);
 
-      String keyContent = Files.readString(keyPath);
+      var keyContent = Files.readString(keyPath);
       setKeyManager(
           KeyStoreUtil.loadIdentityFromPem(
               certContent, keyContent, password != null ? password.toCharArray() : null));
@@ -144,7 +143,8 @@ final class DSslConfig implements SslConfig {
   private void setKeyManager(X509ExtendedKeyManager keyManager) {
     if (loadedIdentity != LoadedIdentity.NONE) {
       throw new SslConfigException(MULTIPLE_IDENTITY);
-    } else if (keyManager != null) {
+    }
+    if (keyManager != null) {
       loadedIdentity = LoadedIdentity.KEY_MANAGER;
       this.keyManager = keyManager;
     }
@@ -153,7 +153,8 @@ final class DSslConfig implements SslConfig {
   private void setKeyStore(KeyStore keyStore) {
     if (loadedIdentity != LoadedIdentity.NONE) {
       throw new SslConfigException(MULTIPLE_IDENTITY);
-    } else if (keyStore != null) {
+    }
+    if (keyStore != null) {
       loadedIdentity = LoadedIdentity.KEY_STORE;
       this.keyStore = keyStore;
     }

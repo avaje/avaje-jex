@@ -18,7 +18,6 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -45,7 +44,7 @@ final class KeyStoreUtil {
     }
 
     // Try PKCS12 first (more common for modern applications)
-    KeyStore keyStore = tryLoadKeyStore(data, "PKCS12", password);
+    var keyStore = tryLoadKeyStore(data, "PKCS12", password);
     if (keyStore != null) {
       return keyStore;
     }
@@ -66,8 +65,8 @@ final class KeyStoreUtil {
 
   private static KeyStore tryLoadKeyStore(byte[] data, String type, char[] password) {
     try {
-      KeyStore keyStore = KeyStore.getInstance(type);
-      try (ByteArrayInputStream bis = new ByteArrayInputStream(data)) {
+      var keyStore = KeyStore.getInstance(type);
+      try (var bis = new ByteArrayInputStream(data)) {
         keyStore.load(bis, password);
         return keyStore;
       }
@@ -82,19 +81,19 @@ final class KeyStoreUtil {
     try {
       var certificates = parseCertificates(certificateInputStream);
 
-      PrivateKey privateKey = parsePrivateKey(privateKeyContent, password);
+      var privateKey = parsePrivateKey(privateKeyContent, password);
 
       // Create a KeyStore with the certificate and private key
-      KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+      var keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
       keyStore.load(null, null);
 
-      Certificate[] certChain = certificates.toArray(new Certificate[0]);
-      String alias = "identity";
-      char[] keyPassword = password != null ? password : new char[0];
+      var certChain = certificates.toArray(new Certificate[0]);
+      var alias = "identity";
+      var keyPassword = password != null ? password : new char[0];
 
       keyStore.setKeyEntry(alias, privateKey, keyPassword, certChain);
 
-      KeyManagerFactory kmf =
+      var kmf =
           KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
       kmf.init(keyStore, keyPassword);
 
@@ -118,13 +117,13 @@ final class KeyStoreUtil {
     try {
       factory = CertificateFactory.getInstance("X.509");
 
-      Matcher matcher = certPattern.matcher(content);
+      var matcher = certPattern.matcher(content);
       while (matcher.find()) {
-        String base64Cert = matcher.group(1).replaceAll("\\s", "");
+        var base64Cert = matcher.group(1).replaceAll("\\s", "");
 
-        byte[] certBytes = Base64.getDecoder().decode(base64Cert);
-        try (ByteArrayInputStream bis = new ByteArrayInputStream(certBytes)) {
-          Certificate cert = factory.generateCertificate(bis);
+        var certBytes = Base64.getDecoder().decode(base64Cert);
+        try (var bis = new ByteArrayInputStream(certBytes)) {
+          var cert = factory.generateCertificate(bis);
           certs.add(cert);
         }
       }
@@ -141,13 +140,13 @@ final class KeyStoreUtil {
 
   static PrivateKey parsePrivateKey(String privateKeyContent, char[] password) {
     try {
-      Matcher matcher = PRIVATE_KEY_PATTERN.matcher(privateKeyContent);
+      var matcher = PRIVATE_KEY_PATTERN.matcher(privateKeyContent);
       if (!matcher.find()) {
         throw new IllegalArgumentException("No valid private key found in PEM content");
       }
 
-      String base64Key = matcher.group(1).replaceAll("\\s+", "");
-      byte[] keyBytes = getDecoder().decode(base64Key);
+      var base64Key = matcher.group(1).replaceAll("\\s+", "");
+      var keyBytes = getDecoder().decode(base64Key);
 
       // TODO add decryption if enough people ask
       if (password != null && password.length > 0) {
@@ -159,8 +158,8 @@ final class KeyStoreUtil {
       String[] algorithms = {"RSA", "EC", "DSA"};
       for (String algorithm : algorithms) {
         try {
-          KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
-          PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
+          var keyFactory = KeyFactory.getInstance(algorithm);
+          var keySpec = new PKCS8EncodedKeySpec(keyBytes);
           return keyFactory.generatePrivate(keySpec);
         } catch (InvalidKeySpecException e) {
           // Try next algorithm
@@ -186,14 +185,14 @@ final class KeyStoreUtil {
     }
 
     // Try to parse as PEM first (check if it contains PEM markers)
-    String content = new String(data, StandardCharsets.UTF_8);
+    var content = new String(data, StandardCharsets.UTF_8);
 
     if (content.contains("-----BEGIN CERTIFICATE-----")) {
       certs.addAll(parseCertificates(content, CERT_PATTERN));
     } else {
       // Try to parse as DER format
-      try (ByteArrayInputStream bis = new ByteArrayInputStream(data)) {
-        CertificateFactory factory = CertificateFactory.getInstance("X.509");
+      try (var bis = new ByteArrayInputStream(data)) {
+        var factory = CertificateFactory.getInstance("X.509");
         var parsedCerts = factory.generateCertificates(bis);
         certs.addAll(parsedCerts);
       } catch (CertificateException | IOException e) {
