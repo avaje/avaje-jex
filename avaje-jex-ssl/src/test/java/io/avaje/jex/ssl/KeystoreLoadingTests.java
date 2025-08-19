@@ -18,10 +18,6 @@ class KeystoreLoadingTests extends IntegrationTestClass {
 
   static ClassResourceLoader loader = ClassResourceLoader.fromClass(KeystoreLoadingTests.class);
 
-  //////////////////////////////
-  // Valid keystore loading   //
-  //////////////////////////////
-
   @Test
   void loadingValidJksKeystoreFromClasspath() {
     assertSslWorks(
@@ -63,12 +59,6 @@ class KeystoreLoadingTests extends IntegrationTestClass {
             config.keystoreFromInputStream(
                 Server.P12_KEY_STORE_INPUT_STREAM_SUPPLIER.get(), Server.KEY_STORE_PASSWORD));
   }
-
-  // ------------------------------------------------------------------------------------------------------------------
-
-  //////////////////////////////
-  // Invalid keystore loading //
-  //////////////////////////////
 
   @Test
   void loadingMissingJksKeystoreFromClasspathFails() {

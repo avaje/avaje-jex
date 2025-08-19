@@ -15,7 +15,6 @@ import javax.net.ssl.X509ExtendedKeyManager;
 
 import io.avaje.jex.spi.ClassResourceLoader;
 
-/** Data class to hold the configuration for the plugin. */
 final class DSslConfig implements SslConfig {
 
   private static final String MULTIPLE_IDENTITY =

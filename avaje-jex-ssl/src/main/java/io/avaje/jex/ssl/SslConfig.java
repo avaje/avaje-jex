@@ -4,6 +4,14 @@ import java.io.InputStream;
 import java.security.Provider;
 import java.util.function.Consumer;
 
+/**
+ * The `SslConfig` interface provides a fluent API for configuring SSL/TLS settings. It supports
+ * loading key stores and PEM-formatted identity data from various sources such as file paths, input
+ * streams, and the classpath.
+ *
+ * <p>This interface is designed to simplify the setup of secure communication by offering default
+ * methods that streamline common use cases.
+ */
 public interface SslConfig {
 
   /**

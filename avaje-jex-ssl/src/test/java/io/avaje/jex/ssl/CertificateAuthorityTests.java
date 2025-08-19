@@ -1,6 +1,5 @@
 package io.avaje.jex.ssl;
 
-import java.io.IOException;
 import java.net.http.HttpResponse;
 
 import org.junit.jupiter.api.Assertions;
@@ -77,7 +76,7 @@ class CertificateAuthorityTests extends IntegrationTestClass {
         .build();
   }
 
-  protected static void testSuccessfulEndpoint(String url, HttpClient client) throws IOException {
+  protected static void testSuccessfulEndpoint(String url, HttpClient client) {
     HttpResponse<String> response = client.request().url(url).GET().asString();
 
     Assertions.assertEquals(200, response.statusCode());

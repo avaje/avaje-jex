@@ -8,8 +8,10 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -32,7 +34,6 @@ final class KeyStoreUtil {
           "-----BEGIN (?:RSA )?PRIVATE KEY-----(.+?)-----END (?:RSA )?PRIVATE KEY-----",
           Pattern.DOTALL);
 
-  /** Load a KeyStore from an InputStream. Automatically detects JKS and PKCS12 formats. */
   static KeyStore loadKeyStore(InputStream inputStream, char[] password) {
 
     // Read all bytes first so we can try different formats
@@ -83,7 +84,6 @@ final class KeyStoreUtil {
 
       var privateKey = parsePrivateKey(privateKeyContent, password);
 
-      // Create a KeyStore with the certificate and private key
       var keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
       keyStore.load(null, null);
 
@@ -93,8 +93,7 @@ final class KeyStoreUtil {
 
       keyStore.setKeyEntry(alias, privateKey, keyPassword, certChain);
 
-      var kmf =
-          KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+      var kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
       kmf.init(keyStore, keyPassword);
 
       for (var km : kmf.getKeyManagers()) {
@@ -105,19 +104,23 @@ final class KeyStoreUtil {
 
       throw new SslConfigException("No X509ExtendedKeyManager found");
 
-    } catch (Exception e) {
+    } catch (KeyStoreException
+        | NoSuchAlgorithmException
+        | UnrecoverableKeyException
+        | CertificateException
+        | IOException e) {
       throw new SslConfigException("Failed to create KeyManager from PEM content", e);
     }
   }
 
-  static List<Certificate> parseCertificates(String content, Pattern certPattern) {
+  static List<Certificate> parsePemCertificates(String content) {
 
     List<Certificate> certs = new ArrayList<>();
     CertificateFactory factory = null;
     try {
       factory = CertificateFactory.getInstance("X.509");
 
-      var matcher = certPattern.matcher(content);
+      var matcher = CERT_PATTERN.matcher(content);
       while (matcher.find()) {
         var base64Cert = matcher.group(1).replaceAll("\\s", "");
 
@@ -147,12 +150,6 @@ final class KeyStoreUtil {
 
       var base64Key = matcher.group(1).replaceAll("\\s+", "");
       var keyBytes = getDecoder().decode(base64Key);
-
-      // TODO add decryption if enough people ask
-      if (password != null && password.length > 0) {
-        throw new UnsupportedOperationException(
-            "Encrypted private keys not supported in this implementation. Please decrypt the key first.");
-      }
 
       // Try different algorithms
       String[] algorithms = {"RSA", "EC", "DSA"};
@@ -188,7 +185,7 @@ final class KeyStoreUtil {
     var content = new String(data, StandardCharsets.UTF_8);
 
     if (content.contains("-----BEGIN CERTIFICATE-----")) {
-      certs.addAll(parseCertificates(content, CERT_PATTERN));
+      certs.addAll(parsePemCertificates(content));
     } else {
       // Try to parse as DER format
       try (var bis = new ByteArrayInputStream(data)) {

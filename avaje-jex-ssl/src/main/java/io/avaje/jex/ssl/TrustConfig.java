@@ -9,15 +9,6 @@ import java.io.InputStream;
 public interface TrustConfig {
 
   /**
-   * Load certificate data from a given path in the system. The certificate can be in PEM,
-   * P7B/PKCS#7 or DER format.
-   *
-   * @param certificatePath path to the certificate file.
-   * @return The updated TrustConfig instance for method chaining.
-   */
-  TrustConfig certificateFromPath(String certificatePath);
-
-  /**
    * Load certificate data from the classpath. The certificate can be in PEM, P7B/PKCS#7 or DER
    * format.
    *
@@ -36,30 +27,31 @@ public interface TrustConfig {
   TrustConfig certificateFromInputStream(InputStream certificateInputStream);
 
   /**
-   * Load P7B certificate data from a given string. The certificate must be in P7B/PKCS#7 format.
+   * Load certificate data from a given path in the system. The certificate can be in PEM,
+   * P7B/PKCS#7 or DER format.
    *
-   * @param certificateString P7B encoded certificate.
+   * @param certificatePath path to the certificate file.
    * @return The updated TrustConfig instance for method chaining.
    */
-  TrustConfig p7bCertificateFromString(String certificateString);
+  TrustConfig certificateFromPath(String certificatePath);
 
   /**
-   * Load pem formatted identity data from a given string. The certificate must be in PEM format.
+   * Load certificate data from a given string. The certificate can be in PEM, P7B/PKCS#7 or DER
+   * format.
    *
    * @param certificateString PEM encoded certificate.
    * @return The updated TrustConfig instance for method chaining.
    */
-  TrustConfig pemFromString(String certificateString);
+  TrustConfig certificateFromString(String certificateString);
 
   /**
-   * Load a trust store from a given path in the system. The trust store can be in JKS or PKCS12
-   * format.
+   * Load a trust store from the classpath.
    *
-   * @param trustStorePath path to the trust store file.
+   * @param trustStoreFile The name of the trust store file in the classpath.
    * @param trustStorePassword password for the trust store.
    * @return The updated TrustConfig instance for method chaining.
    */
-  TrustConfig trustStoreFromPath(String trustStorePath, String trustStorePassword);
+  TrustConfig trustStoreFromClasspath(String trustStoreFile, String trustStorePassword);
 
   /**
    * Load a trust store from a given input stream. The trust store can be in JKS or PKCS12 format.
@@ -72,11 +64,12 @@ public interface TrustConfig {
       InputStream trustStoreInputStream, String trustStorePassword);
 
   /**
-   * Load a trust store from the classpath.
+   * Load a trust store from a given path in the system. The trust store can be in JKS or PKCS12
+   * format.
    *
-   * @param trustStoreFile The name of the trust store file in the classpath.
+   * @param trustStorePath path to the trust store file.
    * @param trustStorePassword password for the trust store.
    * @return The updated TrustConfig instance for method chaining.
    */
-  TrustConfig trustStoreFromClasspath(String trustStoreFile, String trustStorePassword);
+  TrustConfig trustStoreFromPath(String trustStorePath, String trustStorePassword);
 }

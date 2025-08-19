@@ -42,7 +42,7 @@ class TrustConfigTests extends IntegrationTestClass {
               config.pemFromString(
                   Client.SERVER_CERTIFICATE_AS_STRING, Client.SERVER_PRIVATE_KEY_AS_STRING);
               config.withTrustConfig(
-                  trustConfig -> trustConfig.pemFromString(Client.CLIENT_CERTIFICATE_AS_STRING));
+                  trustConfig -> trustConfig.certificateFromString(Client.CLIENT_CERTIFICATE_AS_STRING));
             });
 
     Assertions.assertThrows(
@@ -60,7 +60,7 @@ class TrustConfigTests extends IntegrationTestClass {
               config.pemFromString(
                   Client.SERVER_CERTIFICATE_AS_STRING, Client.SERVER_PRIVATE_KEY_AS_STRING);
               config.withTrustConfig(
-                  trustConfig -> trustConfig.pemFromString(Client.CLIENT_CERTIFICATE_AS_STRING));
+                  trustConfig -> trustConfig.certificateFromString(Client.CLIENT_CERTIFICATE_AS_STRING));
             });
 
     Assertions.assertThrows(
@@ -126,14 +126,14 @@ class TrustConfigTests extends IntegrationTestClass {
 
   @Test
   void loadingPemFromStringWorks() {
-    trustConfigWorks(trustConfig -> trustConfig.pemFromString(Client.CLIENT_CERTIFICATE_AS_STRING));
+    trustConfigWorks(trustConfig -> trustConfig.certificateFromString(Client.CLIENT_CERTIFICATE_AS_STRING));
   }
 
   @Test
   void loadingP7bFromStringWorks() {
     trustConfigWorks(
         trustConfig ->
-            trustConfig.p7bCertificateFromString(Client.CLIENT_P7B_CERTIFICATE_AS_STRING));
+            trustConfig.certificateFromString(Client.CLIENT_P7B_CERTIFICATE_AS_STRING));
   }
 
   @Test

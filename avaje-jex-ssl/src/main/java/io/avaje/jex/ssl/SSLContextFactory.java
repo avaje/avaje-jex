@@ -15,7 +15,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
-final class TLSFactory {
+final class SSLContextFactory {
 
   private static final String SSL_PROTOCOL = "TLSv1.3";
   private static final String KEY_MANAGER_ALGORITHM = "SunX509";
@@ -115,7 +115,7 @@ final class TLSFactory {
 
     var combinedTrustStore = KeyStore.getInstance(KeyStore.getDefaultType());
     try {
-      combinedTrustStore.load(null, null); // Initialize empty keystore
+      combinedTrustStore.load(null, null);
     } catch (Exception e) {
       throw new KeyStoreException("Failed to initialize trust store", e);
     }

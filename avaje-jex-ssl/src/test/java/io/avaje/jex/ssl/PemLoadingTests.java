@@ -19,7 +19,7 @@ class PemLoadingTests extends IntegrationTestClass {
   @Test
   void loadingInvalidKeyPemFileFromStringFails() {
     Assertions.assertThrows(
-        SslConfigException.class,
+        IllegalArgumentException.class,
         () -> {
           assertSslWorks(config -> config.pemFromString(Server.CERTIFICATE_AS_STRING, "invalid"));
         });
@@ -28,7 +28,7 @@ class PemLoadingTests extends IntegrationTestClass {
   @Test
   void loadingInvalidCertificatePemFileFromStringFails() {
     Assertions.assertThrows(
-        SslConfigException.class,
+        IllegalArgumentException.class,
         () -> {
           assertSslWorks(
               config -> config.pemFromString("invalid", Server.NON_ENCRYPTED_KEY_AS_STRING));
@@ -38,7 +38,7 @@ class PemLoadingTests extends IntegrationTestClass {
   @Test
   void loadingPemFileWithWrongPasswordFromStringFails() {
     Assertions.assertThrows(
-        SslConfigException.class,
+        IllegalArgumentException.class,
         () -> {
           assertSslWorks(
               config ->
@@ -51,7 +51,7 @@ class PemLoadingTests extends IntegrationTestClass {
   void loadingEncryptedPemFileFromString() {
 
     Assertions.assertThrows(
-        SslConfigException.class,
+        IllegalArgumentException.class,
         () -> {
           assertSslWorks(
               config ->
@@ -74,7 +74,7 @@ class PemLoadingTests extends IntegrationTestClass {
   void loadingEncryptedPemFileFromClasspathWorks() {
 
     Assertions.assertThrows(
-        SslConfigException.class,
+        IllegalArgumentException.class,
         () -> {
           assertSslWorks(
               config ->
@@ -88,7 +88,7 @@ class PemLoadingTests extends IntegrationTestClass {
   @Test
   void loadingPemFileWithWrongPasswordFromClasspathFails() {
     Assertions.assertThrows(
-        SslConfigException.class,
+        IllegalArgumentException.class,
         () -> {
           assertSslWorks(
               config ->
@@ -126,7 +126,7 @@ class PemLoadingTests extends IntegrationTestClass {
   @Test
   void loadingEncryptedPemFileFromPath() {
     Assertions.assertThrows(
-        SslConfigException.class,
+        IllegalArgumentException.class,
         () -> {
           assertSslWorks(
               config ->
@@ -138,7 +138,7 @@ class PemLoadingTests extends IntegrationTestClass {
   @Test
   void loadingPemFileWithWrongPasswordFromPathFails() {
     Assertions.assertThrows(
-        SslConfigException.class,
+        IllegalArgumentException.class,
         () -> {
           assertSslWorks(
               config ->
@@ -178,7 +178,7 @@ class PemLoadingTests extends IntegrationTestClass {
   void loadingEncryptedPemFileFromInputStreamWorks() {
 
     Assertions.assertThrows(
-        SslConfigException.class,
+        IllegalArgumentException.class,
         () -> {
           assertSslWorks(
               config ->
@@ -192,7 +192,7 @@ class PemLoadingTests extends IntegrationTestClass {
   @Test
   void loadingPemFileWithWrongPasswordFromInputStreamFails() {
     Assertions.assertThrows(
-        SslConfigException.class,
+        IllegalArgumentException.class,
         () -> {
           assertSslWorks(
               config ->
@@ -206,7 +206,7 @@ class PemLoadingTests extends IntegrationTestClass {
   @Test
   void loadingPemFileFromInvalidCertInputStreamFails() {
     Assertions.assertThrows(
-        SslConfigException.class,
+        IllegalArgumentException.class,
         () -> {
           assertSslWorks(
               config ->
@@ -219,7 +219,7 @@ class PemLoadingTests extends IntegrationTestClass {
   @Test
   void loadingPemFileFromInvalidKeyInputStreamFails() {
     Assertions.assertThrows(
-        SslConfigException.class,
+        IllegalArgumentException.class,
         () -> {
           assertSslWorks(
               config ->

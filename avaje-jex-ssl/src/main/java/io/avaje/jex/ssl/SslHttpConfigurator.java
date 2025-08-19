@@ -6,7 +6,7 @@ import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 
 /** HttpsConfigurator that allows you to force client authentication */
-public class SslHttpConfigurator extends HttpsConfigurator {
+public final class SslHttpConfigurator extends HttpsConfigurator {
 
   private final boolean clientAuth;
 
