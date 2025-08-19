@@ -46,6 +46,7 @@
     <module>avaje-jex-mustache</module>
     <module>avaje-jex-static-content</module>
     <module>avaje-jex-test</module>
+    <module>avaje-jex-ssl</module>
   </modules>
 
   <dependencyManagement>

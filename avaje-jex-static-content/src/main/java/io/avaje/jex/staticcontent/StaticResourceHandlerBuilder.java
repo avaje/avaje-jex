@@ -12,6 +12,7 @@ import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.security.Role;
+import io.avaje.jex.spi.ClassResourceLoader;
 
 final class StaticResourceHandlerBuilder implements StaticContent.Builder, StaticContent {
 
@@ -19,7 +20,8 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
   private static final String DIRECTORY_INDEX_FAILURE =
       "Failed to locate Directory Index Resource: ";
   private static final Predicate<Context> NO_OP_PREDICATE = ctx -> false;
-  private static final ClassResourceLoader DEFAULT_LOADER = new DefaultResourceLoader();
+  private static final ClassResourceLoader DEFAULT_LOADER =
+      ClassResourceLoader.fromClass(StaticContent.class);
 
   private String path = "/";
   private String root;

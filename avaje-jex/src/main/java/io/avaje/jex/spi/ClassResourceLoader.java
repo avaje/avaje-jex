@@ -1,9 +1,9 @@
-package io.avaje.jex.staticcontent;
+package io.avaje.jex.spi;
 
 import java.net.URL;
 
 /**
- * Loading resources from the classpath or module path.
+ * Resource loader that works on the classpath or module path.
  *
  * <p>When not specified Avaje Jex provides a default implementation that looks to find resources
  * using the class loader associated with the ClassResourceLoader.
@@ -20,7 +20,7 @@ public interface ClassResourceLoader {
    * @return A new {@code ClassResourceLoader} instance.
    */
   static ClassResourceLoader fromClass(Class<?> clazz) {
-    return new DefaultResourceLoader(clazz);
+    return new DResourceLoader(clazz);
   }
 
   /**
