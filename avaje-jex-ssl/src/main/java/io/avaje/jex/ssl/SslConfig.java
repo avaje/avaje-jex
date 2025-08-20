@@ -15,23 +15,23 @@ import java.util.function.Consumer;
 public interface SslConfig {
 
   /**
-   * Load a key store from a given path in the system.
+   * Load a key store from the classpath.
    *
-   * @param keyStorePath path to the key store file.
+   * @param keyStoreFile name of the key store file in the classpath.
    * @param keyStorePassword password for the key store.
    */
-  default void keystoreFromPath(String keyStorePath, String keyStorePassword) {
-    keystoreFromPath(keyStorePath, keyStorePassword, null);
+  default void keystoreFromClasspath(String keyStoreFile, String keyStorePassword) {
+    keystoreFromClasspath(keyStoreFile, keyStorePassword, null);
   }
 
   /**
-   * Load a key store from a given path in the system.
+   * Load a key store from the classpath.
    *
-   * @param keyStorePath path to the key store file.
+   * @param keyStoreFile name of the key store file in the classpath.
    * @param keyStorePassword password for the key store.
    * @param identityPassword password for the identity, if different from the key store password.
    */
-  void keystoreFromPath(String keyStorePath, String keyStorePassword, String identityPassword);
+  void keystoreFromClasspath(String keyStoreFile, String keyStorePassword, String identityPassword);
 
   /**
    * Load a key store from a given input stream.
@@ -54,23 +54,23 @@ public interface SslConfig {
       InputStream keyStoreInputStream, String keyStorePassword, String identityPassword);
 
   /**
-   * Load a key store from the classpath.
+   * Load a key store from a given path in the system.
    *
-   * @param keyStoreFile name of the key store file in the classpath.
+   * @param keyStorePath path to the key store file.
    * @param keyStorePassword password for the key store.
    */
-  default void keystoreFromClasspath(String keyStoreFile, String keyStorePassword) {
-    keystoreFromClasspath(keyStoreFile, keyStorePassword, null);
+  default void keystoreFromPath(String keyStorePath, String keyStorePassword) {
+    keystoreFromPath(keyStorePath, keyStorePassword, null);
   }
 
   /**
-   * Load a key store from the classpath.
+   * Load a key store from a given path in the system.
    *
-   * @param keyStoreFile name of the key store file in the classpath.
+   * @param keyStorePath path to the key store file.
    * @param keyStorePassword password for the key store.
    * @param identityPassword password for the identity, if different from the key store password.
    */
-  void keystoreFromClasspath(String keyStoreFile, String keyStorePassword, String identityPassword);
+  void keystoreFromPath(String keyStorePath, String keyStorePassword, String identityPassword);
 
   /**
    * Load pem formatted identity data from the classpath.
@@ -81,7 +81,6 @@ public interface SslConfig {
   default void pemFromClasspath(String certificateFile, String privateKeyFile) {
     pemFromClasspath(certificateFile, privateKeyFile, null);
   }
-
   /**
    * Load pem formatted identity data from the classpath.
    *
@@ -151,11 +150,14 @@ public interface SslConfig {
   void pemFromString(String certificateString, String privateKeyString, String password);
 
   /**
-   * Configure the trust configuration for the server.
+   * Sets a custom resource loader for loading class/module path resources using the given class.
+   * This is normally used when running the application on the module path when files cannot be
+   * discovered.
    *
-   * @param trustConfigConsumer consumer to configure the trust configuration.
+   * @param clazz the class used to custom load resources
+   * @return the updated configuration
    */
-  void withTrustConfig(Consumer<TrustConfig> trustConfigConsumer);
+  SslConfig resourceLoader(Class<?> clazz);
 
   /**
    * Configure the Provider for the SSLContext.
@@ -163,4 +165,11 @@ public interface SslConfig {
    * @param trustConfigConsumer consumer to configure the trust configuration.
    */
   void securityProvider(Provider securityProvider);
+
+  /**
+   * Configure the trust configuration for the server.
+   *
+   * @param trustConfigConsumer consumer to configure the trust configuration.
+   */
+  void withTrustConfig(Consumer<TrustConfig> trustConfigConsumer);
 }

@@ -34,10 +34,6 @@ final class DSslConfig implements SslConfig {
   private DTrustConfig trustConfig = null;
   private ClassResourceLoader resourceLoader = ClassResourceLoader.fromClass(SslConfig.class);
 
-  public KeyStore keyStore() {
-    return keyStore;
-  }
-
   String identityPassword() {
     return identityPassword;
   }
@@ -46,14 +42,8 @@ final class DSslConfig implements SslConfig {
     return keyManager;
   }
 
-  private InputStream loadCP(String path) {
-    InputStream url = null;
-    try {
-      url = resourceLoader.loadResource(path).openStream();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-    return url;
+  public KeyStore keyStore() {
+    return keyStore;
   }
 
   @Override
@@ -80,6 +70,16 @@ final class DSslConfig implements SslConfig {
     } catch (IOException e) {
       throw new SslConfigException("Failed to load keystore from path: " + keyStorePath, e);
     }
+  }
+
+  private InputStream loadCP(String path) {
+    InputStream url = null;
+    try {
+      url = resourceLoader.loadResource(path).openStream();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+    return url;
   }
 
   LoadedIdentity loadedIdentity() {
@@ -128,6 +128,12 @@ final class DSslConfig implements SslConfig {
             new ByteArrayInputStream(certificateString.getBytes(StandardCharsets.UTF_8)),
             privateKeyString,
             password != null ? password.toCharArray() : null));
+  }
+
+  @Override
+  public SslConfig resourceLoader(Class<?> clazz) {
+    resourceLoader = ClassResourceLoader.fromClass(clazz);
+    return this;
   }
 
   Provider securityProvider() {
