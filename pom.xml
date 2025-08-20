@@ -401,7 +401,6 @@
         <dependency>
           <groupId>io.github.robaho</groupId>
           <artifactId>httpserver</artifactId>
-          <scope>test</scope>
         </dependency>
       </dependencies>
     </profile>
@@ -415,7 +414,6 @@
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-http-spi</artifactId>
           <version>12.0.25</version>
-          <scope>test</scope>
         </dependency>
       </dependencies>
     </profile>
