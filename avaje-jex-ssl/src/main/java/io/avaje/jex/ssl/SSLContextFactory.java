@@ -6,7 +6,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.util.List;
 
 import javax.net.ssl.KeyManager;
@@ -44,13 +43,12 @@ final class SSLContextFactory {
   }
 
   private static KeyManager[] createKeyManagers(DSslConfig sslConfig) throws SslConfigException {
-    var identityType = sslConfig.loadedIdentity();
 
     try {
-      return switch (identityType) {
+      return switch (sslConfig.loadedIdentity()) {
         case KEY_MANAGER -> new KeyManager[] {sslConfig.keyManager()};
         case KEY_STORE -> createKeyManagersFromKeyStore(sslConfig);
-        default -> throw new SslConfigException("Unsupported identity type: " + identityType);
+        default -> throw new IllegalStateException("No SSL Identity provided");
       };
     } catch (Exception e) {
       throw new SslConfigException("Failed to create key managers", e);
@@ -110,15 +108,11 @@ final class SSLContextFactory {
   }
 
   private static KeyStore createCombinedTrustStore(
-      List<KeyStore> trustStores, List<Certificate> certificates)
-      throws KeyStoreException, NoSuchAlgorithmException, CertificateException {
+      List<KeyStore> trustStores, List<Certificate> certificates) throws Exception {
 
     var combinedTrustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-    try {
-      combinedTrustStore.load(null, null);
-    } catch (Exception e) {
-      throw new KeyStoreException("Failed to initialize trust store", e);
-    }
+
+    combinedTrustStore.load(null, null);
 
     // Add certificates from existing trust stores
     var aliasCounter = 0;

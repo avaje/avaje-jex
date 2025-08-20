@@ -65,12 +65,11 @@ final class KeyStoreUtil {
   }
 
   private static KeyStore tryLoadKeyStore(byte[] data, String type, char[] password) {
-    try {
+    try (var bis = new ByteArrayInputStream(data)) {
       var keyStore = KeyStore.getInstance(type);
-      try (var bis = new ByteArrayInputStream(data)) {
-        keyStore.load(bis, password);
-        return keyStore;
-      }
+
+      keyStore.load(bis, password);
+      return keyStore;
     } catch (Exception e) {
       // Ignore and try next format
       return null;
@@ -175,7 +174,7 @@ final class KeyStoreUtil {
 
     // Read all bytes from the input stream
     byte[] data = null;
-    try {
+    try (inputStream) {
       data = inputStream.readAllBytes();
     } catch (IOException e) {
       throw new SslConfigException("Unable to load KeyStore", e);
@@ -193,7 +192,7 @@ final class KeyStoreUtil {
         var parsedCerts = factory.generateCertificates(bis);
         certs.addAll(parsedCerts);
       } catch (CertificateException | IOException e) {
-        e.printStackTrace();
+        throw new SslConfigException("Unable to load KeyStore", e);
       }
     }
 

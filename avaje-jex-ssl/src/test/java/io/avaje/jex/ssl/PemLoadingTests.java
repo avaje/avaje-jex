@@ -28,7 +28,7 @@ class PemLoadingTests extends IntegrationTestClass {
   @Test
   void loadingInvalidCertificatePemFileFromStringFails() {
     Assertions.assertThrows(
-        IllegalArgumentException.class,
+        SslConfigException.class,
         () -> {
           assertSslWorks(
               config -> config.pemFromString("invalid", Server.NON_ENCRYPTED_KEY_AS_STRING));
@@ -219,7 +219,7 @@ class PemLoadingTests extends IntegrationTestClass {
   @Test
   void loadingPemFileFromInvalidKeyInputStreamFails() {
     Assertions.assertThrows(
-        IllegalArgumentException.class,
+        SslConfigException.class,
         () -> {
           assertSslWorks(
               config ->
