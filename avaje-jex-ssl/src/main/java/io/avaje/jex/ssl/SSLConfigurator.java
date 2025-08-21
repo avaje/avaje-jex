@@ -17,7 +17,7 @@ import javax.net.ssl.TrustManagerFactory;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 
-final class SslHttpConfigurator extends HttpsConfigurator {
+final class SSLConfigurator extends HttpsConfigurator {
 
   private static final String SSL_PROTOCOL = "TLSv1.3";
   private static final String KEY_MANAGER_ALGORITHM = "SunX509";
@@ -25,7 +25,7 @@ final class SslHttpConfigurator extends HttpsConfigurator {
 
   private final boolean clientAuth;
 
-  public SslHttpConfigurator(SSLContext context, boolean clientAuth) {
+  public SSLConfigurator(SSLContext context, boolean clientAuth) {
     super(context);
     this.clientAuth = clientAuth;
   }
@@ -37,7 +37,7 @@ final class SslHttpConfigurator extends HttpsConfigurator {
     params.setSSLParameters(sslParams);
   }
 
-  static SslHttpConfigurator create(DSslConfig sslConfig) throws SslConfigException {
+  static SSLConfigurator create(DSslConfig sslConfig) throws SslConfigException {
     try {
       var sslContext = createContext(sslConfig);
 
@@ -46,7 +46,7 @@ final class SslHttpConfigurator extends HttpsConfigurator {
 
       sslContext.init(keyManagers, trustManagers, new SecureRandom());
 
-      return new SslHttpConfigurator(sslContext, trustManagers != null);
+      return new SSLConfigurator(sslContext, trustManagers != null);
     } catch (Exception e) {
       throw new SslConfigException("Failed to build SSLContext", e);
     }
