@@ -25,7 +25,7 @@ final class SSLConfigurator extends HttpsConfigurator {
 
   private final boolean clientAuth;
 
-  public SSLConfigurator(SSLContext context, boolean clientAuth) {
+  SSLConfigurator(SSLContext context, boolean clientAuth) {
     super(context);
     this.clientAuth = clientAuth;
   }
@@ -40,7 +40,6 @@ final class SSLConfigurator extends HttpsConfigurator {
   static SSLConfigurator create(DSslConfig sslConfig) throws SslConfigException {
     try {
       var sslContext = createContext(sslConfig);
-
       var keyManagers = createKeyManagers(sslConfig);
       var trustManagers = createTrustManagers(sslConfig);
 
@@ -60,7 +59,6 @@ final class SSLConfigurator extends HttpsConfigurator {
   }
 
   private static KeyManager[] createKeyManagers(DSslConfig sslConfig) throws SslConfigException {
-
     try {
       return switch (sslConfig.loadedIdentity()) {
         case KEY_MANAGER -> new KeyManager[] {sslConfig.keyManager()};
@@ -81,18 +79,15 @@ final class SSLConfigurator extends HttpsConfigurator {
     return keyManagerFactory.getKeyManagers();
   }
 
-  private static KeyManagerFactory createKeyManagerFactory(DSslConfig sslConfig)
-      throws NoSuchAlgorithmException {
+  private static KeyManagerFactory createKeyManagerFactory(DSslConfig sslConfig) throws NoSuchAlgorithmException {
     if (sslConfig.securityProvider() != null) {
       return KeyManagerFactory.getInstance(KEY_MANAGER_ALGORITHM, sslConfig.securityProvider());
     }
     return KeyManagerFactory.getInstance(KEY_MANAGER_ALGORITHM);
   }
 
-  private static TrustManager[] createTrustManagers(DSslConfig sslConfig)
-      throws SslConfigException {
+  private static TrustManager[] createTrustManagers(DSslConfig sslConfig) throws SslConfigException {
     var trustConfig = sslConfig.trustConfig();
-
     if (trustConfig == null) {
       return null; // Use system default trust managers
     }
@@ -100,13 +95,11 @@ final class SSLConfigurator extends HttpsConfigurator {
     try {
       var trustStores = trustConfig.keyStores();
       var certificates = trustConfig.certificates();
-
       if (trustStores.isEmpty() && certificates.isEmpty()) {
         return null; // No custom trust configuration
       }
 
       var trustStore = createCombinedTrustStore(trustStores, certificates);
-
       var trustManagerFactory = createTrustManagerFactory(sslConfig);
       trustManagerFactory.init(trustStore);
 
@@ -116,19 +109,15 @@ final class SSLConfigurator extends HttpsConfigurator {
     }
   }
 
-  private static TrustManagerFactory createTrustManagerFactory(DSslConfig sslConfig)
-      throws NoSuchAlgorithmException {
+  private static TrustManagerFactory createTrustManagerFactory(DSslConfig sslConfig) throws NoSuchAlgorithmException {
     if (sslConfig.securityProvider() != null) {
       return TrustManagerFactory.getInstance(TRUST_MANAGER_ALGORITHM, sslConfig.securityProvider());
     }
     return TrustManagerFactory.getInstance(TRUST_MANAGER_ALGORITHM);
   }
 
-  private static KeyStore createCombinedTrustStore(
-      List<KeyStore> trustStores, List<Certificate> certificates) throws Exception {
-
+  private static KeyStore createCombinedTrustStore(List<KeyStore> trustStores, List<Certificate> certificates) throws Exception {
     var combinedTrustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-
     combinedTrustStore.load(null, null);
 
     // Add certificates from existing trust stores

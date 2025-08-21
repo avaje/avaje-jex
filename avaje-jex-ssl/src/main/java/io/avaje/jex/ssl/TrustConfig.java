@@ -60,8 +60,7 @@ public interface TrustConfig {
    * @param trustStorePassword password for the trust store.
    * @return The updated TrustConfig instance for method chaining.
    */
-  TrustConfig trustStoreFromInputStream(
-      InputStream trustStoreInputStream, String trustStorePassword);
+  TrustConfig trustStoreFromInputStream(InputStream trustStoreInputStream, String trustStorePassword);
 
   /**
    * Load a trust store from a given path in the system. The trust store can be in JKS or PKCS12

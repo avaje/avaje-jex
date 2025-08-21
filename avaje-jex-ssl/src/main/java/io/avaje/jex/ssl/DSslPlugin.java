@@ -8,19 +8,16 @@ import io.avaje.jex.Jex;
 
 final class DSslPlugin implements SslPlugin {
 
-  final HttpsConfigurator sslConfigurator;
+  private final HttpsConfigurator sslConfigurator;
 
   DSslPlugin(Consumer<SslConfig> consumer) {
-
     final var config = new DSslConfig();
-
     consumer.accept(config);
-    sslConfigurator = SSLConfigurator.create(config);
+    this.sslConfigurator = SSLConfigurator.create(config);
   }
 
   @Override
   public void apply(Jex jex) {
-
     jex.config().httpsConfig(sslConfigurator);
   }
 }
