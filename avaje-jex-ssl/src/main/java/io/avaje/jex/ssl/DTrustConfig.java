@@ -26,9 +26,7 @@ final class DTrustConfig implements TrustConfig {
 
   @Override
   public TrustConfig certificateFromInputStream(InputStream certificateInputStream) {
-
     certificates.addAll(KeyStoreUtil.parseCertificates(certificateInputStream));
-
     return this;
   }
 
@@ -42,11 +40,11 @@ final class DTrustConfig implements TrustConfig {
     return this;
   }
 
-  public List<Certificate> certificates() {
+  List<Certificate> certificates() {
     return certificates;
   }
 
-  public List<KeyStore> keyStores() {
+  List<KeyStore> keyStores() {
     return keyStores;
   }
 
@@ -62,12 +60,8 @@ final class DTrustConfig implements TrustConfig {
   }
 
   @Override
-  public TrustConfig trustStoreFromInputStream(
-      InputStream trustStoreInputStream, String trustStorePassword) {
-
-    keyStores.add(
-        KeyStoreUtil.loadKeyStore(trustStoreInputStream, trustStorePassword.toCharArray()));
-
+  public TrustConfig trustStoreFromInputStream(InputStream trustStoreInputStream, String trustStorePassword) {
+    keyStores.add(KeyStoreUtil.loadKeyStore(trustStoreInputStream, trustStorePassword.toCharArray()));
     return this;
   }
 
