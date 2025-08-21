@@ -5,6 +5,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
+import javax.net.ssl.SSLContext;
+
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.spi.HttpServerProvider;
@@ -80,11 +82,20 @@ public interface JexConfig {
   HttpsConfigurator httpsConfig();
 
   /**
-   * Enable https with the provided {@link HttpsConfigurator}
+   * Enable HTTPS and SSL with the provided {@link HttpsConfigurator}
    *
    * @param https The HTTPS configuration.
    */
   JexConfig httpsConfig(HttpsConfigurator https);
+
+  /**
+   * Configure HTTPS and SSL with the provided {@link SSLContext}.
+   *
+   * @param sslContext The SSLContext to use for HTTPS.
+   */
+  default JexConfig httpsConfig(SSLContext sslContext) {
+    return httpsConfig(new HttpsConfigurator(sslContext));
+  }
 
   /** Returns whether trailing slashes in request URIs are ignored. */
   boolean ignoreTrailingSlashes();
