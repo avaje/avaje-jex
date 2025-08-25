@@ -1,5 +1,5 @@
 /**
- * Defines the SSL Plugin API for configuring SSL and mTLS with Jex - see {@link io.avaje.jex.ssl.StaticContent}.
+ * Defines the SSL Plugin API for configuring SSL and mTLS with Jex - see {@link io.avaje.jex.ssl.SslPlugin}.
  *
  * <pre>{@code
  * var sslPlugin =
