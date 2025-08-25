@@ -35,7 +35,6 @@ final class KeyStoreUtil {
           Pattern.DOTALL);
 
   static KeyStore loadKeyStore(InputStream inputStream, char[] password) {
-
     // Read all bytes first so we can try different formats
     byte[] data;
     try {
@@ -60,14 +59,12 @@ final class KeyStoreUtil {
       return keyStore;
     }
 
-    throw new SslConfigException(
-        "Unable to load KeyStore - format not recognized or invalid password");
+    throw new SslConfigException("Unable to load KeyStore - format not recognized or invalid password");
   }
 
   private static KeyStore tryLoadKeyStore(byte[] data, String type, char[] password) {
     try (var bis = new ByteArrayInputStream(data)) {
       var keyStore = KeyStore.getInstance(type);
-
       keyStore.load(bis, password);
       return keyStore;
     } catch (Exception e) {
@@ -80,16 +77,13 @@ final class KeyStoreUtil {
       InputStream certificateInputStream, String privateKeyContent, char[] password) {
     try {
       var certificates = parseCertificates(certificateInputStream);
-
       var privateKey = parsePrivateKey(privateKeyContent, password);
-
       var keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
       keyStore.load(null, null);
 
       var certChain = certificates.toArray(new Certificate[0]);
       var alias = "identity";
       var keyPassword = password != null ? password : new char[0];
-
       keyStore.setKeyEntry(alias, privateKey, keyPassword, certChain);
 
       var kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
@@ -113,9 +107,8 @@ final class KeyStoreUtil {
   }
 
   static List<Certificate> parsePemCertificates(String content) {
-
     List<Certificate> certs = new ArrayList<>();
-    CertificateFactory factory = null;
+    CertificateFactory factory;
     try {
       factory = CertificateFactory.getInstance("X.509");
 
@@ -132,11 +125,9 @@ final class KeyStoreUtil {
     } catch (Exception e) {
       throw new SslConfigException("Failed to parse PEM certificate", e);
     }
-
     if (certs.isEmpty()) {
       throw new SslConfigException("No valid certificate found in PEM content");
     }
-
     return certs;
   }
 
@@ -182,7 +173,6 @@ final class KeyStoreUtil {
 
     // Try to parse as PEM first (check if it contains PEM markers)
     var content = new String(data, StandardCharsets.UTF_8);
-
     if (content.contains("-----BEGIN CERTIFICATE-----")) {
       certs.addAll(parsePemCertificates(content));
     } else {
@@ -195,7 +185,6 @@ final class KeyStoreUtil {
         throw new SslConfigException("Unable to load KeyStore", e);
       }
     }
-
     return certs;
   }
 

@@ -38,11 +38,11 @@ final class DSslConfig implements SslConfig {
     return identityPassword;
   }
 
-  public X509ExtendedKeyManager keyManager() {
+  X509ExtendedKeyManager keyManager() {
     return keyManager;
   }
 
-  public KeyStore keyStore() {
+  KeyStore keyStore() {
     return keyStore;
   }
 

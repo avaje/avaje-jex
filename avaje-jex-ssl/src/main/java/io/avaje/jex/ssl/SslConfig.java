@@ -96,8 +96,7 @@ public interface SslConfig {
    * @param certificateInputStream input stream to the certificate chain PEM file.
    * @param privateKeyInputStream input stream to the private key PEM file.
    */
-  default void pemFromInputStream(
-      InputStream certificateInputStream, InputStream privateKeyInputStream) {
+  default void pemFromInputStream(InputStream certificateInputStream, InputStream privateKeyInputStream) {
     pemFromInputStream(certificateInputStream, privateKeyInputStream, null);
   }
 
@@ -162,7 +161,7 @@ public interface SslConfig {
   /**
    * Configure the Provider for the SSLContext.
    *
-   * @param trustConfigConsumer consumer to configure the trust configuration.
+   * @param securityProvider the security provider to use.
    */
   void securityProvider(Provider securityProvider);
 
