@@ -21,7 +21,6 @@ final class BufferedOutStream extends OutputStream {
     // if content length is set, skip buffer
     if (context.responseHeader(Constants.CONTENT_LENGTH) != null) {
       count = max + 1;
-      buffer = null;
     } else {
       buffer = new ByteArrayOutputStream(initial);
     }
