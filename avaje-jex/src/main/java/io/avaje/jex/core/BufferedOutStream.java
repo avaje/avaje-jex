@@ -18,7 +18,6 @@ final class BufferedOutStream extends FilterOutputStream {
     super(context.exchange().getResponseBody());
     this.context = context;
     this.max = max;
-    this.jdkOutput = false;
 
     // if content length is set, skip buffer
     if (context.responseHeader(Constants.CONTENT_LENGTH) != null) {
