@@ -4,8 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 
-import com.sun.net.httpserver.HttpExchange;
-
 final class BufferedOutStream extends FilterOutputStream {
 
   private final long max;
@@ -58,12 +56,11 @@ final class BufferedOutStream extends FilterOutputStream {
 
   /** Use the underlying OutputStream. Chunking the response if needed */
   private void useJdkOutput() throws IOException {
-    final HttpExchange exchange = context.exchange();
+    final var exchange = context.exchange();
     // if a manual content-length is set, honor that instead of chunking
-    String length = context.responseHeader(Constants.CONTENT_LENGTH);
+    var length = context.responseHeader(Constants.CONTENT_LENGTH);
     exchange.sendResponseHeaders(context.statusCode(), length == null ? 0 : Long.parseLong(length));
     jdkOutput = true;
-
     // empty the existing buffer
     if (buffer != null) {
       buffer.writeTo(out);
