@@ -56,10 +56,9 @@ final class BufferedOutStream extends FilterOutputStream {
 
   /** Use the underlying OutputStream. Chunking the response if needed */
   private void useJdkOutput() throws IOException {
-    final var exchange = context.exchange();
     // if a manual content-length is set, honor that instead of chunking
     var length = context.responseHeader(Constants.CONTENT_LENGTH);
-    exchange.sendResponseHeaders(context.statusCode(), length == null ? 0 : Long.parseLong(length));
+    context.exchange().sendResponseHeaders(context.statusCode(), length == null ? 0 : Long.parseLong(length));
     jdkOutput = true;
     // empty the existing buffer
     if (buffer != null) {
