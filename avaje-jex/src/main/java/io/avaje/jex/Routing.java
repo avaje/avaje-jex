@@ -14,6 +14,7 @@ import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.http.HttpFilter;
 import io.avaje.jex.http.sse.SseClient;
 import io.avaje.jex.security.Role;
+import io.avaje.jex.spi.JexExtension;
 
 /** Routing abstraction. */
 public interface Routing {
@@ -171,7 +172,7 @@ public interface Routing {
 
   /** Adds to the Routing. */
   @FunctionalInterface
-  interface HttpService {
+  non-sealed interface HttpService extends JexExtension {
 
     /**
      * Add to the routing.
