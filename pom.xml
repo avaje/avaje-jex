@@ -22,14 +22,14 @@
 
   <properties>
     <nexus.staging.autoReleaseAfterClose>true</nexus.staging.autoReleaseAfterClose>
-    <jackson.version>2.19.2</jackson.version>
+    <jackson.version>2.20.0</jackson.version>
     <surefire.useModulePath>false</surefire.useModulePath>
     <maven.compiler.release>21</maven.compiler.release>
     <maven.compiler.proc>full</maven.compiler.proc>
     <avaje.config.version>4.2-RC1</avaje.config.version>
     <avaje.inject.version>12.0-RC4</avaje.inject.version>
-    <avaje.jsonb.version>3.7-RC3</avaje.jsonb.version>
-    <avaje.http.version>3.5-RC1</avaje.http.version>
+    <avaje.jsonb.version>3.7</avaje.jsonb.version>
+    <avaje.http.version>3.5-RC2</avaje.http.version>
     <avaje.metrics.version>9.7</avaje.metrics.version>
     <avaje.validator.version>2.13</avaje.validator.version>
     <avaje.record.builder.version>1.2</avaje.record.builder.version>
