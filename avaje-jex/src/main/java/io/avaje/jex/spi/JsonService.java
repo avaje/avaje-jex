@@ -35,10 +35,19 @@ public non-sealed interface JsonService extends JexExtension {
   String toJsonString(Object bean);
 
   /**
-   * Deserializes a json input stream and deserializes it into a Java object of the specified type.
+   * **Read a Java Object from JSON string**
+   *
+   * <p>Deserializes a Java object from a JSON string
    *
    * @param type the Type object of the desired type
    * @param is the input stream containing the JSON data
+   * @return the serialized JSON string
+   */
+  <T> T fromJson(Type type, String string);
+
+  /**
+   * Deserializes a json input stream and deserializes it into a Java object of the specified type.
+   *
    * @return the deserialized object
    */
   <T> T fromJson(Type type, InputStream is);

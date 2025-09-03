@@ -48,6 +48,7 @@
     <module>avaje-jex-static-content</module>
     <module>avaje-jex-test</module>
     <module>avaje-jex-ssl</module>
+    <module>avaje-jex-websockets</module>
   </modules>
 
   <dependencyManagement>
