@@ -13,7 +13,7 @@ public class WebSocketPlugin implements JexPlugin {
   private final List<Routing.HttpService> handlers = new ArrayList<>();
 
   public WebSocketPlugin ws(String path, WebSocketListener listener, Role... roles) {
-    handlers.add(r -> r.get(path, new WebSocketExchangeHandler(listener), roles));
+    handlers.add(r -> r.get(path, new DWebSocketHandler(listener), roles));
     return this;
   }
 

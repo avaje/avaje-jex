@@ -3,17 +3,17 @@ package io.avaje.jex.websocket;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.websocket.internal.WebSocketHandler;
 
-class WebSocketExchangeHandler extends WebSocketHandler {
+class DWebSocketHandler extends WebSocketHandler {
 
   private final WebSocketListener listener;
 
-  WebSocketExchangeHandler(WebSocketListener listener) {
+  DWebSocketHandler(WebSocketListener listener) {
     this.listener = listener;
   }
 
   @Override
-  protected JexWebSocket openWebSocket(Context exchange) {
+  protected DWebSocket openWebSocket(Context exchange) {
 
-    return new JexWebSocket(exchange, listener);
+    return new DWebSocket(exchange, listener);
   }
 }

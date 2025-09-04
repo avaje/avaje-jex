@@ -1,6 +1,7 @@
 package io.avaje.jex.websocket.internal;
 
 import io.avaje.jex.websocket.WebSocketListener;
+import io.avaje.jex.websocket.WsContext.WsError;
 import io.avaje.jex.websocket.WsContext.WsMessage;
 
 public class EchoWebSocketHandler implements WebSocketListener {
@@ -15,6 +16,11 @@ public class EchoWebSocketHandler implements WebSocketListener {
       sb = new StringBuilder();
       message.send(msg);
     }
-    message.closeSession();
+    //   message.closeSession();
+  }
+
+  @Override
+  public void onError(WsError wsError) {
+    wsError.error().printStackTrace();
   }
 }

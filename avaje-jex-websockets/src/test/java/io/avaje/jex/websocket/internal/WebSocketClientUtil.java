@@ -54,6 +54,7 @@ public class WebSocketClientUtil {
                     if (onCloseCallback != null) {
                       onCloseCallback.run();
                     }
+                    error.printStackTrace();
                   }
 
                   @Override
