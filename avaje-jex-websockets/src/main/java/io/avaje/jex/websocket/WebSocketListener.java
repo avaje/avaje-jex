@@ -1,5 +1,7 @@
 package io.avaje.jex.websocket;
 
+import java.util.function.Consumer;
+
 import io.avaje.jex.websocket.WsContext.WsBinaryMessage;
 import io.avaje.jex.websocket.WsContext.WsClose;
 import io.avaje.jex.websocket.WsContext.WsError;
@@ -12,6 +14,16 @@ import io.avaje.jex.websocket.WsContext.WsPong;
  * log.
  */
 public interface WebSocketListener {
+
+  /**
+   * Create a builder for a WebSocketListener.
+   *
+   * @return the builder
+   */
+  static Builder builder() {
+    return new ListenerBuilder();
+  }
+
   /**
    * Called when a binary message is received.
    *
@@ -53,4 +65,58 @@ public interface WebSocketListener {
    * @param wsError the error
    */
   default void onError(WsError wsError) {}
+
+  interface Builder {
+
+    /**
+     * Set the handler for the WebSocket open event.
+     *
+     * @param handler Consumer for {@link WsOpen}
+     * @return this builder
+     */
+    Builder onOpen(Consumer<WsOpen> handler);
+
+    /**
+     * Set the handler for the WebSocket text message event.
+     *
+     * @param handler Consumer for {@link WsMessage}
+     * @return this builder
+     */
+    Builder onMessage(Consumer<WsMessage> handler);
+
+    /**
+     * Set the handler for the WebSocket binary message event.
+     *
+     * @param handler Consumer for {@link WsBinaryMessage}
+     * @return this builder
+     */
+    Builder onBinaryMessage(Consumer<WsBinaryMessage> handler);
+
+    /**
+     * Set the handler for the WebSocket close event.
+     *
+     * @param handler Consumer for {@link WsClose}
+     * @return this builder
+     */
+    Builder onClose(Consumer<WsClose> handler);
+
+    /**
+     * Set the handler for the WebSocket pong event.
+     *
+     * @param handler Consumer for {@link WsPong}
+     * @return this builder
+     */
+    Builder onPong(Consumer<WsPong> handler);
+
+    /**
+     * Set the handler for the WebSocket error event.
+     *
+     * @param handler Consumer for {@link WsError}
+     * @return this builder
+     */
+    Builder onError(Consumer<WsError> handler);
+
+    /** Build the WebSocketListener. */
+    WebSocketListener build();
+  }
 }

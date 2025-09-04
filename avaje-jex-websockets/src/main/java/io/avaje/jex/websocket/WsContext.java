@@ -143,6 +143,15 @@ public abstract sealed class WsContext {
     public WebSocketFrame wsFrame() {
       return wsFrame;
     }
+
+    /**
+     * Indicates if this frame is the final fragment in a message.
+     *
+     * @return true if final fragment, false otherwise
+     */
+    public boolean isFin() {
+      return wsFrame.isFin();
+    }
   }
 
   public static final class WsBinaryMessage extends WsMessageCtx {

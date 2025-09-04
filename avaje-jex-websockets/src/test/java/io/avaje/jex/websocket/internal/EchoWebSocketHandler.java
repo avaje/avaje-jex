@@ -11,12 +11,11 @@ public class EchoWebSocketHandler implements WebSocketListener {
   @Override
   public void onMessage(WsMessage message) {
     sb.append(message.message());
-    if (message.wsFrame().isFin()) {
+    if (message.isFin()) {
       String msg = sb.toString();
       sb = new StringBuilder();
       message.send(msg);
     }
-    //   message.closeSession();
   }
 
   @Override
