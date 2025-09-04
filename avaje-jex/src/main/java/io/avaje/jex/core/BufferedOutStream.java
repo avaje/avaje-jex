@@ -1,20 +1,19 @@
 package io.avaje.jex.core;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
-import com.sun.net.httpserver.HttpExchange;
-
-final class BufferedOutStream extends OutputStream {
+final class BufferedOutStream extends FilterOutputStream {
 
   private final long max;
   private final JdkContext context;
   private ByteArrayOutputStream buffer;
-  private OutputStream stream;
+  private boolean jdkOutput;
   private long count;
 
   BufferedOutStream(JdkContext context, int initial, long max) {
+    super(context.exchange().getResponseBody());
     this.context = context;
     this.max = max;
 
@@ -28,12 +27,12 @@ final class BufferedOutStream extends OutputStream {
 
   @Override
   public void write(int b) throws IOException {
-    if (stream != null) {
-      stream.write(b);
+    if (jdkOutput) {
+      out.write(b);
     } else {
       if (count++ > max) {
         useJdkOutput();
-        stream.write(b);
+        out.write(b);
         return;
       }
       buffer.write(b);
@@ -42,37 +41,35 @@ final class BufferedOutStream extends OutputStream {
 
   @Override
   public void write(byte[] b, int off, int len) throws IOException {
-    if (stream != null) {
-      stream.write(b, off, len);
+    if (jdkOutput) {
+      out.write(b, off, len);
     } else {
       count += len;
       if (count > max) {
         useJdkOutput();
-        stream.write(b, off, len);
+        out.write(b, off, len);
         return;
       }
       buffer.write(b, off, len);
     }
   }
 
-  /** Use the underlying HttpExchange. Chunking the response if needed */
+  /** Use the underlying OutputStream. Chunking the response if needed */
   private void useJdkOutput() throws IOException {
-    final HttpExchange exchange = context.exchange();
     // if a manual content-length is set, honor that instead of chunking
-    String length = context.responseHeader(Constants.CONTENT_LENGTH);
-    exchange.sendResponseHeaders(context.statusCode(), length == null ? 0 : Long.parseLong(length));
-    stream = exchange.getResponseBody();
+    var length = context.responseHeader(Constants.CONTENT_LENGTH);
+    context.exchange().sendResponseHeaders(context.statusCode(), length == null ? 0 : Long.parseLong(length));
+    jdkOutput = true;
     // empty the existing buffer
     if (buffer != null) {
-      buffer.writeTo(stream);
-      buffer = null;
+      buffer.writeTo(out);
     }
   }
 
   @Override
   public void close() throws IOException {
-    if (stream != null) {
-      stream.close();
+    if (jdkOutput) {
+      out.close();
     } else {
       context.write(buffer.toByteArray());
     }
