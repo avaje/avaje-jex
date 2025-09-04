@@ -2,7 +2,6 @@ package io.avaje.jex.websocket.internal;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.ConsoleHandler;
@@ -29,7 +28,7 @@ public class WebSocketTest {
   TestPair server;
 
   @BeforeEach
-  public void setUp() throws IOException {
+  void setUp() {
 
     var jex = Jex.create();
 
