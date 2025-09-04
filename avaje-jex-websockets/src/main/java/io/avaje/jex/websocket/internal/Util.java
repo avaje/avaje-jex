@@ -40,21 +40,13 @@ import java.util.Base64;
 class Util {
 
   public static final String HEADER_UPGRADE = "Upgrade";
-
   public static final String HEADER_UPGRADE_VALUE = "websocket";
-
   public static final String HEADER_CONNECTION = "Connection";
-
   public static final String HEADER_WEBSOCKET_VERSION = "sec-websocket-version";
-
   public static final String HEADER_WEBSOCKET_VERSION_VALUE = "13";
-
   public static final String HEADER_WEBSOCKET_KEY = "sec-websocket-key";
-
   public static final String HEADER_WEBSOCKET_ACCEPT = "sec-websocket-accept";
-
   public static final String HEADER_WEBSOCKET_PROTOCOL = "sec-websocket-protocol";
-
   private static final String WEBSOCKET_KEY_MAGIC = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
   public static String makeAcceptKey(String key) throws NoSuchAlgorithmException {

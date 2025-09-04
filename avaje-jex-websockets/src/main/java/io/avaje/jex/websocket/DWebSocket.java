@@ -10,12 +10,12 @@ import io.avaje.jex.websocket.WsContext.WsPong;
 import io.avaje.jex.websocket.exception.CloseCode;
 import io.avaje.jex.websocket.internal.AbstractWebSocket;
 
-class JexWebSocket extends AbstractWebSocket {
+class DWebSocket extends AbstractWebSocket {
 
   private final WebSocketListener listener;
   private final Context ctx;
 
-  JexWebSocket(Context ctx, WebSocketListener listener) {
+  DWebSocket(Context ctx, WebSocketListener listener) {
     super(ctx.exchange());
     this.listener = listener;
     this.ctx = ctx;
