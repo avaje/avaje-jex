@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
 
+import io.avaje.jex.Routing.HttpService;
 import io.avaje.jex.spi.JexExtension;
 import io.avaje.jex.spi.JexPlugin;
 import io.avaje.jex.spi.JsonService;
@@ -18,6 +19,7 @@ final class CoreServiceLoader {
   private final JsonService jsonService;
   private final List<TemplateRender> renders = new ArrayList<>();
   private final List<JexPlugin> plugins = new ArrayList<>();
+  private final List<HttpService> spiRoutes = new ArrayList<>();
 
   CoreServiceLoader() {
     JsonService spiJsonService = null;
@@ -26,6 +28,7 @@ final class CoreServiceLoader {
         case JsonService s -> spiJsonService = s;
         case TemplateRender r -> renders.add(r);
         case JexPlugin p -> plugins.add(p);
+        case HttpService p -> spiRoutes.add(p);
       }
     }
     jsonService = spiJsonService;
@@ -41,5 +44,9 @@ final class CoreServiceLoader {
 
   static List<JexPlugin> plugins() {
     return INSTANCE.plugins;
+  }
+
+  static List<HttpService> spiRoutes() {
+    return INSTANCE.spiRoutes;
   }
 }
