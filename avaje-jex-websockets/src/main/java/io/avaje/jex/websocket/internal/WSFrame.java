@@ -346,9 +346,7 @@ public sealed class WSFrame implements WebSocketFrame permits CloseFrame {
   }
 
   // ------------------------------------------------------------------------
-
-  @Override
-  public void write(OutputStream out) throws IOException {
+  void write(OutputStream out) throws IOException {
     byte header = 0;
     if (this.fin) {
       header |= 0x80;
