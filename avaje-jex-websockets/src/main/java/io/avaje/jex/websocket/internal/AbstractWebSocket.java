@@ -248,7 +248,7 @@ public abstract class AbstractWebSocket implements WebSocket {
     sendFrame(new WSFrame(OpCode.TEXT, true, payload));
   }
 
-  public void sendFrame(WebSocketFrame frame) {
+  public void sendFrame(WSFrame frame) {
     lock.lock();
     try {
       onFrameSent(frame);

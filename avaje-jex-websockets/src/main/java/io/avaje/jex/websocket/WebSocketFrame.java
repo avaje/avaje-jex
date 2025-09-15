@@ -1,7 +1,5 @@
 package io.avaje.jex.websocket;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -53,14 +51,6 @@ public interface WebSocketFrame {
    * @return true if masked, false otherwise
    */
   boolean isMasked();
-
-  /**
-   * Writes the frame to the given output stream in WebSocket frame format.
-   *
-   * @param out the output stream to write to
-   * @throws IOException if an I/O error occurs
-   */
-  void write(OutputStream out) throws IOException;
 
   /** WebSocket opcodes */
   public enum OpCode {
