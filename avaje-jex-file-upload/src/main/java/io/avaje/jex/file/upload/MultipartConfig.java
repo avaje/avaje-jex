@@ -1,6 +1,11 @@
 package io.avaje.jex.file.upload;
 
-/** This class contains the configuration for handling multipart file uploads */
+/**
+ * Configuration settings for handling multipart file uploads.
+ *
+ * <p>This class allows you to customize various aspects of file upload behavior, such as file size
+ * limits and the location where temporary files are stored.
+ */
 public class MultipartConfig {
   private String cacheDirectory = System.getProperty("java.io.tmpdir");
   private long maxFileSize = -1;
@@ -10,50 +15,59 @@ public class MultipartConfig {
   MultipartConfig() {}
 
   /**
-   * Sets the location of the cache directory used to write file uploads
+   * Sets the directory where uploaded files exceeding the in-memory size limit will be cached.
    *
-   * @param path : the path of the cache directory used to write file uploads > maxInMemoryFileSize
+   * <p>If not set, the java's default temporary directory will be used.
+   *
+   * @param path The absolute path to the cache directory.
+   * @see #maxInMemoryFileSize(int, FileSize)
    */
   public void cacheDirectory(String path) {
     this.cacheDirectory = path;
   }
 
   /**
-   * Sets the maximum file size for an individual file upload
+   * Sets the maximum allowed size for a single uploaded file.
    *
-   * @param size : the maximum size of the file
-   * @param sizeUnit : the units that this size is measured in
+   * <p>A value of -1 indicates no limit.
+   *
+   * @param size The maximum size of the file.
+   * @param sizeUnit The unit of measurement for the size (e.g., KB, MB, GB).
    */
-  public void maxFileSize(long size, SizeUnit sizeUnit) {
+  public void maxFileSize(long size, FileSize sizeUnit) {
     this.maxFileSize = size * sizeUnit.multiplier();
   }
 
   /**
-   * Sets the maximum size for a single file before it will be cached to disk rather than read in
-   * memory
+   * Sets the maximum size a file can be before it is written to disk.
    *
-   * @param size : the maximum size of the file
-   * @param sizeUnit : the units that this size is measured in
+   * <p>A value of -1 indicates no limit.
+   *
+   * <p>Files smaller than this size will be kept in memory, which can be faster for small uploads
+   * but consumes more memory. Files larger than this size will be written to the {@link
+   * #cacheDirectory(String)}. A value of 0 means all files are written to disk.
+   *
+   * @param size The maximum in-memory size of the file.
+   * @param sizeUnit The unit of measurement for the size (e.g., KB, MB).
    */
-  public void maxInMemoryFileSize(int size, SizeUnit sizeUnit) {
+  public void maxInMemoryFileSize(int size, FileSize sizeUnit) {
     this.maxInMemoryFileSize = size * sizeUnit.multiplier();
   }
 
   /**
-   * Sets the maximum size for the entire multipart request
+   * Sets the maximum total size for a multipart request, including all files and form data.
    *
-   * @param size : the maximum size of the file
-   * @param sizeUnit : the units that this size is measured in
+   * <p>A value of -1 indicates no limit.
+   *
+   * @param size The maximum size of the entire request.
+   * @param sizeUnit The unit of measurement for the size (e.g., KB, MB, GB).
    */
-  public void maxRequestSize(long size, SizeUnit sizeUnit) {
+  public void maxRequestSize(long size, FileSize sizeUnit) {
     this.maxRequestSize = size * sizeUnit.multiplier();
   }
 
-  /**
-   * This enum represents the potential file size descriptors to avoid the use of hard-coded
-   * multipliers
-   */
-  public enum SizeUnit {
+  /** Represents standard file size units for use in configuration. */
+  public enum FileSize {
     BYTES(1),
     KB(1024),
     MB(1024 * 1024),
@@ -61,7 +75,7 @@ public class MultipartConfig {
 
     private final int multiplier;
 
-    SizeUnit(int multiplier) {
+    FileSize(int multiplier) {
       this.multiplier = multiplier;
     }
 

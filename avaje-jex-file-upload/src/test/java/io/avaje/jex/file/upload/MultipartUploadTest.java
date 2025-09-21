@@ -1,7 +1,7 @@
 package io.avaje.jex.file.upload;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
- 
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,7 +10,7 @@ import java.time.Duration;
 import org.junit.jupiter.api.Test;
 
 import io.avaje.jex.Jex;
-import io.avaje.jex.file.upload.MultipartConfig.SizeUnit;
+import io.avaje.jex.file.upload.MultipartConfig.FileSize;
 import io.avaje.jex.test.TestPair;
 
 class MultipartUploadTest {
@@ -45,7 +45,7 @@ class MultipartUploadTest {
   }
 
   @Test
-  void testMultipartUpload() throws IOException {
+  void testMultipartUploadIntoFile() throws IOException {
 
     var jex =
         Jex.create()
@@ -95,6 +95,56 @@ class MultipartUploadTest {
   }
 
   @Test
+  void testMultipartUploadIntoMem() throws IOException {
+
+    var jex =
+        Jex.create()
+            .post(
+                "/upload",
+                ctx -> {
+                  var part = ctx.attribute(FileUploadService.class).uploadedFile("file");
+
+                  assert !part.data().isEmpty();
+                })
+            .plugin(FileUploadPlugin.create(c -> c.maxInMemoryFileSize(1, FileSize.GB)));
+    var pair = TestPair.create(jex);
+
+    // Create a dummy file for the upload
+    Path tempFile = Path.of("test_file.txt");
+    Files.writeString(tempFile, "This is a test file content.");
+
+    // Construct the multipart body
+    String requestBody =
+        "--"
+            + BOUNDARY
+            + "\r\n"
+            + "Content-Disposition: form-data; name=\"file\"; filename=\""
+            + tempFile.getFileName()
+            + "\"\r\n"
+            + "Content-Type: text/plain\r\n"
+            + "\r\n"
+            + Files.readString(tempFile)
+            + "\r\n"
+            + "--"
+            + BOUNDARY
+            + "--\r\n";
+
+    Files.delete(tempFile);
+
+    var response =
+        pair.request()
+            .requestTimeout(Duration.ofDays(1))
+            .path("upload")
+            .header("Content-Type", "multipart/form-data; boundary=" + BOUNDARY)
+            .body(requestBody)
+            .POST()
+            .asDiscarding();
+
+    pair.shutdown();
+    assertEquals(204, response.statusCode());
+  }
+
+  @Test
   void testTooBig() throws IOException {
 
     var jex =
@@ -106,7 +156,7 @@ class MultipartUploadTest {
 
                   assert part.file().exists();
                 })
-            .plugin(FileUploadPlugin.create(c -> c.maxFileSize(1, SizeUnit.BYTES)));
+            .plugin(FileUploadPlugin.create(c -> c.maxFileSize(1, FileSize.BYTES)));
     var pair = TestPair.create(jex);
 
     // Create a dummy file for the upload
@@ -157,7 +207,7 @@ class MultipartUploadTest {
 
                   assert part.file().exists();
                 })
-            .plugin(FileUploadPlugin.create(c -> c.maxRequestSize(1, SizeUnit.BYTES)));
+            .plugin(FileUploadPlugin.create(c -> c.maxRequestSize(1, FileSize.BYTES)));
     var pair = TestPair.create(jex);
 
     // Create a dummy file for the upload
