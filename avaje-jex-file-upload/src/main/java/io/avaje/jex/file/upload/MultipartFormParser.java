@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.avaje.jex.http.BadRequestException;
@@ -33,7 +32,8 @@ final class MultipartFormParser {
 
     if (!contentType.contains("boundary=")) {
       throw new BadRequestException("content type does not contain boundary");
-    } else if (config.maxRequestSize() > -1 && ctx.contentLength() > config.maxRequestSize()) {
+    }
+    if (config.maxRequestSize() > -1 && ctx.contentLength() > config.maxRequestSize()) {
       throw new HttpResponseException(
           HttpStatus.REQUEST_ENTITY_TOO_LARGE_413,
           "Request exceeds max size of %s bytes".formatted(config.maxRequestSize()));
@@ -51,11 +51,11 @@ final class MultipartFormParser {
     List<String> headers = new ArrayList<>();
 
     // read until boundary found
-    int matchCount =
+    var matchCount =
         2; // starting at 2 allows matching non-compliant senders. rfc says CRLF is part of
     // boundary marker
     while (true) {
-      int c = is.read();
+      var c = is.read();
       if (c == -1) {
         return results;
       }
@@ -73,7 +73,7 @@ final class MultipartFormParser {
     }
 
     // read to end of line
-    String s = readLine(charset, is);
+    var s = readLine(charset, is);
     if (s == null || "--".equals(s)) {
       return results;
     }
@@ -99,12 +99,12 @@ final class MultipartFormParser {
       var file = Path.of(config.cacheDirectory(), fileName).toFile();
       file.deleteOnExit();
 
-      SwapStream os = new SwapStream(new ByteArrayOutputStream(), file, config);
+      var os = new SwapStream(new ByteArrayOutputStream(), file, config);
 
       try (os) {
         matchCount = 0;
         while (true) {
-          int c = is.read();
+          var c = is.read();
           if (c == -1) {
             return results;
           }
@@ -152,14 +152,14 @@ final class MultipartFormParser {
     String filename = null;
     String contentType = null;
     for (var header : headers) {
-      String[] parts = header.split(":", 2);
+      var parts = header.split(":", 2);
       if ("content-disposition".equalsIgnoreCase(parts[0])) {
-        String[] options = parts[1].split(";");
+        var options = parts[1].split(";");
         for (var option : options) {
-          Matcher m = optionPattern.matcher(option);
+          var m = optionPattern.matcher(option);
           if (m.matches()) {
-            String key = m.group("key");
-            String value = m.group("value");
+            var key = m.group("key");
+            var value = m.group("value");
             if ("name".equals(key)) {
               name = value;
             }
@@ -176,10 +176,10 @@ final class MultipartFormParser {
   }
 
   private static String readLine(Charset charset, InputStream is) throws IOException {
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    boolean prevCR = false;
+    var bos = new ByteArrayOutputStream();
+    var prevCR = false;
     while (true) {
-      int c = is.read();
+      var c = is.read();
       switch (c) {
         case -1:
           if (bos.size() > 0) {
@@ -192,9 +192,8 @@ final class MultipartFormParser {
         case '\n':
           if (prevCR) {
             return bos.toString(charset);
-          } else {
-            bos.write(c);
           }
+          bos.write(c);
           break;
         default:
           if (prevCR) {

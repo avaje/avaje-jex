@@ -23,7 +23,7 @@ final class DFileUploadService implements FileUploadService {
 
   private void ensureParsed() {
     if (uploadedFilesMap == null) {
-      String contentType = ctx.contentType();
+      var contentType = ctx.contentType();
       if (contentType == null || !contentType.startsWith("multipart/form-data")) {
         uploadedFilesMap = Map.of();
         return;
@@ -39,14 +39,14 @@ final class DFileUploadService implements FileUploadService {
   @Override
   public MultiPart uploadedFile(String fileName) {
     ensureParsed();
-    List<MultiPart> files = uploadedFilesMap.get(fileName);
+    var files = uploadedFilesMap.get(fileName);
     return files != null && !files.isEmpty() ? files.get(0) : null;
   }
 
   @Override
   public List<MultiPart> uploadedFiles(String fileName) {
     ensureParsed();
-    List<MultiPart> files = uploadedFilesMap.get(fileName);
+    var files = uploadedFilesMap.get(fileName);
     return files != null ? files : java.util.Collections.emptyList();
   }
 

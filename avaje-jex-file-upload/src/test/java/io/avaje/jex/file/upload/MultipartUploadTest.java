@@ -60,11 +60,11 @@ class MultipartUploadTest {
     var pair = TestPair.create(jex);
 
     // Create a dummy file for the upload
-    Path tempFile = Path.of("test_file.txt");
+    var tempFile = Path.of("test_file.txt");
     Files.writeString(tempFile, "This is a test file content.");
 
     // Construct the multipart body
-    String requestBody =
+    var requestBody =
         "--"
             + BOUNDARY
             + "\r\n"
@@ -110,11 +110,11 @@ class MultipartUploadTest {
     var pair = TestPair.create(jex);
 
     // Create a dummy file for the upload
-    Path tempFile = Path.of("test_file.txt");
+    var tempFile = Path.of("test_file.txt");
     Files.writeString(tempFile, "This is a test file content.");
 
     // Construct the multipart body
-    String requestBody =
+    var requestBody =
         "--"
             + BOUNDARY
             + "\r\n"
@@ -160,11 +160,11 @@ class MultipartUploadTest {
     var pair = TestPair.create(jex);
 
     // Create a dummy file for the upload
-    Path tempFile = Path.of("test_file.txt");
+    var tempFile = Path.of("test_file.txt");
     Files.writeString(tempFile, "This is a test file content.");
 
     // Construct the multipart body
-    String requestBody =
+    var requestBody =
         "--"
             + BOUNDARY
             + "\r\n"
@@ -211,11 +211,11 @@ class MultipartUploadTest {
     var pair = TestPair.create(jex);
 
     // Create a dummy file for the upload
-    Path tempFile = Path.of("test_file.txt");
+    var tempFile = Path.of("test_file.txt");
     Files.writeString(tempFile, "This is a test file content.");
 
     // Construct the multipart body
-    String requestBody =
+    var requestBody =
         "--"
             + BOUNDARY
             + "\r\n"
@@ -269,12 +269,12 @@ class MultipartUploadTest {
 
     var pair = TestPair.create(jex);
 
-    Path tempFile1 = Path.of("test_file1.txt");
-    Path tempFile2 = Path.of("test_file2.txt");
+    var tempFile1 = Path.of("test_file1.txt");
+    var tempFile2 = Path.of("test_file2.txt");
     Files.writeString(tempFile1, "content of file 1");
     Files.writeString(tempFile2, "content of file 2");
 
-    String requestBody =
+    var requestBody =
         "--"
             + BOUNDARY
             + "\r\n"
