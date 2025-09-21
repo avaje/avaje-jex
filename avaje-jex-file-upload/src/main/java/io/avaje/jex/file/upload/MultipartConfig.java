@@ -6,7 +6,7 @@ package io.avaje.jex.file.upload;
  * <p>This class allows you to customize various aspects of file upload behavior, such as file size
  * limits and the location where temporary files are stored.
  */
-public class MultipartConfig {
+public final class MultipartConfig {
   private String cacheDirectory = System.getProperty("java.io.tmpdir");
   private long maxFileSize = -1;
   private long maxRequestSize = -1;

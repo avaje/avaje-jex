@@ -9,7 +9,7 @@ import java.io.IOException;
 import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.http.HttpStatus;
 
-class SwapStream extends FilterOutputStream {
+final class SwapStream extends FilterOutputStream {
 
   private final ByteArrayOutputStream baos;
   private final int maxMemory;

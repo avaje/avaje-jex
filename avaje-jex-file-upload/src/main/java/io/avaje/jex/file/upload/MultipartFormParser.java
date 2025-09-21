@@ -19,7 +19,7 @@ import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.http.HttpStatus;
 
 /** parse multipart form data */
-class MultipartFormParser {
+final class MultipartFormParser {
   private record PartMetadata(String contentType, String name, String filename) {}
 
   /**

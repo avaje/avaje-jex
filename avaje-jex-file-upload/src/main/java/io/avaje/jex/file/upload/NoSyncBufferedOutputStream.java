@@ -9,7 +9,7 @@ import java.io.OutputStream;
  *
  * @author robert engels
  */
-class NoSyncBufferedOutputStream extends FilterOutputStream {
+final class NoSyncBufferedOutputStream extends FilterOutputStream {
 
   /** The internal buffer where data is stored. sized for virtual threads. */
   protected byte[] buf = new byte[1024];

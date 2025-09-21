@@ -10,7 +10,7 @@ import java.util.Map;
 
 import io.avaje.jex.http.Context;
 
-public class DFileUploadService implements FileUploadService {
+final class DFileUploadService implements FileUploadService {
 
   private MultipartConfig multipartConfig;
   private Context ctx;

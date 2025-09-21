@@ -14,7 +14,7 @@ import io.avaje.jex.spi.JexPlugin;
  * @see MultipartConfig
  * @see FileUploadService
  */
-public class FileUploadPlugin implements JexPlugin {
+public final class FileUploadPlugin implements JexPlugin {
 
   private final MultipartConfig multipartConfig;
 
