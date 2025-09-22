@@ -31,10 +31,8 @@
  *
  * if (uploadedFile != null) {
  * System.out.println("File name: " + uploadedFile.filename());
- * System.out.println("File size: " + uploadedFile.size() + " bytes");
+ * System.out.println("File: " + uploadedFile.file());
  *
- * // You can read the content or write the file to a specific location
- * // uploadedFile.writeTo(new File("/uploads/" + uploadedFile.filename()));
  * }
  * ctx.status(200).result("File upload successful!");
  * });
