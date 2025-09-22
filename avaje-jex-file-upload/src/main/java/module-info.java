@@ -46,5 +46,5 @@ module io.avaje.jex.file.upload {
 
   exports io.avaje.jex.file.upload;
 
-  requires io.avaje.jex;
+  requires transitive io.avaje.jex;
 }
