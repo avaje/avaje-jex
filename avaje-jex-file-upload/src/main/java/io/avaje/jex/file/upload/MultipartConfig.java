@@ -1,5 +1,7 @@
 package io.avaje.jex.file.upload;
 
+import java.nio.file.Path;
+
 /**
  * Configuration settings for handling multipart file uploads.
  *
@@ -64,6 +66,7 @@ public final class MultipartConfig {
    *
    * @param size The maximum size of the entire request.
    * @param sizeUnit The unit of measurement for the size (e.g., KB, MB, GB).
+   * @return
    */
   public MultipartConfig maxRequestSize(long size, FileSize sizeUnit) {
     this.maxRequestSize = size * sizeUnit.multiplier();
@@ -88,8 +91,8 @@ public final class MultipartConfig {
     }
   }
 
-  String cacheDirectory() {
-    return cacheDirectory;
+  Path cacheDirectory() {
+    return Path.of(cacheDirectory);
   }
 
   long maxFileSize() {
