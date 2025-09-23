@@ -37,15 +37,12 @@ final class MultipartFormParser {
           HttpStatus.REQUEST_ENTITY_TOO_LARGE_413,
           "Request exceeds max size of %s bytes".formatted(config.maxRequestSize()));
     }
-
-    var boundary = contentType.split("boundary=")[1];
-
     var is = new BufferedInputStream(ctx.bodyAsInputStream());
 
     Map<String, List<MultiPart>> results = new HashMap<>();
 
     // the CRLF is considered part of the boundary
-    var boundaryCheck = ("\r\n--" + boundary).getBytes(charset);
+    var boundary = ("\r\n--" + contentType.split("boundary=")[1]).getBytes(charset);
 
     List<String> headers = new ArrayList<>();
 
@@ -58,14 +55,14 @@ final class MultipartFormParser {
       if (c == -1) {
         return results;
       }
-      if (c == boundaryCheck[matchCount]) {
+      if (c == boundary[matchCount]) {
         matchCount++;
-        if (matchCount == boundaryCheck.length - 2) {
+        if (matchCount == boundary.length - 2) {
           break;
         }
       } else {
         matchCount = 0;
-        if (c == boundaryCheck[matchCount]) {
+        if (c == boundary[matchCount]) {
           matchCount++;
         }
       }
@@ -107,17 +104,17 @@ final class MultipartFormParser {
           if (c == -1) {
             return results;
           }
-          if (c == boundaryCheck[matchCount]) {
+          if (c == boundary[matchCount]) {
             matchCount++;
-            if (matchCount == boundaryCheck.length) {
+            if (matchCount == boundary.length) {
               break;
             }
           } else {
             if (matchCount > 0) {
-              os.write(boundaryCheck, 0, matchCount);
+              os.write(boundary, 0, matchCount);
               matchCount = 0;
             }
-            if (c == boundaryCheck[matchCount]) {
+            if (c == boundary[matchCount]) {
               matchCount++;
             } else {
               os.write(c);
