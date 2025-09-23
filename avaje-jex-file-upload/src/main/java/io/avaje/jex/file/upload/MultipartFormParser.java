@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -96,7 +95,7 @@ final class MultipartFormParser {
       // read part data - need to detect end of part
       var meta = parseHeaders(headers);
       var fileName = meta.filename != null ? meta.filename : meta.name + ".tmp";
-      var file = Path.of(config.cacheDirectory(), fileName).toFile();
+      var file = config.cacheDirectory().resolve(fileName).toFile();
       file.deleteOnExit();
 
       var os = new SwapStream(new ByteArrayOutputStream(), file, config);

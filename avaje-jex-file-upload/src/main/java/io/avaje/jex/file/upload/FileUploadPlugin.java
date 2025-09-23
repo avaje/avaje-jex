@@ -20,6 +20,7 @@ public final class FileUploadPlugin implements JexPlugin {
 
   private FileUploadPlugin(MultipartConfig multipartConfig) {
     this.multipartConfig = multipartConfig;
+    multipartConfig.cacheDirectory().toFile().mkdirs();
   }
 
   /**
