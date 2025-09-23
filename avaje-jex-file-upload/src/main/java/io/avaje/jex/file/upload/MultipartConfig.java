@@ -22,8 +22,9 @@ public final class MultipartConfig {
    * @param path The absolute path to the cache directory.
    * @see #maxInMemoryFileSize(int, FileSize)
    */
-  public void cacheDirectory(String path) {
+  public MultipartConfig cacheDirectory(String path) {
     this.cacheDirectory = path;
+    return this;
   }
 
   /**
@@ -34,8 +35,9 @@ public final class MultipartConfig {
    * @param size The maximum size of the file.
    * @param sizeUnit The unit of measurement for the size (e.g., KB, MB, GB).
    */
-  public void maxFileSize(long size, FileSize sizeUnit) {
+  public MultipartConfig maxFileSize(long size, FileSize sizeUnit) {
     this.maxFileSize = size * sizeUnit.multiplier();
+    return this;
   }
 
   /**
@@ -50,8 +52,9 @@ public final class MultipartConfig {
    * @param size The maximum in-memory size of the file.
    * @param sizeUnit The unit of measurement for the size (e.g., KB, MB).
    */
-  public void maxInMemoryFileSize(int size, FileSize sizeUnit) {
+  public MultipartConfig maxInMemoryFileSize(int size, FileSize sizeUnit) {
     this.maxInMemoryFileSize = size * sizeUnit.multiplier();
+    return this;
   }
 
   /**
@@ -62,8 +65,9 @@ public final class MultipartConfig {
    * @param size The maximum size of the entire request.
    * @param sizeUnit The unit of measurement for the size (e.g., KB, MB, GB).
    */
-  public void maxRequestSize(long size, FileSize sizeUnit) {
+  public MultipartConfig maxRequestSize(long size, FileSize sizeUnit) {
     this.maxRequestSize = size * sizeUnit.multiplier();
+    return this;
   }
 
   /** Represents standard file size units for use in configuration. */
