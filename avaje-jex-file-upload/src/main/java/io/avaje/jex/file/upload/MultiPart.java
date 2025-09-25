@@ -4,7 +4,7 @@ import java.io.File;
 import java.nio.file.Files;
 
 /**
- * A multipart part. Closing deletes the uploading file
+ * A multipart part. Closing deletes the uploaded file
  *
  * <p>either data or file will be non-null, but not both.
  *
