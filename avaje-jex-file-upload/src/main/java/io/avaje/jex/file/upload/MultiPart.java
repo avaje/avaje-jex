@@ -1,9 +1,10 @@
 package io.avaje.jex.file.upload;
 
 import java.io.File;
+import java.nio.file.Files;
 
 /**
- * a multipart part.
+ * A multipart part. Closing deletes the uploading file
  *
  * <p>either data or file will be non-null, but not both.
  *
@@ -13,4 +14,13 @@ import java.io.File;
  *     marked as delete on exit.
  * @param data if contains the part data as a String.
  */
-public record MultiPart(String contentType, String filename, String data, File file) {}
+public record MultiPart(String contentType, String filename, String data, File file)
+    implements AutoCloseable {
+  /** Delete the file */
+  @Override
+  public void close() throws Exception {
+    if (file != null) {
+      Files.delete(file.toPath());
+    }
+  }
+}
