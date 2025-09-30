@@ -1,5 +1,6 @@
 package io.avaje.jex.spi;
 
+import io.avaje.jex.Routing.HttpService;
 import io.avaje.spi.Service;
 
 /**
@@ -9,4 +10,4 @@ import io.avaje.spi.Service;
  * META-INF/services/io.avaje.jex.spi.JexExtension } for it to be auto loaded
  */
 @Service
-public sealed interface JexExtension permits JsonService, TemplateRender, JexPlugin {}
+public sealed interface JexExtension permits HttpService, JexPlugin, JsonService, TemplateRender {}

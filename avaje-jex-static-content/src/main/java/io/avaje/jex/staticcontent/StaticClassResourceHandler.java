@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 
 import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.http.Context;
+import io.avaje.jex.spi.ClassResourceLoader;
 
 final class StaticClassResourceHandler extends AbstractStaticHandler {
 

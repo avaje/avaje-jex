@@ -6,7 +6,7 @@
   <parent>
     <groupId>io.avaje</groupId>
     <artifactId>examples</artifactId>
-    <version>3.3-RC2</version>
+    <version>3.3-RC4</version>
   </parent>
 
   <artifactId>example-robaho</artifactId>
@@ -15,13 +15,13 @@
     <dependency>
       <groupId>io.github.robaho</groupId>
       <artifactId>httpserver</artifactId>
-      <version>1.0.27</version>
+      <version>1.0.28</version>
     </dependency>
 
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-jex</artifactId>
-      <version>3.3-RC2</version>
+      <version>3.3-RC4</version>
     </dependency>
 
     <dependency>

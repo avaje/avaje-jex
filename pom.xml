@@ -12,7 +12,7 @@
   <groupId>io.avaje</groupId>
   <artifactId>avaje-jex-parent</artifactId>
   <name>avaje-jex-parent</name>
-  <version>3.3-RC2</version>
+  <version>3.3-RC4</version>
   <packaging>pom</packaging>
 
   <scm>
@@ -22,30 +22,31 @@
 
   <properties>
     <nexus.staging.autoReleaseAfterClose>true</nexus.staging.autoReleaseAfterClose>
-    <jackson.version>2.19.2</jackson.version>
+    <jackson.version>2.20.0</jackson.version>
     <surefire.useModulePath>false</surefire.useModulePath>
     <maven.compiler.release>21</maven.compiler.release>
     <maven.compiler.proc>full</maven.compiler.proc>
-    <avaje.config.version>4.1</avaje.config.version>
-    <avaje.inject.version>11.6</avaje.inject.version>
-    <avaje.jsonb.version>3.6</avaje.jsonb.version>
-    <avaje.http.version>3.4</avaje.http.version>
-    <avaje.metrics.version>9.7</avaje.metrics.version>
-    <avaje.validator.version>2.13</avaje.validator.version>
+    <avaje.config.version>4.2-RC1</avaje.config.version>
+    <avaje.inject.version>12.0-RC4</avaje.inject.version>
+    <avaje.jsonb.version>3.7</avaje.jsonb.version>
+    <avaje.http.version>3.5-RC4</avaje.http.version>
+    <avaje.metrics.version>9.8</avaje.metrics.version>
+    <avaje.validator.version>2.14</avaje.validator.version>
     <avaje.record.builder.version>1.2</avaje.record.builder.version>
     <avaje.spi.version>2.13</avaje.spi.version>
     <avaje.prisms.versionn>1.42</avaje.prisms.versionn>
-    <ebean.version>15.11.0</ebean.version>
+    <ebean.version>17.1.0</ebean.version>
   </properties>
 
   <modules>
     <module>avaje-jex</module>
     <module>avaje-jex-freemarker</module>
-    <module>avaje-jex-grizzly-spi</module>
+    <!-- <module>avaje-jex-grizzly-spi</module> -->
     <module>avaje-jex-htmx</module>
     <module>avaje-jex-mustache</module>
     <module>avaje-jex-static-content</module>
     <module>avaje-jex-test</module>
+    <module>avaje-jex-ssl</module>
   </modules>
 
   <dependencyManagement>
@@ -183,37 +184,42 @@
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex</artifactId>
-        <version>3.3-RC2</version>
+        <version>3.3-RC4</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-test</artifactId>
-        <version>3.3-RC2</version>
+        <version>3.3-RC4</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-freemarker</artifactId>
-        <version>3.3-RC2</version>
+        <version>3.3-RC4</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-mustache</artifactId>
-        <version>3.3-RC2</version>
+        <version>3.3-RC4</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-htmx</artifactId>
-        <version>3.3-RC2</version>
+        <version>3.3-RC4</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-static-content</artifactId>
-        <version>3.3-RC2</version>
+        <version>3.3-RC4</version>
+      </dependency>
+      <dependency>
+        <groupId>io.avaje</groupId>
+        <artifactId>avaje-jex-ssl</artifactId>
+        <version>3.3-RC4</version>
       </dependency>
       <dependency>
         <groupId>io.github.robaho</groupId>
         <artifactId>httpserver</artifactId>
-        <version>1.0.27</version>
+        <version>1.0.28</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -385,6 +391,31 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>robaho</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>io.github.robaho</groupId>
+          <artifactId>httpserver</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>jetty</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-http-spi</artifactId>
+          <version>12.1.1</version>
+        </dependency>
+      </dependencies>
     </profile>
   </profiles>
 </project>

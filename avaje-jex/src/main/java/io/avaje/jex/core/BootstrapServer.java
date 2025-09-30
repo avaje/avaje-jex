@@ -16,7 +16,6 @@ import io.avaje.jex.AppLifecycle;
 import io.avaje.jex.Jex;
 import io.avaje.jex.JexConfig;
 import io.avaje.jex.routes.RoutesBuilder;
-import io.avaje.jex.routes.SpiRoutes;
 
 public final class BootstrapServer {
 
@@ -25,6 +24,7 @@ public final class BootstrapServer {
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
   public static Jex.Server start(Jex jex) {
+    long startTime = System.currentTimeMillis();
     final var config = jex.config();
     if (config.health()) {
       jex.plugin(new HealthPlugin());
@@ -32,14 +32,11 @@ public final class BootstrapServer {
 
     CoreServiceLoader.plugins().forEach(p -> p.apply(jex));
 
-    final SpiRoutes routes = new RoutesBuilder(jex.routing(), config).build();
+    var routing = jex.routing();
+    routing.addAll(CoreServiceLoader.spiRoutes());
+    final var routes = new RoutesBuilder(routing, config).build();
 
-    return start(jex, routes);
-  }
-
-  static Jex.Server start(Jex jex, SpiRoutes routes) {
     try {
-      final var config = jex.config();
       final var socketAddress = createSocketAddress(config);
       final var https = config.httpsConfig();
       final var provider = config.serverProvider();
@@ -54,9 +51,8 @@ public final class BootstrapServer {
 
       final var scheme = config.scheme();
       final var contextPath = config.contextPath();
-      ServiceManager serviceManager = ServiceManager.create(jex);
+      var serviceManager = ServiceManager.create(jex);
       final var handler = new RoutingHandler(routes, serviceManager);
-
       final var serverClass = server.getClass();
 
       // jetty's server does not support setExecutor with virtual threads (VT)
@@ -71,8 +67,9 @@ public final class BootstrapServer {
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
       log.log(
           INFO,
-          "Avaje Jex started {0} on {1}://{2}:{3,number,#}",
+          "Avaje Jex started {0} in {1}ms on {2}://{3}:{4,number,#}",
           serverClass,
+          System.currentTimeMillis() - startTime,
           scheme,
           actualAddress.getHostName(),
           actualAddress.getPort());

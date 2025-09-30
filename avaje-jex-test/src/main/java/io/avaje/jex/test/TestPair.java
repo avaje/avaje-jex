@@ -42,7 +42,8 @@ public class TestPair {
 
     var jexServer = app.port(0).start();
     var port = jexServer.port();
-    var url = "http://localhost:" + port;
+    String protocol = app.config().httpsConfig() != null ? "https" : "http";
+    var url = protocol + "://localhost:" + port;
     var client = HttpClient.builder().version(Version.HTTP_1_1).baseUrl(url).build();
 
     return new TestPair(port, jexServer, client);
