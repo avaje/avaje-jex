@@ -16,7 +16,7 @@ final class SwapStream extends FilterOutputStream {
   private final long maxFileSize;
   private boolean swapped = false;
   private long size = 0;
-  private File file;
+  private final File file;
 
   public SwapStream(ByteArrayOutputStream baos, File file, MultipartConfig multipartConfig) {
     super(baos);
@@ -28,7 +28,6 @@ final class SwapStream extends FilterOutputStream {
 
   @Override
   public void write(int b) throws IOException {
-
     size += 1;
     if (!swapped && maxMemory > -1 && size > maxMemory) {
       swapToFileStream();
@@ -40,7 +39,6 @@ final class SwapStream extends FilterOutputStream {
 
   @Override
   public void write(byte[] b, int off, int len) throws IOException {
-
     size += len;
     if (!swapped && maxMemory > -1 && size > maxMemory) {
       swapToFileStream();
