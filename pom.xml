@@ -12,7 +12,7 @@
   <groupId>io.avaje</groupId>
   <artifactId>avaje-jex-parent</artifactId>
   <name>avaje-jex-parent</name>
-  <version>3.3-RC4</version>
+  <version>3.3-RC5</version>
   <packaging>pom</packaging>
 
   <scm>
@@ -195,42 +195,42 @@
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex</artifactId>
-        <version>3.3-RC4</version>
+        <version>3.3-RC5</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-test</artifactId>
-        <version>3.3-RC4</version>
+        <version>3.3-RC5</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-file-upload</artifactId>
-        <version>3.3-RC4</version>
+        <version>3.3-RC5</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-freemarker</artifactId>
-        <version>3.3-RC4</version>
+        <version>3.3-RC5</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-mustache</artifactId>
-        <version>3.3-RC4</version>
+        <version>3.3-RC5</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-htmx</artifactId>
-        <version>3.3-RC4</version>
+        <version>3.3-RC5</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-static-content</artifactId>
-        <version>3.3-RC4</version>
+        <version>3.3-RC5</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-ssl</artifactId>
-        <version>3.3-RC4</version>
+        <version>3.3-RC5</version>
       </dependency>
       <dependency>
         <groupId>io.github.robaho</groupId>
