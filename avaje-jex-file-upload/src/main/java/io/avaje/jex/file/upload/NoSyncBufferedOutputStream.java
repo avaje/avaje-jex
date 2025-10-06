@@ -12,14 +12,14 @@ import java.io.OutputStream;
 final class NoSyncBufferedOutputStream extends FilterOutputStream {
 
   /** The internal buffer where data is stored. sized for virtual threads. */
-  protected byte[] buf = new byte[1024];
+  private final byte[] buf = new byte[1024];
 
   /**
    * The number of valid bytes in the buffer. This value is always in the range {@code 0} through
    * {@code buf.length}; elements {@code buf[0]} through {@code buf[count-1]} contain valid byte
    * data.
    */
-  protected int count;
+  private int count;
 
   NoSyncBufferedOutputStream(OutputStream out) {
     super(out);
