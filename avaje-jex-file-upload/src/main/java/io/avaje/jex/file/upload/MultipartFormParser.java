@@ -18,6 +18,7 @@ import io.avaje.jex.http.HttpStatus;
 
 /** parse multipart form data */
 final class MultipartFormParser {
+
   private record PartMetadata(String contentType, String name, String filename) {}
 
   /**
@@ -74,8 +75,6 @@ final class MultipartFormParser {
       return results;
     }
 
-    headers.clear();
-
     while (true) {
       // read part headers until blank line
       while (true) {
@@ -125,11 +124,11 @@ final class MultipartFormParser {
 
       if (!os.swapped()) {
         results
-            .computeIfAbsent(meta.name, k -> new ArrayList<MultiPart>())
+            .computeIfAbsent(meta.name, k -> new ArrayList<>())
             .add(new MultiPart(meta.contentType, null, os.bytes().toString(charset), null));
       } else {
         results
-            .computeIfAbsent(meta.name, k -> new ArrayList<MultiPart>())
+            .computeIfAbsent(meta.name, k -> new ArrayList<>())
             .add(new MultiPart(meta.contentType, fileName, null, file));
       }
 
