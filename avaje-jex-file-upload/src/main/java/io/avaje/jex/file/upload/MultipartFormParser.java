@@ -76,6 +76,7 @@ final class MultipartFormParser {
     }
 
     while (true) {
+      headers.clear();
       // read part headers until blank line
       while (true) {
         s = readLine(charset, is);
