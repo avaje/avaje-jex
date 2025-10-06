@@ -12,7 +12,7 @@
   <groupId>io.avaje</groupId>
   <artifactId>avaje-jex-parent</artifactId>
   <name>avaje-jex-parent</name>
-  <version>3.3-RC4</version>
+  <version>3.3-RC5</version>
   <packaging>pom</packaging>
 
   <scm>
@@ -29,17 +29,18 @@
     <avaje.config.version>4.2-RC1</avaje.config.version>
     <avaje.inject.version>12.0-RC4</avaje.inject.version>
     <avaje.jsonb.version>3.7</avaje.jsonb.version>
-    <avaje.http.version>3.5-RC3</avaje.http.version>
-    <avaje.metrics.version>9.7</avaje.metrics.version>
-    <avaje.validator.version>2.13</avaje.validator.version>
+    <avaje.http.version>3.5-RC4</avaje.http.version>
+    <avaje.metrics.version>9.8</avaje.metrics.version>
+    <avaje.validator.version>2.14</avaje.validator.version>
     <avaje.record.builder.version>1.2</avaje.record.builder.version>
     <avaje.spi.version>2.13</avaje.spi.version>
     <avaje.prisms.versionn>1.42</avaje.prisms.versionn>
-    <ebean.version>17.0.0</ebean.version>
+    <ebean.version>17.1.0</ebean.version>
   </properties>
 
   <modules>
     <module>avaje-jex</module>
+    <module>avaje-jex-file-upload</module>
     <module>avaje-jex-freemarker</module>
     <!-- <module>avaje-jex-grizzly-spi</module> -->
     <module>avaje-jex-htmx</module>
@@ -111,12 +112,22 @@
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
+        <artifactId>avaje-validator</artifactId>
+        <version>${avaje.validator.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.avaje</groupId>
         <artifactId>avaje-validator-constraints</artifactId>
         <version>${avaje.validator.version}</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
-        <artifactId>avaje-validator</artifactId>
+        <artifactId>avaje-validator-inject-plugin</artifactId>
+        <version>${avaje.validator.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.avaje</groupId>
+        <artifactId>avaje-validator-http-plugin</artifactId>
         <version>${avaje.validator.version}</version>
       </dependency>
       <dependency>
@@ -185,42 +196,47 @@
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex</artifactId>
-        <version>3.3-RC4</version>
+        <version>3.3-RC5</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-test</artifactId>
-        <version>3.3-RC4</version>
+        <version>3.3-RC5</version>
+      </dependency>
+      <dependency>
+        <groupId>io.avaje</groupId>
+        <artifactId>avaje-jex-file-upload</artifactId>
+        <version>3.3-RC5</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-freemarker</artifactId>
-        <version>3.3-RC4</version>
+        <version>3.3-RC5</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-mustache</artifactId>
-        <version>3.3-RC4</version>
+        <version>3.3-RC5</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-htmx</artifactId>
-        <version>3.3-RC4</version>
+        <version>3.3-RC5</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-static-content</artifactId>
-        <version>3.3-RC4</version>
+        <version>3.3-RC5</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-ssl</artifactId>
-        <version>3.3-RC4</version>
+        <version>3.3-RC5</version>
       </dependency>
       <dependency>
         <groupId>io.github.robaho</groupId>
         <artifactId>httpserver</artifactId>
-        <version>1.0.27</version>
+        <version>1.0.28</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -402,7 +418,19 @@
         <dependency>
           <groupId>io.github.robaho</groupId>
           <artifactId>httpserver</artifactId>
-          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>jetty</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-http-spi</artifactId>
+          <version>12.1.1</version>
         </dependency>
       </dependencies>
     </profile>

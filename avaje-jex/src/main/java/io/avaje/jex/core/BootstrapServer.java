@@ -24,6 +24,7 @@ public final class BootstrapServer {
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
 
   public static Jex.Server start(Jex jex) {
+    long startTime = System.currentTimeMillis();
     final var config = jex.config();
     if (config.health()) {
       jex.plugin(new HealthPlugin());
@@ -66,8 +67,9 @@ public final class BootstrapServer {
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
       log.log(
           INFO,
-          "Avaje Jex started {0} on {1}://{2}:{3,number,#}",
+          "Avaje Jex started {0} in {1}ms on {2}://{3}:{4,number,#}",
           serverClass,
+          System.currentTimeMillis() - startTime,
           scheme,
           actualAddress.getHostName(),
           actualAddress.getPort());

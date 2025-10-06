@@ -7,11 +7,10 @@
     <artifactId>avaje-jex-parent</artifactId>
     <version>3.3-RC5</version>
   </parent>
-  <artifactId>avaje-jex-static-content</artifactId>
-  <name>avaje-jex-static-content</name>
+  <artifactId>avaje-jex-file-upload</artifactId>
+  <name>avaje-jex-file-upload</name>
 
   <dependencies>
-
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-jex</artifactId>

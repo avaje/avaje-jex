@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.avaje</groupId>
     <artifactId>avaje-jex-parent</artifactId>
-    <version>3.3-RC4</version>
+    <version>3.3-RC5</version>
   </parent>
   <artifactId>avaje-jex-ssl</artifactId>
   <name>avaje-jex-ssl-plugin</name>
@@ -26,19 +26,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <profiles>
-    <profile>
-      <id>robaho</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>io.github.robaho</groupId>
-          <artifactId>httpserver</artifactId>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
 </project>
