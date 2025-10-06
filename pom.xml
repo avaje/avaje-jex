@@ -111,12 +111,22 @@
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
+        <artifactId>avaje-validator</artifactId>
+        <version>${avaje.validator.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.avaje</groupId>
         <artifactId>avaje-validator-constraints</artifactId>
         <version>${avaje.validator.version}</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
-        <artifactId>avaje-validator</artifactId>
+        <artifactId>avaje-validator-inject-plugin</artifactId>
+        <version>${avaje.validator.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.avaje</groupId>
+        <artifactId>avaje-validator-http-plugin</artifactId>
         <version>${avaje.validator.version}</version>
       </dependency>
       <dependency>
