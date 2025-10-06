@@ -12,11 +12,11 @@ import io.avaje.jex.http.Context;
 
 final class DFileUploadService implements FileUploadService {
 
-  private MultipartConfig multipartConfig;
-  private Context ctx;
+  private final MultipartConfig multipartConfig;
+  private final Context ctx;
   private Map<String, List<MultiPart>> uploadedFilesMap;
 
-  public DFileUploadService(MultipartConfig multipartConfig, Context ctx) {
+  DFileUploadService(MultipartConfig multipartConfig, Context ctx) {
     this.multipartConfig = multipartConfig;
     this.ctx = ctx;
   }
@@ -66,11 +66,11 @@ final class DFileUploadService implements FileUploadService {
     return uploadedFilesMap;
   }
 
-  Charset charset() {
+  private Charset charset() {
     return parseCharset(ctx.header("Content-type"));
   }
 
-  static Charset parseCharset(String header) {
+  private static Charset parseCharset(String header) {
     if (header != null) {
       for (String val : header.split(";")) {
         val = val.trim();

@@ -54,7 +54,6 @@ public final class FileUploadPlugin implements JexPlugin {
    */
   @Override
   public void apply(Jex jex) {
-
     jex.before(
         ctx ->
             ctx.attribute(FileUploadService.class, new DFileUploadService(multipartConfig, ctx)));

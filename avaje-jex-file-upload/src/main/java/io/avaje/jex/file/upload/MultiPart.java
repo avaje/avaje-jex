@@ -16,6 +16,7 @@ import java.nio.file.Files;
  */
 public record MultiPart(String contentType, String filename, String data, File file)
     implements AutoCloseable {
+
   /** Delete the file */
   @Override
   public void close() throws Exception {
