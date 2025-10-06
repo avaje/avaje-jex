@@ -50,11 +50,31 @@ public interface Context {
   Context attribute(String key, Object value);
 
   /**
+   * Gets an attribute with the specified type from the request.
+   *
+   * @param <T> The type of the attribute.
+   * @param key The attribute key.
+   * @return The attribute value, or null if not found.
+   */
+  default <T> T attribute(Class<T> key) {
+    return attribute(key.getTypeName());
+  }
+
+  /**
+   * Sets an attribute on the request, accessible to other handlers in the request lifecycle.
+   *
+   * @param key The attribute key.
+   * @param value The attribute value.
+   */
+  default <T> Context attribute(Class<T> key, T value) {
+    return attribute(key.getTypeName(), value);
+  }
+
+  /**
    * Gets basic-auth credentials from the request.
    *
-   * @return The Base64 decoded username and password from the
-   * Authorization header, or null if no header is sent
-   *
+   * @return The Base64 decoded username and password from the Authorization header, or null if no
+   *     header is sent
    * @throws IllegalStateException if the Authorization header is malformed
    */
   BasicAuthCredentials basicAuthCredentials();
