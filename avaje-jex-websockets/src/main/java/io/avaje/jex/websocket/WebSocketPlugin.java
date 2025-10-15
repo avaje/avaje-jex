@@ -28,6 +28,11 @@ public class WebSocketPlugin implements JexPlugin {
   @Override
   public void apply(Jex jex) {
     jex.routing().addAll(handlers);
+    if (Runtime.version().feature() < 26
+        && jex.config().serverProvider().getClass().getPackageName().indexOf("sun.") != -1) {
+      throw new IllegalStateException(
+          "WebSocket support requires Java 26+ when using the default JDK server provider. Upgrade your JDK or use a different server provider such as robaho httpserver");
+    }
   }
 
   public static WebSocketPlugin create() {

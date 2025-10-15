@@ -5,7 +5,8 @@
     <artifactId>avaje-jex-parent</artifactId>
     <version>3.3-RC5</version>
   </parent>
-  <artifactId>avaje-jex-websockets</artifactId> <dependencies>
+  <artifactId>avaje-jex-websocket</artifactId>
+  <dependencies>
     <dependency>
       <groupId>io.avaje</groupId>
       <artifactId>avaje-jex</artifactId>
@@ -16,4 +17,19 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <profiles>
+    <profile>
+      <id>lessThan26</id>
+      <activation>
+        <jdk>[21, 25]</jdk>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>io.github.robaho</groupId>
+          <artifactId>httpserver</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 </project>
