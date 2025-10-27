@@ -99,10 +99,9 @@ public interface Context {
   }
 
   /**
-   * Returns the request body as an input stream.
+   * Returns the request body as an input stream. Will return an empty stream if any of the various body methods were called
    *
    * @return The request body as an input stream.
-   * @implNote will return an empty stream if any of the various body methods were called
    */
   InputStream bodyAsInputStream();
 
