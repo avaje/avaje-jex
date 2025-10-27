@@ -17,6 +17,8 @@ Features:
 - Server Sent Events
 - Compression SPI
 - Json SPI
+- File Uploads
+- SSL/mTLS configuration
 - Virtual threads enabled by default
 - Multi-Server with any implementation of `jdk.httpserver` (Jetty, Robaho, built-in, etc)
 
