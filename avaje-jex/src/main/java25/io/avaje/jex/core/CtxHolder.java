@@ -2,10 +2,12 @@ package io.avaje.jex.core;
 
 import io.avaje.jex.http.Context;
 
-public class SVHolder {
+public class CtxHolder {
 
   private static final ScopedValue<Context> SV = ScopedValue.newInstance();
 
+  private CtxHolder() {}
+  
   public static void runWith(Context ctx, Runnable task) {
     ScopedValue.where(SV, ctx).run(task);
   }
