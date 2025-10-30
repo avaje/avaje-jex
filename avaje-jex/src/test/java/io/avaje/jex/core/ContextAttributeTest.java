@@ -54,7 +54,7 @@ class ContextAttributeTest {
 
   @AfterAll
   static void end() {
-    pair.close();
+    pair.shutdown();
   }
 
   @Test

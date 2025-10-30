@@ -40,7 +40,7 @@ class CompressionTest {
 
   @AfterAll
   static void end() {
-    pair.close();
+    pair.shutdown();
   }
 
   @Test

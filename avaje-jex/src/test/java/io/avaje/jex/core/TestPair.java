@@ -8,7 +8,7 @@ import io.avaje.http.client.HttpClientRequest;
 import io.avaje.jex.Jex;
 
 /** Server and Client pair for a test. */
-public class TestPair implements AutoCloseable {
+public class TestPair {
 
   private final int port;
 
@@ -22,10 +22,8 @@ public class TestPair implements AutoCloseable {
     this.client = client;
   }
 
-  @Override
-public void close() {
+  public void shutdown() {
     server.shutdown();
-    client.close();
   }
 
   public HttpClientRequest request() {
