@@ -45,13 +45,16 @@ final class RoutingHandler implements HttpHandler {
       try {
         final Map<String, String> params = route.pathParams(uri);
         JdkContext ctx = new JdkContext(mgr, exchange, route.matchPath(), params, route.roles());
-        try {
-          ctx.setMode(Mode.BEFORE);
-          new BaseFilterChain(filters.iterator(), route.handler(), ctx, mgr).proceed();
-          handleNoResponse(exchange);
-        } catch (Exception e) {
-          mgr.handleException(ctx, e);
-        }
+        CtxHolder.runWith(ctx,
+            () -> {
+              try {
+                ctx.setMode(Mode.BEFORE);
+                new BaseFilterChain(filters.iterator(), route.handler(), ctx, mgr).proceed();
+                handleNoResponse(exchange);
+              } catch (Exception e) {
+                mgr.handleException(ctx, e);
+              }
+            });
       } finally {
         route.dec();
         exchange.close();
