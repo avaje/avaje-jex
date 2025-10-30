@@ -18,9 +18,8 @@ class CtxHolderTest {
 
   @Test
   void get() {
-    try (var pair = init()) {
-      assertEquals(200, pair.request().GET().asDiscarding().statusCode());
-    }
+    var pair = init();
+    assertEquals(200, pair.request().GET().asDiscarding().statusCode());
   }
 
   @Test
