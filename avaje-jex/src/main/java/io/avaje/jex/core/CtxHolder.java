@@ -3,7 +3,7 @@ import java.util.Optional;
 
 import io.avaje.jex.http.Context;
 
-public class CtxHolder {
+public final class CtxHolder {
   private static final ThreadLocal<Context> CTX = new ThreadLocal<>();
 
   private CtxHolder() {}
