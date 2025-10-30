@@ -25,6 +25,6 @@ public class SpiRouteTest implements HttpService {
     HttpResponse<String> res = pair.request().path("spi").GET().asString();
 
     assertThat(res.body()).isEqualTo("hello from spi");
-    pair.shutdown();
+    pair.close();
   }
 }

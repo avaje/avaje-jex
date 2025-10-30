@@ -24,7 +24,7 @@ class HealthPluginOffTest {
 
   @AfterAll
   static void end() {
-    pair.shutdown();
+    pair.close();
   }
 
   @Test

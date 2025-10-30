@@ -58,7 +58,7 @@ class JdkFilterTest {
 
   @AfterAll
   static void end() {
-    pair.shutdown();
+    pair.close();
   }
 
   void clearAfter() {
