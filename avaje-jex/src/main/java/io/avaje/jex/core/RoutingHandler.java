@@ -45,7 +45,7 @@ final class RoutingHandler implements HttpHandler {
       try {
         final Map<String, String> params = route.pathParams(uri);
         JdkContext ctx = new JdkContext(mgr, exchange, route.matchPath(), params, route.roles());
-        SVHolder.runWith(ctx,
+        CtxHolder.runWith(ctx,
             () -> {
               try {
                 ctx.setMode(Mode.BEFORE);

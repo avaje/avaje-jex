@@ -33,7 +33,7 @@ class CookieServerTest {
 
   @AfterAll
   static void end() {
-    pair.shutdown();
+    pair.close();
   }
 
   @Test

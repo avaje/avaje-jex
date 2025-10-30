@@ -23,7 +23,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
 import io.avaje.jex.core.Constants;
-import io.avaje.jex.core.SVHolder;
+import io.avaje.jex.core.CtxHolder;
 import io.avaje.jex.core.json.JsonbOutput;
 import io.avaje.jex.security.BasicAuthCredentials;
 import io.avaje.jex.security.Role;
@@ -190,15 +190,9 @@ public interface Context {
    */
   Map<String, String> cookieMap();
 
-  /**
-   * JDK 25+ only. <br><br>
-   *
-   * Statically retrieve the context associated with the current http request.
-   *
-   * @return The request context
-   */
-  static Context get() {
-    return SVHolder.ctx();
+  /** Retrieve the context associated with the current http request. */
+  static Context currentRequest() {
+    return CtxHolder.ctx();
   }
 
   /** Return the underlying JDK {@link HttpExchange} object backing the context */

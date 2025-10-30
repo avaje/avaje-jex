@@ -74,7 +74,7 @@ class SseClientTest {
 
   @AfterAll
   static void end() {
-    pair.shutdown();
+    pair.close();
   }
 
   @Test
