@@ -59,7 +59,7 @@ class ContextTest {
 
   @AfterAll
   static void end() {
-    pair.shutdown();
+    pair.close();
   }
 
   @Test
