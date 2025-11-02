@@ -9,6 +9,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import io.avaje.jex.websocket.exception.CloseCode;
+
 public class WebSocketClientUtil {
 
   public static WebSocket createWSC(
@@ -36,7 +38,7 @@ public class WebSocketClientUtil {
                       text = new StringBuilder();
                     }
                     webSocket.request(1);
-
+                    webSocket.sendClose(CloseCode.NORMAL_CLOSURE.code(), "cya");
                     return null;
                   }
 

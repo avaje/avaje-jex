@@ -1,6 +1,10 @@
 package io.avaje.jex.websocket.exception;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum CloseCode {
+  // Enum constants remain the same
   NORMAL_CLOSURE(1000),
   GOING_AWAY(1001),
   PROTOCOL_ERROR(1002),
@@ -14,22 +18,25 @@ public enum CloseCode {
   INTERNAL_SERVER_ERROR(1011),
   TLS_HANDSHAKE(1015);
 
-  public static CloseCode find(int value) {
-    for (CloseCode code : values()) {
-      if (code.getValue() == value) {
-        return code;
-      }
-    }
-    return null;
-  }
-
   private final int code;
+
+  private static final Map<Integer, CloseCode> CODES_MAP = new HashMap<>();
+
+  static {
+    for (CloseCode code : values()) {
+      CODES_MAP.put(code.code(), code);
+    }
+  }
 
   CloseCode(int code) {
     this.code = code;
   }
 
-  public int getValue() {
+  public int code() {
     return this.code;
+  }
+
+  public static CloseCode find(int value) {
+    return CODES_MAP.get(value);
   }
 }
