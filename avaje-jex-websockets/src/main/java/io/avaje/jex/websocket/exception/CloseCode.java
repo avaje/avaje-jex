@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum CloseCode {
-  // Enum constants remain the same
+
   NORMAL_CLOSURE(1000),
   GOING_AWAY(1001),
   PROTOCOL_ERROR(1002),
@@ -20,7 +20,7 @@ public enum CloseCode {
 
   private final int code;
 
-  private static final Map<Integer, CloseCode> CODES_MAP = new HashMap<>();
+  private static final Map<Integer, CloseCode> CODES_MAP = HashMap.newHashMap(values().length);
 
   static {
     for (CloseCode code : values()) {
