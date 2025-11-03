@@ -225,7 +225,7 @@ public abstract class AbstractWebSocket implements WebSocket {
     } catch (Exception e) {
       onError(e);
       if (e instanceof WebSocketException wse) {
-        doClose(wse.getCode(), wse.getReason(), false);
+        doClose(wse.code(), wse.reason(), false);
       } else {
         doClose(CloseCode.ABNORMAL_CLOSURE, e.toString(), false);
       }

@@ -3,8 +3,11 @@ package io.avaje.jex.websocket.exception;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Websocket Close Codes. These codes are used to indicate the reason why a WebSocket connection has
+ * been closed.
+ */
 public enum CloseCode {
-
   NORMAL_CLOSURE(1000),
   GOING_AWAY(1001),
   PROTOCOL_ERROR(1002),
@@ -32,10 +35,22 @@ public enum CloseCode {
     this.code = code;
   }
 
+  /**
+   * Returns the integer value of this close code.
+   *
+   * @return The integer close code.
+   */
   public int code() {
     return this.code;
   }
 
+  /**
+   * Finds the {@code CloseCode} enum constant corresponding to the given integer value.
+   *
+   * @param value The integer value of the close code to find.
+   * @return The corresponding {@code CloseCode} enum constant, or {@code null} if no match is
+   *     found.
+   */
   public static CloseCode find(int value) {
     return CODES_MAP.get(value);
   }
