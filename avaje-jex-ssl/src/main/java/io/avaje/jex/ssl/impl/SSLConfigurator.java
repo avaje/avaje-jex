@@ -1,4 +1,4 @@
-package io.avaje.jex.ssl;
+package io.avaje.jex.ssl.impl;
 
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -17,16 +17,22 @@ import javax.net.ssl.TrustManagerFactory;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 
-final class SSLConfigurator extends HttpsConfigurator {
+import io.avaje.jex.ssl.SslConfigException;
+
+public final class SSLConfigurator extends HttpsConfigurator {
 
   private static final String SSL_PROTOCOL = "TLSv1.3";
   private static final String KEY_MANAGER_ALGORITHM = "SunX509";
   private static final String TRUST_MANAGER_ALGORITHM = "PKIX";
 
   private final boolean clientAuth;
+  private final KeyStore keyStore;
+  private final String password;
 
-  SSLConfigurator(SSLContext context, boolean clientAuth) {
+  SSLConfigurator(SSLContext context, DSslConfig sslConfig, boolean clientAuth) {
     super(context);
+    this.keyStore = sslConfig.keyStore();
+    this.password = sslConfig.identityPassword();
     this.clientAuth = clientAuth;
   }
 
@@ -42,10 +48,8 @@ final class SSLConfigurator extends HttpsConfigurator {
       var sslContext = createContext(sslConfig);
       var keyManagers = createKeyManagers(sslConfig);
       var trustManagers = createTrustManagers(sslConfig);
-
       sslContext.init(keyManagers, trustManagers, new SecureRandom());
-
-      return new SSLConfigurator(sslContext, trustManagers != null);
+      return new SSLConfigurator(sslContext, sslConfig, trustManagers !=null);
     } catch (Exception e) {
       throw new SslConfigException("Failed to build SSLContext", e);
     }
@@ -61,7 +65,6 @@ final class SSLConfigurator extends HttpsConfigurator {
   private static KeyManager[] createKeyManagers(DSslConfig sslConfig) throws SslConfigException {
     try {
       return switch (sslConfig.loadedIdentity()) {
-        case KEY_MANAGER -> new KeyManager[] {sslConfig.keyManager()};
         case KEY_STORE -> createKeyManagersFromKeyStore(sslConfig);
         default -> throw new IllegalStateException("No SSL Identity provided");
       };
@@ -79,14 +82,16 @@ final class SSLConfigurator extends HttpsConfigurator {
     return keyManagerFactory.getKeyManagers();
   }
 
-  private static KeyManagerFactory createKeyManagerFactory(DSslConfig sslConfig) throws NoSuchAlgorithmException {
+  private static KeyManagerFactory createKeyManagerFactory(DSslConfig sslConfig)
+      throws NoSuchAlgorithmException {
     if (sslConfig.securityProvider() != null) {
       return KeyManagerFactory.getInstance(KEY_MANAGER_ALGORITHM, sslConfig.securityProvider());
     }
     return KeyManagerFactory.getInstance(KEY_MANAGER_ALGORITHM);
   }
 
-  private static TrustManager[] createTrustManagers(DSslConfig sslConfig) throws SslConfigException {
+  private static TrustManager[] createTrustManagers(DSslConfig sslConfig)
+      throws SslConfigException {
     var trustConfig = sslConfig.trustConfig();
     if (trustConfig == null) {
       return null; // Use system default trust managers
@@ -109,14 +114,16 @@ final class SSLConfigurator extends HttpsConfigurator {
     }
   }
 
-  private static TrustManagerFactory createTrustManagerFactory(DSslConfig sslConfig) throws NoSuchAlgorithmException {
+  private static TrustManagerFactory createTrustManagerFactory(DSslConfig sslConfig)
+      throws NoSuchAlgorithmException {
     if (sslConfig.securityProvider() != null) {
       return TrustManagerFactory.getInstance(TRUST_MANAGER_ALGORITHM, sslConfig.securityProvider());
     }
     return TrustManagerFactory.getInstance(TRUST_MANAGER_ALGORITHM);
   }
 
-  private static KeyStore createCombinedTrustStore(List<KeyStore> trustStores, List<Certificate> certificates) throws Exception {
+  private static KeyStore createCombinedTrustStore(
+      List<KeyStore> trustStores, List<Certificate> certificates) throws Exception {
     var combinedTrustStore = KeyStore.getInstance(KeyStore.getDefaultType());
     combinedTrustStore.load(null, null);
 
@@ -147,5 +154,13 @@ final class SSLConfigurator extends HttpsConfigurator {
       }
     }
     return aliasCounter;
+  }
+
+  public KeyStore keyStore() {
+    return keyStore;
+  }
+
+  public String password() {
+    return password;
   }
 }

@@ -1,4 +1,4 @@
-package io.avaje.jex.ssl;
+package io.avaje.jex.ssl.impl;
 
 import static java.util.Base64.getDecoder;
 
@@ -11,7 +11,6 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -22,8 +21,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.X509ExtendedKeyManager;
+import io.avaje.jex.ssl.SslConfigException;
 
 final class KeyStoreUtil {
   private static final Pattern CERT_PATTERN =
@@ -59,7 +57,8 @@ final class KeyStoreUtil {
       return keyStore;
     }
 
-    throw new SslConfigException("Unable to load KeyStore - format not recognized or invalid password");
+    throw new SslConfigException(
+        "Unable to load KeyStore - format not recognized or invalid password");
   }
 
   private static KeyStore tryLoadKeyStore(byte[] data, String type, char[] password) {
@@ -73,7 +72,7 @@ final class KeyStoreUtil {
     }
   }
 
-  static X509ExtendedKeyManager loadIdentityFromPem(
+  static KeyStore loadIdentityFromPem(
       InputStream certificateInputStream, String privateKeyContent, char[] password) {
     try {
       var certificates = parseCertificates(certificateInputStream);
@@ -86,22 +85,8 @@ final class KeyStoreUtil {
       var keyPassword = password != null ? password : new char[0];
       keyStore.setKeyEntry(alias, privateKey, keyPassword, certChain);
 
-      var kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-      kmf.init(keyStore, keyPassword);
-
-      for (var km : kmf.getKeyManagers()) {
-        if (km instanceof X509ExtendedKeyManager m) {
-          return m;
-        }
-      }
-
-      throw new SslConfigException("No X509ExtendedKeyManager found");
-
-    } catch (KeyStoreException
-        | NoSuchAlgorithmException
-        | UnrecoverableKeyException
-        | CertificateException
-        | IOException e) {
+      return keyStore;
+    } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
       throw new SslConfigException("Failed to create KeyManager from PEM content", e);
     }
   }
