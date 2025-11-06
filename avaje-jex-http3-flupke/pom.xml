@@ -10,7 +10,6 @@
   <artifactId>avaje-jex-http3-flupke</artifactId>
   <version>0.1</version>
   <properties>
-    <maven.compiler.source>26</maven.compiler.source>
     <maven.compiler.release>21</maven.compiler.release>
   </properties>
   <dependencies>

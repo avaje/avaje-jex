@@ -2,14 +2,16 @@ package io.avaje.jex.http3.flupke.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.net.http.HttpClient.Version;
+import java.net.URI;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse.BodyHandlers;
 
 import org.junit.jupiter.api.Test;
 
-import io.avaje.http.client.HttpClient;
 import io.avaje.jex.Jex;
 import io.avaje.jex.http3.flupke.FlupkeJexPlugin;
 import io.avaje.jex.ssl.SslPlugin;
+import tech.kwik.flupke.Http3Client;
 
 class H3ServerProviderTest {
 
@@ -34,17 +36,25 @@ class H3ServerProviderTest {
                   ctx.text("hello world");
                 })
             .start();
-
     var body =
-        HttpClient.builder()
-            .version(Version.valueOf("HTTP_3"))
-            .baseUrl("https://localhost:8080")
+        Http3Client.newBuilder()
+            .disableCertificateCheck()
             .sslContext(ssl.sslContext())
             .build()
-            .request()
-            .GET()
-            .asString()
+            .send(
+                HttpRequest.newBuilder().uri(URI.create("https://localhost:8080")).GET().build(),
+                BodyHandlers.ofString())
             .body();
+    // JDK 26 Client
+    //        HttpClient.builder()
+    //            .version(Version.valueOf("HTTP_3"))
+    //            .baseUrl("https://localhost:8080")
+    //            .sslContext(ssl.sslContext())
+    //            .build()
+    //            .request()
+    //            .GET()
+    //            .asString()
+    //            .body();
 
     assertEquals("hello world", body);
 

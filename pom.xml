@@ -48,6 +48,7 @@
     <module>avaje-jex-static-content</module>
     <module>avaje-jex-test</module>
     <module>avaje-jex-ssl</module>
+    <module>avaje-jex-http3-flupke</module>
   </modules>
 
   <dependencyManagement>
@@ -351,15 +352,6 @@
       </activation>
       <modules>
         <module>examples</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>jdk26Plus</id>
-      <activation>
-        <jdk>[26,)</jdk>
-      </activation>
-      <modules>
-        <module>avaje-jex-http3-flupke</module>
       </modules>
     </profile>
     <profile>
