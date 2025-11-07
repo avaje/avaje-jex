@@ -1,19 +1,19 @@
-package io.avaje.jex.http3.flupke.impl;
+package io.avaje.jex.http3.flupke;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 
 import io.avaje.jex.Jex;
-import io.avaje.jex.http3.flupke.FlupkeJexPlugin;
 import io.avaje.jex.ssl.SslPlugin;
 import tech.kwik.flupke.Http3Client;
 
-class H3ServerProviderTest {
+class Http3Test {
 
   @Test
   void test() throws Exception {
@@ -27,7 +27,7 @@ class H3ServerProviderTest {
     var jex =
         Jex.create()
             .plugin(ssl)
-            .plugin(FlupkeJexPlugin.create())
+            .plugin(FlupkeJexPlugin.create().webTransport("/", b->{}))
             .get(
                 "/",
                 ctx -> {
@@ -42,7 +42,11 @@ class H3ServerProviderTest {
             .sslContext(ssl.sslContext())
             .build()
             .send(
-                HttpRequest.newBuilder().uri(URI.create("https://localhost:8080")).GET().build(),
+                HttpRequest.newBuilder()
+                    .timeout(Duration.ofDays(1))
+                    .uri(URI.create("https://localhost:8080"))
+                    .GET()
+                    .build(),
                 BodyHandlers.ofString())
             .body();
     // JDK 26 Client
