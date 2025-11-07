@@ -133,8 +133,8 @@ class FlupkeExchange extends HttpExchange {
   }
 
   /**
-   * An OutputStream which wraps another stream which is supplied either at creation time, or
-   * sometime later. If a caller/user tries to write to this stream before the wrapped stream has
+   * An OutputStream which wraps another wtStream which is supplied either at creation time, or
+   * sometime later. If a caller/user tries to write to this wtStream before the wrapped wtStream has
    * been provided, then an IOException will be thrown.
    */
   class PlaceholderOutputStream extends OutputStream {

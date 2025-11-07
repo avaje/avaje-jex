@@ -11,7 +11,8 @@ import io.avaje.jex.http3.flupke.impl.H3ServerProvider;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEntry;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportHandler;
 import io.avaje.jex.spi.JexPlugin;
-import tech.kwik.core.server.ServerConnector.Builder;
+import tech.kwik.core.server.ServerConnectionConfig;
+import tech.kwik.core.server.ServerConnector;
 import tech.kwik.flupke.server.Http3ServerExtensionFactory;
 
 public final class FlupkeJexPlugin implements JexPlugin {
@@ -19,7 +20,8 @@ public final class FlupkeJexPlugin implements JexPlugin {
   private DatagramSocket socket;
   private Map<String, Http3ServerExtensionFactory> extensions = Map.of();
   private List<WebTransportEntry> wts = new ArrayList<>();
-  private Consumer<Builder> consumer = b -> {};
+  private Consumer<ServerConnector.Builder> consumer = b -> {};
+  private Consumer<ServerConnectionConfig.Builder> connection = b -> {};
 
   private FlupkeJexPlugin() {}
 
@@ -37,8 +39,13 @@ public final class FlupkeJexPlugin implements JexPlugin {
     return this;
   }
 
-  public FlupkeJexPlugin config(Consumer<Builder> consumer) {
+  public FlupkeJexPlugin connectorConfig(Consumer<ServerConnector.Builder> consumer) {
     this.consumer = consumer;
+    return this;
+  }
+
+  public FlupkeJexPlugin connectionConfig(Consumer<ServerConnectionConfig.Builder> consumer) {
+    this.connection = consumer;
     return this;
   }
 
@@ -56,6 +63,6 @@ public final class FlupkeJexPlugin implements JexPlugin {
 
   @Override
   public void apply(Jex jex) {
-    jex.config().serverProvider(new H3ServerProvider(consumer, wts,extensions, socket));
+    jex.config().serverProvider(new H3ServerProvider(consumer,connection, wts, extensions, socket));
   }
 }

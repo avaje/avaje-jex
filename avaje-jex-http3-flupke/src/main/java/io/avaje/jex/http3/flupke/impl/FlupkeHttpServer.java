@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.security.KeyStore;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
 import com.sun.net.httpserver.Filter;
@@ -14,37 +16,44 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsServer;
 
+import io.avaje.jex.http3.flupke.webtransport.WebTransportEntry;
 import io.avaje.jex.ssl.impl.SSLConfigurator;
+import tech.kwik.core.server.ServerConnectionConfig;
 import tech.kwik.core.server.ServerConnector;
 import tech.kwik.flupke.server.Http3ApplicationProtocolFactory;
 import tech.kwik.flupke.server.Http3ServerExtensionFactory;
+import tech.kwik.flupke.webtransport.WebTransportHttp3ApplicationProtocolFactory;
 
 /** Jetty implementation of {@link com.sun.net.httpserver.HttpServer}. */
 class FlupkeHttpServer extends HttpsServer {
 
+  private final List<WebTransportEntry> wts;
+  private final Consumer<ServerConnector.Builder> configuration;
+  private final Consumer<ServerConnectionConfig.Builder> connection;
+  private final HttpsServer http1;
+
   private DatagramSocket datagram;
   private InetSocketAddress addr;
   private Executor executor;
-
   private FlupkeHttpContext context;
-
-  private Consumer<ServerConnector.Builder> configuration;
-
-  private HttpsServer http1;
   private ServerConnector connector;
   private KeyStore keystore;
   private String password;
 
   public FlupkeHttpServer(
       Consumer<ServerConnector.Builder> configuration,
+      Consumer<ServerConnectionConfig.Builder> connection,
+      List<WebTransportEntry> wts,
       Map<String, Http3ServerExtensionFactory> extensions,
       DatagramSocket socket,
       InetSocketAddress addr,
       int backlog)
       throws IOException {
     this.configuration = configuration;
+    this.connection = connection;
     this.datagram = socket;
     this.addr = addr;
+    this.wts = wts;
     http1 = HttpsServer.create(addr, backlog);
   }
 
@@ -65,8 +74,19 @@ class FlupkeHttpServer extends HttpsServer {
   public void start() {
     try {
       var builder = ServerConnector.builder();
+      var connectionBuilder = ServerConnectionConfig.builder()
+//              .maxIdleTimeoutInSeconds(30)
+//              .maxUnidirectionalStreamBufferSize(1_000_000)
+//              .maxBidirectionalStreamBufferSize(1_000_000)
+//              .maxConnectionBufferSize(10_000_000)
+//              .maxOpenPeerInitiatedUnidirectionalStreams(10)
+//              .maxOpenPeerInitiatedBidirectionalStreams(100)
+//              .connectionIdLength(8)
+              ;
+      connection.accept(connectionBuilder);
       bind(addr, 0);
       builder
+          .withConfiguration(connectionBuilder.build())
           .withLogger(new FlupkeSystemLogger())
           .withPort(1)
           .withSocket(datagram)
@@ -74,25 +94,30 @@ class FlupkeHttpServer extends HttpsServer {
 
       configuration.accept(builder);
       this.connector = builder.build();
+      Http3ApplicationProtocolFactory factory;
 
-      var factory = new Http3ApplicationProtocolFactory(context.flupkeHandler());
-
+      if (!wts.isEmpty()) {
+        var wt = new WebTransportHttp3ApplicationProtocolFactory(context.flupkeHandler());
+        wt.setExecutor((ExecutorService) executor);
+        for (var entry : wts) {
+          wt.registerWebTransportServer(entry.path(), entry);
+        }
+        factory = wt;
+      } else {
+        factory = new Http3ApplicationProtocolFactory(context.flupkeHandler());
+      }
       connector.registerApplicationProtocol("h3", factory);
-
       connector.start();
     } catch (Exception e) {
       throw new IllegalStateException(e);
     }
+
     http1
         .createContext("/", context.getHandler())
         .getFilters()
         .add(
             Filter.beforeHandler(
-                "Alt-Svc",
-                ctx -> {
-                  ctx.getResponseHeaders()
-                      .add("Alt-Svc", "h3=\":%s\"; ma=2592000".formatted(getAddress().getPort()));
-                }));
+                "Alt-Svc", ctx -> ctx.getResponseHeaders().add("Alt-Svc", "h3=\":443\"")));
     http1.start();
   }
 
@@ -142,7 +167,7 @@ class FlupkeHttpServer extends HttpsServer {
       this.keystore = ssl.keyStore();
       this.password = ssl.password();
     } else {
-      throw new IllegalArgumentException("Only the Jex SSL plugin supported");
+      throw new IllegalArgumentException("Only the Jex SSL configurator is supported");
     }
     http1.setHttpsConfigurator(config);
   }

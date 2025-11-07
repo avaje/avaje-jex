@@ -12,22 +12,26 @@ import com.sun.net.httpserver.HttpsServer;
 import com.sun.net.httpserver.spi.HttpServerProvider;
 
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEntry;
-import tech.kwik.core.server.ServerConnector.Builder;
+import tech.kwik.core.server.ServerConnectionConfig;
+import tech.kwik.core.server.ServerConnector;
 import tech.kwik.flupke.server.Http3ServerExtensionFactory;
 
 public class H3ServerProvider extends HttpServerProvider {
 
-  private final Consumer<Builder> consumer;
+  private final Consumer<ServerConnector.Builder> consumer;
+  private final Consumer<ServerConnectionConfig.Builder> connection;
   private final DatagramSocket datagram;
   private final List<WebTransportEntry> wts;
   private final Map<String, Http3ServerExtensionFactory> extensions;
 
   public H3ServerProvider(
-      Consumer<Builder> consumer,
+      Consumer<ServerConnector.Builder> consumer,
+      Consumer<ServerConnectionConfig.Builder> connection,
       List<WebTransportEntry> wts,
       Map<String, Http3ServerExtensionFactory> extensions,
       DatagramSocket datagram) {
     this.consumer = consumer;
+    this.connection = connection;
     this.wts = wts;
     this.datagram = datagram;
     this.extensions = extensions;
@@ -40,6 +44,6 @@ public class H3ServerProvider extends HttpServerProvider {
 
   @Override
   public HttpsServer createHttpsServer(InetSocketAddress addr, int backlog) throws IOException {
-    return new FlupkeHttpServer(consumer, wts, extensions, datagram, addr, backlog);
+    return new FlupkeHttpServer(consumer, connection, wts, extensions, datagram, addr, backlog);
   }
 }

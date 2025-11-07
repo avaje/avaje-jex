@@ -3,11 +3,10 @@ package io.avaje.jex.http3.flupke.webtransport;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import io.avaje.jex.http3.flupke.webtransport.WtContext.BiStream;
-import io.avaje.jex.http3.flupke.webtransport.WtContext.UniStream;
-import io.avaje.jex.http3.flupke.webtransport.WtContext.WtClose;
-import io.avaje.jex.http3.flupke.webtransport.WtContext.WtError;
-import io.avaje.jex.http3.flupke.webtransport.WtContext.WtOpen;
+import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.BiStream;
+import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.UniStream;
+import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.Close;
+import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.Open;
 
 public interface WebTransportHandler {
 
@@ -18,33 +17,26 @@ public interface WebTransportHandler {
   /**
    * Handles a new WebTransport session opening.
    *
-   * @param context The WtOpen context.
+   * @param context The Open context.
    */
-  void onOpen(WtOpen context);
+  void onOpen(Open context);
 
   /**
    * Handles a WebTransport session closing.
    *
-   * @param context The WtClose context, which includes the closing code and message.
+   * @param context The Close context, which includes the closing code and message.
    */
-  void onClose(WtClose context);
+  void onClose(Close context);
 
   /**
-   * Handles an error occurring during the WebTransport session lifecycle.
-   *
-   * @param context The WtError context, which includes the underlying Exception.
-   */
-  void onError(WtError context);
-
-  /**
-   * Handles a message context, which involves receiving a data frame on a stream.
+   * Handles a message context, which involves receiving a data frame on a wtStream.
    *
    * @param context The BiStream context, which includes the WebTransportStream.
    */
   void onUniDirectionalStream(UniStream context);
 
   /**
-   * Handles a message context, which involves receiving a data frame on a stream.
+   * Handles a message context, which involves receiving a data frame on a wtStream.
    *
    * @param context The BiStream context, which includes the WebTransportStream.
    */
@@ -54,9 +46,8 @@ public interface WebTransportHandler {
 
     // Consumers to hold the logic for each event type.
     // Defaults to an empty operation (no-op) if not explicitly set.
-    private Consumer<WtOpen> openHandler = ctx -> {};
-    private Consumer<WtClose> closeHandler = ctx -> {};
-    private Consumer<WtError> errorHandler = ctx -> {};
+    private Consumer<Open> openHandler = ctx -> {};
+    private Consumer<Close> closeHandler = ctx -> {};
     private Consumer<BiStream> bidirectional =
         ctx -> {
           throwUOE("bidirectional handler not implemented");
@@ -80,18 +71,13 @@ public interface WebTransportHandler {
 
     // --- Fluent Setter Methods ---
 
-    public Builder onOpen(Consumer<WtOpen> handler) {
+    public Builder onOpen(Consumer<Open> handler) {
       this.openHandler = Objects.requireNonNull(handler);
       return this;
     }
 
-    public Builder onClose(Consumer<WtClose> handler) {
+    public Builder onClose(Consumer<Close> handler) {
       this.closeHandler = Objects.requireNonNull(handler);
-      return this;
-    }
-
-    public Builder onError(Consumer<WtError> handler) {
-      this.errorHandler = Objects.requireNonNull(handler);
       return this;
     }
 
@@ -113,18 +99,13 @@ public interface WebTransportHandler {
     public WebTransportHandler build() {
       return new WebTransportHandler() {
         @Override
-        public void onOpen(WtOpen context) {
+        public void onOpen(Open context) {
           openHandler.accept(context);
         }
 
         @Override
-        public void onClose(WtClose context) {
+        public void onClose(Close context) {
           closeHandler.accept(context);
-        }
-
-        @Override
-        public void onError(WtError context) {
-          errorHandler.accept(context);
         }
 
         @Override
