@@ -74,15 +74,15 @@ class FlupkeHttpServer extends HttpsServer {
   public void start() {
     try {
       var builder = ServerConnector.builder();
-      var connectionBuilder = ServerConnectionConfig.builder()
-//              .maxIdleTimeoutInSeconds(30)
-//              .maxUnidirectionalStreamBufferSize(1_000_000)
-//              .maxBidirectionalStreamBufferSize(1_000_000)
-//              .maxConnectionBufferSize(10_000_000)
-//              .maxOpenPeerInitiatedUnidirectionalStreams(10)
-//              .maxOpenPeerInitiatedBidirectionalStreams(100)
-//              .connectionIdLength(8)
-              ;
+      var connectionBuilder =
+          ServerConnectionConfig.builder()
+              .maxIdleTimeoutInSeconds(30)
+              .maxUnidirectionalStreamBufferSize(1_000_000)
+              .maxBidirectionalStreamBufferSize(1_000_000)
+              .maxConnectionBufferSize(10_000_000)
+              .maxOpenPeerInitiatedUnidirectionalStreams(10)
+              .maxOpenPeerInitiatedBidirectionalStreams(100)
+              .connectionIdLength(8);
       connection.accept(connectionBuilder);
       bind(addr, 0);
       builder
