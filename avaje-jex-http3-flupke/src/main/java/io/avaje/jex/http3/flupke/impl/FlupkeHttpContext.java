@@ -14,20 +14,15 @@ import com.sun.net.httpserver.HttpServer;
 class FlupkeHttpContext extends HttpContext {
 
   private final HttpSpiContextHandler jettyContextHandler;
-
-  private final HttpServer _server;
-
-  private final Map<String, Object> _attributes = new HashMap<>();
-
-  private final List<Filter> _filters = new ArrayList<>();
-
-  private Authenticator _authenticator;
-
+  private final HttpServer server;
+  private final Map<String, Object> attributes = new HashMap<>();
+  private final List<Filter> filters = new ArrayList<>();
+  private Authenticator authenticator;
   private HttpHandler httpHandler;
 
   protected FlupkeHttpContext(HttpServer server, String contextPath, HttpHandler handler) {
     httpHandler = handler;
-    this._server = server;
+    this.server = server;
     jettyContextHandler = new HttpSpiContextHandler(this, handler);
   }
 
@@ -52,28 +47,28 @@ class FlupkeHttpContext extends HttpContext {
 
   @Override
   public HttpServer getServer() {
-    return _server;
+    return server;
   }
 
   @Override
   public Map<String, Object> getAttributes() {
-    return _attributes;
+    return attributes;
   }
 
   @Override
   public List<Filter> getFilters() {
-    return _filters;
+    return filters;
   }
 
   @Override
   public Authenticator setAuthenticator(Authenticator auth) {
-    Authenticator previous = _authenticator;
-    _authenticator = auth;
+    Authenticator previous = authenticator;
+    authenticator = auth;
     return previous;
   }
 
   @Override
   public Authenticator getAuthenticator() {
-    return _authenticator;
+    return authenticator;
   }
 }

@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsServer;
 
@@ -18,6 +17,7 @@ import io.avaje.jex.ssl.impl.SSLConfigurator;
 import tech.kwik.core.server.ServerConnector;
 import tech.kwik.flupke.server.Http3ApplicationProtocolFactory;
 import tech.kwik.flupke.server.Http3ServerExtensionFactory;
+import tech.kwik.flupke.webtransport.WebTransportHttp3ApplicationProtocolFactory;
 
 /** Jetty implementation of {@link com.sun.net.httpserver.HttpServer}. */
 class FlupkeHttpServer extends HttpsServer {
@@ -30,7 +30,7 @@ class FlupkeHttpServer extends HttpsServer {
 
   private Consumer<ServerConnector.Builder> configuration;
 
-  private HttpServer http1;
+  private HttpsServer http1;
   private ServerConnector connector;
   private KeyStore keystore;
   private String password;
@@ -45,7 +45,7 @@ class FlupkeHttpServer extends HttpsServer {
     this.configuration = configuration;
     this.datagram = socket;
     this.addr = addr;
-    http1 = HttpServer.create(addr, backlog);
+    http1 = HttpsServer.create(addr, backlog);
   }
 
   @Override
@@ -78,6 +78,7 @@ class FlupkeHttpServer extends HttpsServer {
       var factory = new Http3ApplicationProtocolFactory(context.flupkeHandler());
 
       connector.registerApplicationProtocol("h3", factory);
+
       connector.start();
     } catch (Exception e) {
       e.printStackTrace();
@@ -136,6 +137,7 @@ class FlupkeHttpServer extends HttpsServer {
     } else {
       throw new IllegalArgumentException("Only the Jex SSL plugin supported");
     }
+    http1.setHttpsConfigurator(config);
   }
 
   @Override
