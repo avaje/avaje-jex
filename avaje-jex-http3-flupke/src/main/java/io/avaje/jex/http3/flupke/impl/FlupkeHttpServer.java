@@ -15,7 +15,6 @@ import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsServer;
 
 import io.avaje.jex.ssl.impl.SSLConfigurator;
-import tech.kwik.core.log.SysOutLogger;
 import tech.kwik.core.server.ServerConnector;
 import tech.kwik.flupke.server.Http3ApplicationProtocolFactory;
 import tech.kwik.flupke.server.Http3ServerExtensionFactory;
@@ -35,6 +34,7 @@ class FlupkeHttpServer extends HttpsServer {
   private ServerConnector connector;
   private KeyStore keystore;
   private String password;
+
   public FlupkeHttpServer(
       Consumer<ServerConnector.Builder> configuration,
       Map<String, Http3ServerExtensionFactory> extensions,
@@ -67,7 +67,7 @@ class FlupkeHttpServer extends HttpsServer {
       var builder = ServerConnector.builder();
       bind(addr, 0);
       builder
-          .withLogger(new SysOutLogger())
+          .withLogger(new FlupkeSystemLogger())
           .withPort(1)
           .withSocket(datagram)
           .withKeyStore(keystore, keystore.aliases().nextElement(), password.toCharArray());
