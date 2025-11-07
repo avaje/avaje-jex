@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
+import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpsConfigurator;
@@ -17,7 +18,6 @@ import io.avaje.jex.ssl.impl.SSLConfigurator;
 import tech.kwik.core.server.ServerConnector;
 import tech.kwik.flupke.server.Http3ApplicationProtocolFactory;
 import tech.kwik.flupke.server.Http3ServerExtensionFactory;
-import tech.kwik.flupke.webtransport.WebTransportHttp3ApplicationProtocolFactory;
 
 /** Jetty implementation of {@link com.sun.net.httpserver.HttpServer}. */
 class FlupkeHttpServer extends HttpsServer {
@@ -81,9 +81,18 @@ class FlupkeHttpServer extends HttpsServer {
 
       connector.start();
     } catch (Exception e) {
-      e.printStackTrace();
       throw new IllegalStateException(e);
     }
+    http1
+        .createContext("/", context.getHandler())
+        .getFilters()
+        .add(
+            Filter.beforeHandler(
+                "Alt-Svc",
+                ctx -> {
+                  ctx.getResponseHeaders()
+                      .add("Alt-Svc", "h3=\":%s\"; ma=2592000".formatted(getAddress().getPort()));
+                }));
     http1.start();
   }
 
@@ -106,9 +115,7 @@ class FlupkeHttpServer extends HttpsServer {
 
   @Override
   public HttpContext createContext(String path, HttpHandler httpHandler) {
-
-    this.context = new FlupkeHttpContext(this, path, httpHandler);
-    http1.createContext(path, httpHandler);
+    this.context = new FlupkeHttpContext(this, httpHandler);
     return context;
   }
 

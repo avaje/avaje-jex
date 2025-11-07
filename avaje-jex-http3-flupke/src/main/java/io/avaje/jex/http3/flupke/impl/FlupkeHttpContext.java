@@ -20,7 +20,7 @@ class FlupkeHttpContext extends HttpContext {
   private Authenticator authenticator;
   private HttpHandler httpHandler;
 
-  protected FlupkeHttpContext(HttpServer server, String contextPath, HttpHandler handler) {
+  protected FlupkeHttpContext(HttpServer server, HttpHandler handler) {
     httpHandler = handler;
     this.server = server;
     jettyContextHandler = new HttpSpiContextHandler(this, handler);
