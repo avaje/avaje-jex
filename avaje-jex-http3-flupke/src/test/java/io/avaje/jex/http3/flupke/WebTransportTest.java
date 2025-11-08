@@ -37,12 +37,12 @@ class WebTransportTest {
 
   private URI localhost = URI.create("https://localhost:8080/");
   private Server jex;
-  private SslPlugin ssl =
+  private static SslPlugin ssl =
       SslPlugin.create(
           s ->
-              s.resourceLoader(getClass())
+              s.resourceLoader(WebTransportTest.class)
                   .keystoreFromClasspath("/my-custom-keystore.p12", "password"));
-  private Http3Client client =
+  private static Http3Client client =
       (Http3Client)
           Http3Client.newBuilder().disableCertificateCheck().sslContext(ssl.sslContext()).build();
 
