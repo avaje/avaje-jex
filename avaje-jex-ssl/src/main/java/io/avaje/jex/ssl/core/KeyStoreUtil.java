@@ -1,4 +1,4 @@
-package io.avaje.jex.ssl.impl;
+package io.avaje.jex.ssl.core;
 
 import static java.util.Base64.getDecoder;
 

@@ -1,4 +1,4 @@
-package io.avaje.jex.ssl.impl;
+package io.avaje.jex.ssl.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

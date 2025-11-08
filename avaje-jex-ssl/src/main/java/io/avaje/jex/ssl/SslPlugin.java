@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import javax.net.ssl.SSLContext;
 
 import io.avaje.jex.spi.JexPlugin;
-import io.avaje.jex.ssl.impl.DSslPlugin;
+import io.avaje.jex.ssl.core.DSslPlugin;
 
 /**
  * Plugin that Configures Jex with SSL and mTLS.

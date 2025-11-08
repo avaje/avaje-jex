@@ -1,4 +1,4 @@
-package io.avaje.jex.ssl.impl;
+package io.avaje.jex.ssl.core;
 
 import java.security.KeyStore;
 import java.security.KeyStoreException;
