@@ -83,7 +83,7 @@ class FlupkeHttpServer extends HttpsServer {
               .maxOpenPeerInitiatedBidirectionalStreams(100)
               .connectionIdLength(8);
       connection.accept(connectionBuilder);
-      bind(addr, 0);X509KeyManager
+      bind(addr, 0);
       builder
           .withConfiguration(connectionBuilder.build())
           .withLogger(new FlupkeSystemLogger())
