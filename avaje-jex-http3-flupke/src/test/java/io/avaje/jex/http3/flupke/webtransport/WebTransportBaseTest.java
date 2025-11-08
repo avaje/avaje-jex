@@ -46,13 +46,10 @@ public abstract class WebTransportBaseTest {
     try (stream) {
       // Echoes the request body back as the response body
       stream.requestStream().transferTo(stream.responseStream());
+      System.err.println("Wrote Echo");
     } catch (IOException e) {
       fail("IO error while processing request: " + e.getMessage());
     }
-  }
-
-  protected void echoWithProtocolCheck(BiStream stream) {
-    echo(stream);
   }
 
   ClientSessionFactory createClientSessionFactory(String path) throws IOException {
