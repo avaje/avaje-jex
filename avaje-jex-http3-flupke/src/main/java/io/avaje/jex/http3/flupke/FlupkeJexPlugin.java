@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import io.avaje.jex.Jex;
-import io.avaje.jex.http3.flupke.impl.H3ServerProvider;
+import io.avaje.jex.http3.flupke.core.H3ServerProvider;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEntry;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportHandler;
 import io.avaje.jex.spi.JexPlugin;

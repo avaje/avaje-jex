@@ -1,4 +1,4 @@
-package io.avaje.jex.http3.flupke.impl;
+package io.avaje.jex.http3.flupke.core;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
@@ -83,7 +83,7 @@ class FlupkeHttpServer extends HttpsServer {
               .maxOpenPeerInitiatedBidirectionalStreams(100)
               .connectionIdLength(8);
       connection.accept(connectionBuilder);
-      bind(addr, 0);
+      bind(addr, 0);X509KeyManager
       builder
           .withConfiguration(connectionBuilder.build())
           .withLogger(new FlupkeSystemLogger())

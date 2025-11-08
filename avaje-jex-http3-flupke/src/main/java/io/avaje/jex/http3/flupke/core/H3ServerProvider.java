@@ -1,4 +1,4 @@
-package io.avaje.jex.http3.flupke.impl;
+package io.avaje.jex.http3.flupke.core;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
