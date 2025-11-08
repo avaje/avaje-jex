@@ -68,8 +68,9 @@ class WebTransportTest {
                   assertEquals("h3", ctx.exchange().getProtocol());
                   ctx.text("hello world");
                 })
+            .port(0)
             .start();
-
+    localhost = URI.create("https://localhost:%s/".formatted(jex.port()));
     // Test regular HTTP/3 endpoint
     assertEquals(
         "hello world",
@@ -122,7 +123,7 @@ class WebTransportTest {
                           }
                         }));
 
-    jex = Jex.create().plugin(ssl).plugin(webTransport).start();
+    startServer(webTransport);
 
     var clientSessionFactory =
         ClientSessionFactory.newBuilder()
@@ -142,6 +143,11 @@ class WebTransportTest {
     assertEquals(message, receivedMessage.get());
 
     session.close();
+  }
+
+  private final void startServer(FlupkeJexPlugin webTransport) {
+    jex = Jex.create().plugin(ssl).plugin(webTransport).port(0).start();
+    localhost = URI.create("https://localhost:%s/".formatted(jex.port()));
   }
 
   @Test
@@ -174,7 +180,7 @@ class WebTransportTest {
                           }
                         }));
 
-    jex = Jex.create().plugin(ssl).plugin(webTransport).start();
+    startServer(webTransport);
 
     var clientSessionFactory =
         ClientSessionFactory.newBuilder()
@@ -230,7 +236,7 @@ class WebTransportTest {
                               closeLatch.countDown();
                             }));
 
-    jex = Jex.create().plugin(ssl).plugin(webTransport).start();
+    startServer(webTransport);
 
     var clientSessionFactory =
         ClientSessionFactory.newBuilder()
@@ -273,7 +279,7 @@ class WebTransportTest {
                           }
                         }));
 
-    jex = Jex.create().plugin(ssl).plugin(webTransport).start();
+    startServer(webTransport);
 
     var clientSessionFactory =
         ClientSessionFactory.newBuilder()
@@ -314,7 +320,7 @@ class WebTransportTest {
                           this.echo(stream);
                         }));
 
-    jex = Jex.create().plugin(ssl).plugin(webTransport).start();
+    startServer(webTransport);
 
     var clientSessionFactory =
         ClientSessionFactory.newBuilder()
@@ -346,7 +352,7 @@ class WebTransportTest {
     var webTransport =
         FlupkeJexPlugin.create().webTransport("/large", b -> b.onBiDirectionalStream(this::echo));
 
-    jex = Jex.create().plugin(ssl).plugin(webTransport).start();
+    startServer(webTransport);
 
     var clientSessionFactory =
         ClientSessionFactory.newBuilder()
@@ -395,7 +401,7 @@ class WebTransportTest {
                           }
                         }));
 
-    jex = Jex.create().plugin(ssl).plugin(webTransport).start();
+    startServer(webTransport);
 
     var clientSessionFactory =
         ClientSessionFactory.newBuilder()
@@ -434,7 +440,7 @@ class WebTransportTest {
                           this.echo(stream);
                         }));
 
-    jex = Jex.create().plugin(ssl).plugin(webTransport).start();
+    startServer(webTransport);
 
     var clientSessionFactory =
         ClientSessionFactory.newBuilder()
