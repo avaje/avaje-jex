@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.BiStream;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.Close;
+import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.Open;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.UniStream;
 import tech.kwik.flupke.webtransport.Session;
 
@@ -27,5 +28,6 @@ public final record WebTransportEntry(String path, WebTransportHandler handler)
           handler.onBiDirectionalStream(ctx);
         });
     session.open();
+    handler.onOpen(new Open(session));
   }
 }
