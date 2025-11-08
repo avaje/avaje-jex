@@ -32,8 +32,9 @@ public abstract class WebTransportBaseTest {
   @AfterEach
   void teardown() {
     if (jex != null) {
-      // jex.shutdown(); // Uncomment if your Jex library supports graceful shutdown
+      jex.shutdown();
     }
+    client.close();
   }
 
   protected final void startServer(FlupkeJexPlugin webTransport) {
