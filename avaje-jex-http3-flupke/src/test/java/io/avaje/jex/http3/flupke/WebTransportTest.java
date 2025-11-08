@@ -47,8 +47,9 @@ class WebTransportTest {
           Http3Client.newBuilder().disableCertificateCheck().sslContext(ssl.sslContext()).build();
 
   @AfterEach
-  void teardown() {
+  void teardown() throws InterruptedException {
     if (jex != null) {
+      Thread.sleep(1000);
       jex.shutdown();
     }
   }
