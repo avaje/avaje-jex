@@ -103,6 +103,7 @@ class FlupkeHttpServer extends HttpsServer {
         }
         factory = wt;
       } else {
+        // TODO register virtual thread executor on new flupke release
         factory = new Http3ApplicationProtocolFactory(context.flupkeHandler());
       }
       connector.registerApplicationProtocol("h3", factory);
