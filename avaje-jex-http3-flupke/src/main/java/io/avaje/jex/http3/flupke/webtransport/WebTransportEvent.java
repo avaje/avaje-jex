@@ -9,7 +9,7 @@ import tech.kwik.flupke.webtransport.Session;
 import tech.kwik.flupke.webtransport.WebTransportStream;
 
 /**
- * 💡 The abstract sealed base class that provides the context for a specific {@link
+ * The abstract sealed base class that provides the context for a specific {@link
  * WebTransportEvent}.
  *
  * <p>This class and its permitted subclasses represent the various lifecycle events that can occur
@@ -124,8 +124,8 @@ public abstract sealed class WebTransportEvent {
     final long code;
     final String message;
 
-    Close(Session s, long code, String message) {
-      super(s);
+    Close(Session session, long code, String message) {
+      super(session);
       this.code = code;
       this.message = message;
     }
@@ -218,7 +218,7 @@ public abstract sealed class WebTransportEvent {
 
     @Override
     public void close() throws IOException {
-      try (var in = wtStream.getInputStream()) {}
+      wtStream.getInputStream().close();
     }
   }
 }

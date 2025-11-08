@@ -102,7 +102,7 @@ class FlupkeExchange extends HttpExchange {
 
   @Override
   public InetSocketAddress getLocalAddress() {
-    return null;
+    return (InetSocketAddress) ctx.getAttributes().get("local_inet_address");
   }
 
   @Override
@@ -134,8 +134,8 @@ class FlupkeExchange extends HttpExchange {
 
   /**
    * An OutputStream which wraps another wtStream which is supplied either at creation time, or
-   * sometime later. If a caller/user tries to write to this wtStream before the wrapped wtStream has
-   * been provided, then an IOException will be thrown.
+   * sometime later. If a caller/user tries to write to this wtStream before the wrapped wtStream
+   * has been provided, then an IOException will be thrown.
    */
   class PlaceholderOutputStream extends OutputStream {
 

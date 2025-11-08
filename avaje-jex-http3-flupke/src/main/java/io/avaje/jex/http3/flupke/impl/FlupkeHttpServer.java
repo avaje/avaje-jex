@@ -24,7 +24,6 @@ import tech.kwik.flupke.server.Http3ApplicationProtocolFactory;
 import tech.kwik.flupke.server.Http3ServerExtensionFactory;
 import tech.kwik.flupke.webtransport.WebTransportHttp3ApplicationProtocolFactory;
 
-/** Jetty implementation of {@link com.sun.net.httpserver.HttpServer}. */
 class FlupkeHttpServer extends HttpsServer {
 
   private final List<WebTransportEntry> wts;
@@ -108,6 +107,7 @@ class FlupkeHttpServer extends HttpsServer {
       }
       connector.registerApplicationProtocol("h3", factory);
       connector.start();
+      context.getAttributes().put("local_inet_address", getAddress());
     } catch (Exception e) {
       throw new IllegalStateException(e);
     }

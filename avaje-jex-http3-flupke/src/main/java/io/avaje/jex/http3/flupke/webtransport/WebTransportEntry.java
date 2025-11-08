@@ -3,10 +3,11 @@ package io.avaje.jex.http3.flupke.webtransport;
 import java.util.function.Consumer;
 
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.BiStream;
-import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.UniStream;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.Close;
+import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.UniStream;
 import tech.kwik.flupke.webtransport.Session;
 
+/** Entry for webtransport */
 public final record WebTransportEntry(String path, WebTransportHandler handler)
     implements Consumer<Session> {
 

@@ -4,44 +4,69 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.BiStream;
-import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.UniStream;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.Close;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.Open;
+import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.UniStream;
 
+/**
+ * Defines the contract for handling lifecycle events within a single WebTransport session.
+ *
+ * <p>This interface is typically implemented using the nested {@link Builder} to create a handler
+ * that delegates each event type to a custom {@code Consumer} function.
+ */
 public interface WebTransportHandler {
 
+  /**
+   * Returns a new {@code Builder} instance for fluently creating a {@code WebTransportHandler}.
+   *
+   * @return A new Builder.
+   */
   static Builder builder() {
     return new Builder();
   }
 
   /**
-   * Handles a new WebTransport session opening.
+   * Handles a new WebTransport session opening event.
    *
-   * @param context The Open context.
+   * @param context The {@code Open} context containing session details.
    */
   void onOpen(Open context);
 
   /**
-   * Handles a WebTransport session closing.
+   * Handles a WebTransport session closing event.
    *
-   * @param context The Close context, which includes the closing code and message.
+   * @param context The {@code Close} context, which includes the closing code and message.
    */
   void onClose(Close context);
 
   /**
-   * Handles a message context, which involves receiving a data frame on a wtStream.
+   * Handles a new unidirectional stream opened by the client to the server.
    *
-   * @param context The BiStream context, which includes the WebTransportStream.
+   * <p>The handler should consume the data from the stream via {@link UniStream#requestStream()}.
+   *
+   * @param context The {@code UniStream} context, which provides access to the read-only {@code
+   *     InputStream}.
    */
   void onUniDirectionalStream(UniStream context);
 
   /**
-   * Handles a message context, which involves receiving a data frame on a wtStream.
+   * Handles a new bidirectional stream opened by the client.
    *
-   * @param context The BiStream context, which includes the WebTransportStream.
+   * <p>The handler can read data from and write data to the stream via {@link
+   * BiStream#requestStream()}.
+   *
+   * @param context The {@code BiStream} context, which provides access to the request/response
+   *     streams.
    */
   void onBiDirectionalStream(BiStream context);
 
+  /**
+   * A fluent builder for creating a {@link WebTransportHandler} implementation.
+   *
+   * <p>The builder allows setting a {@code Consumer} for each specific WebTransport event. Events
+   * not configured will use a default implementation: {@code onOpen} and {@code onClose} default to
+   * a no-op, while stream handlers default to throwing an {@code UnsupportedOperationException}.
+   */
   final class Builder {
 
     // Consumers to hold the logic for each event type.
@@ -64,37 +89,65 @@ public interface WebTransportHandler {
       throw new UnsupportedOperationException(message);
     }
 
-    /** Factory method to start the building process. */
+    /**
+     * Factory method to start the building process.
+     *
+     * @return A new instance of the Builder.
+     */
     public static Builder builder() {
       return new Builder();
     }
 
     // --- Fluent Setter Methods ---
 
+    /**
+     * Sets the consumer function to be executed when a session is opened.
+     *
+     * @param handler The consumer to handle the {@code Open} event context. Must not be null.
+     * @return This builder instance for chaining.
+     */
     public Builder onOpen(Consumer<Open> handler) {
       this.openHandler = Objects.requireNonNull(handler);
       return this;
     }
 
+    /**
+     * Sets the consumer function to be executed when a session is closed.
+     *
+     * @param handler The consumer to handle the {@code Close} event context. Must not be null.
+     * @return This builder instance for chaining.
+     */
     public Builder onClose(Consumer<Close> handler) {
       this.closeHandler = Objects.requireNonNull(handler);
       return this;
     }
 
+    /**
+     * Sets the consumer function to be executed when the client opens a new unidirectional stream.
+     *
+     * @param handler The consumer to handle the {@code UniStream} event context. Must not be null.
+     * @return This builder instance for chaining.
+     */
     public Builder onUniDirectionalStream(Consumer<UniStream> handler) {
       this.unidirectional = Objects.requireNonNull(handler);
       return this;
     }
 
+    /**
+     * Sets the consumer function to be executed when the client opens a new bidirectional stream.
+     *
+     * @param handler The consumer to handle the {@code BiStream} event context. Must not be null.
+     * @return This builder instance for chaining.
+     */
     public Builder onBiDirectionalStream(Consumer<BiStream> handler) {
       this.bidirectional = Objects.requireNonNull(handler);
       return this;
     }
 
     /**
-     * Finishes the configuration and returns the fully built WtContextHandler.
+     * Finishes the configuration and returns the fully built {@code WebTransportHandler}.
      *
-     * @return A WtContextHandler that delegates to the configured Consumer functions.
+     * @return A {@code WebTransportHandler} that delegates to the configured Consumer functions.
      */
     public WebTransportHandler build() {
       return new WebTransportHandler() {

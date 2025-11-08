@@ -9,7 +9,6 @@ import java.net.http.HttpResponse.BodyHandlers;
 import org.junit.jupiter.api.Test;
 
 import io.avaje.jex.Jex;
-import io.avaje.jex.http3.flupke.FlupkeJexPlugin;
 import io.avaje.jex.ssl.SslPlugin;
 import tech.kwik.flupke.Http3Client;
 
