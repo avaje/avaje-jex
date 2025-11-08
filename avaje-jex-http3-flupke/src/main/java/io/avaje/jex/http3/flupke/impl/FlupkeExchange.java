@@ -7,6 +7,8 @@ import java.io.UncheckedIOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.http.HttpHeaders;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpContext;
@@ -20,8 +22,9 @@ class FlupkeExchange extends HttpExchange {
 
   private final HttpServerRequest request;
   private final HttpServerResponse response;
-
+  private final Map<String, Object> attributes = new HashMap<>();
   private final Headers responseHeaders = new Headers();
+
   private Headers requestHeaders;
   private HttpContext ctx;
   private int statusCode = 0;
@@ -83,15 +86,19 @@ class FlupkeExchange extends HttpExchange {
   }
 
   @Override
-  public void sendResponseHeaders(int rCode, long responseLength) throws IOException {
-    statusCode = rCode;
+  public void sendResponseHeaders(int status, long responseLength) throws IOException {
+    statusCode = status;
+    if (responseLength > 0) {
+      responseHeaders.add("Content-length", Long.toString(responseLength));
+    }
     response.setHeaders(HttpHeaders.of(responseHeaders, (a, b) -> true));
-    response.setStatus(rCode);
+    response.setStatus(status);
     os.wrapped = response.getOutputStream();
   }
 
   @Override
   public InetSocketAddress getRemoteAddress() {
+    // TODO use new flupke version to get socket address
     return null;
   }
 
@@ -107,18 +114,17 @@ class FlupkeExchange extends HttpExchange {
 
   @Override
   public String getProtocol() {
-
     return "h3";
   }
 
   @Override
   public Object getAttribute(String name) {
-    throw new UnsupportedOperationException();
+    return attributes.get(name);
   }
 
   @Override
   public void setAttribute(String name, Object value) {
-    throw new UnsupportedOperationException();
+    attributes.put(name, value);
   }
 
   @Override

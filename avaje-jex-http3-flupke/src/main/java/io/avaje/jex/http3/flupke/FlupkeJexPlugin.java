@@ -124,14 +124,6 @@ public final class FlupkeJexPlugin implements JexPlugin {
     return this;
   }
 
-  /**
-   * Applies this plugin to the Jex instance.
-   *
-   * <p>This method registers the {@link H3ServerProvider} with Jex, injecting all accumulated
-   * configurations for HTTP/3 and WebTransport.
-   *
-   * @param jex The Jex instance being configured.
-   */
   @Override
   public void apply(Jex jex) {
     jex.config()
