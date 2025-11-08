@@ -49,8 +49,7 @@ class WebTransportTest {
   @AfterEach
   void teardown() throws InterruptedException {
     if (jex != null) {
-      Thread.sleep(1000);
-      jex.shutdown();
+   //   jex.shutdown();
     }
   }
 
