@@ -43,6 +43,15 @@ public abstract sealed class WebTransportEvent {
   }
 
   /**
+   * Whether the current session is still active.
+   *
+   * @return whether the session is active.
+   */
+  public boolean isOpen() {
+    return session.isOpen();
+  }
+
+  /**
    * Creates a new unidirectional {@link OutputStream} from the server to the client within this
    * session.
    *
@@ -190,7 +199,11 @@ public abstract sealed class WebTransportEvent {
     @Override
     public void close() throws IOException {
       try (var in = wtStream.getInputStream();
-          var out = wtStream.getOutputStream()) {}
+          var out = wtStream.getOutputStream()) {
+        if (isOpen()) {
+          out.flush();
+        }
+      }
     }
   }
 
