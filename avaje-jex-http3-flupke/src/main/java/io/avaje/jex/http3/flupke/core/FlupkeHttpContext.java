@@ -13,7 +13,7 @@ import com.sun.net.httpserver.HttpServer;
 
 class FlupkeHttpContext extends HttpContext {
 
-  private final HttpSpiContextHandler jettyContextHandler;
+  private final HttpSpiContextHandler handler;
   private final HttpServer server;
   private final Map<String, Object> attributes = new HashMap<>();
   private final List<Filter> filters = new ArrayList<>();
@@ -23,11 +23,11 @@ class FlupkeHttpContext extends HttpContext {
   protected FlupkeHttpContext(HttpServer server, HttpHandler handler) {
     httpHandler = handler;
     this.server = server;
-    jettyContextHandler = new HttpSpiContextHandler(this, handler);
+    this.handler = new HttpSpiContextHandler(this, handler);
   }
 
   protected HttpSpiContextHandler flupkeHandler() {
-    return jettyContextHandler;
+    return handler;
   }
 
   @Override
@@ -37,7 +37,7 @@ class FlupkeHttpContext extends HttpContext {
 
   @Override
   public void setHandler(HttpHandler h) {
-    jettyContextHandler.setHttpHandler(h);
+    handler.setHttpHandler(h);
   }
 
   @Override
@@ -62,7 +62,7 @@ class FlupkeHttpContext extends HttpContext {
 
   @Override
   public Authenticator setAuthenticator(Authenticator auth) {
-    Authenticator previous = authenticator;
+    var previous = authenticator;
     authenticator = auth;
     return previous;
   }
