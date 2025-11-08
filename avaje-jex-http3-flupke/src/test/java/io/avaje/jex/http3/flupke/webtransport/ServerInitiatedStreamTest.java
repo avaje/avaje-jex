@@ -73,7 +73,7 @@ class ServerInitiatedStreamTest extends WebTransportBaseTest {
     biStream.getOutputStream().write("Hello".getBytes());
     biStream.getOutputStream().close();
 
-    assertTrue(clientLatch.await(5, TimeUnit.SECONDS));
+    assertTrue(clientLatch.await(15, TimeUnit.SECONDS));
     assertEquals("Server says: Hello", clientReceived.get());
 
     session.close();

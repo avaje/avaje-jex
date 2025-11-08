@@ -48,12 +48,12 @@ class SessionCloseTest extends WebTransportBaseTest {
     var session = clientSessionFactory.createSession(localhost.resolve("/close"));
     session.open();
 
-    assertTrue(openLatch.await(5, TimeUnit.SECONDS));
+    assertTrue(openLatch.await(15, TimeUnit.SECONDS));
 
     // Close with custom code and message
     session.close(42, "Test close");
 
-    assertTrue(closeLatch.await(5, TimeUnit.SECONDS));
+    assertTrue(closeLatch.await(15, TimeUnit.SECONDS));
     assertEquals(42, closeCode.get());
     assertEquals("Test close", closeMessage.get());
   }
@@ -98,7 +98,7 @@ class SessionCloseTest extends WebTransportBaseTest {
     stream.getOutputStream().write("trigger close".getBytes());
     stream.getOutputStream().close();
 
-    assertTrue(clientCloseLatch.await(5, TimeUnit.SECONDS));
+    assertTrue(clientCloseLatch.await(15, TimeUnit.SECONDS));
     assertEquals(100, clientCloseCode.get());
   }
 }

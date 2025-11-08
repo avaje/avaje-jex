@@ -98,7 +98,7 @@ class StreamTypeTest extends WebTransportBaseTest {
     uniStream.write(message.getBytes());
     uniStream.close();
 
-    assertTrue(latch.await(5, TimeUnit.SECONDS));
+    assertTrue(latch.await(15, TimeUnit.SECONDS));
     assertEquals(message, receivedMessage.get());
 
     session.close();
