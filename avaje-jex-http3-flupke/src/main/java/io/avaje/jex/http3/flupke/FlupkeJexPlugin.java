@@ -137,6 +137,7 @@ public final class FlupkeJexPlugin implements JexPlugin {
   @Override
   public void apply(Jex jex) {
     jex.config()
-        .serverProvider(new H3ServerProvider(consumer, connection, wts, extensions, socket));
+        .serverProvider(
+            new H3ServerProvider(consumer, connection, certAlias, wts, extensions, socket));
   }
 }
