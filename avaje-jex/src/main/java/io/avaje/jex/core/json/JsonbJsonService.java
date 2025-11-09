@@ -61,4 +61,9 @@ public final class JsonbJsonService implements JsonService {
       }
     }
   }
+
+  @Override
+  public <T> T fromJson(Type type, String data) {
+    return jsonb.<T>type(type).fromJson(data);
+  }
 }
