@@ -147,23 +147,6 @@ class FlupkeHttpServer extends HttpsServer {
   }
 
   @Override
-  public HttpContext createContext(String path) {
-    throw new UnsupportedOperationException("Need a handler");
-  }
-
-  @Override
-  public void removeContext(String path) throws IllegalArgumentException {
-    context = null;
-    http1.removeContext(path);
-  }
-
-  @Override
-  public void removeContext(HttpContext context) {
-    this.context = null;
-    http1.removeContext(context);
-  }
-
-  @Override
   public void setHttpsConfigurator(HttpsConfigurator config) {
     if (config instanceof SSLConfigurator ssl) {
       this.keystore = ssl.keyStore();
@@ -176,6 +159,21 @@ class FlupkeHttpServer extends HttpsServer {
 
   @Override
   public HttpsConfigurator getHttpsConfigurator() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public HttpContext createContext(String path) {
+    throw new UnsupportedOperationException("Need a handler");
+  }
+
+  @Override
+  public void removeContext(String path) throws IllegalArgumentException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void removeContext(HttpContext context) {
     throw new UnsupportedOperationException();
   }
 }
