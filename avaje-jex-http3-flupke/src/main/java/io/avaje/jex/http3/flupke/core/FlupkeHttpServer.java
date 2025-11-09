@@ -81,7 +81,8 @@ class FlupkeHttpServer extends HttpsServer {
               .maxConnectionBufferSize(10_000_000)
               .maxOpenPeerInitiatedUnidirectionalStreams(10)
               .maxOpenPeerInitiatedBidirectionalStreams(100)
-              .connectionIdLength(8);
+              .connectionIdLength(8)
+              .retryRequired(true);
       connection.accept(connectionBuilder);
       bind(addr, 0);
       builder

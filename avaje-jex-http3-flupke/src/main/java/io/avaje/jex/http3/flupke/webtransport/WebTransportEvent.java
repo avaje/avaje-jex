@@ -179,16 +179,16 @@ public abstract sealed class WebTransportEvent {
     }
 
     /**
-     * Returns the bidirectional {@link WebTransportStream}.
+     * Returns the input stream for reading data sent by the client wtStream.
      *
-     * @return The wtStream for reading and writing data.
+     * @return An {@link InputStream} for reading the client's data.
      */
     public InputStream requestStream() {
       return wtStream.getInputStream();
     }
 
     /**
-     * Returns the wtStream for writing data to the client on this bidirectional wtStream.
+     * Returns the stream for writing data to the client on this bidirectional wtStream.
      *
      * @return An {@link OutputStream} for writing to the client.
      */
@@ -200,9 +200,6 @@ public abstract sealed class WebTransportEvent {
     public void close() throws IOException {
       try (var in = wtStream.getInputStream();
           var out = wtStream.getOutputStream()) {
-        if (isOpen()) {
-          out.flush();
-        }
       }
     }
   }
@@ -220,8 +217,7 @@ public abstract sealed class WebTransportEvent {
     }
 
     /**
-     * Returns the input wtStream for reading data sent by the client on this unidirectional
-     * wtStream.
+     * Returns the input stream for reading data sent by the client on this unidirectional wtStream.
      *
      * @return An {@link InputStream} for reading the client's data.
      */
