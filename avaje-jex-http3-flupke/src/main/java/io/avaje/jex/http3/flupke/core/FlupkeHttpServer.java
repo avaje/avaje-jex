@@ -29,6 +29,7 @@ class FlupkeHttpServer extends HttpsServer {
   private final List<WebTransportEntry> wts;
   private final Consumer<ServerConnector.Builder> configuration;
   private final Consumer<ServerConnectionConfig.Builder> connection;
+  private final String certAlias;
   private final HttpsServer http1;
 
   private DatagramSocket datagram;
@@ -43,6 +44,7 @@ class FlupkeHttpServer extends HttpsServer {
       Consumer<ServerConnector.Builder> configuration,
       Consumer<ServerConnectionConfig.Builder> connection,
       List<WebTransportEntry> wts,
+      String certAlias,
       Map<String, Http3ServerExtensionFactory> extensions,
       DatagramSocket socket,
       InetSocketAddress addr,
@@ -50,6 +52,7 @@ class FlupkeHttpServer extends HttpsServer {
       throws IOException {
     this.configuration = configuration;
     this.connection = connection;
+    this.certAlias = certAlias;
     this.datagram = socket;
     this.addr = addr;
     this.wts = wts;
@@ -90,7 +93,10 @@ class FlupkeHttpServer extends HttpsServer {
           .withLogger(new FlupkeSystemLogger())
           .withPort(1)
           .withSocket(datagram)
-          .withKeyStore(keystore, keystore.aliases().nextElement(), password.toCharArray());
+          .withKeyStore(
+              keystore,
+              certAlias != null ? certAlias : keystore.aliases().nextElement(),
+              password.toCharArray());
 
       configuration.accept(builder);
       this.connector = builder.build();

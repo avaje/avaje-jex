@@ -28,6 +28,7 @@ public final class FlupkeJexPlugin implements JexPlugin {
   private List<WebTransportEntry> wts = new ArrayList<>();
   private Consumer<ServerConnector.Builder> consumer = b -> {};
   private Consumer<ServerConnectionConfig.Builder> connection = b -> {};
+  private String certAlias;
 
   private FlupkeJexPlugin() {}
 
@@ -38,6 +39,15 @@ public final class FlupkeJexPlugin implements JexPlugin {
    */
   public static FlupkeJexPlugin create() {
     return new FlupkeJexPlugin();
+  }
+
+  /**
+   * The alias for the certificate, needed when multiple certificate chains are present
+   *
+   * @param certAlias
+   */
+  public void certAlias(String certAlias) {
+    this.certAlias = certAlias;
   }
 
   /**
