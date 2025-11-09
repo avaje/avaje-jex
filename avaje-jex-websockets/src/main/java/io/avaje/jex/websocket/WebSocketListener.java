@@ -21,7 +21,7 @@ public interface WebSocketListener {
    * @return the builder
    */
   static Builder builder() {
-    return new ListenerBuilder();
+    return new Builder();
   }
 
   /**
@@ -66,7 +66,16 @@ public interface WebSocketListener {
    */
   default void onError(WsError wsError) {}
 
-  interface Builder {
+  /** A builder for creating a {@link WebSocketListener} with specific event handlers. */
+  final class Builder {
+    private Consumer<WsOpen> onOpen;
+    private Consumer<WsMessage> onMessage;
+    private Consumer<WsBinaryMessage> onBinaryMessage;
+    private Consumer<WsClose> onClose;
+    private Consumer<WsPong> onPong;
+    private Consumer<WsError> onError;
+
+    private Builder() {}
 
     /**
      * Set the handler for the WebSocket open event.
@@ -74,7 +83,10 @@ public interface WebSocketListener {
      * @param handler Consumer for {@link WsOpen}
      * @return this builder
      */
-    Builder onOpen(Consumer<WsOpen> handler);
+    public Builder onOpen(Consumer<WsOpen> handler) {
+      this.onOpen = handler;
+      return this;
+    }
 
     /**
      * Set the handler for the WebSocket text message event.
@@ -82,7 +94,10 @@ public interface WebSocketListener {
      * @param handler Consumer for {@link WsMessage}
      * @return this builder
      */
-    Builder onMessage(Consumer<WsMessage> handler);
+    public Builder onMessage(Consumer<WsMessage> handler) {
+      this.onMessage = handler;
+      return this;
+    }
 
     /**
      * Set the handler for the WebSocket binary message event.
@@ -90,7 +105,10 @@ public interface WebSocketListener {
      * @param handler Consumer for {@link WsBinaryMessage}
      * @return this builder
      */
-    Builder onBinaryMessage(Consumer<WsBinaryMessage> handler);
+    public Builder onBinaryMessage(Consumer<WsBinaryMessage> handler) {
+      this.onBinaryMessage = handler;
+      return this;
+    }
 
     /**
      * Set the handler for the WebSocket close event.
@@ -98,7 +116,10 @@ public interface WebSocketListener {
      * @param handler Consumer for {@link WsClose}
      * @return this builder
      */
-    Builder onClose(Consumer<WsClose> handler);
+    public Builder onClose(Consumer<WsClose> handler) {
+      this.onClose = handler;
+      return this;
+    }
 
     /**
      * Set the handler for the WebSocket pong event.
@@ -106,7 +127,10 @@ public interface WebSocketListener {
      * @param handler Consumer for {@link WsPong}
      * @return this builder
      */
-    Builder onPong(Consumer<WsPong> handler);
+    public Builder onPong(Consumer<WsPong> handler) {
+      this.onPong = handler;
+      return this;
+    }
 
     /**
      * Set the handler for the WebSocket error event.
@@ -114,9 +138,49 @@ public interface WebSocketListener {
      * @param handler Consumer for {@link WsError}
      * @return this builder
      */
-    Builder onError(Consumer<WsError> handler);
+    public Builder onError(Consumer<WsError> handler) {
+      this.onError = handler;
+      return this;
+    }
 
-    /** Build the WebSocketListener. */
-    WebSocketListener build();
+    /**
+     * Build a {@link WebSocketListener} implementation using the configured handlers.
+     *
+     * @return a new {@link WebSocketListener} instance
+     */
+    public WebSocketListener build() {
+      return new WebSocketListener() {
+
+        @Override
+        public void onOpen(WsOpen wsOpen) {
+          if (onOpen != null) onOpen.accept(wsOpen);
+        }
+
+        @Override
+        public void onMessage(WsMessage message) {
+          if (onMessage != null) onMessage.accept(message);
+        }
+
+        @Override
+        public void onBinaryMessage(WsBinaryMessage binaryPayload) {
+          if (onBinaryMessage != null) onBinaryMessage.accept(binaryPayload);
+        }
+
+        @Override
+        public void onClose(WsClose wsClose) {
+          if (onClose != null) onClose.accept(wsClose);
+        }
+
+        @Override
+        public void onPong(WsPong wsPong) {
+          if (onPong != null) onPong.accept(wsPong);
+        }
+
+        @Override
+        public void onError(WsError wsError) {
+          if (onError != null) onError.accept(wsError);
+        }
+      };
+    }
   }
 }
