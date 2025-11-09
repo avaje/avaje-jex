@@ -2,12 +2,7 @@ package io.avaje.jex.http3.flupke;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpClient.Version;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
 
@@ -24,7 +19,9 @@ class Http3Test {
 
     var ssl =
         SslPlugin.create(
-            s -> s.resourceLoader(getClass()).keystoreFromClasspath("/keystore.p12", "password"));
+            s ->
+                s.resourceLoader(getClass())
+                    .keystoreFromClasspath("/my-custom-keystore.p12", "password"));
 
     var jex =
         Jex.create()
@@ -39,43 +36,27 @@ class Http3Test {
                 })
             .start();
     var body =
-        (Runtime.version().feature() >= 26
-                ? HttpClient.newBuilder().version(Version.valueOf("HTTP_3"))
-                : Http3Client.newBuilder())
+        Http3Client.newBuilder()
+            .disableCertificateCheck()
             .sslContext(ssl.sslContext())
             .build()
-            .send(request(), BodyHandlers.ofString())
+            .send(
+                HttpRequest.newBuilder().uri(URI.create("https://localhost:8080")).GET().build(),
+                BodyHandlers.ofString())
             .body();
+    // JDK 26 Client
+    //        HttpClient.builder()
+    //            .version(Version.valueOf("HTTP_3"))
+    //            .baseUrl("https://localhost:8080")
+    //            .sslContext(ssl.sslContext())
+    //            .build()
+    //            .request()
+    //            .GET()
+    //            .asString()
+    //            .body();
 
     assertEquals("hello world", body);
 
     jex.shutdown();
-  }
-
-  HttpRequest request() {
-    var builder = HttpRequest.newBuilder().uri(URI.create("https://localhost:8080")).GET();
-    if (Runtime.version().feature() < 26) return builder.build();
-    try {
-      Class<?> httpOptionClass = Class.forName("java.net.http.HttpOption");
-      Class<?> http3DiscoveryModeClass =
-          Class.forName("java.net.http.HttpOption$Http3DiscoveryMode");
-
-      var h3DiscoveryOption =
-          httpOptionClass.getDeclaredField("H3_DISCOVERY").get(null); // 'null' for static field
-
-      var h3DiscoveryModeValue =
-          http3DiscoveryModeClass.getDeclaredField("HTTP_3_URI_ONLY").get(null);
-
-      MethodType methodType =
-          MethodType.methodType(HttpRequest.Builder.class, httpOptionClass, Object.class);
-
-      MethodHandle setOptionHandle =
-          MethodHandles.lookup().findVirtual(HttpRequest.Builder.class, "setOption", methodType);
-      setOptionHandle.invoke(builder, h3DiscoveryOption, h3DiscoveryModeValue);
-
-    } catch (Throwable e) {
-      e.printStackTrace();
-    }
-    return builder.build();
   }
 }
