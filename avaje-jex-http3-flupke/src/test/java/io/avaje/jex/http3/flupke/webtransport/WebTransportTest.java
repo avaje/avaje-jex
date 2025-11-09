@@ -12,6 +12,7 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -108,6 +109,7 @@ class WebTransportTest {
 
     var session = clientSessionFactory.createSession(localhost);
     session.open();
+    Thread.sleep(Duration.ofMillis(500));
     var bidirectionalStream = session.createBidirectionalStream();
     var message = "Hello, WebTransport!";
 
