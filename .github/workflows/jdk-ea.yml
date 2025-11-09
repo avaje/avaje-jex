@@ -36,5 +36,12 @@ jobs:
         path:
           ~/.m2
         key: build-${{ env.cache-name }}
+    - name: Install mkcert cert
+      run: |
+        keytool -import -trustcacerts -noprompt \
+        -alias mkcert-root-ca \
+        -file mkcert.pem \
+        -keystore "${JAVA_HOME}/lib/security/cacerts" \
+        -storepass changeit
     - name: Build with Maven
       run: mvn clean test

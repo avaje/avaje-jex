@@ -39,11 +39,11 @@ class WebTransportTest {
       SslPlugin.create(
           s ->
               s.resourceLoader(WebTransportTest.class)
-                  .keystoreFromClasspath("/my-custom-keystore.p12", "password"));
+                  .keystoreFromClasspath("/keystore.p12", "password"));
 
   private Http3Client client =
       (Http3Client)
-          Http3Client.newBuilder().disableCertificateCheck().sslContext(ssl.sslContext()).build();
+          Http3Client.newBuilder().sslContext(ssl.sslContext()).build();
   private static CountDownLatch uniLatch = new CountDownLatch(1);
   private static AtomicReference<String> receivedMessage = new AtomicReference<>();
 
