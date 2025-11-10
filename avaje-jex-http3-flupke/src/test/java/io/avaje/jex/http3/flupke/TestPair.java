@@ -1,14 +1,18 @@
-package io.avaje.jex.test;
-
-import java.net.http.HttpClient.Version;
+package io.avaje.jex.http3.flupke;
 
 import io.avaje.http.client.HttpClient;
 import io.avaje.http.client.HttpClientRequest;
 import io.avaje.jex.Jex;
+import io.avaje.jex.ssl.SslPlugin;
+import tech.kwik.flupke.Http3Client;
 
 /** Server and Client pair for a test. */
 public class TestPair implements AutoCloseable {
-
+  private static final SslPlugin sslPlugin =
+      SslPlugin.create(
+          s ->
+              s.resourceLoader(TestPair.class)
+                  .keystoreFromClasspath("/my-custom-keystore.p12", "password"));
   private final int port;
 
   private final Jex.Server server;
@@ -41,11 +45,18 @@ public class TestPair implements AutoCloseable {
   /** Create a Server and Client pair for a given set of tests. */
   public static TestPair create(Jex app) {
 
-    var jexServer = app.port(0).start();
+    var jexServer = app.plugin(sslPlugin).plugin(FlupkeJexPlugin.create()).port(0).start();
     var port = jexServer.port();
-    String protocol = app.config().httpsConfig() != null ? "https" : "http";
-    var url = protocol + "://localhost:" + port;
-    var client = HttpClient.builder().version(Version.HTTP_1_1).baseUrl(url).build();
+    var url = "https://localhost:" + port;
+    var client =
+        HttpClient.builder()
+            .baseUrl(url)
+            .client(
+                Http3Client.newBuilder()
+                    .disableCertificateCheck()
+                    .sslContext(sslPlugin.sslContext())
+                    .build())
+            .build();
 
     return new TestPair(port, jexServer, client);
   }

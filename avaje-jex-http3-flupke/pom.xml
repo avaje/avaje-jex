@@ -32,5 +32,17 @@
       <artifactId>avaje-jex-test</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-jsonb</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.avaje</groupId>
+      <artifactId>avaje-jsonb-generator</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

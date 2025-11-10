@@ -161,7 +161,9 @@ public interface JexConfig {
   int rangeChunkSize();
 
   /**
-   * Sets the the max size of request body that can be accessed without using using an InputStream
+   * Sets the the max size of request body that can be accessed without using using an InputStream.
+   *
+   * <p>providing -1 means there is no limit
    *
    * @param maxRequestSize The size.
    */
