@@ -127,7 +127,7 @@ final class JdkContext implements Context {
       if (bodyBytes == null) {
         var contentLength = contentLength();
         long maxRequestSize = mgr.maxRequestSize();
-        if (contentLength > maxRequestSize || contentLength < 0) {
+        if (maxRequestSize > 0 && (contentLength > maxRequestSize || contentLength < 0)) {
           throw new HttpResponseException(
               HttpStatus.REQUEST_ENTITY_TOO_LARGE_413.status(),
               "Body content length unknown or greater than max configured size (%s bytes)"
