@@ -199,8 +199,7 @@ public abstract sealed class WebTransportEvent {
     @Override
     public void close() throws IOException {
       try (var in = wtStream.getInputStream();
-          var out = wtStream.getOutputStream()) {
-      }
+          var out = wtStream.getOutputStream()) {}
     }
   }
 

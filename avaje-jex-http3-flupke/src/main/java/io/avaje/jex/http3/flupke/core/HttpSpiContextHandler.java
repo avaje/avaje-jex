@@ -28,7 +28,7 @@ class HttpSpiContextHandler implements HttpRequestHandler {
   @Override
   public void handleRequest(HttpServerRequest request, HttpServerResponse response)
       throws IOException {
-    var exchange = new FlupkeExchange(request, response, httpContext);
+    final var exchange = new FlupkeExchange(request, response, httpContext);
     try {
       new Chain(httpContext.getFilters(), httpHandler).doFilter(exchange);
     } catch (Exception ex) {

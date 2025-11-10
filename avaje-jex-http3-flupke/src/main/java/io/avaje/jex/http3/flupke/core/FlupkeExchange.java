@@ -26,10 +26,10 @@ class FlupkeExchange extends HttpExchange {
   private final Headers responseHeaders = new Headers();
 
   private Headers requestHeaders;
-  private HttpContext ctx;
+  private final HttpContext ctx;
   private int statusCode = 0;
   private InputStream is;
-  private PlaceholderOutputStream os = new PlaceholderOutputStream();
+  private final PlaceholderOutputStream os = new PlaceholderOutputStream();
 
   public FlupkeExchange(HttpServerRequest request, HttpServerResponse response, HttpContext ctx) {
     this.request = request;

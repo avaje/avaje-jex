@@ -17,8 +17,7 @@ class FlupkeHttpContext extends HttpContext {
   private final HttpServer server;
   private final Map<String, Object> attributes = new HashMap<>();
   private final List<Filter> filters = new ArrayList<>();
-  private Authenticator authenticator;
-  private HttpHandler httpHandler;
+  private final HttpHandler httpHandler;
 
   protected FlupkeHttpContext(HttpServer server, HttpHandler handler) {
     httpHandler = handler;
@@ -62,13 +61,11 @@ class FlupkeHttpContext extends HttpContext {
 
   @Override
   public Authenticator setAuthenticator(Authenticator auth) {
-    var previous = authenticator;
-    authenticator = auth;
-    return previous;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public Authenticator getAuthenticator() {
-    return authenticator;
+    throw new UnsupportedOperationException();
   }
 }
