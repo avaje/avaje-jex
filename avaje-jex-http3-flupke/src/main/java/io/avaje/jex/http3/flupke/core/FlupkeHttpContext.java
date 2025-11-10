@@ -15,7 +15,7 @@ class FlupkeHttpContext extends HttpContext {
 
   private final HttpSpiContextHandler handler;
   private final HttpServer server;
-  private final Map<String, Object> attributes = new HashMap<>();
+  private final Map<String, Object> attributes = new HashMap<>(Map.of("protocol", "UDP"));
   private final List<Filter> filters = new ArrayList<>();
   private final HttpHandler httpHandler;
 

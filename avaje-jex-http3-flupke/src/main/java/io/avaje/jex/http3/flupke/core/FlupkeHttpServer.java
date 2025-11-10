@@ -1,5 +1,7 @@
 package io.avaje.jex.http3.flupke.core;
 
+import static java.lang.System.Logger.Level.INFO;
+
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
@@ -16,6 +18,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsServer;
 
+import io.avaje.applog.AppLog;
 import io.avaje.jex.http3.flupke.FlupkeSystemLogger;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEntry;
 import io.avaje.jex.ssl.core.SSLConfigurator;
@@ -27,6 +30,7 @@ import tech.kwik.flupke.webtransport.WebTransportHttp3ApplicationProtocolFactory
 
 class FlupkeHttpServer extends HttpsServer {
 
+  private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
   private final List<WebTransportEntry> wts;
   private final Consumer<ServerConnector.Builder> configuration;
   private final Consumer<ServerConnectionConfig.Builder> connection;
@@ -133,6 +137,12 @@ class FlupkeHttpServer extends HttpsServer {
                       .add("Alt-Svc", "h3=\":%s\"".formatted(datagram.getLocalPort()));
                 }));
     http1.start();
+    log.log(
+        INFO,
+        "Avaje Jex started {0} on TCP https://{1}:{2,number,#}",
+        http1.getClass(),
+        http1.getAddress().getHostName(),
+        http1.getAddress().getPort());
   }
 
   @Override
