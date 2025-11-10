@@ -120,29 +120,30 @@ class FlupkeHttpServer extends HttpsServer {
       }
       connector.registerApplicationProtocol("h3", factory);
       connector.start();
-      context.getAttributes().put("local_inet_address", getAddress());
+      InetSocketAddress address = getAddress();
+      context.getAttributes().put("local_inet_address", address);
+
+      http1
+          .createContext("/", context.getHandler())
+          .getFilters()
+          .add(
+              Filter.beforeHandler(
+                  "Alt-Svc",
+                  ctx -> {
+                    ctx.getResponseHeaders().add("Alt-Svc", "h3=\":443\"");
+                    ctx.getResponseHeaders()
+                        .add("Alt-Svc", "h3=\":%s\"".formatted(datagram.getLocalPort()));
+                  }));
+      http1.start();
+      log.log(
+          INFO,
+          "Avaje Jex started {0} on TCP https://{1}:{2,number,#}",
+          http1.getClass(),
+          address.getHostName(),
+          address.getPort());
     } catch (Exception e) {
       throw new IllegalStateException(e);
     }
-
-    http1
-        .createContext("/", context.getHandler())
-        .getFilters()
-        .add(
-            Filter.beforeHandler(
-                "Alt-Svc",
-                ctx -> {
-                  ctx.getResponseHeaders().add("Alt-Svc", "h3=\":443\"");
-                  ctx.getResponseHeaders()
-                      .add("Alt-Svc", "h3=\":%s\"".formatted(datagram.getLocalPort()));
-                }));
-    http1.start();
-    log.log(
-        INFO,
-        "Avaje Jex started {0} on TCP https://{1}:{2,number,#}",
-        http1.getClass(),
-        http1.getAddress().getHostName(),
-        http1.getAddress().getPort());
   }
 
   @Override
