@@ -61,20 +61,15 @@ public final class BootstrapServer {
         server.setExecutor(config.executor());
       }
 
-      var protocol =
-          server
-              .createContext(contextPath, handler)
-              .getAttributes()
-              .getOrDefault("protocol", "TCP");
+      server.createContext(contextPath, handler);
       server.start();
       var actualAddress = server.getAddress();
       jex.lifecycle().status(AppLifecycle.Status.STARTED);
       log.log(
           INFO,
-          "Avaje Jex started {0} in {1}ms on {2} {3}://{4}:{5,number,#}",
+          "Avaje Jex started {0} in {1}ms on {2}://{3}:{4,number,#}",
           serverClass,
           System.currentTimeMillis() - startTime,
-          protocol,
           scheme,
           actualAddress.getHostName(),
           actualAddress.getPort());
