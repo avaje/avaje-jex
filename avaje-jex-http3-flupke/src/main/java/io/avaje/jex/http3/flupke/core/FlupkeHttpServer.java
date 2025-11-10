@@ -16,6 +16,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsServer;
 
+import io.avaje.jex.http3.flupke.FlupkeSystemLogger;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEntry;
 import io.avaje.jex.ssl.core.SSLConfigurator;
 import tech.kwik.core.server.ServerConnectionConfig;
@@ -125,7 +126,12 @@ class FlupkeHttpServer extends HttpsServer {
         .getFilters()
         .add(
             Filter.beforeHandler(
-                "Alt-Svc", ctx -> ctx.getResponseHeaders().add("Alt-Svc", "h3=\":443\"")));
+                "Alt-Svc",
+                ctx -> {
+                  ctx.getResponseHeaders().add("Alt-Svc", "h3=\":443\"");
+                  ctx.getResponseHeaders()
+                      .add("Alt-Svc", "h3=\":%s\"".formatted(datagram.getLocalPort()));
+                }));
     http1.start();
   }
 

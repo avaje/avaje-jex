@@ -1,4 +1,4 @@
-package io.avaje.jex.http3.flupke.core;
+package io.avaje.jex.http3.flupke;
 
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
@@ -9,12 +9,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import io.avaje.applog.AppLog;
 import tech.kwik.core.log.BaseLogger;
 
-class FlupkeSystemLogger extends BaseLogger {
-  public static final Logger LOG = AppLog.getLogger(FlupkeSystemLogger.class);
-
+/** BaseLogger Implementation that uses the JDK System.Logger */
+public class FlupkeSystemLogger extends BaseLogger {
+  private static final Logger LOG = AppLog.getLogger(FlupkeSystemLogger.class);
   private final Lock lock = new ReentrantLock();
-
-  FlupkeSystemLogger() {}
 
   @Override
   protected void log(String text) {
@@ -29,13 +27,13 @@ class FlupkeSystemLogger extends BaseLogger {
   @Override
   protected void log(String text, Throwable throwable) {
     if (throwable == null) {
-      log(text);
+      LOG.log(Level.ERROR, text);
       return;
     }
 
     this.lock.lock();
     try {
-      LOG.log(Level.INFO, text, throwable);
+      LOG.log(Level.ERROR, text, throwable);
     } finally {
       this.lock.unlock();
     }
