@@ -1,4 +1,4 @@
-package io.avaje.jex.ssl;
+package io.avaje.jex.ssl.core;
 
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -8,6 +8,9 @@ import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+
+import io.avaje.jex.ssl.SslConfigException;
+import io.avaje.jex.ssl.TrustConfig;
 
 final class DTrustConfig implements TrustConfig {
 
