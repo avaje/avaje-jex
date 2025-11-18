@@ -64,10 +64,10 @@ public final class SSLConfigurator extends HttpsConfigurator {
 
   private static KeyManager[] createKeyManagers(DSslConfig sslConfig) throws SslConfigException {
     try {
-      return switch (sslConfig.loadedIdentity()) {
-        case KEY_STORE -> createKeyManagersFromKeyStore(sslConfig);
-        default -> throw new IllegalStateException("No SSL Identity provided");
-      };
+      if (sslConfig.loadedIdentity()) {
+        return createKeyManagersFromKeyStore(sslConfig);
+      }
+      throw new IllegalStateException("No SSL Identity provided");
     } catch (Exception e) {
       throw new SslConfigException("Failed to create key managers", e);
     }

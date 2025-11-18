@@ -21,14 +21,9 @@ final class DSslConfig implements SslConfig {
   private static final String MULTIPLE_IDENTITY =
       "Both the certificate and key must be provided using the same method";
 
-  enum LoadedIdentity {
-    KEY_STORE,
-    NONE
-  }
-
   private String identityPassword;
   private KeyStore keyStore = null;
-  private LoadedIdentity loadedIdentity = LoadedIdentity.NONE;
+  private boolean loadedIdentity;
   private Provider securityProvider = null;
   private DTrustConfig trustConfig = null;
   private ClassResourceLoader resourceLoader = ClassResourceLoader.fromClass(SslConfig.class);
@@ -77,7 +72,7 @@ final class DSslConfig implements SslConfig {
     return url;
   }
 
-  LoadedIdentity loadedIdentity() {
+  boolean loadedIdentity() {
     return loadedIdentity;
   }
 
@@ -146,11 +141,11 @@ final class DSslConfig implements SslConfig {
   }
 
   private void setKeyStore(KeyStore keyStore) {
-    if (loadedIdentity != LoadedIdentity.NONE) {
+    if (loadedIdentity) {
       throw new SslConfigException(MULTIPLE_IDENTITY);
     }
     if (keyStore != null) {
-      loadedIdentity = LoadedIdentity.KEY_STORE;
+      loadedIdentity = true;
       this.keyStore = keyStore;
     }
   }
