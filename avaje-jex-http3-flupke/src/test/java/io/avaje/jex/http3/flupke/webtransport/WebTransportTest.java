@@ -13,7 +13,6 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -89,7 +88,7 @@ class WebTransportTest {
 
     Session session = clientSessionFactory.createSession(localhost.resolve("/echo"));
     session.open();
-    Thread.sleep(Duration.ofMillis(500));
+
     WebTransportStream bidirectionalStream = session.createBidirectionalStream();
     String message = "Hello, WebTransport!";
     bidirectionalStream.getOutputStream().write(message.getBytes());
@@ -136,7 +135,6 @@ class WebTransportTest {
     Session session = clientSessionFactory.createSession(localhost.resolve("/uni"));
     session.open();
 
-    Thread.sleep(Duration.ofMillis(500));
     OutputStream uniStream = session.createUnidirectionalStream().getOutputStream();
     String message = "Unidirectional message";
     uniStream.write(message.getBytes());
@@ -208,7 +206,6 @@ class WebTransportTest {
 
     session.open();
 
-    Thread.sleep(Duration.ofMillis(500));
     // Send request
     WebTransportStream biStream = session.createBidirectionalStream();
     biStream.getOutputStream().write("Hello".getBytes());
@@ -251,7 +248,6 @@ class WebTransportTest {
     Session session = clientSessionFactory.createSession(localhost.resolve("/close"));
     session.open();
 
-    Thread.sleep(Duration.ofMillis(500));
     assertTrue(openLatch.await(5, TimeUnit.SECONDS));
 
     // Close with custom code and message
@@ -300,7 +296,6 @@ class WebTransportTest {
         });
 
     session.open();
-    Thread.sleep(Duration.ofMillis(500));
 
     WebTransportStream stream = session.createBidirectionalStream();
     stream.getOutputStream().write("trigger close".getBytes());
@@ -336,7 +331,6 @@ class WebTransportTest {
 
     Session session = clientSessionFactory.createSession(localhost.resolve("/multi-stream"));
     session.open();
-    Thread.sleep(Duration.ofMillis(500));
 
     int numStreams = 5;
     for (int i = 0; i < numStreams; i++) {
@@ -370,7 +364,6 @@ class WebTransportTest {
     Session session = clientSessionFactory.createSession(localhost.resolve("/large"));
     session.open();
 
-    Thread.sleep(Duration.ofMillis(500));
     // Send 1MB of data
     byte[] largeData = new byte[1024 * 1024];
     for (int i = 0; i < largeData.length; i++) {
@@ -420,7 +413,6 @@ class WebTransportTest {
     Session session =
         clientSessionFactory.createSession(localhost.resolve("/test-path?param=value"));
     session.open();
-    Thread.sleep(Duration.ofMillis(500));
 
     WebTransportStream stream = session.createBidirectionalStream();
     stream.getOutputStream().write("test".getBytes());
@@ -459,7 +451,6 @@ class WebTransportTest {
 
     Session session = clientSessionFactory.createSession(localhost.resolve("/concurrent"));
     session.open();
-    Thread.sleep(Duration.ofMillis(500));
 
     int numStreams = 10;
     List<Thread> threads = new ArrayList<>();

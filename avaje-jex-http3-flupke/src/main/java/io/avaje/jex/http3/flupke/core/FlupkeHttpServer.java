@@ -30,10 +30,12 @@ import tech.kwik.flupke.webtransport.WebTransportHttp3ApplicationProtocolFactory
 
 class FlupkeHttpServer extends HttpsServer {
 
+  private static final String ALT_SVC = "Alt-Svc";
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
   private final List<WebTransportEntry> wts;
   private final Consumer<ServerConnector.Builder> configuration;
   private final Consumer<ServerConnectionConfig.Builder> connection;
+  private final  Map<String, Http3ServerExtensionFactory> extensions;
   private final String certAlias;
   private final HttpsServer http1;
 
@@ -57,6 +59,7 @@ class FlupkeHttpServer extends HttpsServer {
       throws IOException {
     this.configuration = configuration;
     this.connection = connection;
+    this.extensions = extensions;
     this.certAlias = certAlias;
     this.datagram = socket;
     this.addr = addr;
@@ -115,8 +118,9 @@ class FlupkeHttpServer extends HttpsServer {
         }
         factory = wt;
       } else {
-        // TODO register virtual thread executor on new flupke release
-        factory = new Http3ApplicationProtocolFactory(context.flupkeHandler());
+        factory =
+            new Http3ApplicationProtocolFactory(
+                context.flupkeHandler(), extensions, (ExecutorService) executor);
       }
       connector.registerApplicationProtocol("h3", factory);
       connector.start();
@@ -128,11 +132,11 @@ class FlupkeHttpServer extends HttpsServer {
           .getFilters()
           .add(
               Filter.beforeHandler(
-                  "Alt-Svc",
+                  ALT_SVC,
                   ctx -> {
-                    ctx.getResponseHeaders().add("Alt-Svc", "h3=\":443\"");
+                    ctx.getResponseHeaders().add(ALT_SVC, "h3=\":443\"");
                     ctx.getResponseHeaders()
-                        .add("Alt-Svc", "h3=\":%s\"".formatted(datagram.getLocalPort()));
+                        .add(ALT_SVC, "h3=\":%s\"".formatted(datagram.getLocalPort()));
                   }));
       http1.start();
       log.log(
