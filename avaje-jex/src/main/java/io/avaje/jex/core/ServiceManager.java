@@ -212,27 +212,17 @@ final class ServiceManager {
 
     /** Create a reasonable default JsonService if Jackson or avaje-jsonb are present. */
     JsonService defaultJsonService() {
-      if (detectJsonb()) {
-        return new JsonbJsonService();
-      }
-      return detectJackson() ? new JacksonJsonService() : null;
-    }
-
-    boolean detectJackson() {
-      return detectTypeExists("com.fasterxml.jackson.databind.ObjectMapper");
-    }
-
-    boolean detectJsonb() {
-      return detectTypeExists("io.avaje.jsonb.Jsonb");
-    }
-
-    private boolean detectTypeExists(String className) {
       try {
-        Class.forName(className);
-        return true;
-      } catch (ClassNotFoundException e) {
-        return false;
+        return new JsonbJsonService();
+      } catch (NoClassDefFoundError e) {
+        // I guess it don't exist
       }
+      try {
+        return new JacksonJsonService();
+      } catch (NoClassDefFoundError e) {
+        // I guess it don't exist
+      }
+      return null;
     }
 
     TemplateManager initTemplateMgr() {
