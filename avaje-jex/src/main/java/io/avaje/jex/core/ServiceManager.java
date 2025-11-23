@@ -221,7 +221,7 @@ final class ServiceManager {
       } catch (NoClassDefFoundError e) {
         // I guess it don't exist
       }
-      if (module.findModule("com.fasterxml.jackson.core").isPresent()) {
+      if (module.findModule("com.fasterxml.jackson.databind").isPresent()) {
         return new JacksonJsonService();
       }
       try {
