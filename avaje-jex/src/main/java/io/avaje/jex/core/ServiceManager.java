@@ -235,9 +235,8 @@ final class ServiceManager {
                 try {
                   return new JacksonJsonService();
                 } catch (NoClassDefFoundError e) {
-                  // I guess it don't exist
+                  return null;
                 }
-                return null;
               });
     }
 
