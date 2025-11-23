@@ -64,6 +64,15 @@ public final class CompressedOutputStream extends OutputStream {
   }
 
   @Override
+  public void flush() throws IOException {
+    if (compressedStream != null) {
+      compressedStream.flush();
+    } else {
+      originStream.flush();
+    }
+  }
+
+  @Override
   public void close() throws IOException {
     if (compressedStream != null) {
       compressedStream.close();

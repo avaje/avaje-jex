@@ -67,6 +67,14 @@ final class BufferedOutStream extends FilterOutputStream {
   }
 
   @Override
+  public void flush() throws IOException {
+    if (!jdkOutput) {
+      useJdkOutput();
+    }
+    out.flush();
+  }
+
+  @Override
   public void close() throws IOException {
     if (jdkOutput) {
       out.close();
