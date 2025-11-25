@@ -42,6 +42,7 @@ class FlupkeExchange extends HttpExchange {
   public Headers getRequestHeaders() {
     if (requestHeaders == null) {
       requestHeaders = new Headers(request.headers().map());
+      requestHeaders.add("Host", request.host());
     }
     return requestHeaders;
   }
@@ -98,8 +99,7 @@ class FlupkeExchange extends HttpExchange {
 
   @Override
   public InetSocketAddress getRemoteAddress() {
-    // TODO use new flupke version to get socket address
-    return null;
+    return request.remoteAddress();
   }
 
   @Override
@@ -168,13 +168,13 @@ class FlupkeExchange extends HttpExchange {
     }
 
     @Override
-    public void write(byte b[]) throws IOException {
+    public void write(byte[] b) throws IOException {
       checkWrap();
       wrapped.write(b);
     }
 
     @Override
-    public void write(byte b[], int off, int len) throws IOException {
+    public void write(byte[] b, int off, int len) throws IOException {
       checkWrap();
       wrapped.write(b, off, len);
     }

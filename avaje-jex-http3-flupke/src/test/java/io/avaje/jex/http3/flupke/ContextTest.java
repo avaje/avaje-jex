@@ -99,15 +99,12 @@ class ContextTest {
 
     assertThat(res.body()).isEqualTo("status:201");
   }
-// TODO enable on new flupke
-//  @Test
-//  void ctx_ip() {
-//    HttpResponse<String> res = pair.request().path("ip")
-//      .GET().asString();
-//
-//    assertThat(res.body()).isEqualTo("ip:127.0.0.1");
-//  }
 
+  @Test
+  void ctx_ip() {
+    HttpResponse<String> res = pair.request().path("ip").GET().asString();
+    assertThat(res.body()).isEqualTo("ip:127.0.0.1");
+  }
 
   @Test
   void ctx_methodPathPortProtocol() {
