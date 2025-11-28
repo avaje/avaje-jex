@@ -37,7 +37,7 @@ class FlupkeHttpServer extends HttpsServer {
   private final Consumer<ServerConnectionConfig.Builder> connection;
   private final Map<String, Http3ServerExtensionFactory> extensions;
   private final String certAlias;
-  private final HttpsServer http1;
+  private HttpsServer http1;
 
   private DatagramSocket datagram;
   private InetSocketAddress addr;
@@ -46,6 +46,7 @@ class FlupkeHttpServer extends HttpsServer {
   private ServerConnector connector;
   private KeyStore keystore;
   private String password;
+  private final int backlog;
 
   public FlupkeHttpServer(
       Consumer<ServerConnector.Builder> configuration,
@@ -54,8 +55,7 @@ class FlupkeHttpServer extends HttpsServer {
       String certAlias,
       Map<String, Http3ServerExtensionFactory> extensions,
       DatagramSocket socket,
-      InetSocketAddress addr,
-      int backlog)
+      InetSocketAddress addr, int backlog)
       throws IOException {
     this.configuration = configuration;
     this.connection = connection;
@@ -64,7 +64,7 @@ class FlupkeHttpServer extends HttpsServer {
     this.datagram = socket;
     this.addr = addr;
     this.wts = wts;
-    http1 = HttpsServer.create(addr, backlog);
+    this.backlog = backlog;
   }
 
   @Override
@@ -127,6 +127,7 @@ class FlupkeHttpServer extends HttpsServer {
       InetSocketAddress address = getAddress();
       context.getAttributes().put("local_inet_address", address);
 
+      http1 = HttpsServer.create(address, backlog);
       http1
           .createContext("/", context.getHandler())
           .getFilters()
