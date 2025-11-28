@@ -21,18 +21,18 @@ class CompressionTest {
 
     final Jex app =
         Jex.create()
-            .routing(
-                r ->
-                    r.get(
-                            "/compress",
-                            ctx ->
-                                ctx.contentType(ContentType.APPLICATION_JSON)
-                                    .write(CompressionTest.class.getResourceAsStream("/64KB.json")))
-                        .get(
-                            "/sus",
-                            ctx ->
-                                ctx.write(
-                                    CompressionTest.class.getResourceAsStream("/public/sus.txt"))));
+            .get(
+                "/compress",
+                ctx ->
+                    ctx.contentType(ContentType.APPLICATION_JSON)
+                        .write(CompressionTest.class.getResourceAsStream("/64KB.json")))
+            .get(
+                "/sus",
+                ctx -> {
+                  ctx.write(CompressionTest.class.getResourceAsStream("/public/sus.txt"));
+                  ctx.outputStream().close();
+                  ctx.outputStream().close();
+                });
 
     return TestPair.create(app);
   }
