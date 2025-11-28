@@ -26,13 +26,12 @@ public class FlupkeSystemLogger extends BaseLogger {
 
   @Override
   protected void log(String text, Throwable throwable) {
-    if (throwable == null) {
-      LOG.log(Level.ERROR, text);
-      return;
-    }
-
     this.lock.lock();
     try {
+      if (throwable == null) {
+        LOG.log(Level.ERROR, text);
+        return;
+      }
       LOG.log(Level.ERROR, text, throwable);
     } finally {
       this.lock.unlock();
