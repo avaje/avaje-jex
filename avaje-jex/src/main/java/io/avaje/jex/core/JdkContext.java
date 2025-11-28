@@ -59,6 +59,7 @@ final class JdkContext implements Context {
   private byte[] bodyBytes;
 
   private Charset characterEncoding;
+  private OutputStream os;
 
   JdkContext(
       ServiceManager mgr,
@@ -343,7 +344,10 @@ final class JdkContext implements Context {
 
   @Override
   public OutputStream outputStream() {
-    return mgr.createOutputStream(this);
+    if (os == null) {
+      os = mgr.createOutputStream(this);
+    }
+    return os;
   }
 
   private Map<String, String> parseCookies() {
@@ -439,9 +443,8 @@ final class JdkContext implements Context {
     status(statusCode);
     if (mode != Mode.EXCHANGE) {
       throw new RedirectException("Redirect");
-    } else {
-      performRedirect();
     }
+    performRedirect();
   }
 
   @Override
