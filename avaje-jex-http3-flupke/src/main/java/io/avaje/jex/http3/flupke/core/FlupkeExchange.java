@@ -8,6 +8,7 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.http.HttpHeaders;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.sun.net.httpserver.Headers;
@@ -42,7 +43,7 @@ class FlupkeExchange extends HttpExchange {
   public Headers getRequestHeaders() {
     if (requestHeaders == null) {
       requestHeaders = new Headers(request.headers().map());
-      requestHeaders.add("Host", request.authority());
+      requestHeaders.computeIfAbsent("Host", k -> List.of(request.authority()));
     }
     return requestHeaders;
   }
