@@ -37,7 +37,7 @@ class FlupkeHttpServer extends HttpsServer {
   private final Consumer<ServerConnectionConfig.Builder> connection;
   private final Map<String, Http3ServerExtensionFactory> extensions;
   private final String certAlias;
-  private HttpsServer http1;
+  private final HttpsServer http1;
 
   private DatagramSocket datagram;
   private InetSocketAddress addr;
@@ -46,7 +46,6 @@ class FlupkeHttpServer extends HttpsServer {
   private ServerConnector connector;
   private KeyStore keystore;
   private String password;
-  private final int backlog;
 
   public FlupkeHttpServer(
       Consumer<ServerConnector.Builder> configuration,
@@ -55,7 +54,8 @@ class FlupkeHttpServer extends HttpsServer {
       String certAlias,
       Map<String, Http3ServerExtensionFactory> extensions,
       DatagramSocket socket,
-      InetSocketAddress addr, int backlog)
+      InetSocketAddress addr,
+      int backlog)
       throws IOException {
     this.configuration = configuration;
     this.connection = connection;
@@ -64,7 +64,7 @@ class FlupkeHttpServer extends HttpsServer {
     this.datagram = socket;
     this.addr = addr;
     this.wts = wts;
-    this.backlog = backlog;
+    http1 = HttpsServer.create();
   }
 
   @Override
@@ -127,7 +127,6 @@ class FlupkeHttpServer extends HttpsServer {
       InetSocketAddress address = getAddress();
       context.getAttributes().put("local_inet_address", address);
 
-      http1 = HttpsServer.create(address, backlog);
       http1
           .createContext("/", context.getHandler())
           .getFilters()
@@ -139,6 +138,7 @@ class FlupkeHttpServer extends HttpsServer {
                     ctx.getResponseHeaders()
                         .add(ALT_SVC, "h3=\":%s\"".formatted(datagram.getLocalPort()));
                   }));
+      http1.bind(address, 0);
       http1.start();
       log.log(
           INFO,
@@ -176,12 +176,11 @@ class FlupkeHttpServer extends HttpsServer {
 
   @Override
   public void setHttpsConfigurator(HttpsConfigurator config) {
-    if (config instanceof SSLConfigurator ssl) {
-      this.keystore = ssl.keyStore();
-      this.password = ssl.password();
-    } else {
+    if (!(config instanceof SSLConfigurator ssl)){
       throw new IllegalArgumentException("Only the Jex SSL configurator is supported");
     }
+    this.keystore = ssl.keyStore();
+      this.password = ssl.password();
     http1.setHttpsConfigurator(config);
   }
 
