@@ -226,7 +226,7 @@ public abstract sealed class WebTransportEvent {
 
     @Override
     public void close() throws IOException {
-      wtStream.getInputStream().close();
+      requestStream().close();
     }
   }
 }

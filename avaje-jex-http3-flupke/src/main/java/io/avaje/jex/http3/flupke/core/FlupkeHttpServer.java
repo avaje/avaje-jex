@@ -35,7 +35,7 @@ class FlupkeHttpServer extends HttpsServer {
   private final List<WebTransportEntry> wts;
   private final Consumer<ServerConnector.Builder> configuration;
   private final Consumer<ServerConnectionConfig.Builder> connection;
-  private final  Map<String, Http3ServerExtensionFactory> extensions;
+  private final Map<String, Http3ServerExtensionFactory> extensions;
   private final String certAlias;
   private final HttpsServer http1;
 
@@ -99,7 +99,7 @@ class FlupkeHttpServer extends HttpsServer {
       builder
           .withConfiguration(connectionBuilder.build())
           .withLogger(new FlupkeSystemLogger())
-          .withPort(1)
+          .withPort(datagram.getPort())
           .withSocket(datagram)
           .withKeyStore(
               keystore,

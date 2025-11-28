@@ -16,12 +16,12 @@
     <dependency>
       <groupId>tech.kwik</groupId>
       <artifactId>flupke</artifactId>
-      <version>0.9.1</version>
+      <version>0.9.3</version>
     </dependency>
     <dependency>
       <groupId>tech.kwik</groupId>
       <artifactId>kwik</artifactId>
-      <version>0.10.7</version>
+      <version>0.10.8</version>
     </dependency>
     <dependency>
       <groupId>io.avaje</groupId>

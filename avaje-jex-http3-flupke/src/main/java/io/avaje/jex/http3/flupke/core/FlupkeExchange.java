@@ -42,7 +42,7 @@ class FlupkeExchange extends HttpExchange {
   public Headers getRequestHeaders() {
     if (requestHeaders == null) {
       requestHeaders = new Headers(request.headers().map());
-      requestHeaders.add("Host", request.host());
+      requestHeaders.add("Host", request.authority());
     }
     return requestHeaders;
   }
