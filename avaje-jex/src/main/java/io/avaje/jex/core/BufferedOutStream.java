@@ -11,6 +11,7 @@ final class BufferedOutStream extends FilterOutputStream {
   private ByteArrayOutputStream buffer;
   private boolean jdkOutput;
   private long count;
+  private boolean closed;
 
   BufferedOutStream(JdkContext context, int initial, long max) {
     super(context.exchange().getResponseBody());
@@ -76,10 +77,13 @@ final class BufferedOutStream extends FilterOutputStream {
 
   @Override
   public void close() throws IOException {
-    if (jdkOutput) {
+    if (this.closed) {
+      // do nothing if already closed
+    } else if (jdkOutput) {
       out.close();
     } else {
       context.write(buffer.toByteArray());
     }
+    closed = true;
   }
 }

@@ -20,7 +20,7 @@ Features:
 - File Uploads
 - SSL/mTLS configuration
 - Virtual threads enabled by default
-- Multi-Server with any implementation of `jdk.httpserver` (Jetty, Robaho, built-in, etc)
+- Multi-Server with any implementation of `jdk.httpserver` (Jetty, Robaho, Flupke, built-in, etc)
 
 ## Quick Start
 
@@ -170,25 +170,6 @@ public class Main {
 
 The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily use jex with alternate implementations by adding them as a dependency.
 
-### Eclipse Jetty
-
-[Jetty](https://jetty.org/) is a classic embedded server with a long and distinguished history.
-
-[![Maven Central](https://img.shields.io/maven-central/v/org.eclipse.jetty/jetty-http-spi.svg?label=jetty.version)](https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-http-spi)
-```xml
-<dependency>
-  <groupId>io.avaje</groupId>
-  <artifactId>avaje-jex</artifactId>
-  <version>${jex.version}</version>
-</dependency>
-
-<dependency>
-  <groupId>org.eclipse.jetty</groupId>
-  <artifactId>jetty-http-spi</artifactId>
-  <version>${jetty.version}</version>
-</dependency>
-```
-
 ### Robaho
 
 [@robaho's httpserver](https://github.com/robaho/httpserver?tab=readme-ov-file#performance) is a zero-dependency implementation that seems to increase performance by 10x over the built-in implementation, and 5x over Jetty in certain benchmarks.
@@ -208,6 +189,47 @@ The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily u
 </dependency>
 ```
 
-See also:
+### Eclipse Jetty
 
-- [Javalin](https://github.com/javalin/javalin) (A lightweight wrapper over Jetty)
+[Jetty](https://jetty.org/) is a classic embedded server with a long and distinguished history.
+
+[![Maven Central](https://img.shields.io/maven-central/v/org.eclipse.jetty/jetty-http-spi.svg?label=jetty.version)](https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-http-spi)
+```xml
+<dependency>
+  <groupId>io.avaje</groupId>
+  <artifactId>avaje-jex</artifactId>
+  <version>${jex.version}</version>
+</dependency>
+
+<dependency>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-http-spi</artifactId>
+  <version>${jetty.version}</version>
+</dependency>
+```
+
+### Flupke (HTTP/3, WebTransport)
+
+[Flupke](https://github.com/ptrd/flupke) is the first and (at the time of writing) __only__ HTTP/3 implementation written in pure java.
+
+[![Maven Central](https://img.shields.io/maven-central/v/io.avaje/avaje-jex-http3-flupke.svg?label=Maven%20Central)](https://mvnrepository.com/artifact/io.avaje/avaje-jex-http3-flupke)
+
+```xml
+<dependency>
+  <groupId>io.avaje</groupId>
+  <artifactId>avaje-jex-http3-flupke</artifactId>
+  <version>${jex.version}</version>
+</dependency>
+```
+
+```java
+    var ssl = //HTTP/3 requires https
+        SslPlugin.create(s -> s.keystoreFromClasspath("/keystore.p12", "password"));
+
+    var jex =
+        Jex.create()
+            .plugin(ssl)
+            .plugin(FlupkeJexPlugin.create())
+            .get("/", ctx -> ctx.text("hello (http3)"))
+            .start();
+```
