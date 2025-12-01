@@ -7,6 +7,7 @@
     <artifactId>avaje-jex-parent</artifactId>
     <version>3.4-RC2</version>
   </parent>
+  <name>avaje-jex-http3-flupke</name>
   <artifactId>avaje-jex-http3-flupke</artifactId>
   <version>0.1</version>
   <properties>
