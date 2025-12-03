@@ -30,7 +30,7 @@ import tech.kwik.flupke.webtransport.WebTransportHttp3ApplicationProtocolFactory
 
 class FlupkeHttpServer extends HttpsServer {
 
-  private static final String ALT_SVC = "Alt-svc";
+  private static final String ALT_SVC = "Alt-Svc";
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
   private final List<WebTransportEntry> wts;
   private final Consumer<ServerConnector.Builder> configuration;
@@ -133,9 +133,9 @@ class FlupkeHttpServer extends HttpsServer {
           .add(
               Filter.beforeHandler(
                   ALT_SVC,
-                  ctx -> {
-                    ctx.getResponseHeaders().add(ALT_SVC, "h3=\"%s\"".formatted(ctx.getRequestHeaders().getFirst("Host")));
-                  }));
+                  ctx ->
+                      ctx.getResponseHeaders()
+                          .add(ALT_SVC, "h3=\":%s\"".formatted(ctx.getRemoteAddress().getPort()))));
       http1.bind(address, 0);
       http1.start();
       log.log(
