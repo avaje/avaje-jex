@@ -227,12 +227,12 @@ final class ServiceManager {
         .orElseGet(() -> {
           try {
             return new JsonbJsonService();
-          } catch (NoClassDefFoundError e) {
+          } catch (Throwable e) {
             // I guess it don't exist
           }
           try {
             return new JacksonJsonService();
-          } catch (NoClassDefFoundError e) {
+          } catch (Throwable e) {
             return null;
           }
         });
