@@ -3,7 +3,7 @@ package io.avaje.jex.http3.flupke;
 import io.avaje.jex.Jex;
 import io.avaje.jex.ssl.SslPlugin;
 
-public class Main {
+public class FlupkeMain {
 
   public static void main(String[] args) {
     SslPlugin sslPlugin =

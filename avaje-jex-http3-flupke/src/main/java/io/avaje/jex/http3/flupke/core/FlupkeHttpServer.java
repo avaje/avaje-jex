@@ -134,9 +134,7 @@ class FlupkeHttpServer extends HttpsServer {
               Filter.beforeHandler(
                   ALT_SVC,
                   ctx -> {
-                    ctx.getResponseHeaders().add(ALT_SVC, "h3=\":443\"");
-                    ctx.getResponseHeaders()
-                        .add(ALT_SVC, "h3=\":%s\"".formatted(datagram.getLocalPort()));
+                    ctx.getResponseHeaders().add(ALT_SVC, "h3=\"%s\"".formatted(ctx.getRequestHeaders().getFirst("Host")));
                   }));
       http1.bind(address, 0);
       http1.start();
