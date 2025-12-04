@@ -240,6 +240,11 @@
         <version>3.4-RC2</version>
       </dependency>
       <dependency>
+        <groupId>io.avaje</groupId>
+        <artifactId>avaje-jex-http3-flupke</artifactId>
+        <version>3.4-RC2</version>
+      </dependency>
+      <dependency>
         <groupId>io.github.robaho</groupId>
         <artifactId>httpserver</artifactId>
         <version>1.0.29</version>
