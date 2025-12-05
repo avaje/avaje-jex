@@ -9,7 +9,7 @@
   </parent>
   <name>avaje-jex-http3-flupke</name>
   <artifactId>avaje-jex-http3-flupke</artifactId>
-  <version>0.2</version>
+  <version>0.3</version>
   <properties>
     <maven.compiler.release>21</maven.compiler.release>
   </properties>
