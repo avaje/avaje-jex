@@ -30,7 +30,7 @@ import tech.kwik.flupke.webtransport.WebTransportHttp3ApplicationProtocolFactory
 
 class FlupkeHttpServer extends HttpsServer {
 
-  private static final String ALT_SVC = "Alt-svc";
+  private static final String ALT_SVC = "Alt-Svc";
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
   private final List<WebTransportEntry> wts;
   private final Consumer<ServerConnector.Builder> configuration;
@@ -134,7 +134,9 @@ class FlupkeHttpServer extends HttpsServer {
               Filter.beforeHandler(
                   ALT_SVC,
                   ctx -> {
-                    ctx.getResponseHeaders().add(ALT_SVC, "h3=\"%s\"".formatted(ctx.getRequestHeaders().getFirst("Host")));
+                    String host = ctx.getRequestHeaders().getFirst("Host");
+                    host = host == null || host.indexOf(':') == -1 ? ":443" : host;
+                    ctx.getResponseHeaders().add(ALT_SVC, "h3=\"%s\"".formatted(host));
                   }));
       http1.bind(address, 0);
       http1.start();
@@ -178,7 +180,7 @@ class FlupkeHttpServer extends HttpsServer {
       throw new IllegalArgumentException("Only the Jex SSL configurator is supported");
     }
     this.keystore = ssl.keyStore();
-      this.password = ssl.password();
+    this.password = ssl.password();
     http1.setHttpsConfigurator(config);
   }
 
