@@ -17,9 +17,10 @@ import javax.net.ssl.TrustManagerFactory;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 
+import io.avaje.jex.ssl.SSLConfigurator;
 import io.avaje.jex.ssl.SslConfigException;
 
-public final class SSLConfigurator extends HttpsConfigurator {
+public final class DConfigurator extends HttpsConfigurator implements SSLConfigurator {
 
   private static final String SSL_PROTOCOL = "TLSv1.3";
   private static final String KEY_MANAGER_ALGORITHM = "SunX509";
@@ -29,7 +30,7 @@ public final class SSLConfigurator extends HttpsConfigurator {
   private final KeyStore keyStore;
   private final String password;
 
-  SSLConfigurator(SSLContext context, DSslConfig sslConfig, boolean clientAuth) {
+  DConfigurator(SSLContext context, DSslConfig sslConfig, boolean clientAuth) {
     super(context);
     this.keyStore = sslConfig.keyStore();
     this.password = sslConfig.identityPassword();
@@ -43,13 +44,13 @@ public final class SSLConfigurator extends HttpsConfigurator {
     params.setSSLParameters(sslParams);
   }
 
-  static SSLConfigurator create(DSslConfig sslConfig) throws SslConfigException {
+  static DConfigurator create(DSslConfig sslConfig) throws SslConfigException {
     try {
       var sslContext = createContext(sslConfig);
       var keyManagers = createKeyManagers(sslConfig);
       var trustManagers = createTrustManagers(sslConfig);
       sslContext.init(keyManagers, trustManagers, new SecureRandom());
-      return new SSLConfigurator(sslContext, sslConfig, trustManagers !=null);
+      return new DConfigurator(sslContext, sslConfig, trustManagers != null);
     } catch (Exception e) {
       throw new SslConfigException("Failed to build SSLContext", e);
     }
@@ -156,10 +157,12 @@ public final class SSLConfigurator extends HttpsConfigurator {
     return aliasCounter;
   }
 
+  @Override
   public KeyStore keyStore() {
     return keyStore;
   }
 
+  @Override
   public String password() {
     return password;
   }
