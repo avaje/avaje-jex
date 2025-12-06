@@ -20,7 +20,7 @@ import com.sun.net.httpserver.HttpsParameters;
 import io.avaje.jex.ssl.SSLConfigurator;
 import io.avaje.jex.ssl.SslConfigException;
 
-public final class DConfigurator extends HttpsConfigurator implements SSLConfigurator {
+final class DConfigurator extends HttpsConfigurator implements SSLConfigurator {
 
   private static final String SSL_PROTOCOL = "TLSv1.3";
   private static final String KEY_MANAGER_ALGORITHM = "SunX509";

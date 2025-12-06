@@ -3,6 +3,7 @@ package io.avaje.jex.ssl.core;
 import java.util.function.Consumer;
 
 import io.avaje.jex.Jex;
+import io.avaje.jex.ssl.SSLConfigurator;
 import io.avaje.jex.ssl.SslConfig;
 import io.avaje.jex.ssl.SslPlugin;
 
@@ -22,7 +23,7 @@ public final class DSslPlugin implements SslPlugin {
   }
 
   @Override
-  public DConfigurator sslConfigurator() {
+  public SSLConfigurator sslConfigurator() {
     return sslConfigurator;
   }
 }
