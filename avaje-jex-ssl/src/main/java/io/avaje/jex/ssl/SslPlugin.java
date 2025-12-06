@@ -2,8 +2,6 @@ package io.avaje.jex.ssl;
 
 import java.util.function.Consumer;
 
-import javax.net.ssl.SSLContext;
-
 import io.avaje.jex.spi.JexPlugin;
 import io.avaje.jex.ssl.core.DSslPlugin;
 
@@ -34,6 +32,10 @@ public sealed interface SslPlugin extends JexPlugin permits DSslPlugin {
     return new DSslPlugin(consumer);
   }
 
-  /** The configured SSLContext */
-  SSLContext sslContext();
+  /**
+   * The configured SSL SSLConfigurator
+   *
+   * @return the SSLConfigurator
+   */
+  SSLConfigurator sslConfigurator();
 }

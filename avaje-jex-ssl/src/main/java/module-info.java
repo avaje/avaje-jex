@@ -17,7 +17,6 @@
 module io.avaje.jex.ssl {
 
   exports io.avaje.jex.ssl;
-  exports io.avaje.jex.ssl.core to io.avaje.jex.http3.flupke;
 
   requires transitive io.avaje.jex;
 

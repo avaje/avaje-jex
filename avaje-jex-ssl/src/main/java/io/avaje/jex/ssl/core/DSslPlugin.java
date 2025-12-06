@@ -2,22 +2,18 @@ package io.avaje.jex.ssl.core;
 
 import java.util.function.Consumer;
 
-import javax.net.ssl.SSLContext;
-
-import com.sun.net.httpserver.HttpsConfigurator;
-
 import io.avaje.jex.Jex;
 import io.avaje.jex.ssl.SslConfig;
 import io.avaje.jex.ssl.SslPlugin;
 
 public final class DSslPlugin implements SslPlugin {
 
-  private final HttpsConfigurator sslConfigurator;
+  private final DConfigurator sslConfigurator;
 
   public DSslPlugin(Consumer<SslConfig> consumer) {
     final var config = new DSslConfig();
     consumer.accept(config);
-    this.sslConfigurator = SSLConfigurator.create(config);
+    this.sslConfigurator = DConfigurator.create(config);
   }
 
   @Override
@@ -26,7 +22,7 @@ public final class DSslPlugin implements SslPlugin {
   }
 
   @Override
-  public SSLContext sslContext() {
-    return sslConfigurator.getSSLContext();
+  public DConfigurator sslConfigurator() {
+    return sslConfigurator;
   }
 }
