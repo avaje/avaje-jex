@@ -21,7 +21,7 @@ import com.sun.net.httpserver.HttpsServer;
 import io.avaje.applog.AppLog;
 import io.avaje.jex.http3.flupke.FlupkeSystemLogger;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEntry;
-import io.avaje.jex.ssl.core.SSLConfigurator;
+import io.avaje.jex.ssl.SSLConfigurator;
 import tech.kwik.core.server.ServerConnectionConfig;
 import tech.kwik.core.server.ServerConnector;
 import tech.kwik.flupke.server.Http3ApplicationProtocolFactory;

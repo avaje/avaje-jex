@@ -54,7 +54,7 @@ public class TestPair implements AutoCloseable {
             .client(
                 Http3Client.newBuilder()
                     .disableCertificateCheck()
-                    .sslContext(sslPlugin.sslContext())
+                    .sslContext(sslPlugin.sslConfigurator().getSSLContext())
                     .build())
             .build();
 

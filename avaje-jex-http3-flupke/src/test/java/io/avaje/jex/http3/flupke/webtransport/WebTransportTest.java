@@ -45,7 +45,10 @@ class WebTransportTest {
                   .keystoreFromClasspath("/my-custom-keystore.p12", "password"));
   private static Http3Client client =
       (Http3Client)
-          Http3Client.newBuilder().disableCertificateCheck().sslContext(ssl.sslContext()).build();
+          Http3Client.newBuilder()
+              .disableCertificateCheck()
+              .sslContext(ssl.sslConfigurator().getSSLContext())
+              .build();
 
   @AfterEach
   void teardown() throws InterruptedException {
