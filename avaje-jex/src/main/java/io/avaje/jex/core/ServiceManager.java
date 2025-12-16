@@ -19,6 +19,7 @@ import io.avaje.jex.Jex;
 import io.avaje.jex.Routing;
 import io.avaje.jex.compression.CompressedOutputStream;
 import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.core.json.Jackson3JsonService;
 import io.avaje.jex.core.json.JacksonJsonService;
 import io.avaje.jex.core.json.JsonbJsonService;
 import io.avaje.jex.http.Context;
@@ -222,6 +223,9 @@ final class ServiceManager {
           if (bootLayer.findModule("com.fasterxml.jackson.databind").isPresent()) {
             return new JacksonJsonService();
           }
+          if (bootLayer.findModule("tools.jackson.databind").isPresent()) {
+            return new Jackson3JsonService();
+          }
           return null;
         })
         .orElseGet(() -> {
@@ -232,6 +236,11 @@ final class ServiceManager {
           }
           try {
             return new JacksonJsonService();
+          } catch (Throwable e) {
+            // I guess it don't exist
+          }
+          try {
+            return new Jackson3JsonService();
           } catch (Throwable e) {
             return null;
           }
