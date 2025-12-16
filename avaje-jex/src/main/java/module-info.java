@@ -37,6 +37,7 @@ module io.avaje.jex {
   requires static io.avaje.inject;
   requires static io.avaje.config;
   requires static io.avaje.spi;
+  requires static tools.jackson.databind;
 
   uses JexExtension;
 }

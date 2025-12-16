@@ -47,6 +47,13 @@
       <version>${jackson.version}</version>
       <optional>true</optional>
     </dependency>
+    
+    <dependency>
+      <groupId>tools.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>3.0.3</version>
+      <optional>true</optional>
+    </dependency>
 
     <dependency>
       <groupId>io.avaje</groupId>
