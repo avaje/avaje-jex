@@ -229,7 +229,6 @@ The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily u
     var jex =
         Jex.create()
             .plugin(ssl)
-            .plugin(FlupkeJexPlugin.create())
             .get("/", ctx -> ctx.text("hello (http3)"))
             .start();
 ```
