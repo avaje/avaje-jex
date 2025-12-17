@@ -5,24 +5,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.net.http.HttpResponse;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Random;
-
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import io.avaje.http.client.HttpClient;
-import io.avaje.http.client.JacksonBodyAdapter;
 import io.avaje.jex.Jex;
 
 class HeadersTest {
 
-  static final int port = new Random().nextInt(1000) + 10_000;
+  static final TestPair pair = init();
   static Jex.Server server;
   static HttpClient client;
 
-  @BeforeAll
-  static void setup() {
-    server = Jex.create()
+
+  static TestPair init() {
+    var app = Jex.create()
       .routing(routing -> routing
         .get("/", ctx -> {
           final String one = ctx.header("one");
@@ -30,26 +27,23 @@ class HeadersTest {
           obj.put("one", one);
           ctx.json(obj);
         })
-      )
-      .port(port)
-      .start();
+      );
 
-    client = HttpClient.builder()
-      .baseUrl("http://localhost:"+port)
-      .bodyAdapter(new JacksonBodyAdapter())
-      .build();
+
+    return TestPair.create(app);
+  }
+
+  @AfterAll
+  static void end() {
+    pair.close();
   }
 
   @Test
   void get() {
 
-    final HttpResponse<String> hres = client.request()
-      .header("one", "hello")
-      .GET().asString();
+    final HttpResponse<String> hres = pair.request().header("one", "hello").GET().asString();
 
     assertThat(hres.statusCode()).isEqualTo(200);
     assertThat(hres.body()).isEqualTo("{\"one\":\"hello\"}");
-
-    server.shutdown();
   }
 }

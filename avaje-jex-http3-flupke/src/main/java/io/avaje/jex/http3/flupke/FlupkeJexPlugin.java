@@ -11,6 +11,7 @@ import io.avaje.jex.http3.flupke.core.H3ServerProvider;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEntry;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportHandler;
 import io.avaje.jex.spi.JexPlugin;
+import io.avaje.spi.ServiceProvider;
 import tech.kwik.core.server.ServerConnectionConfig;
 import tech.kwik.core.server.ServerConnector;
 import tech.kwik.flupke.server.Http3ServerExtensionFactory;
@@ -21,6 +22,7 @@ import tech.kwik.flupke.server.Http3ServerExtensionFactory;
  * <p>This plugin allows customization of the underlying Flupke server components and registers
  * WebTransport handlers.
  */
+@ServiceProvider
 public final class FlupkeJexPlugin implements JexPlugin {
 
   private DatagramSocket socket;
@@ -30,7 +32,11 @@ public final class FlupkeJexPlugin implements JexPlugin {
   private Consumer<ServerConnectionConfig.Builder> connection = b -> {};
   private String certAlias;
 
-  private FlupkeJexPlugin() {}
+  /**
+   * Constructor for automatic registration with default configuration.
+   * Use {@link #create()} when registering manually.
+   */
+  public FlupkeJexPlugin() {}
 
   /**
    * Creates a new instance of the {@code FlupkeJexPlugin}.

@@ -30,11 +30,7 @@ public final class BootstrapServer {
       jex.plugin(new HealthPlugin());
     }
 
-    CoreServiceLoader.plugins().forEach(p -> p.apply(jex));
-
-    var routing = jex.routing();
-    routing.addAll(CoreServiceLoader.spiRoutes());
-    final var routes = new RoutesBuilder(routing, config).build();
+    final var routes = new RoutesBuilder(jex.routing(), config).build();
 
     try {
       final var socketAddress = createSocketAddress(config);
