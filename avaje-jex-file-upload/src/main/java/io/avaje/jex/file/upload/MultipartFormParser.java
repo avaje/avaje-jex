@@ -165,7 +165,7 @@ final class MultipartFormParser {
           }
         }
       } else if ("content-type".equalsIgnoreCase(parts[0])) {
-        contentType = parts[1];
+        contentType = parts[1].trim();
       }
     }
     return new PartMetadata(contentType, name, filename);

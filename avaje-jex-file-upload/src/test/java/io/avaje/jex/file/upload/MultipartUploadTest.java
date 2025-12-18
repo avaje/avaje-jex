@@ -104,6 +104,7 @@ class MultipartUploadTest {
                 ctx -> {
                   var part = ctx.attribute(FileUploadService.class).uploadedFile("file");
 
+                  assert "text/plain".equals(part.contentType());
                   assert !part.data().isEmpty();
                 })
             .plugin(FileUploadPlugin.create(c -> c.maxInMemoryFileSize(1, FileSize.GB)));
