@@ -545,6 +545,15 @@ final class JdkContext implements Context {
   }
 
   @Override
+  public void writeEmpty(int statusCode) {
+    try {
+      exchange.sendResponseHeaders(statusCode, -1);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  @Override
   public JsonService jsonService() {
     return mgr.jsonService();
   }
