@@ -19,6 +19,7 @@ import io.avaje.jex.Jex;
 import io.avaje.jex.Routing;
 import io.avaje.jex.compression.CompressedOutputStream;
 import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.core.json.Jackson3JsonService;
 import io.avaje.jex.core.json.JacksonJsonService;
 import io.avaje.jex.core.json.JsonbJsonService;
 import io.avaje.jex.http.Context;
@@ -212,27 +213,38 @@ final class ServiceManager {
 
     /** Create a reasonable default JsonService if Jackson or avaje-jsonb are present. */
     JsonService defaultJsonService() {
-      if (detectJsonb()) {
-        return new JsonbJsonService();
-      }
-      return detectJackson() ? new JacksonJsonService() : null;
-    }
-
-    boolean detectJackson() {
-      return detectTypeExists("com.fasterxml.jackson.databind.ObjectMapper");
-    }
-
-    boolean detectJsonb() {
-      return detectTypeExists("io.avaje.jsonb.Jsonb");
-    }
-
-    private boolean detectTypeExists(String className) {
-      try {
-        Class.forName(className);
-        return true;
-      } catch (ClassNotFoundException e) {
-        return false;
-      }
+      ModuleLayer bootLayer = ModuleLayer.boot();
+      return bootLayer
+        .findModule("io.avaje.jex")
+        .map(m -> {
+          if (bootLayer.findModule("io.avaje.jsonb").isPresent()) {
+            return new JsonbJsonService();
+          }
+          if (bootLayer.findModule("com.fasterxml.jackson.databind").isPresent()) {
+            return new JacksonJsonService();
+          }
+          if (bootLayer.findModule("tools.jackson.databind").isPresent()) {
+            return new Jackson3JsonService();
+          }
+          return null;
+        })
+        .orElseGet(() -> {
+          try {
+            return new JsonbJsonService();
+          } catch (Throwable e) {
+            // I guess it don't exist
+          }
+          try {
+            return new JacksonJsonService();
+          } catch (Throwable e) {
+            // I guess it don't exist
+          }
+          try {
+            return new Jackson3JsonService();
+          } catch (Throwable e) {
+            return null;
+          }
+        });
     }
 
     TemplateManager initTemplateMgr() {

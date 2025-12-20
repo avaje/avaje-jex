@@ -1,0 +1,206 @@
+package io.avaje.jex.http3.flupke.core;
+
+import static java.lang.System.Logger.Level.INFO;
+
+import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
+import java.security.KeyStore;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.function.Consumer;
+
+import com.sun.net.httpserver.Filter;
+import com.sun.net.httpserver.HttpContext;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.HttpsServer;
+
+import io.avaje.applog.AppLog;
+import io.avaje.jex.http3.flupke.FlupkeSystemLogger;
+import io.avaje.jex.http3.flupke.webtransport.WebTransportEntry;
+import io.avaje.jex.ssl.SSLConfigurator;
+import tech.kwik.core.server.ServerConnectionConfig;
+import tech.kwik.core.server.ServerConnector;
+import tech.kwik.flupke.server.Http3ApplicationProtocolFactory;
+import tech.kwik.flupke.server.Http3ServerExtensionFactory;
+import tech.kwik.flupke.webtransport.WebTransportHttp3ApplicationProtocolFactory;
+
+class FlupkeHttpServer extends HttpsServer {
+
+  private static final String ALT_SVC = "Alt-svc";
+  private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
+  private final List<WebTransportEntry> wts;
+  private final Consumer<ServerConnector.Builder> configuration;
+  private final Consumer<ServerConnectionConfig.Builder> connection;
+  private final Map<String, Http3ServerExtensionFactory> extensions;
+  private final String certAlias;
+  private final HttpsServer http1;
+
+  private DatagramSocket datagram;
+  private InetSocketAddress addr;
+  private Executor executor;
+  private FlupkeHttpContext context;
+  private ServerConnector connector;
+  private KeyStore keystore;
+  private String password;
+
+  public FlupkeHttpServer(
+      Consumer<ServerConnector.Builder> configuration,
+      Consumer<ServerConnectionConfig.Builder> connection,
+      List<WebTransportEntry> wts,
+      String certAlias,
+      Map<String, Http3ServerExtensionFactory> extensions,
+      DatagramSocket socket,
+      InetSocketAddress addr,
+      int backlog)
+      throws IOException {
+    this.configuration = configuration;
+    this.connection = connection;
+    this.extensions = extensions;
+    this.certAlias = certAlias;
+    this.datagram = socket;
+    this.addr = addr;
+    this.wts = wts;
+    http1 = HttpsServer.create();
+  }
+
+  @Override
+  public void bind(InetSocketAddress addr, int backlog) throws IOException {
+    this.addr = addr;
+    if (datagram == null) {
+      datagram = new DatagramSocket(addr);
+    }
+  }
+
+  @Override
+  public InetSocketAddress getAddress() {
+    return (InetSocketAddress) datagram.getLocalSocketAddress();
+  }
+
+  @Override
+  public void start() {
+    try {
+      var builder = ServerConnector.builder();
+      var connectionBuilder =
+          ServerConnectionConfig.builder()
+              .maxIdleTimeoutInSeconds(30)
+              .maxUnidirectionalStreamBufferSize(1_000_000)
+              .maxBidirectionalStreamBufferSize(1_000_000)
+              .maxConnectionBufferSize(10_000_000)
+              .maxOpenPeerInitiatedUnidirectionalStreams(10)
+              .maxOpenPeerInitiatedBidirectionalStreams(100)
+              .connectionIdLength(8)
+              .retryRequired(true);
+      connection.accept(connectionBuilder);
+      bind(addr, 0);
+      builder
+          .withConfiguration(connectionBuilder.build())
+          .withLogger(new FlupkeSystemLogger())
+          .withPort(datagram.getPort())
+          .withSocket(datagram)
+          .withKeyStore(
+              keystore,
+              certAlias != null ? certAlias : keystore.aliases().nextElement(),
+              password.toCharArray());
+
+      configuration.accept(builder);
+      this.connector = builder.build();
+      Http3ApplicationProtocolFactory factory;
+
+      if (!wts.isEmpty()) {
+        var wt = new WebTransportHttp3ApplicationProtocolFactory(context.flupkeHandler());
+        wt.setExecutor((ExecutorService) executor);
+        for (var entry : wts) {
+          wt.registerWebTransportServer(entry.path(), entry);
+        }
+        factory = wt;
+      } else {
+        factory =
+            new Http3ApplicationProtocolFactory(
+                context.flupkeHandler(), extensions, (ExecutorService) executor);
+      }
+      connector.registerApplicationProtocol("h3", factory);
+      connector.start();
+      InetSocketAddress address = getAddress();
+      context.getAttributes().put("local_inet_address", address);
+
+      http1
+          .createContext("/", context.getHandler())
+          .getFilters()
+          .add(
+              Filter.beforeHandler(
+                  ALT_SVC,
+                  ctx -> {
+                    String host = ctx.getRequestHeaders().getFirst("Host");
+                    host = host == null || host.indexOf(':') == -1 ? ":443" : host;
+                    ctx.getResponseHeaders().add(ALT_SVC, "h3=\"%s\"".formatted(host));
+                  }));
+      http1.bind(address, 0);
+      http1.start();
+      log.log(
+          INFO,
+          "Avaje Jex started {0} on TCP https://{1}:{2,number,#}",
+          http1.getClass(),
+          address.getHostName(),
+          address.getPort());
+    } catch (Exception e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  @Override
+  public void setExecutor(Executor executor) {
+    this.executor = executor;
+    http1.setExecutor(executor);
+  }
+
+  @Override
+  public Executor getExecutor() {
+    return executor;
+  }
+
+  @Override
+  public void stop(int delay) {
+    connector.close();
+    http1.stop(delay);
+  }
+
+  @Override
+  public HttpContext createContext(String path, HttpHandler httpHandler) {
+    this.context = new FlupkeHttpContext(this, httpHandler);
+    return context;
+  }
+
+  @Override
+  public void setHttpsConfigurator(HttpsConfigurator config) {
+    if (!(config instanceof SSLConfigurator ssl)){
+      throw new IllegalArgumentException("Only the Jex SSL configurator is supported");
+    }
+    this.keystore = ssl.keyStore();
+    this.password = ssl.password();
+    http1.setHttpsConfigurator(config);
+  }
+
+  @Override
+  public HttpsConfigurator getHttpsConfigurator() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public HttpContext createContext(String path) {
+    throw new UnsupportedOperationException("Need a handler");
+  }
+
+  @Override
+  public void removeContext(String path) throws IllegalArgumentException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void removeContext(HttpContext context) {
+    throw new UnsupportedOperationException();
+  }
+}
