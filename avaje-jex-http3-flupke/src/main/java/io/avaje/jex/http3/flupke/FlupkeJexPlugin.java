@@ -10,6 +10,7 @@ import io.avaje.jex.Jex;
 import io.avaje.jex.http3.flupke.core.H3ServerProvider;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEntry;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportHandler;
+import io.avaje.jex.security.Role;
 import io.avaje.jex.spi.JexPlugin;
 import io.avaje.spi.ServiceProvider;
 import tech.kwik.core.server.ServerConnectionConfig;
@@ -33,8 +34,8 @@ public final class FlupkeJexPlugin implements JexPlugin {
   private String certAlias;
 
   /**
-   * Constructor for automatic registration with default configuration.
-   * Use {@link #create()} when registering manually.
+   * Constructor for automatic registration with default configuration. Use {@link #create()} when
+   * registering manually.
    */
   public FlupkeJexPlugin() {}
 
@@ -115,9 +116,10 @@ public final class FlupkeJexPlugin implements JexPlugin {
    *
    * @param path The URL path (e.g., "/my-webtransport-endpoint").
    * @param handler The fully configured WebTransportHandler.
+   * @param roles The roles assigned to the registered CONNECT endpoint.
    * @return This plugin instance for chaining.
    */
-  public FlupkeJexPlugin webTransport(String path, WebTransportHandler handler) {
+  public FlupkeJexPlugin webTransport(String path, WebTransportHandler handler, Role... roles) {
     this.wts.add(new WebTransportEntry(path, handler));
     return this;
   }
@@ -130,10 +132,11 @@ public final class FlupkeJexPlugin implements JexPlugin {
    *
    * @param path The URL path (e.g., "/my-webtransport-endpoint").
    * @param consumer A consumer to configure the {@code WebTransportHandler.Builder}.
+   * @param roles The roles assigned to the registered CONNECT endpoint.
    * @return This plugin instance for chaining.
    * @see WebTransportHandler.Builder
    */
-  public FlupkeJexPlugin webTransport(String path, Consumer<WebTransportHandler.Builder> consumer) {
+  public FlupkeJexPlugin webTransport(String path, Consumer<WebTransportHandler.Builder> consumer, Role... roles) {
     var b = WebTransportHandler.builder();
     consumer.accept(b);
     this.wts.add(new WebTransportEntry(path, b.build()));
@@ -145,5 +148,13 @@ public final class FlupkeJexPlugin implements JexPlugin {
     jex.config()
         .serverProvider(
             new H3ServerProvider(consumer, connection, certAlias, wts, extensions, socket));
+
+    wts.forEach(
+        entry ->
+            jex.routing()
+                .connect(
+                    entry.path(),
+                    ctx -> ctx.exchange().setAttribute("webtransport-handler", true),
+                    entry.roles()));
   }
 }

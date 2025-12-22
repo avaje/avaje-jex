@@ -3,6 +3,7 @@ package io.avaje.jex.http3.flupke.webtransport;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -30,6 +31,7 @@ import io.avaje.jex.http3.flupke.FlupkeJexPlugin;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.BiStream;
 import io.avaje.jex.ssl.SslPlugin;
 import tech.kwik.flupke.Http3Client;
+import tech.kwik.flupke.HttpError;
 import tech.kwik.flupke.webtransport.ClientSessionFactory;
 import tech.kwik.flupke.webtransport.Session;
 import tech.kwik.flupke.webtransport.WebTransportStream;
@@ -152,6 +154,32 @@ class WebTransportTest {
   private final void startServer(FlupkeJexPlugin webTransport) {
     jex = Jex.create().plugin(ssl).plugin(webTransport).port(0).start();
     localhost = URI.create("https://localhost:%s/".formatted(jex.port()));
+  }
+
+  @Test
+  void testFilterClose() throws Exception {
+    jex =
+        Jex.create()
+            .plugin(ssl)
+            .filter(
+                (ctx, chain) -> {
+                  ctx.status(403).write("Unauthorized");
+                })
+            .plugin(FlupkeJexPlugin.create().webTransport("/filter", b -> {}))
+            .port(0)
+            .start();
+    localhost = URI.create("https://localhost:%s/".formatted(jex.port()));
+
+    var clientSessionFactory =
+        ClientSessionFactory.newBuilder()
+            .serverUri(localhost.resolve("/filter"))
+            .httpClient(client)
+            .build();
+    var ex =
+        assertThrows(
+            HttpError.class,
+            () -> clientSessionFactory.createSession(localhost.resolve("/filter")));
+    assertEquals(403, ex.getStatusCode());
   }
 
   @Test

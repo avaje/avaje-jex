@@ -62,6 +62,15 @@ public interface Routing {
   Routing head(String path, ExchangeHandler handler, Role... roles);
 
   /**
+   * Adds a CONNECT handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when a CONNECT request matches the path.
+   * @param roles roles that are associated with this endpoint.
+   */
+  Routing connect(String path, ExchangeHandler handler, Role... roles);
+
+  /**
    * Adds a GET handler to the route configuration.
    *
    * @param path The path pattern to match the request URI.
@@ -200,6 +209,7 @@ public interface Routing {
 
   /** The type of route entry. */
   enum Type {
+    CONNECT,
     GET,
     POST,
     PUT,
@@ -209,4 +219,5 @@ public interface Routing {
     TRACE,
     OPTIONS;
   }
+
 }

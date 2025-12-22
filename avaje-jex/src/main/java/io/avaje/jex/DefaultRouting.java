@@ -83,6 +83,12 @@ final class DefaultRouting implements Routing {
   // ********************************************************************************************
 
   @Override
+  public Routing connect(String path, ExchangeHandler handler, Role... roles) {
+    add(Type.CONNECT, path, handler, roles);
+    return this;
+  }
+
+  @Override
   public Routing get(String path, ExchangeHandler handler, Role... roles) {
     add(Type.GET, path, handler, roles);
     return this;

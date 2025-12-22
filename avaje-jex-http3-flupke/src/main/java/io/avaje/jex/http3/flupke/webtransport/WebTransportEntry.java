@@ -6,10 +6,11 @@ import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.BiStream;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.Close;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.Open;
 import io.avaje.jex.http3.flupke.webtransport.WebTransportEvent.UniStream;
+import io.avaje.jex.security.Role;
 import tech.kwik.flupke.webtransport.Session;
 
 /** Entry for webtransport */
-public final record WebTransportEntry(String path, WebTransportHandler handler)
+public final record WebTransportEntry(String path, WebTransportHandler handler, Role... roles)
     implements Consumer<Session> {
 
   @Override
