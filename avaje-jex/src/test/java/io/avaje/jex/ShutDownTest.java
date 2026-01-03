@@ -18,8 +18,10 @@ class ShutDownTest {
     jex.lifecycle().registerShutdownHook(() -> results.add("onHook"));
     var server = jex.start();
 
-    server.onShutdown(() -> results.add("serverShut"));
+    server.onShutdown(() -> results.add("serverShutFirst"), Integer.MIN_VALUE);
+    server.onShutdown(() -> results.add("serverShutLast"));
     server.shutdown();
-    assertThat(results).hasSize(2); // 2 because jvm shutdown won't run in a junit
+    assertThat(results).hasSize(3); // 2 because jvm shutdown won't run in a junit
+    assertThat(results).containsExactly("serverShutFirst", "onShut", "serverShutLast");
   }
 }

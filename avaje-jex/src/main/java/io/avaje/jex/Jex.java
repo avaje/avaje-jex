@@ -293,6 +293,19 @@ public interface Jex {
      */
     void onShutdown(Runnable onShutdown);
 
+    /**
+     * Registers a runnable to be executed when the application server is shutting down, with a
+     * specific order.
+     *
+     * <p>Runnables with lower order values will be executed first.
+     *
+     * <p>This runnable will be executed after all active requests have been processed.
+     *
+     * @param onShutdown The runnable to execute on shutdown.
+     * @param order The order in which to execute the runnable.
+     */
+    void onShutdown(Runnable onShutdown, int order);
+
     /** Shutdown the server. */
     void shutdown();
 
