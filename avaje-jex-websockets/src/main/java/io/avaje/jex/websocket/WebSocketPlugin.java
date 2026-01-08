@@ -67,11 +67,14 @@ public class WebSocketPlugin implements JexPlugin {
     jex.routing().addAll(handlers);
 
     var provider = jex.config().serverProvider().getClass().getPackageName();
-
-    if (Runtime.version().feature() < 27 && provider.indexOf("sun.") != -1
-        || provider.indexOf("jetty.") != -1) {
+    if (provider.indexOf("sun.") != -1) {
       throw new UnsupportedOperationException(
-          "WebSocket not supported for this version of %s, use a newer/different server provider"
+          "WebSocket not yet supported for the JDK's built-in httpserver: https://bugs.openjdk.org/browse/JDK-8368695. Use a different server provider such as robaho"
+              .formatted(jex.config().serverProvider().getClass()));
+    }
+    if (provider.indexOf("jetty.") != -1) {
+      throw new UnsupportedOperationException(
+          "WebSocket not supported for %s, use a different server provider"
               .formatted(jex.config().serverProvider().getClass()));
     }
   }

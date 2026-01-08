@@ -82,4 +82,9 @@ public final class Jackson3JsonService implements JsonService {
     mapper.writeValue(generator, iterator.next());
     generator.writeRaw('\n');
   }
+
+  @Override
+  public <T> T fromJson(Type type, String data) {
+    return mapper.readValue(data, javaType(type));
+  }
 }
