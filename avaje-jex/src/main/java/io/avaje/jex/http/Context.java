@@ -556,6 +556,14 @@ public interface Context {
     return header(Constants.USER_AGENT);
   }
 
+  /** Writes Nothing. */
+  void writeEmpty(int statusCode);
+
+  /** Writes Nothing. */
+  default void writeEmpty(HttpStatus statusCode) {
+    writeEmpty(statusCode.status());
+  }
+
   /**
    * Writes the given bytes directly to the response.
    *
