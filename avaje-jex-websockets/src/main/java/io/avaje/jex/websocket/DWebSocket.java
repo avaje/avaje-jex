@@ -32,7 +32,7 @@ class DWebSocket extends AbstractWebSocket {
       case TEXT -> listener.onMessage(new WsMessage(ctx, this, frame, frame.textPayload()));
       case BINARY ->
           listener.onBinaryMessage(new WsBinaryMessage(ctx, this, frame, frame.binaryPayload()));
-      default -> throw new IllegalArgumentException("Unexpected value: ");
+      default -> throw new IllegalArgumentException("Unknown WebSocket frame opcode: " + frame.opCode());
     }
   }
 
