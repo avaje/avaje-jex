@@ -20,7 +20,7 @@ Features:
 - File Uploads
 - SSL/mTLS configuration
 - Virtual threads enabled by default
-- Multi-Server with any implementation of `jdk.httpserver` (Jetty, Robaho, Flupke, built-in, etc)
+- Multi-Server with any implementation of `jdk.httpserver` (built-in, Grizzly, Jetty, Robaho, Flupke, , etc)
 
 ## Quick Start
 
@@ -231,4 +231,23 @@ The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily u
             .plugin(ssl)
             .get("/", ctx -> ctx.text("hello (http3)"))
             .start();
+```
+
+### Grizzly
+
+[Grizzly](https://github.com/eclipse-ee4j/glassfish-grizzly) is also an option.
+
+[![Maven Central](https://img.shields.io/maven-central/v/io.avaje/avaje-jex-grizzly-spi.svg?label=Maven%20Central)](https://mvnrepository.com/artifact/io.avaje/avaje-jex-grizzly-spi)
+```xml
+<dependency>
+  <groupId>io.avaje</groupId>
+  <artifactId>avaje-jex</artifactId>
+  <version>${jex.version}</version>
+</dependency>
+
+<dependency>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-http-spi</artifactId>
+  <version>${jetty.version}</version>
+</dependency>
 ```
