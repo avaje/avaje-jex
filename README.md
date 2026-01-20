@@ -217,8 +217,13 @@ The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily u
 ```xml
 <dependency>
   <groupId>io.avaje</groupId>
-  <artifactId>avaje-jex-http3-flupke</artifactId>
+  <artifactId>avaje-jex</artifactId>
   <version>${jex.version}</version>
+</dependency>
+<dependency>
+  <groupId>io.avaje</groupId>
+  <artifactId>avaje-jex-http3-flupke</artifactId>
+  <version>${plugin.version}</version>
 </dependency>
 ```
 
@@ -244,10 +249,9 @@ The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily u
   <artifactId>avaje-jex</artifactId>
   <version>${jex.version}</version>
 </dependency>
-
 <dependency>
-  <groupId>org.eclipse.jetty</groupId>
-  <artifactId>jetty-http-spi</artifactId>
-  <version>${jetty.version}</version>
+  <groupId>io.avaje</groupId>
+  <artifactId>avaje-jex-grizzly-spi</artifactId>
+  <version>${plugin.version}</version>
 </dependency>
 ```
