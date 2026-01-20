@@ -143,6 +143,9 @@ final class GrizzlyHttpExchangeDelegate extends HttpExchange {
     }
 
     response.setStatus(rCode);
+    if (rCode == 101) {
+      response.flush();
+    }
   }
 
   @Override
