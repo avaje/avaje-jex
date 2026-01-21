@@ -20,7 +20,7 @@ Features:
 - File Uploads
 - SSL/mTLS configuration
 - Virtual threads enabled by default
-- Multi-Server with any implementation of `jdk.httpserver` (built-in, Grizzly, Jetty, Robaho, Flupke, , etc)
+- Multi-Server with any implementation of `jdk.httpserver` (built-in, Grizzly, Jetty, Robaho, Flupke, etc.)
 
 ## Quick Start
 
