@@ -240,7 +240,7 @@ The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily u
 
 ### Grizzly
 
-[Grizzly](https://github.com/eclipse-ee4j/glassfish-grizzly) is also an option.
+[Grizzly](https://github.com/eclipse-ee4j/glassfish-grizzly) is the webserver that powers jakarta EE's opensource Glassfish.
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.avaje/avaje-jex-grizzly-spi.svg?label=Maven%20Central)](https://mvnrepository.com/artifact/io.avaje/avaje-jex-grizzly-spi)
 ```xml
