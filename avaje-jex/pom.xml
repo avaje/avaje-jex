@@ -6,11 +6,12 @@
   <parent>
     <groupId>io.avaje</groupId>
     <artifactId>avaje-jex-parent</artifactId>
-    <version>3.4-RC4</version>
+    <version>3.4</version>
   </parent>
 
   <artifactId>avaje-jex</artifactId>
-  <name>avaje-jex</name>
+  <name>Avaje Jex</name>
+  <description> Lightweight jdk.httpsever wrapper</description>
 
   <properties>
   </properties>

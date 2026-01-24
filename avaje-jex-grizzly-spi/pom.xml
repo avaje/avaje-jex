@@ -5,11 +5,12 @@
   <parent>
     <groupId>io.avaje</groupId>
     <artifactId>avaje-jex-parent</artifactId>
-    <version>3.4-RC4</version>
+    <version>3.4</version>
   </parent>
   <version>1.0</version>
   <artifactId>avaje-jex-grizzly-spi</artifactId>
   <name>avaje-jex-grizzly-spi</name>
+  <description>Grizzly backed jdk.httpserver implementation</description>
 
   <dependencies>
 
