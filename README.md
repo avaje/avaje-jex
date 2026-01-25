@@ -208,6 +208,24 @@ The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily u
 </dependency>
 ```
 
+### Grizzly
+
+[Grizzly](https://github.com/eclipse-ee4j/glassfish-grizzly) is the webserver that powers jakarta EE's opensource Glassfish.
+
+[![Maven Central](https://img.shields.io/maven-central/v/io.avaje/avaje-jex-grizzly-spi.svg?label=Maven%20Central)](https://mvnrepository.com/artifact/io.avaje/avaje-jex-grizzly-spi)
+```xml
+<dependency>
+  <groupId>io.avaje</groupId>
+  <artifactId>avaje-jex</artifactId>
+  <version>${jex.version}</version>
+</dependency>
+<dependency>
+  <groupId>io.avaje</groupId>
+  <artifactId>avaje-jex-grizzly-spi</artifactId>
+  <version>${plugin.version}</version>
+</dependency>
+```
+
 ### Flupke (HTTP/3, WebTransport)
 
 [Flupke](https://github.com/ptrd/flupke) is the first and (at the time of writing) __only__ HTTP/3 implementation written in pure java.
@@ -238,20 +256,3 @@ The JDK provides an SPI to swap the underlying `HttpServer`, so you can easily u
             .start();
 ```
 
-### Grizzly
-
-[Grizzly](https://github.com/eclipse-ee4j/glassfish-grizzly) is the webserver that powers jakarta EE's opensource Glassfish.
-
-[![Maven Central](https://img.shields.io/maven-central/v/io.avaje/avaje-jex-grizzly-spi.svg?label=Maven%20Central)](https://mvnrepository.com/artifact/io.avaje/avaje-jex-grizzly-spi)
-```xml
-<dependency>
-  <groupId>io.avaje</groupId>
-  <artifactId>avaje-jex</artifactId>
-  <version>${jex.version}</version>
-</dependency>
-<dependency>
-  <groupId>io.avaje</groupId>
-  <artifactId>avaje-jex-grizzly-spi</artifactId>
-  <version>${plugin.version}</version>
-</dependency>
-```
