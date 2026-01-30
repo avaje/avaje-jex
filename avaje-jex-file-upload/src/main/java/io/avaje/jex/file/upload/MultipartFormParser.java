@@ -77,7 +77,7 @@ final class MultipartFormParser {
       return results;
     }
 
-    Path uuid =  config.cacheDirectory().resolve(Path.of(UUID.randomUUID().toString()));
+    Path uuid = config.cacheDirectory().resolve(Path.of(UUID.randomUUID().toString()));
 
     uuid.toFile().deleteOnExit();
     while (true) {
@@ -97,7 +97,7 @@ final class MultipartFormParser {
       // read part data - need to detect end of part
       var meta = parseHeaders(headers);
       var fileName = meta.filename != null ? meta.filename : meta.name + ".tmp";
-      var file =uuid.resolve(fileName).toFile();
+      var file = uuid.resolve(fileName).toFile();
 
       var os = new SwapStream(new ByteArrayOutputStream(), file, config);
 
