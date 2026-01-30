@@ -55,6 +55,7 @@ final class SwapStream extends FilterOutputStream {
   }
 
   private void swapToFileStream() throws IOException {
+    file.getParentFile().mkdirs();
     out = new NoSyncBufferedOutputStream(new FileOutputStream(file));
     out.write(baos.toByteArray());
     swapped = true;

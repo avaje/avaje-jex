@@ -5,10 +5,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import io.avaje.jex.http.BadRequestException;
@@ -75,6 +77,9 @@ final class MultipartFormParser {
       return results;
     }
 
+    Path uuid =  config.cacheDirectory().resolve(Path.of(UUID.randomUUID().toString()));
+
+    uuid.toFile().deleteOnExit();
     while (true) {
       headers.clear();
       // read part headers until blank line
@@ -92,8 +97,7 @@ final class MultipartFormParser {
       // read part data - need to detect end of part
       var meta = parseHeaders(headers);
       var fileName = meta.filename != null ? meta.filename : meta.name + ".tmp";
-      var file = config.cacheDirectory().resolve(fileName).toFile();
-      file.deleteOnExit();
+      var file =uuid.resolve(fileName).toFile();
 
       var os = new SwapStream(new ByteArrayOutputStream(), file, config);
 
