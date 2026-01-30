@@ -45,7 +45,7 @@ public class TestPair implements AutoCloseable {
   /** Create a Server and Client pair for a given set of tests. */
   public static TestPair create(Jex app) {
 
-    var jexServer = app.plugin(sslPlugin).plugin(FlupkeJexPlugin.create()).port(0).start();
+    var jexServer = app.plugin(sslPlugin).port(0).start();
     var port = jexServer.port();
     var url = "https://localhost:" + port;
     var client =
@@ -54,7 +54,7 @@ public class TestPair implements AutoCloseable {
             .client(
                 Http3Client.newBuilder()
                     .disableCertificateCheck()
-                    .sslContext(sslPlugin.sslContext())
+                    .sslContext(sslPlugin.sslConfigurator().getSSLContext())
                     .build())
             .build();
 

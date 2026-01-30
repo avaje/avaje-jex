@@ -2,6 +2,7 @@ package io.avaje.jex;
 
 import io.avaje.inject.BeanScope;
 import io.avaje.jex.core.BootstrapServer;
+import io.avaje.jex.core.CoreServiceLoader;
 import io.avaje.jex.spi.*;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.spi.HttpServerProvider;
@@ -14,6 +15,11 @@ final class DJex implements Jex {
   private final Routing routing = new DefaultRouting();
   private final AppLifecycle lifecycle = new DefaultLifecycle();
   private final DJexConfig config = new DJexConfig();
+
+  DJex() {
+    CoreServiceLoader.plugins().forEach(p -> p.apply(this));
+    routing.addAll(CoreServiceLoader.spiRoutes());
+  }
 
   @Override
   public DJexConfig config() {

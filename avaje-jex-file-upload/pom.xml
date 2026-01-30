@@ -5,10 +5,11 @@
   <parent>
     <groupId>io.avaje</groupId>
     <artifactId>avaje-jex-parent</artifactId>
-    <version>3.4-RC2</version>
+    <version>3.4</version>
   </parent>
   <artifactId>avaje-jex-file-upload</artifactId>
-  <name>avaje-jex-file-upload</name>
+  <name>Avaje Jex File Upload Plugin</name>
+  <description>File upload support for Jex</description>
 
   <dependencies>
     <dependency>

@@ -31,6 +31,7 @@ class FlupkeExchange extends HttpExchange {
   private int statusCode = 0;
   private InputStream is;
   private final PlaceholderOutputStream os = new PlaceholderOutputStream();
+  private boolean webtransportHandler;
 
   public FlupkeExchange(HttpServerRequest request, HttpServerResponse response, HttpContext ctx) {
     this.request = request;
@@ -70,6 +71,9 @@ class FlupkeExchange extends HttpExchange {
 
   @Override
   public void close() {
+    if (webtransportHandler) {
+      return;
+    }
     try (var __ = is;
         var ___ = response.getOutputStream(); ) {
     } catch (IOException e) {
@@ -89,6 +93,10 @@ class FlupkeExchange extends HttpExchange {
 
   @Override
   public void sendResponseHeaders(int status, long responseLength) throws IOException {
+    if (webtransportHandler) {
+      os.wrapped = response.getOutputStream();
+      return;
+    }
     statusCode = status;
     if (responseLength > 0) {
       responseHeaders.add("Content-length", Long.toString(responseLength));
@@ -126,6 +134,11 @@ class FlupkeExchange extends HttpExchange {
   @Override
   public void setAttribute(String name, Object value) {
     attributes.put(name, value);
+    if ("webtransport-handler".equals(name)) {
+      this.webtransportHandler = true;
+      statusCode = 200;
+      response.setStatus(statusCode);
+    }
   }
 
   @Override

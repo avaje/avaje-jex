@@ -12,7 +12,7 @@ import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
 /** Loads SPI Services. */
-final class CoreServiceLoader {
+public final class CoreServiceLoader {
 
   private static final CoreServiceLoader INSTANCE = new CoreServiceLoader();
 
@@ -42,11 +42,11 @@ final class CoreServiceLoader {
     return INSTANCE.renders;
   }
 
-  static List<JexPlugin> plugins() {
+  public static List<JexPlugin> plugins() {
     return INSTANCE.plugins;
   }
 
-  static List<HttpService> spiRoutes() {
+  public static List<HttpService> spiRoutes() {
     return INSTANCE.spiRoutes;
   }
 }

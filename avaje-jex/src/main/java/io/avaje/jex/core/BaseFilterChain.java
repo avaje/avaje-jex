@@ -27,6 +27,7 @@ final class BaseFilterChain implements FilterChain {
     } else {
       try {
         if (!ctx.responseSent()) {
+          ctx.setMode(Mode.EXCHANGE);
           handler.handle(ctx);
         }
       } catch (Exception t) {

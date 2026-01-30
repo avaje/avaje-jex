@@ -13,9 +13,7 @@ import java.util.Iterator;
 public non-sealed interface JsonService extends JexExtension {
 
   /**
-   * **Writes a Java Object as JSON to an OutputStream**
-   *
-   * <p>Serializes a Java object into JSON format and writes the resulting JSON to the specified
+   * Serializes a Java object into JSON format and writes the resulting JSON to the specified
    * output stream.
    *
    * @param bean the Java object to be serialized
@@ -24,9 +22,7 @@ public non-sealed interface JsonService extends JexExtension {
   void toJson(Object bean, OutputStream os);
 
   /**
-   * **Writes a Java Object as a JSON string**
-   *
-   * <p>Serializes a Java object into JSON string format and writes the resulting JSON to the
+   * Serializes a Java object into JSON string format and writes the resulting JSON to the
    * specified output stream.
    *
    * @param bean the Java object to be serialized
@@ -35,10 +31,17 @@ public non-sealed interface JsonService extends JexExtension {
   String toJsonString(Object bean);
 
   /**
-   * Deserializes a json input stream and deserializes it into a Java object of the specified type.
+   * Deserializes a Java object from a JSON string.
    *
    * @param type the Type object of the desired type
    * @param is the input stream containing the JSON data
+   * @return the serialized JSON string
+   */
+  <T> T fromJson(Type type, String string);
+
+  /**
+   * Deserializes a json input stream and deserializes it into a Java object of the specified type.
+   *
    * @return the deserialized object
    */
   <T> T fromJson(Type type, InputStream is);
