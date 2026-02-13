@@ -27,8 +27,8 @@
     <surefire.useModulePath>false</surefire.useModulePath>
     <maven.compiler.release>21</maven.compiler.release>
     <maven.compiler.proc>full</maven.compiler.proc>
-    <avaje.config.version>5.0</avaje.config.version>
-    <avaje.inject.version>12.3</avaje.inject.version>
+    <avaje.config.version>5.1</avaje.config.version>
+    <avaje.inject.version>12.4</avaje.inject.version>
     <avaje.jsonb.version>3.11</avaje.jsonb.version>
     <avaje.http.version>3.7</avaje.http.version>
     <avaje.metrics.version>9.8</avaje.metrics.version>
