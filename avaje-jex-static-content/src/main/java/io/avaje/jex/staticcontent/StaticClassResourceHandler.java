@@ -15,6 +15,7 @@ import io.avaje.jex.spi.ClassResourceLoader;
 final class StaticClassResourceHandler extends AbstractStaticHandler {
 
   private final URL indexFile;
+  private final URL spaRoot;
   private final URL singleFile;
   private final ClassResourceLoader resourceLoader;
 
@@ -26,6 +27,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
       Predicate<Context> skipFilePredicate,
       ClassResourceLoader resourceLoader,
       URL indexFile,
+      URL spaRoot,
       URL singleFile,
       boolean precompress,
       CompressionConfig compressionConfig) {
@@ -40,6 +42,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
 
     this.resourceLoader = resourceLoader;
     this.indexFile = indexFile;
+    this.spaRoot = spaRoot;
     this.singleFile = singleFile;
   }
 
@@ -84,7 +87,15 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
     if (!normalizedPath.startsWith(filesystemRoot)) {
       reportPathTraversal();
     }
-    sendURL(ctx, urlPath, resourceLoader.loadResource(normalizedPath));
+    try {
+      sendURL(ctx, urlPath, resourceLoader.loadResource(normalizedPath));
+    } catch (NullPointerException e) {
+      if (spaRoot != null) {
+        sendURL(ctx, spaRoot.getPath(), spaRoot);
+        return;
+      }
+      throw404(jdkExchange);
+    }
   }
 
   private void sendURL(Context ctx, String urlPath, URL path) {
