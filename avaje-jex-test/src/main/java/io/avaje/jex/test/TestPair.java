@@ -1,6 +1,7 @@
 package io.avaje.jex.test;
 
 import java.net.http.HttpClient.Version;
+import java.time.Duration;
 
 import io.avaje.http.client.HttpClient;
 import io.avaje.http.client.HttpClientRequest;
@@ -45,7 +46,7 @@ public class TestPair implements AutoCloseable {
     var port = jexServer.port();
     String protocol = app.config().httpsConfig() != null ? "https" : "http";
     var url = protocol + "://localhost:" + port;
-    var client = HttpClient.builder().version(Version.HTTP_1_1).baseUrl(url).build();
+    var client = HttpClient.builder().version(Version.HTTP_1_1).requestTimeout(Duration.ofDays(1)). baseUrl(url).build();
 
     return new TestPair(port, jexServer, client);
   }

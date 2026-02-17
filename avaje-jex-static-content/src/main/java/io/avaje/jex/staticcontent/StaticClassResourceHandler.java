@@ -47,8 +47,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
   public void handle(Context ctx) {
     if (singleFile != null) {
       final var path = singleFile.getPath();
-      if (isCached(path)) {
-        writeCached(ctx, path);
+      if (isCached(path) && writeCached(ctx, path)) {
         return;
       }
       sendURL(ctx, path, singleFile);
@@ -63,8 +62,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
     final String wholeUrlPath = jdkExchange.getRequestURI().getPath();
     if (wholeUrlPath.endsWith("/") || wholeUrlPath.equals(urlPrefix)) {
       final var path = indexFile.getPath();
-      if (isCached(path)) {
-        writeCached(ctx, path);
+      if (isCached(path) && writeCached(ctx, path)) {
         return;
       }
       sendURL(ctx, path, indexFile);
