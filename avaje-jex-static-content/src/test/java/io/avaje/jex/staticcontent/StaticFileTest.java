@@ -79,6 +79,7 @@ class StaticFileTest {
     HttpResponse<String> res = pair.request().path("spa").path("index2.html").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
   }
+
   @Test
   void getSpaRedirectFile() {
     HttpResponse<String> res = pair.request().path("spaFile").path("index2.html").GET().asString();

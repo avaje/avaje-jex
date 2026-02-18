@@ -19,8 +19,7 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
   private static final String FAILED_TO_LOCATE_FILE = "Failed to locate file: ";
   private static final String DIRECTORY_INDEX_FAILURE =
       "Failed to locate Directory Index Resource: ";
-  private static final String SPA_ROOT_FAILURE =
-      "Failed to locate SPA Root Resource: ";
+  private static final String SPA_ROOT_FAILURE = "Failed to locate SPA Root Resource: ";
   private static final Predicate<Context> NO_OP_PREDICATE = ctx -> false;
   private static final ClassResourceLoader DEFAULT_LOADER =
       ClassResourceLoader.fromClass(StaticContent.class);
@@ -157,6 +156,10 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
       try {
         dirIndex = new File(root.transform(this::appendSlash) + directoryIndex).getCanonicalFile();
         fsRoot = dirIndex.getParentFile().getPath();
+        if (!dirIndex.exists()) {
+          throw new IllegalStateException(
+              DIRECTORY_INDEX_FAILURE + root.transform(this::appendSlash) + directoryIndex);
+        }
       } catch (Exception e) {
         throw new IllegalStateException(
             DIRECTORY_INDEX_FAILURE + root.transform(this::appendSlash) + directoryIndex, e);
@@ -165,20 +168,27 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
       try {
         singleFile = new File(root).getCanonicalFile();
         fsRoot = singleFile.getParentFile().getPath();
+        if (!singleFile.exists()) {
+          throw new IllegalStateException(FAILED_TO_LOCATE_FILE + root);
+        }
       } catch (Exception e) {
         throw new IllegalStateException(FAILED_TO_LOCATE_FILE + root, e);
       }
     }
 
     if (spaRoot != null) {
-        try {
-          spaRootFile = new File(root.transform(this::appendSlash) + spaRoot).getCanonicalFile();
-          fsRoot = spaRootFile.getParentFile().getPath();
-        } catch (Exception e) {
+      try {
+        spaRootFile = new File(root.transform(this::appendSlash) + spaRoot).getCanonicalFile();
+        fsRoot = spaRootFile.getParentFile().getPath();
+        if (!spaRootFile.exists()) {
           throw new IllegalStateException(
-              SPA_ROOT_FAILURE + root.transform(this::appendSlash) + spaRoot, e);
+              SPA_ROOT_FAILURE + root.transform(this::appendSlash) + spaRoot);
         }
+      } catch (Exception e) {
+        throw new IllegalStateException(
+            SPA_ROOT_FAILURE + root.transform(this::appendSlash) + spaRoot, e);
       }
+    }
 
     return new StaticFileHandler(
         path,
