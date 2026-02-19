@@ -19,6 +19,7 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
   private static final String FAILED_TO_LOCATE_FILE = "Failed to locate file: ";
   private static final String DIRECTORY_INDEX_FAILURE =
       "Failed to locate Directory Index Resource: ";
+  private static final String SPA_ROOT_FAILURE = "Failed to locate SPA Root Resource: ";
   private static final Predicate<Context> NO_OP_PREDICATE = ctx -> false;
   private static final ClassResourceLoader DEFAULT_LOADER =
       ClassResourceLoader.fromClass(StaticContent.class);
@@ -26,6 +27,7 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
   private String path = "/";
   private String root;
   private String directoryIndex = null;
+  private String spaRoot = null;
   private ClassResourceLoader resourceLoader = DEFAULT_LOADER;
   private final Map<String, String> mimeTypes = new HashMap<>();
   private final Map<String, String> headers = new HashMap<>();
@@ -70,7 +72,7 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
 
     if (root.endsWith("/") && directoryIndex == null) {
       throw new IllegalArgumentException(
-          "Directory Index file is required when serving directories");
+          "Directory Index file or SPA Root is required when serving directories");
     }
 
     if (!isClasspath) {
@@ -90,6 +92,15 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
   @Override
   public StaticResourceHandlerBuilder directoryIndex(String directoryIndex) {
     this.directoryIndex = directoryIndex;
+    return this;
+  }
+
+  @Override
+  public StaticResourceHandlerBuilder spaRoot(String spaIndex) {
+    this.spaRoot = spaIndex;
+    if (directoryIndex == null) {
+      directoryIndex(spaIndex);
+    }
     return this;
   }
 
@@ -139,11 +150,16 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
   private StaticFileHandler fileLoader(CompressionConfig compress) {
     String fsRoot;
     File dirIndex = null;
+    File spaRootFile = null;
     File singleFile = null;
     if (directoryIndex != null) {
       try {
         dirIndex = new File(root.transform(this::appendSlash) + directoryIndex).getCanonicalFile();
         fsRoot = dirIndex.getParentFile().getPath();
+        if (!dirIndex.exists()) {
+          throw new IllegalStateException(
+              DIRECTORY_INDEX_FAILURE + root.transform(this::appendSlash) + directoryIndex);
+        }
       } catch (Exception e) {
         throw new IllegalStateException(
             DIRECTORY_INDEX_FAILURE + root.transform(this::appendSlash) + directoryIndex, e);
@@ -152,8 +168,25 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
       try {
         singleFile = new File(root).getCanonicalFile();
         fsRoot = singleFile.getParentFile().getPath();
+        if (!singleFile.exists()) {
+          throw new IllegalStateException(FAILED_TO_LOCATE_FILE + root);
+        }
       } catch (Exception e) {
         throw new IllegalStateException(FAILED_TO_LOCATE_FILE + root, e);
+      }
+    }
+
+    if (spaRoot != null) {
+      try {
+        spaRootFile = new File(root.transform(this::appendSlash) + spaRoot).getCanonicalFile();
+        fsRoot = spaRootFile.getParentFile().getPath();
+        if (!spaRootFile.exists()) {
+          throw new IllegalStateException(
+              SPA_ROOT_FAILURE + root.transform(this::appendSlash) + spaRoot);
+        }
+      } catch (Exception e) {
+        throw new IllegalStateException(
+            SPA_ROOT_FAILURE + root.transform(this::appendSlash) + spaRoot, e);
       }
     }
 
@@ -164,6 +197,7 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
         headers,
         skipFilePredicate,
         dirIndex,
+        spaRootFile,
         singleFile,
         precompress,
         compress);
@@ -171,11 +205,16 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
 
   private StaticClassResourceHandler classPathHandler(CompressionConfig compress) {
     URL dirIndex = null;
+    URL spaRootUrl = null;
     URL singleFile = null;
     if (directoryIndex != null) {
       dirIndex = resourceLoader.loadResource(root.transform(this::appendSlash) + directoryIndex);
     } else {
       singleFile = resourceLoader.loadResource(root);
+    }
+
+    if (spaRoot != null) {
+      spaRootUrl = resourceLoader.loadResource(root.transform(this::appendSlash) + spaRoot);
     }
 
     return new StaticClassResourceHandler(
@@ -186,6 +225,7 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
         skipFilePredicate,
         resourceLoader,
         dirIndex,
+        spaRootUrl,
         singleFile,
         precompress,
         compress);

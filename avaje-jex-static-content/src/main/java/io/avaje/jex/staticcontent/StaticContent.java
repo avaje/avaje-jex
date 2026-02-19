@@ -77,6 +77,14 @@ public sealed interface StaticContent extends JexPlugin
     Builder directoryIndex(String directoryIndex);
 
     /**
+     * Redirects to index file when a static file cannot be found. This ensures the client side router handles the routing.
+     *
+     * @param spaIndex the index file
+     * @return the updated configuration
+     */
+    Builder spaRoot(String spaIndex);
+
+    /**
      * Sent resources will be pre-compressed and cached in memory when this is enabled
      *
      * @return the updated configuration
