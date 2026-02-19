@@ -21,6 +21,8 @@ class StaticFileTest {
         Jex.create()
             .plugin(defaultCP().route("/index").build())
             .plugin(defaultFile().route("/indexFile").build())
+            .plugin(defaultCP().route("/spa/*").spaRoot("index.html").build())
+            .plugin(defaultFile().route("/spaFile/*").spaRoot("index.html").build())
             .plugin(defaultCP().route("/indexWild/*").build())
             .plugin(defaultFile().route("/indexWildFile/*").build())
             .plugin(defaultCP().route("/sus/").build())
@@ -70,6 +72,18 @@ class StaticFileTest {
   void getIndex404() {
     HttpResponse<String> res = pair.request().path("index").path("index.html").GET().asString();
     assertThat(res.statusCode()).isEqualTo(404);
+  }
+
+  @Test
+  void getSpaRedirect() {
+    HttpResponse<String> res = pair.request().path("spa").path("index2.html").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+  }
+
+  @Test
+  void getSpaRedirectFile() {
+    HttpResponse<String> res = pair.request().path("spaFile").path("index2.html").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
   }
 
   @Test

@@ -17,6 +17,7 @@ import io.avaje.jex.http.Context;
 final class StaticFileHandler extends AbstractStaticHandler {
 
   private final File indexFile;
+  private final File spaRoot;
   private final File singleFile;
 
   StaticFileHandler(
@@ -26,8 +27,8 @@ final class StaticFileHandler extends AbstractStaticHandler {
       Map<String, String> headers,
       Predicate<Context> skipFilePredicate,
       File welcomeFile,
-      File singleFile,
-      boolean precompress,
+      File spaRoot,
+      File singleFile, boolean precompress,
       CompressionConfig compressionConfig) {
     super(
         urlPrefix,
@@ -38,6 +39,7 @@ final class StaticFileHandler extends AbstractStaticHandler {
         precompress,
         compressionConfig);
     this.indexFile = welcomeFile;
+    this.spaRoot = spaRoot;
     this.singleFile = singleFile;
   }
 
@@ -110,6 +112,11 @@ final class StaticFileHandler extends AbstractStaticHandler {
       }
       ctx.rangedWrite(fis);
     } catch (FileNotFoundException e) {
+      if (spaRoot != null) {
+        final var path = spaRoot.getPath();
+        sendFile(ctx, jdkExchange, path, spaRoot);
+        return;
+      }
       throw404(jdkExchange);
     }
   }
