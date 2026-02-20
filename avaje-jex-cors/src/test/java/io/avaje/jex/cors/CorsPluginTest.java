@@ -25,23 +25,24 @@ class CorsPluginTest {
   static void setUp() {
     client = HttpClient.newHttpClient();
 
+    CorsPlugin plugin =
+        CorsPlugin.create(
+            cors ->
+                cors.addRule(
+                        rule ->
+                            rule.path("/api/*")
+                                .allowHost("https://example.com")
+                                .allowCredentials(false)
+                                .maxAge(3600))
+                    .addRule(rule -> rule.path("/public/*").anyHost())
+                    .addRule(
+                        rule ->
+                            rule.path("/reflect/*")
+                                .reflectClientOrigin(true)
+                                .allowCredentials(true)));
     server =
         Jex.create()
-            .plugin(
-                CorsPlugin.create(
-                    cors ->
-                        cors.addRule(
-                                rule ->
-                                    rule.path("/api/*")
-                                        .allowHost("https://example.com")
-                                        .allowCredentials(false)
-                                        .maxAge(3600))
-                            .addRule(rule -> rule.path("/public/*").anyHost())
-                            .addRule(
-                                rule ->
-                                    rule.path("/reflect/*")
-                                        .reflectClientOrigin(true)
-                                        .allowCredentials(true))))
+            .plugin(plugin)
             .get("/api/hello", ctx -> ctx.text("hello"))
             .get("/public/data", ctx -> ctx.text("public"))
             .get("/reflect/me", ctx -> ctx.text("reflected"))

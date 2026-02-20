@@ -8,11 +8,15 @@ import java.util.function.Consumer;
 public final class CorsConfig {
   final List<CorsData> rules = new ArrayList<>();
 
+  public CorsConfig addRule(CorsRule rule) {
+    rules.add(rule.build());
+    return this;
+  }
+
   public CorsConfig addRule(Consumer<CorsRule> consumer) {
     final var rule = new CorsRule();
     consumer.accept(rule);
-    rules.add(rule.build());
-    return this;
+    return addRule(rule);
   }
 
   /** Provides a fluent API for constructing CORS rules with various options. */
@@ -27,7 +31,7 @@ public final class CorsConfig {
     private final List<String> allowedOrigins = new ArrayList<>();
     private final List<String> headersToExpose = new ArrayList<>();
 
-    CorsRule() {}
+    public CorsRule() {}
 
     /** Allow requests to carry credentials (cookies, auth headers). */
     public CorsRule allowCredentials(boolean allowCredentials) {
