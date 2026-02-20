@@ -26,20 +26,23 @@ class CorsPluginTest {
     client = HttpClient.newHttpClient();
 
     CorsPlugin plugin =
-        CorsPlugin.create(
-            cors ->
-                cors.addRule(
-                        rule ->
-                            rule.path("/api/*")
-                                .allowHost("https://example.com")
-                                .allowCredentials(false)
-                                .maxAge(3600))
-                    .addRule(rule -> rule.path("/public/*").anyHost())
-                    .addRule(
-                        rule ->
-                            rule.path("/reflect/*")
-                                .reflectClientOrigin(true)
-                                .allowCredentials(true)));
+        CorsPlugin.builder()
+          .createRule()
+            .path("/api/*")
+            .allowHost("https://example.com")
+            .allowCredentials(false)
+            .maxAge(3600)
+            .buildRule()
+          .createRule()
+            .path("/public/*")
+            .anyHost()
+            .buildRule()
+          .createRule()
+            .path("/reflect/*")
+            .reflectClientOrigin(true)
+            .allowCredentials(true)
+            .buildRule()
+          .build();
     server =
         Jex.create()
             .plugin(plugin)
@@ -188,13 +191,13 @@ class CorsPluginTest {
     Jex.Server extraServer =
         Jex.create()
             .plugin(
-                CorsPlugin.create(
-                    cors ->
-                        cors.addRule(
-                            rule ->
-                                rule.allowHost("https://example.com")
-                                    .exposeHeader("X-Custom-Header")
-                                    .exposeHeader("X-Another-Header"))))
+              CorsPlugin.builder()
+                  .createRule()
+                    .allowHost("https://example.com")
+                    .exposeHeader("X-Custom-Header")
+                    .exposeHeader("X-Another-Header")
+                    .buildRule()
+                  .build())
             .get("/data", ctx -> ctx.text("ok"))
             .port(0)
             .start();
@@ -224,8 +227,12 @@ class CorsPluginTest {
         () ->
             Jex.create()
                 .plugin(
-                    CorsPlugin.create(
-                        cors -> cors.addRule(rule -> rule.anyHost().allowCredentials(true))))
+                  CorsPlugin.builder()
+                    .createRule()
+                      .anyHost()
+                      .allowCredentials(true)
+                      .buildRule()
+                    .build())
                 .port(0)
                 .start());
   }
@@ -237,12 +244,12 @@ class CorsPluginTest {
         () ->
             Jex.create()
                 .plugin(
-                    CorsPlugin.create(
-                        cors ->
-                            cors.addRule(
-                                rule ->
-                                    rule.allowHost("https://example.com")
-                                        .reflectClientOrigin(true))))
+                  CorsPlugin.builder()
+                    .createRule()
+                      .allowHost("https://example.com")
+                      .reflectClientOrigin(true)
+                      .buildRule()
+                    .build())
                 .port(0)
                 .start());
   }
@@ -253,7 +260,12 @@ class CorsPluginTest {
         IllegalArgumentException.class,
         () ->
             Jex.create()
-                .plugin(CorsPlugin.create(cors -> cors.addRule(rule -> rule.path("/api/*"))))
+                .plugin(
+                  CorsPlugin.builder()
+                      .createRule()
+                        .path("/api/*")
+                        .buildRule()
+                      .build())
                 .port(0)
                 .start());
   }
@@ -263,10 +275,7 @@ class CorsPluginTest {
     assertThrows(
         IllegalArgumentException.class,
         () ->
-            CorsPlugin.create(
-                cors -> {
-                  /* no rules */
-                }));
+            CorsPlugin.builder().build());
   }
 
   // ─── null origin value ───────────────────────────────────────────────────
@@ -290,20 +299,21 @@ class CorsPluginTest {
 
   @Test
   void allowHost_withNullString_throwsIllegalArgument() {
-    assertThrows(IllegalArgumentException.class, () -> new CorsConfig.CorsRule().allowHost("null"));
+    assertThrows(IllegalArgumentException.class, () ->
+      CorsPlugin.builder().createRule().allowHost("null"));
   }
 
   @Test
   void allowHost_withTooManyWildcards_throwsIllegalArgument() {
     assertThrows(
         IllegalArgumentException.class,
-        () -> new CorsConfig.CorsRule().allowHost("*.*.example.com"));
+        () -> CorsPlugin.builder().createRule().allowHost("*.*.example.com"));
   }
 
   @Test
   void allowHost_withWildcardNotAtStart_throwsIllegalArgument() {
     assertThrows(
-        IllegalArgumentException.class, () -> new CorsConfig.CorsRule().allowHost("example.*.com"));
+        IllegalArgumentException.class, () -> CorsPlugin.builder().createRule().allowHost("example.*.com"));
   }
 
   // ─── maxAge omitted when negative ────────────────────────────────────────
@@ -313,12 +323,12 @@ class CorsPluginTest {
     Jex.Server extraServer =
         Jex.create()
             .plugin(
-                CorsPlugin.create(
-                    cors ->
-                        cors.addRule(
-                            rule ->
-                                rule.allowHost("https://example.com")
-                                    .maxAge(-1)))) // explicit -1: omit header
+              CorsPlugin.builder()
+                .createRule()
+                .allowHost("https://example.com")
+                .maxAge(-1)
+                .buildRule()
+              .build()) // explicit -1: omit header
             .get("/hello", ctx -> ctx.text("hi"))
             .port(0)
             .start();
