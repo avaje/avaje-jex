@@ -1,7 +1,11 @@
 package io.avaje.jex.compression;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 /** Configuration for compression settings. */
@@ -108,7 +112,21 @@ public final class CompressionConfig {
    * @param encoding The Content-Encoding value.
    * @return The compressor for the given Content-Encoding value, or null if not found.
    */
-  Compressor forType(String encoding) {
-    return compressors.get(encoding);
+  public Optional<Compressor> findMatchingCompressor(List<String> acceptedEncoding) {
+    if (acceptedEncoding != null) {
+      // it seems jetty may handle multi-value headers differently
+      var stream =
+          acceptedEncoding.size() > 1
+              ? acceptedEncoding.stream()
+              : Arrays.stream(acceptedEncoding.getFirst().split(","));
+
+      return stream
+          .map(e -> e.trim().split(";")[0])
+          .map(e -> "*".equals(e) ? "gzip" : e.toLowerCase())
+          .map(compressors::get)
+          .filter(Objects::nonNull)
+          .findFirst();
+    }
+    return Optional.empty();
   }
 }

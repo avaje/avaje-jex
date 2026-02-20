@@ -49,8 +49,7 @@ final class StaticFileHandler extends AbstractStaticHandler {
     if (singleFile != null) {
 
       final var path = singleFile.getPath();
-      if (isCached(path)) {
-        writeCached(ctx, path);
+      if (isCached(path) && writeCached(ctx, path)) {
         return;
       }
 
@@ -66,8 +65,7 @@ final class StaticFileHandler extends AbstractStaticHandler {
     if (wholeUrlPath.endsWith("/") || wholeUrlPath.equals(urlPrefix)) {
 
       final var path = indexFile.getPath();
-      if (isCached(path)) {
-        writeCached(ctx, path);
+      if (isCached(path) && writeCached(ctx, path)) {
         return;
       }
 

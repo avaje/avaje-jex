@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,6 +15,7 @@ import com.sun.net.httpserver.HttpExchange;
 
 import io.avaje.jex.compression.CompressedOutputStream;
 import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.core.Constants;
 import io.avaje.jex.http.BadRequestException;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.http.ExchangeHandler;
@@ -65,9 +67,8 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
     int dotIndex = basename.lastIndexOf('.');
     if (dotIndex >= 0) {
       return basename.substring(dotIndex + 1);
-    } else {
-      return "";
     }
+    return "";
   }
 
   protected String lookupMime(String path) {
@@ -86,16 +87,36 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
 
   protected void addCachedEntry(Context ctx, String urlPath, InputStream fis) throws IOException {
     var baos = new ByteArrayOutputStream();
-    fis.transferTo(new CompressedOutputStream(compressionConfig, ctx, baos));
+    CompressedOutputStream compressed = new CompressedOutputStream(compressionConfig, ctx, baos);
+    fis.transferTo(compressed);
+    compressed.close();
     var bytes = baos.toByteArray();
     var responseHeaders = Map.copyOf(ctx.exchange().getResponseHeaders());
     ctx.write(bytes);
-    compressedFiles.put(urlPath, new CachedResource(responseHeaders, bytes));
+    var encoding = ctx.responseHeader(Constants.CONTENT_ENCODING);
+    compressedFiles.put(
+        urlPath, new CachedResource(responseHeaders, bytes, encoding != null, encoding));
   }
 
-  protected void writeCached(Context ctx, String path) {
+  protected boolean writeCached(Context ctx, String path) {
     var cached = compressedFiles.get(path);
+
+    if (cached.isCompressed()) {
+      if (ctx.header(Constants.ACCEPT_ENCODING) == null) {
+        return false;
+      }
+
+      var compressor =
+          compressionConfig.findMatchingCompressor(List.of(ctx.header(Constants.ACCEPT_ENCODING)));
+
+      if (compressor.isEmpty() || !compressor.get().encoding().equals(cached.encoding())) {
+
+        return false;
+      }
+    }
+
     ctx.headerMap(cached.headers());
     ctx.write(cached.bytes());
+    return true;
   }
 }
