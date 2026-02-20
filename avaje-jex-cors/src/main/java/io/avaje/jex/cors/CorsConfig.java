@@ -1,10 +1,8 @@
 package io.avaje.jex.cors;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-
 
 /** Configuration for {@link CorsPlugin}. */
 public final class CorsConfig {
@@ -17,10 +15,7 @@ public final class CorsConfig {
     return this;
   }
 
-  /**
-   * Builder for {@link CorsData}. Provides a fluent API for constructing CORS rules with
-   * various options.
-   */
+  /** Provides a fluent API for constructing CORS rules with various options. */
   public static final class CorsRule {
 
     private boolean allowCredentials = false;
@@ -31,6 +26,8 @@ public final class CorsConfig {
 
     private final List<String> allowedOrigins = new ArrayList<>();
     private final List<String> headersToExpose = new ArrayList<>();
+
+    CorsRule() {}
 
     /** Allow requests to carry credentials (cookies, auth headers). */
     public CorsRule allowCredentials(boolean allowCredentials) {
@@ -71,10 +68,8 @@ public final class CorsConfig {
     /**
      * Allow one or more specific hosts, with optional scheme (defaults to {@link #defaultScheme}).
      */
-    public CorsRule allowHost(String host, String... others) {
-      final List<String> origins = new ArrayList<>();
-      origins.add(host);
-      Collections.addAll(origins, others);
+    public CorsRule allowHost(String... others) {
+      final List<String> origins = List.of(others);
 
       for (var idx = 0; idx < origins.size(); idx++) {
         final var raw = origins.get(idx);
@@ -92,7 +87,7 @@ public final class CorsConfig {
                   + raw
                   + "'. Only one at the start of the host is allowed!");
         }
-        if (wildcardResult  == WildcardResult.WildcardNotAtTheStartOfTheHost) {
+        if (wildcardResult == WildcardResult.WildcardNotAtTheStartOfTheHost) {
           throw new IllegalArgumentException(
               "The wildcard must be at the start of the passed in host. The value '"
                   + raw
@@ -126,17 +121,6 @@ public final class CorsConfig {
     }
   }
 
-  /**
-   * Immutable CORS rule. Construct via {@link CorsRule}.
-   *
-   * <pre>{@code
-   * new CorsRule.Builder()
-   *     .path("/api/*")
-   *     .allowHost("example.com")
-   *     .allowCredentials(true)
-   *     .build();
-   * }</pre>
-   */
   static final record CorsData(
       boolean allowCredentials,
       boolean reflectClientOrigin,

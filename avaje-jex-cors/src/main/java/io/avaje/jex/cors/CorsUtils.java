@@ -84,18 +84,14 @@ final class CorsUtils {
   static WildcardResult originFulfillsWildcardRequirements(String origin) {
     final var count = origin.chars().filter(c -> c == '*').count();
 
-
     if (count == 0) return WildcardResult.NoWildcardDetected;
 
-
     if (count == 1) {
-	  if (origin.contains("://*.")) {
-		return WildcardResult.WildcardOkay;
-	  } else {
-		return WildcardResult.WildcardNotAtTheStartOfTheHost;
-	  }
-	}
-
+      if (origin.contains("://*.")) {
+        return WildcardResult.WildcardOkay;
+      }
+      return WildcardResult.WildcardNotAtTheStartOfTheHost;
+    }
 
     return switch ((int) count) {
       case 0 -> WildcardResult.NoWildcardDetected;
