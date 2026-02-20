@@ -11,7 +11,7 @@ import io.avaje.jex.spi.JexPlugin;
 /**
  * Plugin that handles the functionality to set CORS headers for some or all origins as required.
  */
-public class CorsPlugin implements JexPlugin {
+public final class CorsPlugin implements JexPlugin {
 
   private static final String ORIGIN = "Origin";
   private static final String VARY = "Vary";
