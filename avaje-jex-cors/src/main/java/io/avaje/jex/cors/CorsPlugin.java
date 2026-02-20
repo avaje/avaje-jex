@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import io.avaje.jex.Jex;
-import io.avaje.jex.cors.CorsConfig.CorsData;
+import io.avaje.jex.cors.CorsPluginBuilder.CorsData;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.spi.JexPlugin;
 
@@ -24,25 +24,15 @@ public final class CorsPlugin implements JexPlugin {
   private static final String ACCESS_CONTROL_REQUEST_METHOD = "Access-Control-Request-Method";
   private static final String ACCESS_CONTROL_MAX_AGE = "Access-Control-Max-Age";
 
-  private final CorsConfig config;
+  private final CorsPluginBuilder config;
 
-  private CorsPlugin(Consumer<CorsConfig> userConfig) {
-    this.config = new CorsConfig();
-    userConfig.accept(this.config);
-    if (config.rules.isEmpty()) {
-      throw new IllegalArgumentException(
-          "At least one cors config has to be provided. Use CorsPluginConfig.addRule() to add one.");
-    }
+  CorsPlugin(CorsPluginBuilder config) {
+    this.config = config;
   }
 
-  /**
-   * Create a new instance of the CorsPlugin with the provided configuration.
-   *
-   * @param userConfig
-   * @return a new instance of the CorsPlugin
-   */
-  public static CorsPlugin create(Consumer<CorsConfig> userConfig) {
-    return new CorsPlugin(userConfig);
+  /** Create a builder of {@link CorsPlugin} instances. */
+  public static CorsPluginBuilder builder() {
+    return new CorsPluginBuilder();
   }
 
   @Override

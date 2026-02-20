@@ -2,26 +2,29 @@ package io.avaje.jex.cors;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
-/** Configuration for {@link CorsPlugin}. */
-public final class CorsConfig {
-  final List<CorsData> rules = new ArrayList<>();
+/** Builder of {@link CorsPlugin} instances. */
+public final class CorsPluginBuilder {
+  final List<CorsData> rules;
 
-  public CorsConfig addRule(CorsRule rule) {
-    rules.add(rule.build());
-    return this;
+  CorsPluginBuilder() {
+    rules = new ArrayList<>();
   }
 
-  public CorsConfig addRule(Consumer<CorsRule> consumer) {
-    final var rule = new CorsRule();
-    consumer.accept(rule);
-    return addRule(rule);
+  public RuleBuilder createRule() {
+    return new RuleBuilder();
+  }
+
+  public CorsPlugin build() {
+    if (rules.isEmpty()) {
+      throw new IllegalArgumentException(
+          "At least one cors config has to be provided. Use CorsPluginConfig.addRule() to add one.");
+    }
+    return new CorsPlugin(this);
   }
 
   /** Provides a fluent API for constructing CORS rules with various options. */
-  public static final class CorsRule {
-
+  public final class RuleBuilder {
     private boolean allowCredentials = false;
     private boolean reflectClientOrigin = false;
     private String defaultScheme = "https";
@@ -31,40 +34,40 @@ public final class CorsConfig {
     private final List<String> allowedOrigins = new ArrayList<>();
     private final List<String> headersToExpose = new ArrayList<>();
 
-    public CorsRule() {}
+    private RuleBuilder() {}
 
     /** Allow requests to carry credentials (cookies, auth headers). */
-    public CorsRule allowCredentials(boolean allowCredentials) {
+    public RuleBuilder allowCredentials(boolean allowCredentials) {
       this.allowCredentials = allowCredentials;
       return this;
     }
 
     /** Reflect the client's Origin header back instead of a fixed value. */
-    public CorsRule reflectClientOrigin(boolean reflectClientOrigin) {
+    public RuleBuilder reflectClientOrigin(boolean reflectClientOrigin) {
       this.reflectClientOrigin = reflectClientOrigin;
       return this;
     }
 
     /** Default scheme prepended when a host is given without one (default: {@code "https"}). */
-    public CorsRule defaultScheme(String defaultScheme) {
+    public RuleBuilder defaultScheme(String defaultScheme) {
       this.defaultScheme = defaultScheme;
       return this;
     }
 
     /** Path pattern this rule applies to (default: {@code "*"}). */
-    public CorsRule path(String path) {
+    public RuleBuilder path(String path) {
       this.path = path;
       return this;
     }
 
     /** Preflight {@code Access-Control-Max-Age} in seconds ({@code -1} to omit). */
-    public CorsRule maxAge(int maxAge) {
+    public RuleBuilder maxAge(int maxAge) {
       this.maxAge = maxAge;
       return this;
     }
 
     /** Allow all origins ({@code Access-Control-Allow-Origin: *}). */
-    public CorsRule anyHost() {
+    public RuleBuilder anyHost() {
       allowedOrigins.add("*");
       return this;
     }
@@ -72,7 +75,7 @@ public final class CorsConfig {
     /**
      * Allow one or more specific hosts, with optional scheme (defaults to {@link #defaultScheme}).
      */
-    public CorsRule allowHost(String... others) {
+    public RuleBuilder allowHost(String... others) {
       final List<String> origins = List.of(others);
 
       for (var idx = 0; idx < origins.size(); idx++) {
@@ -108,13 +111,17 @@ public final class CorsConfig {
     }
 
     /** Expose an additional response header to the browser. */
-    public CorsRule exposeHeader(String header) {
+    public RuleBuilder exposeHeader(String header) {
       headersToExpose.add(header);
       return this;
     }
 
-    CorsData build() {
-      return new CorsData(
+    /**
+     * Create and append this CORS rule.
+     * @return The builder this rule is associated with.
+     */
+    CorsPluginBuilder buildRule() {
+      CorsData built = new CorsData(
           allowCredentials,
           reflectClientOrigin,
           defaultScheme,
@@ -122,10 +129,13 @@ public final class CorsConfig {
           maxAge,
           List.copyOf(allowedOrigins),
           List.copyOf(headersToExpose));
+
+      CorsPluginBuilder.this.rules.add(built);
+      return CorsPluginBuilder.this;
     }
   }
 
-  static final record CorsData(
+  record CorsData(
       boolean allowCredentials,
       boolean reflectClientOrigin,
       String defaultScheme,
