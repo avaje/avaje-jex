@@ -6,6 +6,8 @@
     <version>3.5-RC3</version>
   </parent>
   <artifactId>avaje-jex-cors</artifactId>
+  <name>Avaje Jex CORS Plugin</name>
+  <description>CORS support for Jex</description>
   
   <dependencies>
     <dependency>
