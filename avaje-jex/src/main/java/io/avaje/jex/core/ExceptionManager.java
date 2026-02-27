@@ -62,7 +62,12 @@ final class ExceptionManager {
       return;
     }
 
-    ctx.status(exception.status());
+    if ("HEAD".equals(ctx.method())) {
+      // for HEAD requests we don't send a body
+      ctx.writeEmpty(exception.status());
+      return;
+    }
+
     var jsonResponse = exception.jsonResponse();
     if (exception.status() == HttpStatus.FOUND_302.status()) {
       ctx.performRedirect();
