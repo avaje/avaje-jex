@@ -68,6 +68,8 @@ final class ExceptionManager {
       return;
     }
 
+    ctx.status(exception.status());
+
     var jsonResponse = exception.jsonResponse();
     if (exception.status() == HttpStatus.FOUND_302.status()) {
       ctx.performRedirect();
