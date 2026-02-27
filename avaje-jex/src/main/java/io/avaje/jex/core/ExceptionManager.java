@@ -60,16 +60,13 @@ final class ExceptionManager {
     if (ctx.responseSent()) {
       // if already sent headers, can't send again
       return;
-    }
-
-    if ("HEAD".equals(ctx.method())) {
+    } else if ("HEAD".equals(ctx.method())) {
       // for HEAD requests we don't send a body
       ctx.writeEmpty(exception.status());
       return;
     }
 
     ctx.status(exception.status());
-
     var jsonResponse = exception.jsonResponse();
     if (exception.status() == HttpStatus.FOUND_302.status()) {
       ctx.performRedirect();
