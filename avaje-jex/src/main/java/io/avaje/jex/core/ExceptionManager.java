@@ -60,6 +60,10 @@ final class ExceptionManager {
     if (ctx.responseSent()) {
       // if already sent headers, can't send again
       return;
+    } else if ("HEAD".equals(ctx.method())) {
+      // for HEAD requests we don't send a body
+      ctx.writeEmpty(exception.status());
+      return;
     }
 
     ctx.status(exception.status());
