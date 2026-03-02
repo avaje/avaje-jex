@@ -51,7 +51,9 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
         Objects.requireNonNull(path)
             .transform(s -> path.endsWith("/") && directoryIndex != null ? path + "*" : path);
 
-    jex.get(path, createHandler(jex.config().compression()), roles);
+    var handlerPath = path;
+    var handler = createHandler(jex.config().compression());
+    jex.routing().get(handlerPath, handler, roles).head(handlerPath, handler, roles);
   }
 
   @Override

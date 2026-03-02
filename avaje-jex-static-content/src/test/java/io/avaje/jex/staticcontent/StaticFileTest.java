@@ -55,6 +55,14 @@ class StaticFileTest {
     assertThat(res.statusCode()).isEqualTo(200);
   }
 
+
+  @Test
+  void testGetHead() {
+    HttpResponse<String> res = pair.request().path("index").HEAD().asString();
+    assertThat(res.body()).isEmpty();
+    assertThat(res.statusCode()).isEqualTo(200);
+  }
+
   @Test
   void testTraversal() {
     HttpResponse<String> res = pair.request().path("indexWild/../hmm").GET().asString();
@@ -106,6 +114,13 @@ class StaticFileTest {
     HttpResponse<String> res = pair.request().path("indexFile").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().firstValue("Content-Type").orElseThrow()).contains("html");
+  }
+
+  @Test
+  void testGetFileHead() {
+    HttpResponse<String> res = pair.request().path("indexFile").HEAD().asString();
+    assertThat(res.body()).isEmpty();
+    assertThat(res.statusCode()).isEqualTo(200);
   }
 
   @Test

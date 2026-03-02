@@ -1,11 +1,13 @@
 package io.avaje.jex.staticcontent;
 
+import static io.avaje.jex.core.Constants.CONTENT_LENGTH;
 import static io.avaje.jex.core.Constants.CONTENT_TYPE;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -108,6 +110,14 @@ final class StaticFileHandler extends AbstractStaticHandler {
         addCachedEntry(ctx, urlPath, fis);
         return;
       }
+
+      if ("HEAD".equals(ctx.method())) {
+        long bytesRead = fis.transferTo(OutputStream.nullOutputStream());
+        ctx.header(CONTENT_LENGTH, String.valueOf(bytesRead));
+        ctx.writeEmpty(200);
+        return;
+      }
+
       ctx.rangedWrite(fis);
     } catch (FileNotFoundException e) {
       if (spaRoot != null) {

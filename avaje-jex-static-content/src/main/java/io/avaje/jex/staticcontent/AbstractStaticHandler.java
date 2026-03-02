@@ -92,6 +92,10 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
     compressed.close();
     var bytes = baos.toByteArray();
     var responseHeaders = Map.copyOf(ctx.exchange().getResponseHeaders());
+    if ("HEAD".equals(ctx.method())) {
+      ctx.header(Constants.CONTENT_LENGTH, String.valueOf(bytes.length));
+      return;
+    }
     ctx.write(bytes);
     var encoding = ctx.responseHeader(Constants.CONTENT_ENCODING);
     compressedFiles.put(
@@ -116,6 +120,11 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
     }
 
     ctx.headerMap(cached.headers());
+    if ("HEAD".equals(ctx.method())) {
+      ctx.header(Constants.CONTENT_LENGTH, String.valueOf(cached.bytes().length));
+      ctx.writeEmpty(200);
+      return true;
+    }
     ctx.write(cached.bytes());
     return true;
   }
