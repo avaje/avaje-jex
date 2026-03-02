@@ -123,6 +123,10 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
       }
     }
 
+    if (cached.isCompressed()) {
+      ctx.header(Constants.CONTENT_LENGTH, String.valueOf(cached.bytes().length));
+    }
+
     ctx.headerMap(cached.headers());
     if ("HEAD".equals(ctx.method())) {
       ctx.header(Constants.CONTENT_LENGTH, String.valueOf(cached.bytes().length));
@@ -134,7 +138,6 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
   }
 
   void writeHeadResponse(Context ctx, InputStream fis) throws IOException {
-
     var os = new CountingOutputStream();
     CompressedOutputStream compressed = new CompressedOutputStream(compressionConfig, ctx, os);
     fis.transferTo(compressed);
