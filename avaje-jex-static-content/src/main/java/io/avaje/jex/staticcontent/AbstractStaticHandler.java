@@ -113,7 +113,6 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
       if (ctx.header(Constants.ACCEPT_ENCODING) == null) {
         return false;
       }
-
       var compressor =
           compressionConfig.findMatchingCompressor(List.of(ctx.header(Constants.ACCEPT_ENCODING)));
 
@@ -121,9 +120,6 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
 
         return false;
       }
-    }
-
-    if (cached.isCompressed()) {
       ctx.header(Constants.CONTENT_LENGTH, String.valueOf(cached.bytes().length));
     }
 
