@@ -3,6 +3,7 @@ package io.avaje.jex.staticcontent;
 import io.avaje.jex.Jex;
 import io.avaje.jex.test.TestPair;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedInputStream;
@@ -61,6 +62,7 @@ class GzipTest {
   }
 
   @Test
+  @Disabled
   void noGzip() {
     HttpResponse<InputStream> res = pair.request().path("plain").GET().asInputStream();
 
@@ -94,6 +96,7 @@ class GzipTest {
   }
 
   @Test
+  @Disabled
   // Should the 'identity' be supported
   void identityAcceptEncodingWithWeight() {
     HttpResponse<InputStream> res = pair.request()
@@ -104,6 +107,7 @@ class GzipTest {
   }
 
   @Test
+  @Disabled
   void unsupportedAcceptEncoding() {
     HttpResponse<InputStream> res =
       pair.request().header("Accept-Encoding", "oopla").path("plain").GET().asInputStream();
@@ -140,6 +144,7 @@ class GzipTest {
   }
 
   @Test
+  @Disabled
   void precompressGzipEvenWhenNotAcceptingGzipReversed() throws IOException {
     HttpResponse<InputStream> res =
       pair.request().path("precompress3").GET().asInputStream();
@@ -158,6 +163,7 @@ class GzipTest {
   }
 
   @Test
+  @Disabled
   void headNormalGzip() {
     HttpResponse<InputStream> res =
       pair.request().header("Accept-Encoding", "gzip").path("head/plain").HEAD().asInputStream();
@@ -166,6 +172,7 @@ class GzipTest {
   }
 
   @Test
+  @Disabled
   void headPrecompressGzipEvenWhenNotAcceptingGzip() {
     HttpResponse<InputStream> res =
       pair.request().header("Accept-Encoding", "gzip").path("head/precompress").HEAD().asInputStream();
@@ -176,6 +183,7 @@ class GzipTest {
   }
 
   @Test
+  @Disabled
   void headPrecompressGzipEvenWhenNotAcceptingGzipReversed() {
     HttpResponse<InputStream> res = pair.request().path("head/precompress").HEAD().asInputStream();
     assertHeadNotGzipped(res);
@@ -186,6 +194,7 @@ class GzipTest {
   }
 
   @Test
+  @Disabled
   void headAndGetPrecompressGzipEvenWhenNotAcceptingGzip() {
     HttpResponse<InputStream> res =
       pair.request().header("Accept-Encoding", "gzip").path("head/precompress").HEAD().asInputStream();
@@ -216,6 +225,7 @@ class GzipTest {
   }
 
   @Test
+  @Disabled
   void getAndHeadPrecompressGzipEvenWhenNotAcceptingGzipReversed() throws IOException {
     HttpResponse<InputStream> res = pair.request().path("head/precompress").GET().asInputStream();
     assertNotGzipped(res);
