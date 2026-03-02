@@ -51,14 +51,14 @@ class GzipTest {
   }
 
   @Test
-  void noGzip() throws IOException {
+  void noGzip() {
     HttpResponse<InputStream> res = pair.request().path("plain").GET().asInputStream();
 
     assertNotGzipped(res);
   }
 
   @Test
-  void unsupportedContentEncoding() throws IOException {
+  void unsupportedContentEncoding() {
     HttpResponse<InputStream> res =
       pair.request().header("Accept-Encoding", "oopla").path("plain").GET().asInputStream();
 
@@ -103,7 +103,7 @@ class GzipTest {
     assertGzipped(res);
   }
 
-  private static void assertNotGzipped(HttpResponse<InputStream> res) throws IOException {
+  private static void assertNotGzipped(HttpResponse<InputStream> res) {
     assertThat(res.headers().firstValue("Content-Encoding")).isEmpty();
     assertThat(res.headers().firstValue("Content-Length")).hasValue("4961");
     assertThat(res.headers().firstValue("Content-Type")).hasValue("text/html");
