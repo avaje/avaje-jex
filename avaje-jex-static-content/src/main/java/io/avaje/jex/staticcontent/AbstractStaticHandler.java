@@ -117,7 +117,6 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
           compressionConfig.findMatchingCompressor(List.of(ctx.header(Constants.ACCEPT_ENCODING)));
 
       if (compressor.isEmpty() || !compressor.get().encoding().equals(cached.encoding())) {
-
         return false;
       }
       ctx.header(Constants.CONTENT_LENGTH, String.valueOf(cached.bytes().length));
