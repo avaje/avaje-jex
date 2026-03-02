@@ -225,7 +225,7 @@ class GzipTest {
 
   @Test
   @Disabled
-  void getAndHeadPrecompressGzipEvenWhenNotAcceptingGzipReversed() throws IOException {
+  void getAndHeadPrecompressGzipEvenWhenNotAcceptingGzipReversed() {
     HttpResponse<InputStream> res = pair.request().path("head/precompress").GET().asInputStream();
     assertNotGzipped(res);
 
