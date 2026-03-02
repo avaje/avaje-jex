@@ -10,7 +10,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.http.HttpResponse;
-import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -80,8 +79,8 @@ class GzipTest {
   @Test
   void multipleAcceptEncodings() throws IOException {
     HttpResponse<InputStream> res = pair.request()
-        .header("Accept-Encoding", "a, b, gzip, x")
-        .path("plain").GET().asInputStream();
+      .header("Accept-Encoding", "a, b, gzip, x")
+      .path("plain").GET().asInputStream();
 
     assertGzipped(res);
   }
@@ -97,7 +96,7 @@ class GzipTest {
 
   @Test
   @Disabled
-  // Should the 'identity' be supported
+    // Should the 'identity' be supported
   void identityAcceptEncodingWithWeight() {
     HttpResponse<InputStream> res = pair.request()
       .header("Accept-Encoding", "identity;q=1, gzip;q=0")
@@ -118,7 +117,7 @@ class GzipTest {
   @Test
   void normalGzip() throws IOException {
     HttpResponse<InputStream> res =
-        pair.request().header("Accept-Encoding", "gzip").path("plain").GET().asInputStream();
+      pair.request().header("Accept-Encoding", "gzip").path("plain").GET().asInputStream();
 
     assertGzipped(res);
   }
@@ -126,7 +125,7 @@ class GzipTest {
   @Test
   void precompressGzip() throws IOException {
     HttpResponse<InputStream> res =
-        pair.request().header("Accept-Encoding", "gzip").path("precompress").GET().asInputStream();
+      pair.request().header("Accept-Encoding", "gzip").path("precompress").GET().asInputStream();
 
     assertGzipped(res);
   }
@@ -134,7 +133,7 @@ class GzipTest {
   @Test
   void precompressGzipEvenWhenNotAcceptingGzip() throws IOException {
     HttpResponse<InputStream> res =
-        pair.request().header("Accept-Encoding", "gzip").path("precompress2").GET().asInputStream();
+      pair.request().header("Accept-Encoding", "gzip").path("precompress2").GET().asInputStream();
     // first call correctly gzips
     assertGzipped(res);
 
