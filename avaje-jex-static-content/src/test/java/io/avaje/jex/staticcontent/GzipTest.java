@@ -9,6 +9,7 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
+import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -283,6 +284,9 @@ class GzipTest {
   private static void assertHeadGzipped(HttpResponse<InputStream> res) {
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().allValues("Content-Encoding")).isEqualTo(List.of("gzip"));
+    assertThat(res.headers().allValues("Content-Length")).is(
+      new Condition<>(headers -> headers.isEmpty() || headers.equals(List.of("154")), "to be empty or contain \"154\"")
+    );
     assertThat(res.headers().allValues("Content-Type")).isEqualTo(List.of("text/html"));
   }
 }
