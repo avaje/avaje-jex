@@ -54,6 +54,7 @@ class GzipTest {
                 StaticContent.ofClassPath("/public")
                     .route("/head/precompress")
                     .directoryIndex("index.html")
+                    .preCompress()
                     .build());
     return TestPair.create(app);
   }
