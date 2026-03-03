@@ -56,6 +56,12 @@ class GzipTest {
                     .route("/head/precompress")
                     .directoryIndex("index.html")
                     .preCompress()
+                    .build())
+            .plugin(
+                StaticContent.ofClassPath("/public")
+                    .route("/head/precompress2/*")
+                    .spaRoot("index.html")
+                    .preCompress()
                     .build());
     return TestPair.create(app);
   }
@@ -263,6 +269,30 @@ class GzipTest {
     assertHeadGzipped(res);
   }
 
+  @Test
+  void multipleHeadAndGetPrecompress() throws IOException {
+    pair.request().path("head/precompress2/bundle.css").header("Accept-Encoding", "gzip").HEAD().asInputStream();
+    pair.request()
+      .header("Accept-Encoding", "gzip")
+      .path("head/precompress2/bundle.css")
+      .GET()
+      .asInputStream();
+    pair.request().path("head/precompress2/bundle.css").header("Accept-Encoding", "gzip").HEAD().asInputStream();
+    HttpResponse<InputStream> res =
+      pair.request()
+        .header("Accept-Encoding", "gzip")
+        .path("head/precompress2/bundle.css")
+        .GET()
+        .asInputStream();
+
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.headers().allValues("Content-Encoding")).isEqualTo(List.of("gzip"));
+    assertThat(res.headers().allValues("Content-Length")).isEqualTo(List.of("1768"));
+    assertThat(res.headers().allValues("Content-Type")).isEqualTo(List.of("text/css"));
+    BufferedInputStream in = new BufferedInputStream(new GZIPInputStream(res.body()));
+    assertThat(in).hasSameContentAs(GzipTest.class.getResourceAsStream("/public/bundle.css"));
+  }
+
   private static void assertNotGzipped(HttpResponse<InputStream> res) {
     assertThat(res.body())
         .hasSameContentAs(GzipTest.class.getResourceAsStream("/public/index.html"));
@@ -271,7 +301,6 @@ class GzipTest {
   private static void assertHeadNotGzipped(HttpResponse<InputStream> res) {
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().allValues("Content-Encoding")).isEmpty();
-
     assertThat(res.headers().allValues("Content-Length")).isEqualTo(List.of("4961"));
     assertThat(res.headers().allValues("Content-Type")).isEqualTo(List.of("text/html"));
   }
