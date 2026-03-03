@@ -3,7 +3,6 @@ package io.avaje.jex.staticcontent;
 import static io.avaje.jex.core.Constants.*;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -107,9 +106,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
       }
 
       if ("HEAD".equals(ctx.method())) {
-        long bytesRead = fis.transferTo(OutputStream.nullOutputStream());
-        ctx.header(CONTENT_LENGTH, String.valueOf(bytesRead));
-        ctx.writeEmpty(200);
+        writeHeadResponse(ctx, fis);
         return;
       }
 

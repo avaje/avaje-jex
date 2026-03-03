@@ -1,5 +1,8 @@
 package io.avaje.jex.staticcontent;
 
+import static io.avaje.jex.core.Constants.CONTENT_LENGTH;
+
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -94,6 +97,7 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
     var responseHeaders = Map.copyOf(ctx.exchange().getResponseHeaders());
     if ("HEAD".equals(ctx.method())) {
       ctx.header(Constants.CONTENT_LENGTH, String.valueOf(bytes.length));
+      ctx.writeEmpty(200);
       return;
     }
     ctx.write(bytes);
@@ -109,14 +113,13 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
       if (ctx.header(Constants.ACCEPT_ENCODING) == null) {
         return false;
       }
-
       var compressor =
           compressionConfig.findMatchingCompressor(List.of(ctx.header(Constants.ACCEPT_ENCODING)));
 
       if (compressor.isEmpty() || !compressor.get().encoding().equals(cached.encoding())) {
-
         return false;
       }
+      ctx.header(Constants.CONTENT_LENGTH, String.valueOf(cached.bytes().length));
     }
 
     ctx.headerMap(cached.headers());
@@ -125,7 +128,15 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
       ctx.writeEmpty(200);
       return true;
     }
-    ctx.write(cached.bytes());
+    ctx.write(new ByteArrayInputStream(cached.bytes()));
     return true;
+  }
+
+  void writeHeadResponse(Context ctx, InputStream fis) throws IOException {
+    var os = new CountingOutputStream();
+    CompressedOutputStream compressed = new CompressedOutputStream(compressionConfig, ctx, os);
+    fis.transferTo(compressed);
+    ctx.header(CONTENT_LENGTH, String.valueOf(os.count()));
+    ctx.writeEmpty(200);
   }
 }
