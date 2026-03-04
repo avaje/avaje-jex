@@ -106,7 +106,7 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
         urlPath, new CachedResource(responseHeaders, bytes, encoding != null, encoding));
   }
 
-  protected boolean writeCached(Context ctx, String path) {
+  protected boolean writeCached(Context ctx, String path) throws IOException {
     var cached = compressedFiles.get(path);
     var bytes = cached.bytes();
 
