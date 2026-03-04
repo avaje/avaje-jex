@@ -10,66 +10,34 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 import org.assertj.core.api.Condition;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import io.avaje.jex.Jex;
 import io.avaje.jex.test.TestPair;
 
-class GzipTest {
-  private static final TestPair pair = init();
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+abstract class GzipTest {
+  private TestPair pair;
 
-  static TestPair init() {
-    var app =
-        Jex.create()
-            .plugin(
-                StaticContent.ofClassPath("/public")
-                    .route("/plain")
-                    .directoryIndex("index.html")
-                    .build())
-            .plugin(
-                StaticContent.ofClassPath("/public")
-                    .route("/precompress")
-                    .directoryIndex("index.html")
-                    .preCompress()
-                    .build())
-            .plugin(
-                StaticContent.ofClassPath("/public")
-                    .route("/precompress2")
-                    .directoryIndex("index.html")
-                    .preCompress()
-                    .build())
-            .plugin(
-                StaticContent.ofClassPath("/public")
-                    .route("/precompress3")
-                    .directoryIndex("index.html")
-                    .preCompress()
-                    .build())
-            .plugin(
-                StaticContent.ofClassPath("/public")
-                    .route("/head/plain")
-                    .directoryIndex("index.html")
-                    .build())
-            .plugin(
-                StaticContent.ofClassPath("/public")
-                    .route("/head/precompress")
-                    .directoryIndex("index.html")
-                    .preCompress()
-                    .build())
-            .plugin(
-                StaticContent.ofClassPath("/public")
-                    .route("/head/precompress2/*")
-                    .spaRoot("index.html")
-                    .preCompress()
-                    .build());
-    return TestPair.create(app);
+  @BeforeAll
+  void beforeAll() {
+    var app = Jex.create()
+      .plugin(getStaticContentBuilder().route("/plain").build())
+      .plugin(getStaticContentBuilder().route("/precompress").preCompress().build())
+      .plugin(getStaticContentBuilder().route("/precompress2").preCompress().build())
+      .plugin(getStaticContentBuilder().route("/precompress3").preCompress().build())
+      .plugin(getStaticContentBuilder().route("/head/plain").build())
+      .plugin(getStaticContentBuilder().route("/head/precompress").preCompress().build())
+      .plugin(getStaticContentBuilder().route("/head/precompress2/*").preCompress().build());
+    pair = TestPair.create(app);
   }
 
   @AfterAll
-  static void afterAll() {
+  void afterAll() {
     pair.shutdown();
   }
+
+  abstract StaticContent.Builder getStaticContentBuilder();
 
   @Test
   void noGzip() {
@@ -309,7 +277,6 @@ class GzipTest {
     assertThat(res.headers().allValues("Content-Type")).isEqualTo(List.of("text/css"));
   }
 
-
   private static void assertNotGzipped(HttpResponse<InputStream> res) {
     assertHeadNotGzipped(res);
     assertThat(res.body())
@@ -338,5 +305,33 @@ class GzipTest {
       new Condition<>(headers -> headers.isEmpty() || headers.equals(List.of("154"))|| headers.equals(List.of("10")), "to be empty or contain \"154\"")
     );
     assertThat(res.headers().allValues("Content-Type")).isEqualTo(List.of("text/html"));
+  }
+}
+
+class ClasspathIndexFileGzipTest extends GzipTest {
+  @Override
+  StaticContent.Builder getStaticContentBuilder() {
+    return StaticContent.ofClassPath("/public").directoryIndex("index.html");
+  }
+}
+
+class ClasspathSpaRootGzipTest extends GzipTest {
+  @Override
+  StaticContent.Builder getStaticContentBuilder() {
+    return StaticContent.ofClassPath("/public").spaRoot("index.html");
+  }
+}
+
+class FileIndexFileGzipTest extends GzipTest {
+  @Override
+  StaticContent.Builder getStaticContentBuilder() {
+    return StaticContent.ofFile("src/test/resources/public").directoryIndex("index.html");
+  }
+}
+
+class FileSpaRootGzipTest extends GzipTest {
+  @Override
+  StaticContent.Builder getStaticContentBuilder() {
+    return StaticContent.ofFile("src/test/resources/public").spaRoot("index.html");
   }
 }
