@@ -293,6 +293,23 @@ class GzipTest {
     assertThat(in).hasSameContentAs(GzipTest.class.getResourceAsStream("/public/bundle.css"));
   }
 
+  @Test
+  void multipleHeadAndGetPrecompress2() {
+    pair.request().path("head/precompress2/bundle.css").GET().asInputStream();
+    HttpResponse<InputStream> res =
+      pair.request()
+        .header("Accept-Encoding", "gzip")
+        .path("head/precompress2/bundle.css")
+        .HEAD()
+        .asInputStream();
+
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.headers().allValues("Content-Encoding")).isEqualTo(List.of("gzip"));
+    assertThat(res.headers().allValues("Content-Length")).isEqualTo(List.of("1768"));
+    assertThat(res.headers().allValues("Content-Type")).isEqualTo(List.of("text/css"));
+  }
+
+
   private static void assertNotGzipped(HttpResponse<InputStream> res) {
     assertHeadNotGzipped(res);
     assertThat(res.body())
