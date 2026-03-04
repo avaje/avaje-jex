@@ -108,7 +108,9 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
 
   protected boolean writeCached(Context ctx, String path) {
     var cached = compressedFiles.get(path);
+    var bytes = cached.bytes();
 
+    boolean isHead = "HEAD".equals(ctx.method());
     if (cached.isCompressed()) {
       if (ctx.header(Constants.ACCEPT_ENCODING) == null) {
         return false;
@@ -119,16 +121,22 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
       if (compressor.isEmpty() || !compressor.get().encoding().equals(cached.encoding())) {
         return false;
       }
-      ctx.header(Constants.CONTENT_LENGTH, String.valueOf(cached.bytes().length));
-    }
-
-    ctx.headerMap(cached.headers());
-    if ("HEAD".equals(ctx.method())) {
-      ctx.header(Constants.CONTENT_LENGTH, String.valueOf(cached.bytes().length));
-      ctx.writeEmpty(200);
+      ctx.headerMap(cached.headers());
+      ctx.header(Constants.CONTENT_LENGTH, String.valueOf(bytes.length));
+      if (isHead) {
+        ctx.writeEmpty(200);
+      } else {
+        ctx.write(bytes);
+      }
       return true;
     }
-    ctx.write(new ByteArrayInputStream(cached.bytes()));
+
+    ctx.header(Constants.CONTENT_TYPE, cached.headers().get(Constants.CONTENT_TYPE));
+    if (isHead) {
+      writeHeadResponse(ctx, new ByteArrayInputStream(bytes));
+      return true;
+    }
+    ctx.write(new ByteArrayInputStream(bytes));
     return true;
   }
 

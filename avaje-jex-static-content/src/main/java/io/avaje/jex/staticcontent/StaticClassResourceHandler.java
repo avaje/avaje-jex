@@ -47,7 +47,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
   }
 
   @Override
-  public void handle(Context ctx) {
+  public void handle(Context ctx) throws IOException {
     if (singleFile != null) {
       final var path = singleFile.getPath();
       if (isCached(path) && writeCached(ctx, path)) {
@@ -74,8 +74,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
 
     final String urlPath = wholeUrlPath.substring(urlPrefix.length());
 
-    if (isCached(urlPath)) {
-      writeCached(ctx, urlPath);
+    if (isCached(urlPath) && writeCached(ctx, urlPath)) {
       return;
     }
 

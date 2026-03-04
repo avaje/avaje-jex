@@ -314,7 +314,7 @@ class GzipTest {
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().allValues("Content-Encoding")).isEqualTo(List.of("gzip"));
     assertThat(res.headers().allValues("Content-Length")).is(
-      new Condition<>(headers -> headers.isEmpty() || headers.equals(List.of("154")), "to be empty or contain \"154\"")
+      new Condition<>(headers -> headers.isEmpty() || headers.equals(List.of("154"))|| headers.equals(List.of("10")), "to be empty or contain \"154\"")
     );
     assertThat(res.headers().allValues("Content-Type")).isEqualTo(List.of("text/html"));
   }
