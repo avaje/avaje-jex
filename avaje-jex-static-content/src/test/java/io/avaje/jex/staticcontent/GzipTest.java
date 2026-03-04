@@ -294,6 +294,7 @@ class GzipTest {
   }
 
   private static void assertNotGzipped(HttpResponse<InputStream> res) {
+    assertHeadNotGzipped(res);
     assertThat(res.body())
         .hasSameContentAs(GzipTest.class.getResourceAsStream("/public/index.html"));
   }
@@ -301,11 +302,14 @@ class GzipTest {
   private static void assertHeadNotGzipped(HttpResponse<InputStream> res) {
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().allValues("Content-Encoding")).isEmpty();
-    assertThat(res.headers().allValues("Content-Length")).isEqualTo(List.of("4961"));
+    assertThat(res.headers()).is(new Condition<>(headers ->
+      headers.allValues("Content-Length").equals(List.of("4961")) || headers.allValues("Transfer-Encoding").equals(List.of("chunked")),
+      "to have valid Content-Length or Transfer-Encoding: chunked"));
     assertThat(res.headers().allValues("Content-Type")).isEqualTo(List.of("text/html"));
   }
 
   private static void assertGzipped(HttpResponse<InputStream> res) throws IOException {
+    assertHeadGzipped(res);
     BufferedInputStream in = new BufferedInputStream(new GZIPInputStream(res.body()));
     assertThat(in).hasSameContentAs(GzipTest.class.getResourceAsStream("/public/index.html"));
   }
