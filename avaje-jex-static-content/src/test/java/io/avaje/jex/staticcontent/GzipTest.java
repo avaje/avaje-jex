@@ -6,8 +6,10 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 
+import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -53,6 +55,13 @@ class GzipTest {
                 StaticContent.ofClassPath("/public")
                     .route("/head/precompress")
                     .directoryIndex("index.html")
+                    .preCompress()
+                    .build())
+            .plugin(
+                StaticContent.ofClassPath("/public")
+                    .route("/head/precompress2/*")
+                    .spaRoot("index.html")
+                    .preCompress()
                     .build());
     return TestPair.create(app);
   }
@@ -260,6 +269,30 @@ class GzipTest {
     assertHeadGzipped(res);
   }
 
+  @Test
+  void multipleHeadAndGetPrecompress() throws IOException {
+    pair.request().path("head/precompress2/bundle.css").header("Accept-Encoding", "gzip").HEAD().asInputStream();
+    pair.request()
+      .header("Accept-Encoding", "gzip")
+      .path("head/precompress2/bundle.css")
+      .GET()
+      .asInputStream();
+    pair.request().path("head/precompress2/bundle.css").header("Accept-Encoding", "gzip").HEAD().asInputStream();
+    HttpResponse<InputStream> res =
+      pair.request()
+        .header("Accept-Encoding", "gzip")
+        .path("head/precompress2/bundle.css")
+        .GET()
+        .asInputStream();
+
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.headers().allValues("Content-Encoding")).isEqualTo(List.of("gzip"));
+    assertThat(res.headers().allValues("Content-Length")).isEqualTo(List.of("1768"));
+    assertThat(res.headers().allValues("Content-Type")).isEqualTo(List.of("text/css"));
+    BufferedInputStream in = new BufferedInputStream(new GZIPInputStream(res.body()));
+    assertThat(in).hasSameContentAs(GzipTest.class.getResourceAsStream("/public/bundle.css"));
+  }
+
   private static void assertNotGzipped(HttpResponse<InputStream> res) {
     assertThat(res.body())
         .hasSameContentAs(GzipTest.class.getResourceAsStream("/public/index.html"));
@@ -267,10 +300,9 @@ class GzipTest {
 
   private static void assertHeadNotGzipped(HttpResponse<InputStream> res) {
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.headers().firstValue("Content-Encoding")).isEmpty();
-
-    assertThat(res.headers().firstValue("Content-Length")).hasValue("4961");
-    assertThat(res.headers().firstValue("Content-Type")).hasValue("text/html");
+    assertThat(res.headers().allValues("Content-Encoding")).isEmpty();
+    assertThat(res.headers().allValues("Content-Length")).isEqualTo(List.of("4961"));
+    assertThat(res.headers().allValues("Content-Type")).isEqualTo(List.of("text/html"));
   }
 
   private static void assertGzipped(HttpResponse<InputStream> res) throws IOException {
@@ -280,7 +312,10 @@ class GzipTest {
 
   private static void assertHeadGzipped(HttpResponse<InputStream> res) {
     assertThat(res.statusCode()).isEqualTo(200);
-    assertThat(res.headers().firstValue("Content-Encoding")).hasValue("gzip");
-    assertThat(res.headers().firstValue("Content-Type")).hasValue("text/html");
+    assertThat(res.headers().allValues("Content-Encoding")).isEqualTo(List.of("gzip"));
+    assertThat(res.headers().allValues("Content-Length")).is(
+      new Condition<>(headers -> headers.isEmpty() || headers.equals(List.of("154"))|| headers.equals(List.of("10")), "to be empty or contain \"154\"")
+    );
+    assertThat(res.headers().allValues("Content-Type")).isEqualTo(List.of("text/html"));
   }
 }

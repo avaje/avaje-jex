@@ -75,8 +75,7 @@ final class StaticFileHandler extends AbstractStaticHandler {
 
     final String urlPath = wholeUrlPath.substring(urlPrefix.length());
 
-    if (isCached(urlPath)) {
-      writeCached(ctx, urlPath);
+    if (isCached(urlPath) && writeCached(ctx, urlPath)) {
       return;
     }
 
