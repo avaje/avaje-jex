@@ -144,6 +144,7 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
     var os = new CountingOutputStream();
     CompressedOutputStream compressed = new CompressedOutputStream(compressionConfig, ctx, os);
     fis.transferTo(compressed);
+    compressed.close();
     ctx.header(CONTENT_LENGTH, String.valueOf(os.count()));
     ctx.writeEmpty(200);
   }
