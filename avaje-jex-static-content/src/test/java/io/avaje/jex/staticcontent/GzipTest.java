@@ -34,7 +34,7 @@ abstract class GzipTest {
 
   @AfterAll
   void afterAll() {
-    pair.shutdown();
+    Thread.startVirtualThread(pair::shutdown);
   }
 
   abstract StaticContent.Builder getStaticContentBuilder();
