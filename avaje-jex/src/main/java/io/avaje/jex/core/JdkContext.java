@@ -522,6 +522,7 @@ final class JdkContext implements Context {
 
   @Override
   public void write(byte[] bufferBytes, int length) {
+    throwIf204();
     try (var os = exchange.getResponseBody()) {
       exchange.sendResponseHeaders(statusCode(), length == 0 ? -1 : length);
       os.write(bufferBytes, 0, length);
@@ -532,6 +533,7 @@ final class JdkContext implements Context {
 
   @Override
   public void write(InputStream is) {
+    throwIf204();
     try (is; var os = outputStream()) {
       is.transferTo(os);
     } catch (IOException e) {
@@ -561,5 +563,11 @@ final class JdkContext implements Context {
   @Override
   public void rangedWrite(InputStream inputStream, long totalBytes) {
     mgr.writeRange(this, inputStream, totalBytes);
+  }
+
+  private void throwIf204() {
+    if (statusCode == 204) {
+      throw new IllegalStateException("204 responses must not have a body");
+    }
   }
 }
