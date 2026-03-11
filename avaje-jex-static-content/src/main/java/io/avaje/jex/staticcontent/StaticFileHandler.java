@@ -17,6 +17,7 @@ import io.avaje.jex.http.Context;
 final class StaticFileHandler extends AbstractStaticHandler {
 
   private final File indexFile;
+  private final File spaRoot;
   private final File singleFile;
 
   StaticFileHandler(
@@ -26,8 +27,8 @@ final class StaticFileHandler extends AbstractStaticHandler {
       Map<String, String> headers,
       Predicate<Context> skipFilePredicate,
       File welcomeFile,
-      File singleFile,
-      boolean precompress,
+      File spaRoot,
+      File singleFile, boolean precompress,
       CompressionConfig compressionConfig) {
     super(
         urlPrefix,
@@ -38,6 +39,7 @@ final class StaticFileHandler extends AbstractStaticHandler {
         precompress,
         compressionConfig);
     this.indexFile = welcomeFile;
+    this.spaRoot = spaRoot;
     this.singleFile = singleFile;
   }
 
@@ -47,8 +49,7 @@ final class StaticFileHandler extends AbstractStaticHandler {
     if (singleFile != null) {
 
       final var path = singleFile.getPath();
-      if (isCached(path)) {
-        writeCached(ctx, path);
+      if (isCached(path) && writeCached(ctx, path)) {
         return;
       }
 
@@ -64,8 +65,7 @@ final class StaticFileHandler extends AbstractStaticHandler {
     if (wholeUrlPath.endsWith("/") || wholeUrlPath.equals(urlPrefix)) {
 
       final var path = indexFile.getPath();
-      if (isCached(path)) {
-        writeCached(ctx, path);
+      if (isCached(path) && writeCached(ctx, path)) {
         return;
       }
 
@@ -75,8 +75,7 @@ final class StaticFileHandler extends AbstractStaticHandler {
 
     final String urlPath = wholeUrlPath.substring(urlPrefix.length());
 
-    if (isCached(urlPath)) {
-      writeCached(ctx, urlPath);
+    if (isCached(urlPath) && writeCached(ctx, urlPath)) {
       return;
     }
 
@@ -108,8 +107,19 @@ final class StaticFileHandler extends AbstractStaticHandler {
         addCachedEntry(ctx, urlPath, fis);
         return;
       }
+
+      if ("HEAD".equals(ctx.method())) {
+        writeHeadResponse(ctx, fis);
+        return;
+      }
+
       ctx.rangedWrite(fis);
     } catch (FileNotFoundException e) {
+      if (spaRoot != null) {
+        final var path = spaRoot.getPath();
+        sendFile(ctx, jdkExchange, path, spaRoot);
+        return;
+      }
       throw404(jdkExchange);
     }
   }

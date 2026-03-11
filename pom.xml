@@ -12,7 +12,7 @@
   <groupId>io.avaje</groupId>
   <artifactId>avaje-jex-parent</artifactId>
   <name>avaje-jex-parent</name>
-  <version>3.4</version>
+  <version>3.5-RC7</version>
   <packaging>pom</packaging>
 
   <scm>
@@ -21,26 +21,27 @@
   </scm>
 
   <properties>
-    <project.build.outputTimestamp>2026-01-24T01:19:25Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-03-05T04:14:33Z</project.build.outputTimestamp>
     <nexus.staging.autoReleaseAfterClose>true</nexus.staging.autoReleaseAfterClose>
-    <jackson.version>2.21.0</jackson.version>
+    <jackson.version>2.21.1</jackson.version>
     <surefire.useModulePath>false</surefire.useModulePath>
     <maven.compiler.release>21</maven.compiler.release>
     <maven.compiler.proc>full</maven.compiler.proc>
-    <avaje.config.version>5.0</avaje.config.version>
-    <avaje.inject.version>12.3</avaje.inject.version>
-    <avaje.jsonb.version>3.10</avaje.jsonb.version>
+    <avaje.config.version>5.1</avaje.config.version>
+    <avaje.inject.version>12.4</avaje.inject.version>
+    <avaje.jsonb.version>3.11</avaje.jsonb.version>
     <avaje.http.version>3.7</avaje.http.version>
     <avaje.metrics.version>9.8</avaje.metrics.version>
-    <avaje.validator.version>2.16</avaje.validator.version>
+    <avaje.validator.version>2.17</avaje.validator.version>
     <avaje.record.builder.version>1.3</avaje.record.builder.version>
     <avaje.spi.version>2.16</avaje.spi.version>
     <avaje.prisms.version>2.0</avaje.prisms.version>
-    <ebean.version>17.2.0</ebean.version>
+    <ebean.version>17.3.0</ebean.version>
   </properties>
 
   <modules>
     <module>avaje-jex</module>
+    <module>avaje-jex-cors</module>
     <module>avaje-jex-file-upload</module>
     <module>avaje-jex-freemarker</module>
     <module>avaje-jex-htmx</module>
@@ -48,12 +49,12 @@
     <module>avaje-jex-static-content</module>
     <module>avaje-jex-test</module>
     <module>avaje-jex-ssl</module>
-    <module>avaje-jex-http2-jetty</module>
-    <module>avaje-jex-http2-robaho</module>
-    <module>avaje-jex-http3-flupke</module>
-    <module>avaje-jex-http3-jetty</module>
+    <!--<module>avaje-jex-http2-jetty</module>-->
+    <!--<module>avaje-jex-http2-robaho</module>-->
+    <!--<module>avaje-jex-http3-flupke</module>-->
+    <!--<module>avaje-jex-http3-jetty</module>-->
     <module>avaje-jex-websockets</module>
-    <module>avaje-jex-grizzly-spi</module>
+    <!--<module>avaje-jex-grizzly-spi</module>-->
   </modules>
 
   <dependencyManagement>
@@ -88,7 +89,7 @@
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-logback-encoder</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
@@ -206,47 +207,52 @@
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex</artifactId>
-        <version>3.4</version>
+        <version>3.5-RC7</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-test</artifactId>
-        <version>3.4</version>
+        <version>3.5-RC7</version>
+      </dependency>
+      <dependency>
+        <groupId>io.avaje</groupId>
+        <artifactId>avaje-jex-cors-plugin</artifactId>
+        <version>3.5-RC3</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-file-upload</artifactId>
-        <version>3.4</version>
+        <version>3.5-RC7</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-websocket</artifactId>
-        <version>3.4</version>
+        <version>3.5-RC7</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-freemarker</artifactId>
-        <version>3.4</version>
+        <version>3.5-RC7</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-mustache</artifactId>
-        <version>3.4</version>
+        <version>3.5-RC7</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-htmx</artifactId>
-        <version>3.4</version>
+        <version>3.5-RC7</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-static-content</artifactId>
-        <version>3.4</version>
+        <version>3.5-RC7</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-ssl</artifactId>
-        <version>3.4</version>
+        <version>3.5-RC7</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
@@ -444,7 +450,7 @@
         <dependency>
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-http-spi</artifactId>
-          <version>12.1.5</version>
+          <version>12.1.7</version>
         </dependency>
       </dependencies>
     </profile>

@@ -1,0 +1,337 @@
+package io.avaje.jex.staticcontent;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.http.HttpResponse;
+import java.util.List;
+import java.util.zip.GZIPInputStream;
+
+import org.assertj.core.api.Condition;
+import org.junit.jupiter.api.*;
+
+import io.avaje.jex.Jex;
+import io.avaje.jex.test.TestPair;
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+abstract class GzipTest {
+  private TestPair pair;
+
+  @BeforeAll
+  void beforeAll() {
+    var app = Jex.create()
+      .plugin(getStaticContentBuilder().route("/plain").build())
+      .plugin(getStaticContentBuilder().route("/precompress").preCompress().build())
+      .plugin(getStaticContentBuilder().route("/precompress2").preCompress().build())
+      .plugin(getStaticContentBuilder().route("/precompress3").preCompress().build())
+      .plugin(getStaticContentBuilder().route("/head/plain").build())
+      .plugin(getStaticContentBuilder().route("/head/precompress").preCompress().build())
+      .plugin(getStaticContentBuilder().route("/head/precompress2/*").preCompress().build());
+    pair = TestPair.create(app);
+  }
+
+  @AfterAll
+  void afterAll() {
+    Thread.startVirtualThread(pair::shutdown);
+  }
+
+  abstract StaticContent.Builder getStaticContentBuilder();
+
+  @Test
+  void noGzip() {
+    HttpResponse<InputStream> res = pair.request().path("plain").GET().asInputStream();
+
+    assertNotGzipped(res);
+  }
+
+  @Test
+  void wildcardAcceptEncoding() throws IOException {
+    HttpResponse<InputStream> res =
+        pair.request().header("Accept-Encoding", "*").path("plain").GET().asInputStream();
+
+    assertGzipped(res);
+  }
+
+  @Test
+  void multipleAcceptEncodings() throws IOException {
+    HttpResponse<InputStream> res =
+        pair.request()
+            .header("Accept-Encoding", "a, b, gzip, x")
+            .path("plain")
+            .GET()
+            .asInputStream();
+
+    assertGzipped(res);
+  }
+
+  @Test
+  void multipleAcceptEncodingsWithWeight() throws IOException {
+    HttpResponse<InputStream> res =
+        pair.request()
+            .header("Accept-Encoding", "a;q=1, b;q=0.9, gzip;q=0.1, x;q=0")
+            .path("plain")
+            .GET()
+            .asInputStream();
+
+    assertGzipped(res);
+  }
+
+  @Test
+  @Disabled
+  // Should the 'identity' be supported
+  void identityAcceptEncodingWithWeight() {
+    HttpResponse<InputStream> res =
+        pair.request()
+            .header("Accept-Encoding", "identity;q=1, gzip;q=0")
+            .path("plain")
+            .GET()
+            .asInputStream();
+
+    assertNotGzipped(res);
+  }
+
+  @Test
+  void unsupportedAcceptEncoding() {
+    HttpResponse<InputStream> res =
+        pair.request().header("Accept-Encoding", "oopla").path("plain").GET().asInputStream();
+
+    assertNotGzipped(res);
+  }
+
+  @Test
+  void normalGzip() throws IOException {
+    HttpResponse<InputStream> res =
+        pair.request().header("Accept-Encoding", "gzip").path("plain").GET().asInputStream();
+
+    assertGzipped(res);
+  }
+
+  @Test
+  void precompressGzip() throws IOException {
+    HttpResponse<InputStream> res =
+        pair.request().header("Accept-Encoding", "gzip").path("precompress").GET().asInputStream();
+
+    assertGzipped(res);
+  }
+
+  @Test
+  void precompressGzipEvenWhenNotAcceptingGzip() throws IOException {
+    HttpResponse<InputStream> res =
+        pair.request().header("Accept-Encoding", "gzip").path("precompress2").GET().asInputStream();
+    // first call correctly gzips
+    assertGzipped(res);
+
+    res = pair.request().path("precompress2").GET().asInputStream();
+    // second call should not be gzipped
+    assertNotGzipped(res);
+  }
+
+  @Test
+  void precompressGzipEvenWhenNotAcceptingGzipReversed() throws IOException {
+    HttpResponse<InputStream> res = pair.request().path("precompress3").GET().asInputStream();
+    assertNotGzipped(res);
+
+    res =
+        pair.request().path("precompress3").header("Accept-Encoding", "gzip").GET().asInputStream();
+    assertGzipped(res);
+  }
+
+  @Test
+  void headNoGzip() {
+    HttpResponse<InputStream> res = pair.request().path("head/plain").HEAD().asInputStream();
+
+    assertHeadNotGzipped(res);
+  }
+
+  @Test
+  void headNormalGzip() {
+    HttpResponse<InputStream> res =
+        pair.request().header("Accept-Encoding", "gzip").path("head/plain").HEAD().asInputStream();
+
+    assertHeadGzipped(res);
+  }
+
+  @Test
+  void headPrecompressGzipEvenWhenNotAcceptingGzip() {
+    HttpResponse<InputStream> res =
+        pair.request()
+            .header("Accept-Encoding", "gzip")
+            .path("head/precompress")
+            .HEAD()
+            .asInputStream();
+    assertHeadGzipped(res);
+
+    res = pair.request().path("head/precompress").HEAD().asInputStream();
+    assertHeadNotGzipped(res);
+  }
+
+  @Test
+  void headPrecompressGzipEvenWhenNotAcceptingGzipReversed() {
+    HttpResponse<InputStream> res = pair.request().path("head/precompress").HEAD().asInputStream();
+    assertHeadNotGzipped(res);
+
+    res =
+        pair.request()
+            .header("Accept-Encoding", "gzip")
+            .path("head/precompress")
+            .HEAD()
+            .asInputStream();
+    assertHeadGzipped(res);
+  }
+
+  @Test
+  void headAndGetPrecompressGzipEvenWhenNotAcceptingGzip() {
+    HttpResponse<InputStream> res =
+        pair.request()
+            .header("Accept-Encoding", "gzip")
+            .path("head/precompress")
+            .HEAD()
+            .asInputStream();
+    assertHeadGzipped(res);
+
+    res = pair.request().path("head/precompress").GET().asInputStream();
+    assertNotGzipped(res);
+  }
+
+  @Test
+  void headAndGetPrecompressGzipEvenWhenNotAcceptingGzipReversed() throws IOException {
+    HttpResponse<InputStream> res = pair.request().path("head/precompress").HEAD().asInputStream();
+    assertHeadNotGzipped(res);
+
+    res =
+        pair.request()
+            .header("Accept-Encoding", "gzip")
+            .path("head/precompress")
+            .GET()
+            .asInputStream();
+    assertGzipped(res);
+  }
+
+  @Test
+  void getAndHeadPrecompressGzipEvenWhenNotAcceptingGzip() throws IOException {
+    HttpResponse<InputStream> res =
+        pair.request()
+            .header("Accept-Encoding", "gzip")
+            .path("head/precompress")
+            .GET()
+            .asInputStream();
+    assertGzipped(res);
+
+    res = pair.request().path("head/precompress").HEAD().asInputStream();
+    assertHeadNotGzipped(res);
+  }
+
+  @Test
+  void getAndHeadPrecompressGzipEvenWhenNotAcceptingGzipReversed() {
+    HttpResponse<InputStream> res = pair.request().path("head/precompress").GET().asInputStream();
+    assertNotGzipped(res);
+
+    res =
+        pair.request()
+            .header("Accept-Encoding", "gzip")
+            .path("head/precompress")
+            .HEAD()
+            .asInputStream();
+    assertHeadGzipped(res);
+  }
+
+  @Test
+  void multipleHeadAndGetPrecompress() throws IOException {
+    pair.request().path("head/precompress2/bundle.css").header("Accept-Encoding", "gzip").HEAD().asInputStream();
+    pair.request()
+      .header("Accept-Encoding", "gzip")
+      .path("head/precompress2/bundle.css")
+      .GET()
+      .asInputStream();
+    pair.request().path("head/precompress2/bundle.css").header("Accept-Encoding", "gzip").HEAD().asInputStream();
+    HttpResponse<InputStream> res =
+      pair.request()
+        .header("Accept-Encoding", "gzip")
+        .path("head/precompress2/bundle.css")
+        .GET()
+        .asInputStream();
+
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.headers().allValues("Content-Encoding")).isEqualTo(List.of("gzip"));
+    assertThat(res.headers().allValues("Content-Length")).isEqualTo(List.of("1768"));
+    assertThat(res.headers().allValues("Content-Type")).isEqualTo(List.of("text/css"));
+    BufferedInputStream in = new BufferedInputStream(new GZIPInputStream(res.body()));
+    assertThat(in).hasSameContentAs(GzipTest.class.getResourceAsStream("/public/bundle.css"));
+  }
+
+  @Test
+  void multipleHeadAndGetPrecompress2() {
+    pair.request().path("head/precompress2/bundle.css").GET().asInputStream();
+    HttpResponse<InputStream> res =
+      pair.request()
+        .header("Accept-Encoding", "gzip")
+        .path("head/precompress2/bundle.css")
+        .HEAD()
+        .asInputStream();
+
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.headers().allValues("Content-Encoding")).isEqualTo(List.of("gzip"));
+    assertThat(res.headers().allValues("Content-Length")).isEqualTo(List.of("1768"));
+    assertThat(res.headers().allValues("Content-Type")).isEqualTo(List.of("text/css"));
+  }
+
+  private static void assertNotGzipped(HttpResponse<InputStream> res) {
+    assertHeadNotGzipped(res);
+    assertThat(res.body())
+        .hasSameContentAs(GzipTest.class.getResourceAsStream("/public/index.html"));
+  }
+
+  private static void assertHeadNotGzipped(HttpResponse<InputStream> res) {
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.headers().allValues("Content-Encoding")).isEmpty();
+    assertThat(res.headers()).is(new Condition<>(headers ->
+      headers.allValues("Content-Length").equals(List.of("4961")) || headers.allValues("Transfer-Encoding").equals(List.of("chunked")),
+      "to have valid Content-Length or Transfer-Encoding: chunked"));
+    assertThat(res.headers().allValues("Content-Type")).isEqualTo(List.of("text/html"));
+  }
+
+  private static void assertGzipped(HttpResponse<InputStream> res) throws IOException {
+    assertHeadGzipped(res);
+    BufferedInputStream in = new BufferedInputStream(new GZIPInputStream(res.body()));
+    assertThat(in).hasSameContentAs(GzipTest.class.getResourceAsStream("/public/index.html"));
+  }
+
+  private static void assertHeadGzipped(HttpResponse<InputStream> res) {
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.headers().allValues("Content-Encoding")).isEqualTo(List.of("gzip"));
+    assertThat(res.headers().allValues("Content-Length")).is(
+      new Condition<>(headers -> headers.isEmpty() || headers.equals(List.of("154"))|| headers.equals(List.of("10")), "to be empty or contain \"154\"")
+    );
+    assertThat(res.headers().allValues("Content-Type")).isEqualTo(List.of("text/html"));
+  }
+}
+
+class ClasspathIndexFileGzipTest extends GzipTest {
+  @Override
+  StaticContent.Builder getStaticContentBuilder() {
+    return StaticContent.ofClassPath("/public").directoryIndex("index.html");
+  }
+}
+
+class ClasspathSpaRootGzipTest extends GzipTest {
+  @Override
+  StaticContent.Builder getStaticContentBuilder() {
+    return StaticContent.ofClassPath("/public").spaRoot("index.html");
+  }
+}
+
+class FileIndexFileGzipTest extends GzipTest {
+  @Override
+  StaticContent.Builder getStaticContentBuilder() {
+    return StaticContent.ofFile("src/test/resources/public").directoryIndex("index.html");
+  }
+}
+
+class FileSpaRootGzipTest extends GzipTest {
+  @Override
+  StaticContent.Builder getStaticContentBuilder() {
+    return StaticContent.ofFile("src/test/resources/public").spaRoot("index.html");
+  }
+}

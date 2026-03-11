@@ -1,10 +1,14 @@
 package io.avaje.jex.staticcontent;
 
+import static io.avaje.jex.core.Constants.CONTENT_LENGTH;
+
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,6 +18,7 @@ import com.sun.net.httpserver.HttpExchange;
 
 import io.avaje.jex.compression.CompressedOutputStream;
 import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.core.Constants;
 import io.avaje.jex.http.BadRequestException;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.http.ExchangeHandler;
@@ -65,9 +70,8 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
     int dotIndex = basename.lastIndexOf('.');
     if (dotIndex >= 0) {
       return basename.substring(dotIndex + 1);
-    } else {
-      return "";
     }
+    return "";
   }
 
   protected String lookupMime(String path) {
@@ -86,16 +90,62 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
 
   protected void addCachedEntry(Context ctx, String urlPath, InputStream fis) throws IOException {
     var baos = new ByteArrayOutputStream();
-    fis.transferTo(new CompressedOutputStream(compressionConfig, ctx, baos));
+    CompressedOutputStream compressed = new CompressedOutputStream(compressionConfig, ctx, baos);
+    fis.transferTo(compressed);
+    compressed.close();
     var bytes = baos.toByteArray();
     var responseHeaders = Map.copyOf(ctx.exchange().getResponseHeaders());
+    if ("HEAD".equals(ctx.method())) {
+      ctx.header(Constants.CONTENT_LENGTH, String.valueOf(bytes.length));
+      ctx.writeEmpty(200);
+      return;
+    }
     ctx.write(bytes);
-    compressedFiles.put(urlPath, new CachedResource(responseHeaders, bytes));
+    var encoding = ctx.responseHeader(Constants.CONTENT_ENCODING);
+    compressedFiles.put(
+        urlPath, new CachedResource(responseHeaders, bytes, encoding != null, encoding));
   }
 
-  protected void writeCached(Context ctx, String path) {
+  protected boolean writeCached(Context ctx, String path) throws IOException {
     var cached = compressedFiles.get(path);
-    ctx.headerMap(cached.headers());
-    ctx.write(cached.bytes());
+    var bytes = cached.bytes();
+
+    boolean isHead = "HEAD".equals(ctx.method());
+    if (cached.isCompressed()) {
+      if (ctx.header(Constants.ACCEPT_ENCODING) == null) {
+        return false;
+      }
+      var compressor =
+          compressionConfig.findMatchingCompressor(List.of(ctx.header(Constants.ACCEPT_ENCODING)));
+
+      if (compressor.isEmpty() || !compressor.get().encoding().equals(cached.encoding())) {
+        return false;
+      }
+      ctx.headerMap(cached.headers());
+      ctx.header(Constants.CONTENT_LENGTH, String.valueOf(bytes.length));
+      if (isHead) {
+        ctx.writeEmpty(200);
+      } else {
+        ctx.write(bytes);
+      }
+      return true;
+    }
+
+    ctx.header(Constants.CONTENT_TYPE, cached.headers().get(Constants.CONTENT_TYPE));
+    if (isHead) {
+      writeHeadResponse(ctx, new ByteArrayInputStream(bytes));
+      return true;
+    }
+    ctx.write(new ByteArrayInputStream(bytes));
+    return true;
+  }
+
+  void writeHeadResponse(Context ctx, InputStream fis) throws IOException {
+    var os = new CountingOutputStream();
+    CompressedOutputStream compressed = new CompressedOutputStream(compressionConfig, ctx, os);
+    fis.transferTo(compressed);
+    compressed.close();
+    ctx.header(CONTENT_LENGTH, String.valueOf(os.count()));
+    ctx.writeEmpty(200);
   }
 }

@@ -1,6 +1,6 @@
 package io.avaje.jex.staticcontent;
 
-import static io.avaje.jex.core.Constants.CONTENT_TYPE;
+import static io.avaje.jex.core.Constants.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,6 +15,7 @@ import io.avaje.jex.spi.ClassResourceLoader;
 final class StaticClassResourceHandler extends AbstractStaticHandler {
 
   private final URL indexFile;
+  private final URL spaRoot;
   private final URL singleFile;
   private final ClassResourceLoader resourceLoader;
 
@@ -26,6 +27,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
       Predicate<Context> skipFilePredicate,
       ClassResourceLoader resourceLoader,
       URL indexFile,
+      URL spaRoot,
       URL singleFile,
       boolean precompress,
       CompressionConfig compressionConfig) {
@@ -40,15 +42,15 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
 
     this.resourceLoader = resourceLoader;
     this.indexFile = indexFile;
+    this.spaRoot = spaRoot;
     this.singleFile = singleFile;
   }
 
   @Override
-  public void handle(Context ctx) {
+  public void handle(Context ctx) throws IOException {
     if (singleFile != null) {
       final var path = singleFile.getPath();
-      if (isCached(path)) {
-        writeCached(ctx, path);
+      if (isCached(path) && writeCached(ctx, path)) {
         return;
       }
       sendURL(ctx, path, singleFile);
@@ -63,8 +65,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
     final String wholeUrlPath = jdkExchange.getRequestURI().getPath();
     if (wholeUrlPath.endsWith("/") || wholeUrlPath.equals(urlPrefix)) {
       final var path = indexFile.getPath();
-      if (isCached(path)) {
-        writeCached(ctx, path);
+      if (isCached(path) && writeCached(ctx, path)) {
         return;
       }
       sendURL(ctx, path, indexFile);
@@ -73,8 +74,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
 
     final String urlPath = wholeUrlPath.substring(urlPrefix.length());
 
-    if (isCached(urlPath)) {
-      writeCached(ctx, urlPath);
+    if (isCached(urlPath) && writeCached(ctx, urlPath)) {
       return;
     }
 
@@ -84,7 +84,15 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
     if (!normalizedPath.startsWith(filesystemRoot)) {
       reportPathTraversal();
     }
-    sendURL(ctx, urlPath, resourceLoader.loadResource(normalizedPath));
+    try {
+      sendURL(ctx, urlPath, resourceLoader.loadResource(normalizedPath));
+    } catch (NullPointerException e) {
+      if (spaRoot != null) {
+        sendURL(ctx, spaRoot.getPath(), spaRoot);
+        return;
+      }
+      throw404(jdkExchange);
+    }
   }
 
   private void sendURL(Context ctx, String urlPath, URL path) {
@@ -95,6 +103,12 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
         addCachedEntry(ctx, urlPath, fis);
         return;
       }
+
+      if ("HEAD".equals(ctx.method())) {
+        writeHeadResponse(ctx, fis);
+        return;
+      }
+
       ctx.rangedWrite(fis);
     } catch (final IOException e) {
       throw404(ctx.exchange());

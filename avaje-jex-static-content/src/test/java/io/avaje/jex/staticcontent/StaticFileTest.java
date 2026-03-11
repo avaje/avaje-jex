@@ -21,6 +21,8 @@ class StaticFileTest {
         Jex.create()
             .plugin(defaultCP().route("/index").build())
             .plugin(defaultFile().route("/indexFile").build())
+            .plugin(defaultCP().route("/spa/*").spaRoot("index.html").build())
+            .plugin(defaultFile().route("/spaFile/*").spaRoot("index.html").build())
             .plugin(defaultCP().route("/indexWild/*").build())
             .plugin(defaultFile().route("/indexWildFile/*").build())
             .plugin(defaultCP().route("/sus/").build())
@@ -53,6 +55,14 @@ class StaticFileTest {
     assertThat(res.statusCode()).isEqualTo(200);
   }
 
+
+  @Test
+  void testGetHead() {
+    HttpResponse<String> res = pair.request().path("index").HEAD().asString();
+    assertThat(res.body()).isEmpty();
+    assertThat(res.statusCode()).isEqualTo(200);
+  }
+
   @Test
   void testTraversal() {
     HttpResponse<String> res = pair.request().path("indexWild/../hmm").GET().asString();
@@ -70,6 +80,18 @@ class StaticFileTest {
   void getIndex404() {
     HttpResponse<String> res = pair.request().path("index").path("index.html").GET().asString();
     assertThat(res.statusCode()).isEqualTo(404);
+  }
+
+  @Test
+  void getSpaRedirect() {
+    HttpResponse<String> res = pair.request().path("spa").path("index2.html").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+  }
+
+  @Test
+  void getSpaRedirectFile() {
+    HttpResponse<String> res = pair.request().path("spaFile").path("index2.html").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
   }
 
   @Test
@@ -92,6 +114,13 @@ class StaticFileTest {
     HttpResponse<String> res = pair.request().path("indexFile").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().firstValue("Content-Type").orElseThrow()).contains("html");
+  }
+
+  @Test
+  void testGetFileHead() {
+    HttpResponse<String> res = pair.request().path("indexFile").HEAD().asString();
+    assertThat(res.body()).isEmpty();
+    assertThat(res.statusCode()).isEqualTo(200);
   }
 
   @Test

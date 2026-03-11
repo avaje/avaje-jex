@@ -79,7 +79,8 @@ final class Routes implements SpiRoutes {
 
   @Override
   public Entry match(Routing.Type type, String pathInfo) {
-    return typeMap.get(type).match(pathInfo);
+    var routeIndex = typeMap.get(type);
+    return routeIndex == null ? null : routeIndex.match(pathInfo);
   }
 
   @Override

@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.avaje</groupId>
     <artifactId>avaje-jex-parent</artifactId>
-    <version>3.4</version>
+    <version>3.5-RC1</version>
   </parent>
   <name>avaje-jex-http3-flupke</name>
   <artifactId>avaje-jex-http3-flupke</artifactId>
