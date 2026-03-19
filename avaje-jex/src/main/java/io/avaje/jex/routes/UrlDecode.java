@@ -12,6 +12,9 @@ public final class UrlDecode {
   }
 
   public static String decode(String s, Charset charset) {
+    if (s.indexOf('+') == -1) {
+      return URLDecoder.decode(s, charset);
+    }
     return URLDecoder.decode(s.replace("+", "%2B"), charset).replace("%2B", "+");
   }
 }

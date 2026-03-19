@@ -38,29 +38,20 @@ final class PathParser {
   }
 
   Map<String, String> extractPathParams(String uri) {
-    Map<String, String> pathMap = new LinkedHashMap<>();
-    final List<String> values = values(uri);
-    for (int i = 0; i < values.size(); i++) {
-      final String name = paramNames.get(i);
+    final Matcher matcher = pathParamRegex.matcher(uri);
+    if (!matcher.find()) {
+      return Map.of();
+    }
+    final int count = matcher.groupCount();
+    final Map<String, String> pathMap = LinkedHashMap.newLinkedHashMap(count);
+    for (int i = 1; i <= count; i++) {
+      final String name = paramNames.get(i - 1);
       if (name != null) {
         // null names for wildcard placeholders
-        pathMap.put(name, UrlDecode.decode(values.get(i)));
+        pathMap.put(name, UrlDecode.decode(matcher.group(i)));
       }
     }
     return pathMap;
-  }
-
-  private List<String> values(String uri) {
-    final Matcher matcher = pathParamRegex.matcher(uri);
-    if (!matcher.find()) {
-      return Collections.emptyList();
-    }
-    final int i = matcher.groupCount();
-    final List<String> values = new ArrayList<>(i);
-    for (int j = 1; j <= i; j++) {
-      values.add(matcher.group(j));
-    }
-    return values;
   }
 
   private PathSegment parseSegment(String segment) {

@@ -7,6 +7,7 @@ import static io.avaje.jex.core.Constants.TEXT_PLAIN_UTF8;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -48,7 +49,7 @@ final class JdkContext implements Context {
   private final ServiceManager mgr;
   private final String matchedPath;
   private final Map<String, String> pathParams;
-  private final Map<String, Object> attributes = new HashMap<>();
+  private Map<String, Object> attributes;
   private final Set<Role> roles;
   private final HttpExchange exchange;
   private Mode mode;
@@ -86,11 +87,14 @@ final class JdkContext implements Context {
   @Override
   @SuppressWarnings("unchecked")
   public <T> T attribute(String key) {
-    return (T) attributes.get(key);
+    return attributes == null ? null : (T) attributes.get(key);
   }
 
   @Override
   public Context attribute(String key, Object value) {
+    if (attributes == null) {
+      attributes = new HashMap<>();
+    }
     attributes.put(key, value);
     return this;
   }
@@ -563,6 +567,15 @@ final class JdkContext implements Context {
   @Override
   public void rangedWrite(InputStream inputStream, long totalBytes) {
     mgr.writeRange(this, inputStream, totalBytes);
+  }
+
+  void write(ByteArrayOutputStream baos) throws IOException {
+    throwIf204();
+    int size = baos.size();
+    try (var os = exchange.getResponseBody()) {
+      exchange.sendResponseHeaders(statusCode(), size == 0 ? -1 : size);
+      baos.writeTo(os);
+    }
   }
 
   private void throwIf204() {
