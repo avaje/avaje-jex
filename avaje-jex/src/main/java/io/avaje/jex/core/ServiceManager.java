@@ -141,11 +141,23 @@ final class ServiceManager {
 
   static Charset parseCharset(String header) {
     if (header != null) {
-      for (String val : header.split(";")) {
-        val = val.trim();
-        if (val.regionMatches(true, 0, "charset", 0, "charset".length())) {
-          return Charset.forName(val.split("=")[1].trim());
+      int start = 0;
+      int len = header.length();
+      while (start < len) {
+        int semi = header.indexOf(';', start);
+        int end = semi == -1 ? len : semi;
+        // trim whitespace
+        int s = start;
+        while (s < end && header.charAt(s) == ' ') s++;
+        int e = end;
+        while (e > s && header.charAt(e - 1) == ' ') e--;
+        if (header.regionMatches(true, s, "charset", 0, 7)) {
+          int eq = header.indexOf('=', s + 7);
+          if (eq != -1 && eq < e) {
+            return Charset.forName(header.substring(eq + 1, e).trim());
+          }
         }
+        start = end + 1;
       }
     }
     return StandardCharsets.UTF_8;
@@ -160,11 +172,22 @@ final class ServiceManager {
       return Collections.emptyMap();
     }
     Map<String, List<String>> map = new LinkedHashMap<>();
-    for (String pair : body.split("&")) {
-      final String[] split1 = pair.split("=", 2);
-      String key = UrlDecode.decode(split1[0], charset);
-      String val = split1.length > 1 ? UrlDecode.decode(split1[1], charset) : "";
+    int start = 0;
+    int len = body.length();
+    while (start < len) {
+      int amp = body.indexOf('&', start);
+      int end = amp == -1 ? len : amp;
+      int eq = body.indexOf('=', start);
+      String key, val;
+      if (eq == -1 || eq > end) {
+        key = UrlDecode.decode(body.substring(start, end), charset);
+        val = "";
+      } else {
+        key = UrlDecode.decode(body.substring(start, eq), charset);
+        val = UrlDecode.decode(body.substring(eq + 1, end), charset);
+      }
       map.computeIfAbsent(key, s -> new ArrayList<>()).add(val);
+      start = end + 1;
     }
     return map;
   }
