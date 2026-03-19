@@ -2,7 +2,6 @@ package io.avaje.jex.core;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -43,8 +42,7 @@ final class RoutingHandler implements HttpHandler {
     } else {
       route.inc();
       try {
-        final Map<String, String> params = route.pathParams(uri);
-        JdkContext ctx = new JdkContext(mgr, exchange, route.matchPath(), params, route.roles());
+        JdkContext ctx = new JdkContext(mgr, exchange, route);
         CtxHolder.runWith(ctx,
             () -> {
               try {

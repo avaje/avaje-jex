@@ -38,6 +38,7 @@ import io.avaje.jex.http.Context;
 import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.http.HttpStatus;
 import io.avaje.jex.http.RedirectException;
+import io.avaje.jex.routes.SpiRoutes.Entry;
 import io.avaje.jex.security.BasicAuthCredentials;
 import io.avaje.jex.security.Role;
 import io.avaje.jex.spi.JsonService;
@@ -48,7 +49,8 @@ final class JdkContext implements Context {
   private static final String COOKIE = "Cookie";
   private final ServiceManager mgr;
   private final String matchedPath;
-  private final Map<String, String> pathParams;
+  private final Entry routeEntry;
+  private Map<String, String> pathParams;
   private Map<String, Object> attributes;
   private final Set<Role> roles;
   private final HttpExchange exchange;
@@ -62,17 +64,12 @@ final class JdkContext implements Context {
   private Charset characterEncoding;
   private OutputStream os;
 
-  JdkContext(
-      ServiceManager mgr,
-      HttpExchange exchange,
-      String path,
-      Map<String, String> pathParams,
-      Set<Role> roles) {
+  JdkContext(ServiceManager mgr, HttpExchange exchange, Entry route) {
     this.mgr = mgr;
-    this.roles = roles;
+    this.roles = route.roles();
     this.exchange = exchange;
-    this.matchedPath = path;
-    this.pathParams = pathParams;
+    this.matchedPath = route.matchPath();
+    this.routeEntry = route;
   }
 
   /** Create when no route matched. */
@@ -81,7 +78,7 @@ final class JdkContext implements Context {
     this.roles = roles;
     this.exchange = exchange;
     this.matchedPath = path;
-    this.pathParams = null;
+    this.routeEntry = null;
   }
 
   @Override
@@ -369,11 +366,14 @@ final class JdkContext implements Context {
 
   @Override
   public String pathParam(String name) {
-    return pathParams.get(name);
+    return pathParamMap().get(name);
   }
 
   @Override
   public Map<String, String> pathParamMap() {
+    if (pathParams == null) {
+      pathParams = routeEntry != null ? routeEntry.pathParams(path()) : emptyMap();
+    }
     return pathParams;
   }
 
