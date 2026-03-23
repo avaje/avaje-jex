@@ -1,6 +1,7 @@
 package io.avaje.jex;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -218,6 +219,21 @@ public interface Routing {
     HEAD,
     TRACE,
     OPTIONS;
+
+    private static final Map<String, Type> MAP;
+
+    static {
+      var values = values();
+      MAP = HashMap.newHashMap(values.length);
+      for (var type : values) {
+        MAP.put(type.name(), type);
+      }
+    }
+
+    /** Return the Type for the given HTTP method name, or null if not recognized. */
+    public static Type ofMethod(String method) {
+      return MAP.get(method);
+    }
   }
 
 }

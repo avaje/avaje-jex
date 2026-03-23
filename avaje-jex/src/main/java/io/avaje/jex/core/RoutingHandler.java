@@ -42,7 +42,7 @@ final class RoutingHandler implements HttpHandler {
     } else {
       route.inc();
       try {
-        JdkContext ctx = new JdkContext(mgr, exchange, route);
+        JdkContext ctx = new JdkContext(mgr, exchange, route, uri);
         CtxHolder.runWith(ctx,
             () -> {
               try {

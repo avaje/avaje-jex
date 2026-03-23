@@ -12,10 +12,12 @@ final class PathParser {
   private final Pattern pathParamRegex;
   private final boolean multiSlash;
   private final boolean literal;
+  private final boolean ignoreTrailingSlashes;
   private int segmentCount;
 
   PathParser(String path, boolean ignoreTrailingSlashes) {
     this.rawPath = path;
+    this.ignoreTrailingSlashes = ignoreTrailingSlashes;
     final RegBuilder regBuilder = new RegBuilder(ignoreTrailingSlashes);
     for (String rawSeg : path.split("/")) {
       if (!rawSeg.isEmpty()) {
@@ -34,6 +36,17 @@ final class PathParser {
   }
 
   boolean matches(String url) {
+    if (literal) {
+      int pathLen = rawPath.length();
+      int urlLen = url.length();
+      if (urlLen == pathLen) {
+        return url.equals(rawPath);
+      }
+      if (ignoreTrailingSlashes && urlLen == pathLen + 1 && url.charAt(urlLen - 1) == '/') {
+        return url.regionMatches(0, rawPath, 0, pathLen);
+      }
+      return false;
+    }
     return matchRegex.matcher(url).matches();
   }
 
