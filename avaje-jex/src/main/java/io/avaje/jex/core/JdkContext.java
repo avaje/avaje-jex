@@ -49,6 +49,7 @@ final class JdkContext implements Context {
   private static final String COOKIE = "Cookie";
   private final ServiceManager mgr;
   private final String matchedPath;
+  private final String requestPath;
   private final Entry routeEntry;
   private Map<String, String> pathParams;
   private Map<String, Object> attributes;
@@ -64,12 +65,13 @@ final class JdkContext implements Context {
   private Charset characterEncoding;
   private OutputStream os;
 
-  JdkContext(ServiceManager mgr, HttpExchange exchange, Entry route) {
+  JdkContext(ServiceManager mgr, HttpExchange exchange, Entry route, String requestPath) {
     this.mgr = mgr;
     this.roles = route.roles();
     this.exchange = exchange;
     this.matchedPath = route.matchPath();
     this.routeEntry = route;
+    this.requestPath = requestPath;
   }
 
   /** Create when no route matched. */
@@ -79,6 +81,7 @@ final class JdkContext implements Context {
     this.exchange = exchange;
     this.matchedPath = path;
     this.routeEntry = null;
+    this.requestPath = path;
   }
 
   @Override
@@ -361,7 +364,7 @@ final class JdkContext implements Context {
 
   @Override
   public String path() {
-    return exchange.getRequestURI().getPath();
+    return requestPath;
   }
 
   @Override

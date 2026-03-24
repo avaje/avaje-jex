@@ -12,8 +12,6 @@ import static java.util.Collections.emptyMap;
  */
 final class CookieParser {
 
-  private static final String QUOTE = "\"";
-  private static final char[] QUOTE_CHARS = QUOTE.toCharArray();
 
   private CookieParser() {
   }
@@ -93,11 +91,10 @@ final class CookieParser {
     StringBuilder token = new StringBuilder();
     List<String> result = new ArrayList<>();
     boolean quoted = false;
-    char lastQuoteCharacter = ' ';
     for (int i = 0; i < text.length(); i++) {
       char ch = text.charAt(i);
       if (quoted) {
-        if (ch == lastQuoteCharacter) {
+        if (ch == '"') {
           quoted = false;
         }
         token.append(ch);
@@ -107,12 +104,8 @@ final class CookieParser {
         }
         token.setLength(0);
       } else {
-        for (char quote : CookieParser.QUOTE_CHARS) {
-          if (ch == quote) {
-            quoted = true;
-            lastQuoteCharacter = ch;
-            break;
-          }
+        if (ch == '"') {
+          quoted = true;
         }
         token.append(ch);
       }

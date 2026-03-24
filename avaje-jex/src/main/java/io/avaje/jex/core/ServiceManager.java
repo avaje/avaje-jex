@@ -120,11 +120,7 @@ final class ServiceManager {
   }
 
   Routing.Type lookupRoutingType(String method) {
-    try {
-      return Routing.Type.valueOf(method);
-    } catch (Exception e) {
-      return null;
-    }
+    return Routing.Type.ofMethod(method);
   }
 
   void handleException(JdkContext ctx, Exception t) {
