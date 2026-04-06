@@ -5,12 +5,12 @@
   <parent>
     <groupId>io.avaje</groupId>
     <artifactId>avaje-jex-parent</artifactId>
-    <version>3.5-RC1</version>
+    <version>3.5</version>
   </parent>
   <name>avaje-jex-http3-flupke</name>
   <artifactId>avaje-jex-http3-flupke</artifactId>
   <description>Flupke backed jdk.httpserver implementation</description>
-  <version>1.0</version>
+  <version>1.1</version>
   <properties>
     <maven.compiler.release>21</maven.compiler.release>
   </properties>
