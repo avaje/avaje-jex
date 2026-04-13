@@ -34,9 +34,9 @@
     <avaje.metrics.version>9.8</avaje.metrics.version>
     <avaje.validator.version>2.17</avaje.validator.version>
     <avaje.record.builder.version>1.4</avaje.record.builder.version>
-    <avaje.spi.version>2.16</avaje.spi.version>
+    <avaje.spi.version>2.17</avaje.spi.version>
     <avaje.prisms.version>2.0</avaje.prisms.version>
-    <ebean.version>17.3.0</ebean.version>
+    <ebean.version>17.5.0</ebean.version>
   </properties>
 
   <modules>
@@ -254,7 +254,7 @@
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-http3-flupke</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
       </dependency>
       <dependency>
         <groupId>io.github.robaho</groupId>
