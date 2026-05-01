@@ -40,7 +40,11 @@ final class ExceptionManager {
     final var handler = find(e.getClass());
     if (handler != null) {
       try {
+        ctx.status(500);
         handler.handle(ctx, e);
+        if (!ctx.responseSent()) {
+          ctx.writeEmpty(ctx.status());
+        }
       } catch (Exception ex) {
         unhandledException(ctx, ex);
       }
