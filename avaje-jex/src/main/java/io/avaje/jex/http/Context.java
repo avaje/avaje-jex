@@ -556,16 +556,27 @@ public interface Context {
     return header(Constants.USER_AGENT);
   }
 
-  /** Writes Nothing. */
+  /**
+   * Sends the status and headers with no body. Unlike {@code write}, does not close the response
+   * stream or terminate the exchange.
+   *
+   * @param statusCode The status code to send.
+   */
   void writeEmpty(int statusCode);
 
-  /** Writes Nothing. */
+  /**
+   * Sends the status and headers with no body. Unlike {@code write}, does not close the response
+   * stream or terminate the exchange.
+   *
+   * @param statusCode The status to send.
+   */
   default void writeEmpty(HttpStatus statusCode) {
     writeEmpty(statusCode.status());
   }
 
   /**
-   * Writes the given bytes directly to the response.
+   * Writes the given bytes directly to the response, sending headers and terminating the
+   * exchange.
    *
    * @param bytes The byte array to write.
    */
@@ -574,9 +585,8 @@ public interface Context {
   }
 
   /**
-   * Writes the given length of bytes from this buffer directly to the response.
-   *
-   * <p>The bytes written will be from position 0 to length.
+   * Writes length bytes from the buffer (position 0 to length) directly to the response, sending
+   * headers and terminating the exchange.
    *
    * @param bufferBytes The byte array to write.
    * @param length The number of bytes to write from the buffer.
@@ -584,14 +594,16 @@ public interface Context {
   void write(byte[] bufferBytes, int length);
 
   /**
-   * Writes the content from the given InputStream directly to the response body.
+   * Writes the InputStream directly to the response body, sending headers and terminating the
+   * exchange.
    *
    * @param is The input stream containing the content to write.
    */
   void write(InputStream is);
 
   /**
-   * Writes the given string content directly to the response.
+   * Writes the string content directly to the response, sending headers and terminating the
+   * exchange.
    *
    * @param content The string content to write.
    */

@@ -10,3 +10,4 @@ build/
 *.factorypath
 bin/
 .DS_Store
+avaje-jex-static-content/.claude/settings.local.json
