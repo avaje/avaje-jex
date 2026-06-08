@@ -9,6 +9,9 @@ updates:
       dependencies:
         patterns:
         - "*"
+    ignore:
+      - dependency-name: "io.avaje:avaje-inject*"
+        versions: ["*-javax"]
     labels:
       - "dependencies"
     target-branch: "master"
