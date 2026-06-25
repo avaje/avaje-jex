@@ -12,7 +12,7 @@
   <groupId>io.avaje</groupId>
   <artifactId>avaje-jex-parent</artifactId>
   <name>avaje-jex-parent</name>
-  <version>3.6</version>
+  <version>3.7-RC1</version>
   <packaging>pom</packaging>
 
   <scm>
@@ -21,7 +21,7 @@
   </scm>
 
   <properties>
-    <project.build.outputTimestamp>2026-06-12T14:19:33Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-06-25T21:44:15Z</project.build.outputTimestamp>
     <nexus.staging.autoReleaseAfterClose>true</nexus.staging.autoReleaseAfterClose>
     <jackson.version>2.22.0</jackson.version>
     <surefire.useModulePath>false</surefire.useModulePath>
@@ -50,8 +50,8 @@
     <module>avaje-jex-test</module>
     <module>avaje-jex-ssl</module>
     <module>avaje-jex-websockets</module>
-    <module>avaje-jex-http3-flupke</module>
-    <module>avaje-jex-grizzly-spi</module>
+    <!-- <module>avaje-jex-http3-flupke</module>
+    <module>avaje-jex-grizzly-spi</module> -->
   </modules>
 
   <dependencyManagement>
@@ -204,12 +204,12 @@
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex</artifactId>
-        <version>3.6</version>
+        <version>3.7-RC1</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-test</artifactId>
-        <version>3.6</version>
+        <version>3.7-RC1</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
@@ -219,37 +219,37 @@
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-file-upload</artifactId>
-        <version>3.6</version>
+        <version>3.7-RC1</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-websocket</artifactId>
-        <version>3.6</version>
+        <version>3.7-RC1</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-freemarker</artifactId>
-        <version>3.6</version>
+        <version>3.7-RC1</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-mustache</artifactId>
-        <version>3.6</version>
+        <version>3.7-RC1</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-htmx</artifactId>
-        <version>3.6</version>
+        <version>3.7-RC1</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-static-content</artifactId>
-        <version>3.6</version>
+        <version>3.7-RC1</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
         <artifactId>avaje-jex-ssl</artifactId>
-        <version>3.6</version>
+        <version>3.7-RC1</version>
       </dependency>
       <dependency>
         <groupId>io.avaje</groupId>
