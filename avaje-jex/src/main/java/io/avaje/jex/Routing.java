@@ -134,6 +134,15 @@ public interface Routing {
    */
   Routing options(String path, ExchangeHandler handler, Role... roles);
 
+  /**
+   * Adds a QUERY handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when a QUERY request matches the path.
+   * @param roles roles that are associated with this endpoint.
+   */
+  Routing query(String path, ExchangeHandler handler, Role... roles);
+
   /** Add a filter for all matched requests. */
   Routing filter(HttpFilter handler);
 
@@ -218,7 +227,8 @@ public interface Routing {
     DELETE,
     HEAD,
     TRACE,
-    OPTIONS;
+    OPTIONS,
+    QUERY;
 
     private static final Map<String, Type> MAP;
 
