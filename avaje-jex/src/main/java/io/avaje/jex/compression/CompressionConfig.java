@@ -1,5 +1,7 @@
 package io.avaje.jex.compression;
 
+import org.jspecify.annotations.NonNull;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /** Configuration for compression settings. */
 public final class CompressionConfig {
@@ -122,27 +125,7 @@ public final class CompressionConfig {
               ? acceptedEncoding.stream()
               : Arrays.stream(acceptedEncoding.getFirst().split(","));
 
-      // parse each token into (encoding, q-value); q=0 means explicitly rejected
-      Map<Double, Set<String>> byQValue = new HashMap<>();
-      stream.forEach(
-          token -> {
-            var parts = token.trim().split(";");
-            var encoding = parts[0].trim().toLowerCase();
-            double q = 1.0;
-            for (int i = 1; i < parts.length; i++) {
-              var param = parts[i].trim();
-              if (param.regionMatches(true, 0, "q=", 0, 2)) {
-                try {
-                  q = Double.parseDouble(param.substring(2));
-                } catch (NumberFormatException ignored) {
-                }
-                break;
-              }
-            }
-            if (q > 0) {
-              byQValue.computeIfAbsent(q, k -> new HashSet<>()).add(encoding);
-            }
-          });
+      Map<Double, Set<String>> byQValue = encodingByQValue(stream);
 
       var sortedQ = byQValue.keySet().stream().sorted(Comparator.reverseOrder()).toList();
       for (var q : sortedQ) {
@@ -156,5 +139,29 @@ public final class CompressionConfig {
       }
     }
     return Optional.empty();
+  }
+
+  /** parse each token into (encoding, q-value); q=0 means explicitly rejected */
+  private static @NonNull Map<Double, Set<String>> encodingByQValue(Stream<String> stream) {
+    Map<Double, Set<String>> byQValue = new HashMap<>();
+    stream.forEach(token -> {
+      var parts = token.trim().split(";");
+      var encoding = parts[0].trim().toLowerCase();
+      double q = 1.0;
+      for (int i = 1; i < parts.length; i++) {
+        var param = parts[i].trim();
+        if (param.regionMatches(true, 0, "q=", 0, 2)) {
+          try {
+            q = Double.parseDouble(param.substring(2));
+          } catch (NumberFormatException ignored) {
+          }
+          break;
+        }
+      }
+      if (q > 0) {
+        byQValue.computeIfAbsent(q, k -> new HashSet<>()).add(encoding);
+      }
+    });
+    return byQValue;
   }
 }
