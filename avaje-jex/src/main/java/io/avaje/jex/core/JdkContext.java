@@ -423,7 +423,7 @@ final class JdkContext implements Context {
 
   private Map<String, List<String>> queryParams() {
     if (queryParams == null) {
-      queryParams = mgr.parseParamMap(queryString(), StandardCharsets.UTF_8);
+      queryParams = mgr.parseGetMap(exchange.getRequestURI().getRawQuery(), StandardCharsets.UTF_8);
     }
     return queryParams;
   }

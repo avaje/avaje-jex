@@ -7,11 +7,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class UrlDecode {
 
-  public static String decode(String s) {
-    return decode(s, UTF_8);
+  public static String decodeRFC3986(String s) {
+    return decodeRFC3986(s, UTF_8);
   }
 
-  public static String decode(String s, Charset charset) {
+  public static String decodeRFC3986(String s, Charset charset) {
     if (s.indexOf('+') == -1) {
       return URLDecoder.decode(s, charset);
     }

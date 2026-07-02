@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.System.Logger.Level;
 import java.lang.reflect.Type;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import io.avaje.applog.AppLog;
@@ -164,6 +166,22 @@ final class ServiceManager {
   }
 
   Map<String, List<String>> parseParamMap(String body, Charset charset) {
+    return  parseToMap(body, (in) -> UrlDecode.decodeRFC3986(in, charset));
+  }
+
+  Map<String, List<String>> parseGetMap(String body, Charset charset) {
+    return  parseToMap(body, (in) -> URLDecoder.decode(in, charset));
+  }
+
+  String scheme() {
+    return scheme;
+  }
+
+  long maxRequestSize() {
+    return maxRequestSize;
+  }
+
+  private static Map<String, List<String>> parseToMap(String body, UnaryOperator<String> decoder) {
     if (body == null || body.isEmpty()) {
       return Collections.emptyMap();
     }
@@ -176,24 +194,16 @@ final class ServiceManager {
       int eq = body.indexOf('=', start);
       String key, val;
       if (eq == -1 || eq > end) {
-        key = UrlDecode.decode(body.substring(start, end), charset);
+        key = decoder.apply(body.substring(start, end));
         val = "";
       } else {
-        key = UrlDecode.decode(body.substring(start, eq), charset);
-        val = UrlDecode.decode(body.substring(eq + 1, end), charset);
+        key = decoder.apply(body.substring(start, eq));
+        val = decoder.apply(body.substring(eq + 1, end));
       }
       map.computeIfAbsent(key, s -> new ArrayList<>()).add(val);
       start = end + 1;
     }
     return map;
-  }
-
-  String scheme() {
-    return scheme;
-  }
-
-  long maxRequestSize() {
-    return maxRequestSize;
   }
 
   private static final class Builder {
