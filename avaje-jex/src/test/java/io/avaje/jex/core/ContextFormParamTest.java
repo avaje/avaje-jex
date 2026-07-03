@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ContextFormParamTest {
 
-  private static final String CONTENT_TYPE = "Content-Type";
   private static final String CONTENT_TYPE_VALUE = "application/x-www-form-urlencoded";
 
   static TestPair pair = init();
