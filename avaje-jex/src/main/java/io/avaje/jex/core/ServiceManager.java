@@ -25,6 +25,8 @@ import io.avaje.jex.core.json.Jackson3JsonService;
 import io.avaje.jex.core.json.JacksonJsonService;
 import io.avaje.jex.core.json.JsonbJsonService;
 import io.avaje.jex.http.Context;
+import io.avaje.jex.http.HttpResponseException;
+import io.avaje.jex.http.HttpStatus;
 import io.avaje.jex.routes.UrlDecode;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
@@ -162,15 +164,18 @@ final class ServiceManager {
   }
 
   Map<String, List<String>> formParamMap(Context ctx, Charset charset) {
-    return parseParamMap(ctx.body(), charset);
+    if (!"application/x-www-form-urlencoded".equals(ctx.contentType())) {
+      throw new HttpResponseException(HttpStatus.UNSUPPORTED_MEDIA_TYPE_415);
+    }
+    return parseToMap(ctx.body(), (in) -> URLDecoder.decode(in, charset));
   }
 
   Map<String, List<String>> parseParamMap(String body, Charset charset) {
-    return  parseToMap(body, (in) -> UrlDecode.decodeRFC3986(in, charset));
+    return parseToMap(body, (in) -> UrlDecode.decodeRFC3986(in, charset));
   }
 
   Map<String, List<String>> parseGetMap(String body, Charset charset) {
-    return  parseToMap(body, (in) -> URLDecoder.decode(in, charset));
+    return parseToMap(body, (in) -> URLDecoder.decode(in, charset));
   }
 
   String scheme() {
