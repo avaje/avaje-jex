@@ -11,12 +11,12 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-class PathParserTest {
+class DPathParserTest {
 
   @Test
   void matches_trailingSlash_honor() {
 
-    var pathParser = new PathParser("/one/{id}/", false);
+    var pathParser = new DPathParser("/one/{id}/", false);
     assertThat(pathParser.segmentCount()).isEqualTo(3);
 
     assertTrue(pathParser.matches("/one/1/"));
@@ -30,7 +30,7 @@ class PathParserTest {
   @Test
   void matches_trailingSlash_ignore() {
 
-    var pathParser = new PathParser("/one/{id}///", true);
+    var pathParser = new DPathParser("/one/{id}///", true);
     assertTrue(pathParser.matches("/one/1"));
     assertTrue(pathParser.matches("/one/2"));
     assertTrue(pathParser.matches("/one/2/"));
@@ -40,7 +40,7 @@ class PathParserTest {
   @Test
   void matches_litArg() {
 
-    var pathParser = new PathParser("/one/{id}", true);
+    var pathParser = new DPathParser("/one/{id}", true);
     assertTrue(pathParser.matches("/one/1"));
     assertTrue(pathParser.matches("/one/2"));
     assertThat(pathParser.segmentCount()).isEqualTo(2);
@@ -56,7 +56,7 @@ class PathParserTest {
   @Test
   void matches_argArgArg() {
 
-    final PathParser pathParser = new PathParser("/{a}/{b}/{c}", true);
+    final DPathParser pathParser = new DPathParser("/{a}/{b}/{c}", true);
     assertTrue(pathParser.matches("/1a/2b/3c"));
     assertThat(pathParser.segmentCount()).isEqualTo(3);
     assertThat(pathParser.raw()).isEqualTo("/{a}/{b}/{c}");
@@ -72,7 +72,7 @@ class PathParserTest {
   @Test
   void matches_litArgArgArg() {
 
-    final PathParser pathParser = new PathParser("/one/{a}/{b}/{c}", true);
+    final DPathParser pathParser = new DPathParser("/one/{a}/{b}/{c}", true);
     assertThat(pathParser.segmentCount()).isEqualTo(4);
     assertTrue(pathParser.matches("/one/1a/2b/3c"));
     assertTrue(pathParser.matches("/one/foo/bar/baz"));
@@ -88,13 +88,13 @@ class PathParserTest {
   @Test
   void illegalPath_adjacentViolation() {
     asList("/one/*<a>/after", "*{", "}*", "*<", ">*")
-      .forEach(path -> assertThrows(IllegalArgumentException.class, () -> new PathParser(path, true)));
+      .forEach(path -> assertThrows(IllegalArgumentException.class, () -> new DPathParser(path, true)));
   }
 
   @Test
   void matches_withSlashAccepting() {
 
-    final PathParser pathParser = new PathParser("/one/<a>/after", true);
+    final DPathParser pathParser = new DPathParser("/one/<a>/after", true);
     assertThat(pathParser.segmentCount()).isEqualTo(3);
     assertTrue(pathParser.matches("/one/bazz/after"));
     assertTrue(pathParser.matches("/one/foo/bar/after"));
@@ -111,7 +111,7 @@ class PathParserTest {
   @Test
   void matches_litArgLitArgArgLit() {
 
-    final PathParser pathParser = new PathParser("/one/{a}/two/{b}/{c}/end", true);
+    final DPathParser pathParser = new DPathParser("/one/{a}/two/{b}/{c}/end", true);
     assertThat(pathParser.segmentCount()).isEqualTo(6);
     assertTrue(pathParser.matches("/one/1a/two/2b/3c/end"));
     assertFalse(pathParser.matches("/on/1a/two/2b/3c/end"));
@@ -130,7 +130,7 @@ class PathParserTest {
   @Test
   void matches_litLit() {
 
-    final PathParser pathParser = new PathParser("/one/two", true);
+    final DPathParser pathParser = new DPathParser("/one/two", true);
     assertTrue(pathParser.matches("/one/two"));
     assertTrue(pathParser.matches("/one/two/"));
 
@@ -143,7 +143,7 @@ class PathParserTest {
   @Test
   void matches_litLit_honorTrailingSlash() {
     // ignoreTrailingSlashes=false: trailing slash must NOT match
-    final PathParser pathParser = new PathParser("/one/two", false);
+    final DPathParser pathParser = new DPathParser("/one/two", false);
     assertTrue(pathParser.literal());
 
     assertTrue(pathParser.matches("/one/two"));
@@ -155,7 +155,7 @@ class PathParserTest {
 
   @Test
   void matches_litLitLit_honorTrailingSlash() {
-    final PathParser pathParser = new PathParser("/a/b/c", false);
+    final DPathParser pathParser = new DPathParser("/a/b/c", false);
     assertTrue(pathParser.literal());
 
     assertTrue(pathParser.matches("/a/b/c"));
@@ -166,7 +166,7 @@ class PathParserTest {
 
   @Test
   void matches_before_litPrefix() {
-    final PathParser pathParser = new PathParser("/one/*", true);
+    final DPathParser pathParser = new DPathParser("/one/*", true);
     assertTrue(pathParser.matches("/one/two"));
     assertTrue(pathParser.matches("/one/two/three"));
     assertTrue(pathParser.matches("/one/two/three/four"));
@@ -174,7 +174,7 @@ class PathParserTest {
 
   @Test
   void matches_before_litPrefixAndSuffix() {
-    final PathParser pathParser = new PathParser("/one/*/three", true);
+    final DPathParser pathParser = new DPathParser("/one/*/three", true);
     assertTrue(pathParser.matches("/one/two/three"));
     assertTrue(pathParser.matches("/one/foo/three"));
 
@@ -184,7 +184,7 @@ class PathParserTest {
 
   @Test
   void matches_before_litPrefixAndSuffixAndWild() {
-    final PathParser pathParser = new PathParser("/one/*/three/*", true);
+    final DPathParser pathParser = new DPathParser("/one/*/three/*", true);
     assertTrue(pathParser.matches("/one/99/three/1000"));
     assertTrue(pathParser.matches("/one/99/three/1000/banana"));
     assertTrue(pathParser.matches("/one/two/three/four"));
@@ -197,7 +197,7 @@ class PathParserTest {
   @Test
   void withRegex() {
 
-    final PathParser pathParser = new PathParser("/{id:[0-9]+}", true);
+    final DPathParser pathParser = new DPathParser("/{id:[0-9]+}", true);
     assertTrue(pathParser.matches("/1"));
     assertTrue(pathParser.matches("/99"));
 
@@ -208,7 +208,7 @@ class PathParserTest {
   @Test
   void withRegex_andPrefix() {
 
-    final PathParser pathParser = new PathParser("/one/{id:[0-9]+}", true);
+    final DPathParser pathParser = new DPathParser("/one/{id:[0-9]+}", true);
     assertTrue(pathParser.matches("/one/1"));
     assertTrue(pathParser.matches("/one/99"));
 
@@ -219,7 +219,7 @@ class PathParserTest {
   @Test
   void withRegexWithLength() {
 
-    final PathParser pathParser = new PathParser("/{id:[0-9]{4}}", true);
+    final DPathParser pathParser = new DPathParser("/{id:[0-9]{4}}", true);
     assertTrue(pathParser.matches("/1234"));
     assertTrue(pathParser.matches("/9987"));
 
@@ -233,28 +233,28 @@ class PathParserTest {
 
   @Test
   void withColonLiteral() {
-    final PathParser pathParser = new PathParser("/path/my:action", true);
+    final DPathParser pathParser = new DPathParser("/path/my:action", true);
     assertThat(pathParser.segmentCount()).isEqualTo(2);
     assertThat(pathParser.literal()).isTrue();
   }
 
   @Test
   void withColonLiteral2() {
-    final PathParser pathParser = new PathParser("/path/to/my:action", true);
+    final DPathParser pathParser = new DPathParser("/path/to/my:action", true);
     assertThat(pathParser.segmentCount()).isEqualTo(3);
     assertThat(pathParser.literal()).isTrue();
   }
 
   @Test
   void withColonLiteral3() {
-    final PathParser pathParser = new PathParser("/path/my::action", true);
+    final DPathParser pathParser = new DPathParser("/path/my::action", true);
     assertThat(pathParser.segmentCount()).isEqualTo(2);
     assertThat(pathParser.literal()).isTrue();
   }
 
   @Test
   void withColonLiteral4() {
-    final PathParser pathParser = new PathParser("/path/my::action:again", true);
+    final DPathParser pathParser = new DPathParser("/path/my::action:again", true);
     assertThat(pathParser.segmentCount()).isEqualTo(2);
     assertThat(pathParser.literal()).isTrue();
   }
@@ -262,7 +262,7 @@ class PathParserTest {
   @Test
   void matches_splat0() {
 
-    final PathParser pathParser = new PathParser("/{a}/*", true);
+    final DPathParser pathParser = new DPathParser("/{a}/*", true);
     assertTrue(pathParser.matches("/1a/2b/3c"));
     assertThat(pathParser.segmentCount()).isEqualTo(2);
     assertThat(pathParser.raw()).isEqualTo("/{a}/*");
@@ -276,7 +276,7 @@ class PathParserTest {
   @Test
   void matches_splat0LiteralSplat() {
 
-    final PathParser pathParser = new PathParser("/{a}/*/and/*", true);
+    final DPathParser pathParser = new DPathParser("/{a}/*/and/*", true);
     assertThat(pathParser.raw()).isEqualTo("/{a}/*/and/*");
     assertThat(pathParser.segmentCount()).isEqualTo(4);
 
@@ -295,7 +295,7 @@ class PathParserTest {
 
   @Test
   void matches_slashConsumers() {
-    final PathParser pathParser = new PathParser("/{a}/<one>/and/<two>", true);
+    final DPathParser pathParser = new DPathParser("/{a}/<one>/and/<two>", true);
     assertThat(pathParser.raw()).isEqualTo("/{a}/<one>/and/<two>");
     assertThat(pathParser.segmentCount()).isEqualTo(4);
 
@@ -317,7 +317,7 @@ class PathParserTest {
 
   @Test
   void multiSegment_noSlashes() {
-    final PathParser pathParser = new PathParser("/x{a}y{b}z", true);
+    final DPathParser pathParser = new DPathParser("/x{a}y{b}z", true);
     assertThat(pathParser.raw()).isEqualTo("/x{a}y{b}z");
     assertThat(pathParser.segmentCount()).isEqualTo(1);
 
@@ -337,7 +337,7 @@ class PathParserTest {
 
   @Test
   void multiSegment_mixed() {
-    final PathParser pathParser = new PathParser("/{one}/x{two}y{three}z/{four}", true);
+    final DPathParser pathParser = new DPathParser("/{one}/x{two}y{three}z/{four}", true);
     assertThat(pathParser.segmentCount()).isEqualTo(3);
     assertFalse(pathParser.multiSlash());
 
@@ -353,7 +353,7 @@ class PathParserTest {
 
   @Test
   void multiSegment_mixed_slashConsuming() {
-    final PathParser pathParser = new PathParser("/<one>/x<two>y<three>z/<four>", true);
+    final DPathParser pathParser = new DPathParser("/<one>/x<two>y<three>z/<four>", true);
     assertThat(pathParser.segmentCount()).isEqualTo(3);
     assertTrue(pathParser.multiSlash());
 
@@ -387,6 +387,6 @@ class PathParserTest {
   }
 
   private ThrowableAssertAlternative<IllegalArgumentException> expectParseError(String path) {
-    return assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new PathParser(path, true));
+    return assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new DPathParser(path, true));
   }
 }

@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import io.avaje.jex.JexConfig;
+import io.avaje.jex.ParamParser;
+import io.avaje.jex.PathParser;
 import io.avaje.jex.Routing;
 import io.avaje.jex.http.HttpFilter;
 
@@ -19,16 +21,17 @@ public final class RoutesBuilder {
     this.ignoreTrailingSlashes = config.ignoreTrailingSlashes();
     final var buildMap = new LinkedHashMap<Routing.Type, RouteIndexBuild>();
     this.contextPath = config.contextPath().transform(s -> "/".equals(s) ? "" : s);
+    final ParamParser paramParser = config.paramParser();
     for (var handler : routing.handlers()) {
-      buildMap.computeIfAbsent(handler.getType(), h -> new RouteIndexBuild()).add(convert(handler));
+      buildMap.computeIfAbsent(handler.getType(), h -> new RouteIndexBuild()).add(convert(handler, paramParser));
     }
     buildMap.forEach((key, value) -> typeMap.put(key, value.build()));
     filters = List.copyOf(routing.filters());
   }
 
-  private SpiRoutes.Entry convert(Routing.Entry handler) {
+  private SpiRoutes.Entry convert(Routing.Entry handler, ParamParser paramParser) {
     final PathParser pathParser =
-        new PathParser(contextPath + handler.getPath(), ignoreTrailingSlashes);
+      paramParser.createPathParser(contextPath + handler.getPath(), handler, ignoreTrailingSlashes);
     return new RouteEntry(pathParser, handler.getHandler(), handler.getRoles());
   }
 

@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
+import io.avaje.jex.PathParser;
 import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.security.Role;
 

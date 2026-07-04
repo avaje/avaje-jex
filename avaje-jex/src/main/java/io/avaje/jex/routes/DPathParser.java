@@ -1,10 +1,12 @@
 package io.avaje.jex.routes;
 
+import io.avaje.jex.PathParser;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-final class PathParser {
+public final class DPathParser extends PathParser {
 
   private final String rawPath;
   private final List<String> paramNames = new ArrayList<>();
@@ -15,7 +17,7 @@ final class PathParser {
   private final boolean ignoreTrailingSlashes;
   private int segmentCount;
 
-  PathParser(String path, boolean ignoreTrailingSlashes) {
+  public DPathParser(String path, boolean ignoreTrailingSlashes) {
     this.rawPath = path;
     this.ignoreTrailingSlashes = ignoreTrailingSlashes;
     final RegBuilder regBuilder = new RegBuilder(ignoreTrailingSlashes);
@@ -35,7 +37,8 @@ final class PathParser {
     this.literal = segmentCount > 1 && regBuilder.literal();
   }
 
-  boolean matches(String url) {
+  @Override
+  public boolean matches(String url) {
     if (literal) {
       int pathLen = rawPath.length();
       int urlLen = url.length();
@@ -50,7 +53,9 @@ final class PathParser {
     return matchRegex.matcher(url).matches();
   }
 
-  Map<String, String> extractPathParams(String uri) {
+
+  @Override
+  public Map<String, String> extractPathParams(String uri) {
     final Matcher matcher = pathParamRegex.matcher(uri);
     if (!matcher.find()) {
       return Map.of();
@@ -74,28 +79,32 @@ final class PathParser {
   /**
    * Return the raw path that was parsed (match path).
    */
-  String raw() {
+  @Override
+  public String raw() {
     return rawPath;
   }
 
   /**
    * Return the number of path segments.
    */
-  int segmentCount() {
+  @Override
+  public int segmentCount() {
     return segmentCount;
   }
 
   /**
    * Return true if one of the segments is wildcard or slash accepting.
    */
-  boolean multiSlash() {
+  @Override
+  public boolean multiSlash() {
     return multiSlash;
   }
 
   /**
    * Return true if all path segments are literal.
    */
-  boolean literal() {
+  @Override
+  public boolean literal() {
     return literal;
   }
 }

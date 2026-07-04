@@ -5,7 +5,7 @@ import java.util.StringJoiner;
 import java.util.regex.Pattern;
 
 /**
- * Helper for PathParser to build regex for the path.
+ * Helper for DPathParser to build regex for the path.
  */
 final class RegBuilder {
   private final StringJoiner full = new StringJoiner("/");

@@ -10,6 +10,7 @@ import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.spi.HttpServerProvider;
 
 import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.core.DParamParser;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
@@ -31,6 +32,7 @@ final class DJexConfig implements JexConfig {
   private int rangeChunkSize = 990_000;
   private long maxRequestSize = 1_000_000L;
   private HttpServerProvider serverProvider;
+  private ParamParser paramParser = new DParamParser();
 
   @Override
   public JexConfig host(String host) {
@@ -60,6 +62,17 @@ final class DJexConfig implements JexConfig {
   public JexConfig socketBacklog(int socketBacklog) {
     this.socketBacklog = socketBacklog;
     return this;
+  }
+
+  @Override
+  public JexConfig useCustomParamParser(ParamParser paramParser) {
+    this.paramParser = paramParser;
+    return this;
+  }
+
+  @Override
+  public ParamParser paramParser() {
+    return paramParser;
   }
 
   @Override

@@ -12,6 +12,7 @@ import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.spi.HttpServerProvider;
 
 import io.avaje.jex.compression.CompressionConfig;
+import io.avaje.jex.core.DLegacyParamParser;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
@@ -219,4 +220,34 @@ public interface JexConfig {
    *     default value is used
    */
   JexConfig socketBacklog(int backlog);
+
+  /**
+   * Use the legacy parsing behaviour for query, path, and form params.
+   * <p>
+   * This is <strong>not</strong> compliant with the specification, but matches the behaviour of Jex
+   *  pre-4.0. Unless you rely on that behaviour, it is <strong>not</strong> recommend you use it
+   *
+   * @since 4.0
+   */
+  default JexConfig useLegacyParsingBehaviour() {
+    return useCustomParamParser(new DLegacyParamParser());
+  }
+
+  /**
+   * Override the default (spec-compliant) parsing behaviour for query, path, and form params.
+   * <p>
+   * Unless you need to change the way parsing is done, it is <strong>not</strong> recommended
+   *   to override the default behaviour.
+   *
+   * @param paramParser The custom {@link ParamParser} to use
+   * @since 4.0
+   */
+  JexConfig useCustomParamParser(final ParamParser paramParser);
+
+  /**
+   * Obtain the currently configured param parser.
+   *
+   * @since 4.0
+   */
+  ParamParser paramParser();
 }

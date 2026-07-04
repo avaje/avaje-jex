@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.System.Logger.Level;
 import java.lang.reflect.Type;
-import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ import java.util.stream.Stream;
 
 import io.avaje.applog.AppLog;
 import io.avaje.jex.Jex;
+import io.avaje.jex.ParamParser;
 import io.avaje.jex.Routing;
 import io.avaje.jex.compression.CompressedOutputStream;
 import io.avaje.jex.compression.CompressionConfig;
@@ -25,9 +25,6 @@ import io.avaje.jex.core.json.Jackson3JsonService;
 import io.avaje.jex.core.json.JacksonJsonService;
 import io.avaje.jex.core.json.JsonbJsonService;
 import io.avaje.jex.http.Context;
-import io.avaje.jex.http.HttpResponseException;
-import io.avaje.jex.http.HttpStatus;
-import io.avaje.jex.routes.UrlDecode;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
 
@@ -35,7 +32,7 @@ import io.avaje.jex.spi.TemplateRender;
 final class ServiceManager {
 
   private static final System.Logger log = AppLog.getLogger("io.avaje.jex");
-
+  private final ParamParser paramParser;
   private final CompressionConfig compressionConfig;
   private final JsonService jsonService;
   private final ExceptionManager exceptionHandler;
@@ -59,7 +56,8 @@ final class ServiceManager {
       long bufferMax,
       int bufferInitial,
       int rangeChunks,
-      long maxRequestSize) {
+      long maxRequestSize,
+      ParamParser paramParser) {
     this.compressionConfig = compressionConfig;
     this.jsonService = jsonService;
     this.exceptionHandler = manager;
@@ -69,6 +67,7 @@ final class ServiceManager {
     this.bufferMax = bufferMax;
     this.rangeChunks = rangeChunks;
     this.maxRequestSize = maxRequestSize;
+    this.paramParser = paramParser;
   }
 
   OutputStream createOutputStream(JdkContext jdkContext) {
@@ -164,18 +163,11 @@ final class ServiceManager {
   }
 
   Map<String, List<String>> formParamMap(Context ctx, Charset charset) {
-    if (!"application/x-www-form-urlencoded".equals(ctx.contentType())) {
-      throw new HttpResponseException(HttpStatus.UNSUPPORTED_MEDIA_TYPE_415);
-    }
-    return parseToMap(ctx.body(), (in) -> URLDecoder.decode(in, charset));
+    return paramParser.decodeBody(ctx, charset);
   }
 
-  Map<String, List<String>> parseParamMap(String body, Charset charset) {
-    return parseToMap(body, (in) -> UrlDecode.decodeRFC3986(in, charset));
-  }
-
-  Map<String, List<String>> parseGetMap(String body, Charset charset) {
-    return parseToMap(body, (in) -> URLDecoder.decode(in, charset));
+  Map<String, List<String>> parseQueryParamMap(Context ctx, Charset charset) {
+    return paramParser.decodeQueryParams(ctx, charset);
   }
 
   String scheme() {
@@ -184,31 +176,6 @@ final class ServiceManager {
 
   long maxRequestSize() {
     return maxRequestSize;
-  }
-
-  private static Map<String, List<String>> parseToMap(String body, UnaryOperator<String> decoder) {
-    if (body == null || body.isEmpty()) {
-      return Collections.emptyMap();
-    }
-    Map<String, List<String>> map = new LinkedHashMap<>();
-    int start = 0;
-    int len = body.length();
-    while (start < len) {
-      int amp = body.indexOf('&', start);
-      int end = amp == -1 ? len : amp;
-      int eq = body.indexOf('=', start);
-      String key, val;
-      if (eq == -1 || eq > end) {
-        key = decoder.apply(body.substring(start, end));
-        val = "";
-      } else {
-        key = decoder.apply(body.substring(start, eq));
-        val = decoder.apply(body.substring(eq + 1, end));
-      }
-      map.computeIfAbsent(key, s -> new ArrayList<>()).add(val);
-      start = end + 1;
-    }
-    return map;
   }
 
   private static final class Builder {
@@ -229,7 +196,8 @@ final class ServiceManager {
           jex.config().maxStreamBufferSize(),
           jex.config().initialStreamBufferSize(),
           jex.config().rangeChunkSize(),
-          jex.config().maxRequestSize());
+          jex.config().maxRequestSize(),
+          jex.config().paramParser());
     }
 
     JsonService initJsonService() {
