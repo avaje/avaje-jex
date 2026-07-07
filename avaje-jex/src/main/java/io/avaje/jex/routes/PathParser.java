@@ -61,7 +61,7 @@ final class PathParser {
       final String name = paramNames.get(i - 1);
       if (name != null) {
         // null names for wildcard placeholders
-        pathMap.put(name, UrlDecode.decode(matcher.group(i)));
+        pathMap.put(name, UrlDecode.decodeRFC3986(matcher.group(i)));
       }
     }
     return pathMap;
