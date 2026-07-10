@@ -61,6 +61,7 @@ final class JdkContext implements Context {
   private Map<String, String> cookieMap;
   private int statusCode;
   private byte[] bodyBytes;
+  private long contentLength = Long.MIN_VALUE;
 
   private Charset characterEncoding;
   private OutputStream os;
@@ -170,8 +171,11 @@ final class JdkContext implements Context {
 
   @Override
   public long contentLength() {
-    final String len = header(Constants.CONTENT_LENGTH);
-    return len == null ? -1 : Long.parseLong(len);
+    if (contentLength == Long.MIN_VALUE) {
+      final String len = header(Constants.CONTENT_LENGTH);
+      contentLength = len == null ? -1 : Long.parseLong(len);
+    }
+    return contentLength;
   }
 
   @Override
