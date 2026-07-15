@@ -2,14 +2,14 @@ package io.avaje.jex.routes;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 
 import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.security.Role;
 
 final class RouteEntry implements SpiRoutes.Entry {
 
-  private final AtomicLong active = new AtomicLong();
+  private final LongAdder active = new LongAdder();
   private final PathParser path;
   private final ExchangeHandler handler;
   private final Set<Role> roles;
@@ -28,17 +28,17 @@ final class RouteEntry implements SpiRoutes.Entry {
 
   @Override
   public void inc() {
-    active.incrementAndGet();
+    active.increment();
   }
 
   @Override
   public void dec() {
-    active.decrementAndGet();
+    active.decrement();
   }
 
   @Override
   public long activeRequests() {
-    return active.get();
+    return active.sum();
   }
 
   @Override

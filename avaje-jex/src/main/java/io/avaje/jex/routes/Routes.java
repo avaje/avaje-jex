@@ -3,7 +3,7 @@ package io.avaje.jex.routes;
 import java.lang.System.Logger.Level;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.LockSupport;
 
 import io.avaje.applog.AppLog;
@@ -24,7 +24,7 @@ final class Routes implements SpiRoutes {
    */
   private final List<HttpFilter> filters;
 
-  private final AtomicLong noRouteCounter = new AtomicLong();
+  private final LongAdder noRouteCounter = new LongAdder();
 
   Routes(EnumMap<Routing.Type, RouteIndex> typeMap, List<HttpFilter> filters) {
     this.typeMap = typeMap;
@@ -38,17 +38,17 @@ final class Routes implements SpiRoutes {
 
   @Override
   public void inc() {
-    noRouteCounter.incrementAndGet();
+    noRouteCounter.increment();
   }
 
   @Override
   public void dec() {
-    noRouteCounter.decrementAndGet();
+    noRouteCounter.decrement();
   }
 
   @Override
   public long activeRequests() {
-    long total = noRouteCounter.get();
+    long total = noRouteCounter.sum();
     for (RouteIndex value : typeMap.values()) {
       total += value.activeRequests();
     }
