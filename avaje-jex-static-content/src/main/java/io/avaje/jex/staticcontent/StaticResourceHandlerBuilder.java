@@ -1,7 +1,8 @@
 package io.avaje.jex.staticcontent;
 
-import java.io.File;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -151,44 +152,30 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
 
   private StaticFileHandler fileLoader(CompressionConfig compress) {
     String fsRoot;
-    File dirIndex = null;
-    File spaRootFile = null;
-    File singleFile = null;
+    Path dirIndex = null;
+    Path spaRootFile = null;
+    Path singleFile = null;
     if (directoryIndex != null) {
-      try {
-        dirIndex = new File(root.transform(this::appendSlash) + directoryIndex).getCanonicalFile();
-        fsRoot = dirIndex.getParentFile().getPath();
-        if (!dirIndex.exists()) {
-          throw new IllegalStateException(
-              DIRECTORY_INDEX_FAILURE + root.transform(this::appendSlash) + directoryIndex);
-        }
-      } catch (Exception e) {
+      dirIndex = Path.of(root.transform(this::appendSlash) + directoryIndex).toAbsolutePath().normalize();
+      fsRoot = dirIndex.getParent().toString();
+      if (!Files.exists(dirIndex)) {
         throw new IllegalStateException(
-            DIRECTORY_INDEX_FAILURE + root.transform(this::appendSlash) + directoryIndex, e);
+            DIRECTORY_INDEX_FAILURE + root.transform(this::appendSlash) + directoryIndex);
       }
     } else {
-      try {
-        singleFile = new File(root).getCanonicalFile();
-        fsRoot = singleFile.getParentFile().getPath();
-        if (!singleFile.exists()) {
-          throw new IllegalStateException(FAILED_TO_LOCATE_FILE + root);
-        }
-      } catch (Exception e) {
-        throw new IllegalStateException(FAILED_TO_LOCATE_FILE + root, e);
+      singleFile = Path.of(root).toAbsolutePath().normalize();
+      fsRoot = singleFile.getParent().toString();
+      if (!Files.exists(singleFile)) {
+        throw new IllegalStateException(FAILED_TO_LOCATE_FILE + root);
       }
     }
 
     if (spaRoot != null) {
-      try {
-        spaRootFile = new File(root.transform(this::appendSlash) + spaRoot).getCanonicalFile();
-        fsRoot = spaRootFile.getParentFile().getPath();
-        if (!spaRootFile.exists()) {
-          throw new IllegalStateException(
-              SPA_ROOT_FAILURE + root.transform(this::appendSlash) + spaRoot);
-        }
-      } catch (Exception e) {
+      spaRootFile = Path.of(root.transform(this::appendSlash) + spaRoot).toAbsolutePath().normalize();
+      fsRoot = spaRootFile.getParent().toString();
+      if (!Files.exists(spaRootFile)) {
         throw new IllegalStateException(
-            SPA_ROOT_FAILURE + root.transform(this::appendSlash) + spaRoot, e);
+            SPA_ROOT_FAILURE + root.transform(this::appendSlash) + spaRoot);
       }
     }
 

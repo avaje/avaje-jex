@@ -1,12 +1,17 @@
 package io.avaje.jex.compression;
 
+import org.jspecify.annotations.NonNull;
+
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /** Configuration for compression settings. */
 public final class CompressionConfig {
@@ -27,8 +32,8 @@ public final class CompressionConfig {
 
   private int minSizeForCompression = HTTP_PACKET_SIZE;
 
-  private final Map<String, Compressor> compressors =
-      new HashMap<>(Map.of(GzipCompressor.ENCODING, new GzipCompressor()));
+  private final LinkedHashMap<String, Compressor> compressors =
+      new LinkedHashMap<>(Map.of(GzipCompressor.ENCODING, new GzipCompressor()));
 
   private final Set<String> allowedExcludedTypes = Set.of("image/svg+xml");
 
@@ -38,7 +43,7 @@ public final class CompressionConfig {
    * @param compressor The compressor to use.
    */
   public CompressionConfig compressor(Compressor compressor) {
-    compressors.put(compressor.encoding(), compressor);
+    compressors.putFirst(compressor.encoding(), compressor);
     return this;
   }
 
@@ -120,13 +125,43 @@ public final class CompressionConfig {
               ? acceptedEncoding.stream()
               : Arrays.stream(acceptedEncoding.getFirst().split(","));
 
-      return stream
-          .map(e -> e.trim().split(";")[0])
-          .map(e -> "*".equals(e) ? "gzip" : e.toLowerCase())
-          .map(compressors::get)
-          .filter(Objects::nonNull)
-          .findFirst();
+      Map<Double, Set<String>> byQValue = encodingByQValue(stream);
+
+      var sortedQ = byQValue.keySet().stream().sorted(Comparator.reverseOrder()).toList();
+      for (var q : sortedQ) {
+        var tier = byQValue.get(q);
+        var wildcard = tier.contains("*");
+        var match =
+            compressors.values().stream()
+                .filter(c -> wildcard || tier.contains(c.encoding()))
+                .findFirst();
+        if (match.isPresent()) return match;
+      }
     }
     return Optional.empty();
+  }
+
+  /** parse each token into (encoding, q-value); q=0 means explicitly rejected */
+  private static @NonNull Map<Double, Set<String>> encodingByQValue(Stream<String> stream) {
+    Map<Double, Set<String>> byQValue = new HashMap<>();
+    stream.forEach(token -> {
+      var parts = token.trim().split(";");
+      var encoding = parts[0].trim().toLowerCase();
+      double q = 1.0;
+      for (int i = 1; i < parts.length; i++) {
+        var param = parts[i].trim();
+        if (param.regionMatches(true, 0, "q=", 0, 2)) {
+          try {
+            q = Double.parseDouble(param.substring(2));
+          } catch (NumberFormatException ignored) {
+          }
+          break;
+        }
+      }
+      if (q > 0) {
+        byQValue.computeIfAbsent(q, k -> new HashSet<>()).add(encoding);
+      }
+    });
+    return byQValue;
   }
 }

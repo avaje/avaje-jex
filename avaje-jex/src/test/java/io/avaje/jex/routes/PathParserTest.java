@@ -141,6 +141,30 @@ class PathParserTest {
   }
 
   @Test
+  void matches_litLit_honorTrailingSlash() {
+    // ignoreTrailingSlashes=false: trailing slash must NOT match
+    final PathParser pathParser = new PathParser("/one/two", false);
+    assertTrue(pathParser.literal());
+
+    assertTrue(pathParser.matches("/one/two"));
+    assertFalse(pathParser.matches("/one/two/"));   // trailing slash rejected
+    assertFalse(pathParser.matches("/one/2"));
+    assertFalse(pathParser.matches("/one/two/more"));
+    assertFalse(pathParser.matches("/one"));
+  }
+
+  @Test
+  void matches_litLitLit_honorTrailingSlash() {
+    final PathParser pathParser = new PathParser("/a/b/c", false);
+    assertTrue(pathParser.literal());
+
+    assertTrue(pathParser.matches("/a/b/c"));
+    assertFalse(pathParser.matches("/a/b/c/"));
+    assertFalse(pathParser.matches("/a/b"));
+    assertFalse(pathParser.matches("/a/b/cd"));
+  }
+
+  @Test
   void matches_before_litPrefix() {
     final PathParser pathParser = new PathParser("/one/*", true);
     assertTrue(pathParser.matches("/one/two"));

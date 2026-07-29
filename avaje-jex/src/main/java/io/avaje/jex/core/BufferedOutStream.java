@@ -82,7 +82,7 @@ final class BufferedOutStream extends FilterOutputStream {
     } else if (jdkOutput) {
       out.close();
     } else {
-      context.write(buffer.toByteArray());
+      context.write(buffer);
     }
     closed = true;
   }

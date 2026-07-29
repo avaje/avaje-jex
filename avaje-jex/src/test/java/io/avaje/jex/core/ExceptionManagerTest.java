@@ -33,12 +33,16 @@ class ExceptionManagerTest {
         .get("/fiveHundred", ctx -> {
           throw new IllegalArgumentException("Bar");
         })
+        .get("/noResponse", ctx -> {
+          throw new UnsupportedOperationException("silent");
+        })
         .put("/nested", ctx -> {
           throw new JsonException("hmm");
         })
         .patch("/patch", ctx -> {
           throw new BadRequestException(Map.of("error","bad request"));
         })
+        .error(UnsupportedOperationException.class, (ctx, exception) -> { /* handler forgets to send a response */ })
         .error(NullPointerException.class, (ctx, exception) -> ctx.text("npe"))
         .error(IllegalStateException.class, (ctx, exception) -> ctx.status(222).text("Handled IllegalStateException|" + exception.getMessage()))
         .error(JsonException.class, (ctx, exception) -> {throw new IllegalStateException();}));
@@ -94,6 +98,12 @@ class ExceptionManagerTest {
     assertThat(res.statusCode()).isEqualTo(409);
     assertThat(res.body()).isEqualTo("{\"title\": Baz, \"status\": 409}");
     assertThat(res.headers().firstValue("Content-Type").get()).contains("application/json");
+  }
+
+  @Test
+  void handler_that_sends_no_response_gets_500() {
+    HttpResponse<String> res = pair.request().path("noResponse").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(500);
   }
 
   @Test

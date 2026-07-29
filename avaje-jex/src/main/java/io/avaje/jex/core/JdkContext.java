@@ -7,6 +7,7 @@ import static io.avaje.jex.core.Constants.TEXT_PLAIN_UTF8;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,6 +38,7 @@ import io.avaje.jex.http.Context;
 import io.avaje.jex.http.HttpResponseException;
 import io.avaje.jex.http.HttpStatus;
 import io.avaje.jex.http.RedirectException;
+import io.avaje.jex.routes.SpiRoutes.Entry;
 import io.avaje.jex.security.BasicAuthCredentials;
 import io.avaje.jex.security.Role;
 import io.avaje.jex.spi.JsonService;
@@ -47,8 +49,10 @@ final class JdkContext implements Context {
   private static final String COOKIE = "Cookie";
   private final ServiceManager mgr;
   private final String matchedPath;
-  private final Map<String, String> pathParams;
-  private final Map<String, Object> attributes = new HashMap<>();
+  private final String requestPath;
+  private final Entry routeEntry;
+  private Map<String, String> pathParams;
+  private Map<String, Object> attributes;
   private final Set<Role> roles;
   private final HttpExchange exchange;
   private Mode mode;
@@ -57,21 +61,18 @@ final class JdkContext implements Context {
   private Map<String, String> cookieMap;
   private int statusCode;
   private byte[] bodyBytes;
+  private long contentLength = Long.MIN_VALUE;
 
   private Charset characterEncoding;
   private OutputStream os;
 
-  JdkContext(
-      ServiceManager mgr,
-      HttpExchange exchange,
-      String path,
-      Map<String, String> pathParams,
-      Set<Role> roles) {
+  JdkContext(ServiceManager mgr, HttpExchange exchange, Entry route, String requestPath) {
     this.mgr = mgr;
-    this.roles = roles;
+    this.roles = route.roles();
     this.exchange = exchange;
-    this.matchedPath = path;
-    this.pathParams = pathParams;
+    this.matchedPath = route.matchPath();
+    this.routeEntry = route;
+    this.requestPath = requestPath;
   }
 
   /** Create when no route matched. */
@@ -80,17 +81,21 @@ final class JdkContext implements Context {
     this.roles = roles;
     this.exchange = exchange;
     this.matchedPath = path;
-    this.pathParams = null;
+    this.routeEntry = null;
+    this.requestPath = path;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public <T> T attribute(String key) {
-    return (T) attributes.get(key);
+    return attributes == null ? null : (T) attributes.get(key);
   }
 
   @Override
   public Context attribute(String key, Object value) {
+    if (attributes == null) {
+      attributes = new HashMap<>();
+    }
     attributes.put(key, value);
     return this;
   }
@@ -166,8 +171,11 @@ final class JdkContext implements Context {
 
   @Override
   public long contentLength() {
-    final String len = header(Constants.CONTENT_LENGTH);
-    return len == null ? -1 : Long.parseLong(len);
+    if (contentLength == Long.MIN_VALUE) {
+      final String len = header(Constants.CONTENT_LENGTH);
+      contentLength = len == null ? -1 : Long.parseLong(len);
+    }
+    return contentLength;
   }
 
   @Override
@@ -360,16 +368,19 @@ final class JdkContext implements Context {
 
   @Override
   public String path() {
-    return exchange.getRequestURI().getPath();
+    return requestPath;
   }
 
   @Override
   public String pathParam(String name) {
-    return pathParams.get(name);
+    return pathParamMap().get(name);
   }
 
   @Override
   public Map<String, String> pathParamMap() {
+    if (pathParams == null) {
+      pathParams = routeEntry != null ? routeEntry.pathParams(path()) : emptyMap();
+    }
     return pathParams;
   }
 
@@ -416,7 +427,7 @@ final class JdkContext implements Context {
 
   private Map<String, List<String>> queryParams() {
     if (queryParams == null) {
-      queryParams = mgr.parseParamMap(queryString(), StandardCharsets.UTF_8);
+      queryParams = mgr.parseGetMap(exchange.getRequestURI().getRawQuery(), StandardCharsets.UTF_8);
     }
     return queryParams;
   }
@@ -563,6 +574,15 @@ final class JdkContext implements Context {
   @Override
   public void rangedWrite(InputStream inputStream, long totalBytes) {
     mgr.writeRange(this, inputStream, totalBytes);
+  }
+
+  void write(ByteArrayOutputStream baos) throws IOException {
+    throwIf204();
+    int size = baos.size();
+    try (var os = exchange.getResponseBody()) {
+      exchange.sendResponseHeaders(statusCode(), size == 0 ? -1 : size);
+      baos.writeTo(os);
+    }
   }
 
   private void throwIf204() {

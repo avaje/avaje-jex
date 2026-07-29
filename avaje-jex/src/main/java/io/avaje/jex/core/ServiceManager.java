@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.System.Logger.Level;
 import java.lang.reflect.Type;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import io.avaje.applog.AppLog;
@@ -23,6 +25,8 @@ import io.avaje.jex.core.json.Jackson3JsonService;
 import io.avaje.jex.core.json.JacksonJsonService;
 import io.avaje.jex.core.json.JsonbJsonService;
 import io.avaje.jex.http.Context;
+import io.avaje.jex.http.HttpResponseException;
+import io.avaje.jex.http.HttpStatus;
 import io.avaje.jex.routes.UrlDecode;
 import io.avaje.jex.spi.JsonService;
 import io.avaje.jex.spi.TemplateRender;
@@ -120,11 +124,7 @@ final class ServiceManager {
   }
 
   Routing.Type lookupRoutingType(String method) {
-    try {
-      return Routing.Type.valueOf(method);
-    } catch (Exception e) {
-      return null;
-    }
+    return Routing.Type.ofMethod(method);
   }
 
   void handleException(JdkContext ctx, Exception t) {
@@ -141,32 +141,41 @@ final class ServiceManager {
 
   static Charset parseCharset(String header) {
     if (header != null) {
-      for (String val : header.split(";")) {
-        val = val.trim();
-        if (val.regionMatches(true, 0, "charset", 0, "charset".length())) {
-          return Charset.forName(val.split("=")[1].trim());
+      int start = 0;
+      int len = header.length();
+      while (start < len) {
+        int semi = header.indexOf(';', start);
+        int end = semi == -1 ? len : semi;
+        // trim whitespace
+        int s = start;
+        while (s < end && header.charAt(s) == ' ') s++;
+        int e = end;
+        while (e > s && header.charAt(e - 1) == ' ') e--;
+        if (header.regionMatches(true, s, "charset", 0, 7)) {
+          int eq = header.indexOf('=', s + 7);
+          if (eq != -1 && eq < e) {
+            return Charset.forName(header.substring(eq + 1, e).trim());
+          }
         }
+        start = end + 1;
       }
     }
     return StandardCharsets.UTF_8;
   }
 
   Map<String, List<String>> formParamMap(Context ctx, Charset charset) {
-    return parseParamMap(ctx.body(), charset);
+    if (!"application/x-www-form-urlencoded".equals(ctx.contentType())) {
+      throw new HttpResponseException(HttpStatus.UNSUPPORTED_MEDIA_TYPE_415);
+    }
+    return parseToMap(ctx.body(), (in) -> URLDecoder.decode(in, charset));
   }
 
   Map<String, List<String>> parseParamMap(String body, Charset charset) {
-    if (body == null || body.isEmpty()) {
-      return Collections.emptyMap();
-    }
-    Map<String, List<String>> map = new LinkedHashMap<>();
-    for (String pair : body.split("&")) {
-      final String[] split1 = pair.split("=", 2);
-      String key = UrlDecode.decode(split1[0], charset);
-      String val = split1.length > 1 ? UrlDecode.decode(split1[1], charset) : "";
-      map.computeIfAbsent(key, s -> new ArrayList<>()).add(val);
-    }
-    return map;
+    return parseToMap(body, (in) -> UrlDecode.decodeRFC3986(in, charset));
+  }
+
+  Map<String, List<String>> parseGetMap(String body, Charset charset) {
+    return parseToMap(body, (in) -> URLDecoder.decode(in, charset));
   }
 
   String scheme() {
@@ -175,6 +184,31 @@ final class ServiceManager {
 
   long maxRequestSize() {
     return maxRequestSize;
+  }
+
+  private static Map<String, List<String>> parseToMap(String body, UnaryOperator<String> decoder) {
+    if (body == null || body.isEmpty()) {
+      return Collections.emptyMap();
+    }
+    Map<String, List<String>> map = new LinkedHashMap<>();
+    int start = 0;
+    int len = body.length();
+    while (start < len) {
+      int amp = body.indexOf('&', start);
+      int end = amp == -1 ? len : amp;
+      int eq = body.indexOf('=', start);
+      String key, val;
+      if (eq == -1 || eq > end) {
+        key = decoder.apply(body.substring(start, end));
+        val = "";
+      } else {
+        key = decoder.apply(body.substring(start, eq));
+        val = decoder.apply(body.substring(eq + 1, end));
+      }
+      map.computeIfAbsent(key, s -> new ArrayList<>()).add(val);
+      start = end + 1;
+    }
+    return map;
   }
 
   private static final class Builder {

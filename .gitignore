@@ -10,3 +10,4 @@ build/
 *.factorypath
 bin/
 .DS_Store
+*.local.json

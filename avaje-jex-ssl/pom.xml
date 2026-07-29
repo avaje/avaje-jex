@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.avaje</groupId>
     <artifactId>avaje-jex-parent</artifactId>
-    <version>3.5-RC7</version>
+    <version>3.7-RC3</version>
   </parent>
   <artifactId>avaje-jex-ssl</artifactId>
   <name>Avaje Jex SSL Plugin</name>
@@ -18,7 +18,7 @@
     <dependency>
       <groupId>io.github.hakky54</groupId>
       <artifactId>ayza-for-pem</artifactId>
-      <version>10.0.3</version>
+      <version>10.0.5</version>
       <scope>test</scope>
     </dependency>
     <dependency>

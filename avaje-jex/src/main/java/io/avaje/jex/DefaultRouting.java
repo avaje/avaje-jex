@@ -136,6 +136,12 @@ final class DefaultRouting implements Routing {
     return this;
   }
 
+  @Override
+  public Routing query(String path, ExchangeHandler handler, Role... roles) {
+    add(Type.QUERY, path, handler, roles);
+    return this;
+  }
+
   // ********************************************************************************************
   // Filters
   // ********************************************************************************************

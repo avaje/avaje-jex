@@ -1,6 +1,7 @@
 package io.avaje.jex;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -133,6 +134,15 @@ public interface Routing {
    */
   Routing options(String path, ExchangeHandler handler, Role... roles);
 
+  /**
+   * Adds a QUERY handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when a QUERY request matches the path.
+   * @param roles roles that are associated with this endpoint.
+   */
+  Routing query(String path, ExchangeHandler handler, Role... roles);
+
   /** Add a filter for all matched requests. */
   Routing filter(HttpFilter handler);
 
@@ -217,7 +227,23 @@ public interface Routing {
     DELETE,
     HEAD,
     TRACE,
-    OPTIONS;
+    OPTIONS,
+    QUERY;
+
+    private static final Map<String, Type> MAP;
+
+    static {
+      var values = values();
+      MAP = HashMap.newHashMap(values.length);
+      for (var type : values) {
+        MAP.put(type.name(), type);
+      }
+    }
+
+    /** Return the Type for the given HTTP method name, or null if not recognized. */
+    public static Type ofMethod(String method) {
+      return MAP.get(method);
+    }
   }
 
 }

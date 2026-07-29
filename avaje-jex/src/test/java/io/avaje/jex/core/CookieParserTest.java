@@ -50,4 +50,21 @@ class CookieParserTest {
     tokens = CookieParser.tokenize(';',  text);
     assertThat(tokens).containsExactly(text);
   }
+
+  @Test
+  void quotedEmptyValue_skipped() {
+    // foo="" has an empty value after unwrapping — should be excluded from the map
+    Map<String, String> cookies = CookieParser.parse("foo=\"\"; bar=baz");
+    assertThat(cookies).doesNotContainKey("foo");
+    assertThat(cookies.get("bar")).isEqualTo("baz");
+  }
+
+  @Test
+  void commaAndSemicolonSeparated() {
+    // cookies may be comma- or semicolon-separated
+    Map<String, String> cookies = CookieParser.parse("a=1, b=2; c=3");
+    assertThat(cookies.get("a")).isEqualTo("1");
+    assertThat(cookies.get("b")).isEqualTo("2");
+    assertThat(cookies.get("c")).isEqualTo("3");
+  }
 }

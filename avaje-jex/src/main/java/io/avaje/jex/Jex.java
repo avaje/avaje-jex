@@ -146,6 +146,18 @@ public interface Jex {
   }
 
   /**
+   * Adds a QUERY handler to the route configuration.
+   *
+   * @param path The path pattern to match the request URI.
+   * @param handler The handler to invoke when a QUERY request matches the path.
+   * @param roles An array of roles that are associated with this endpoint.
+   */
+  default Jex query(String path, ExchangeHandler handler, Role... roles) {
+    routing().query(path, handler, roles);
+    return this;
+  }
+
+  /**
    * Adds an SSE handler to the route configuration.
    *
    * @param path The path pattern to match the request URI.
