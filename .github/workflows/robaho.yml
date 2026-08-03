@@ -6,6 +6,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -30,8 +34,11 @@ jobs:
       env:
         cache-name: maven-cache
       with:
-        path:
-          ~/.m2
-        key: build-${{ env.cache-name }}
+        path: |
+          ~/.m2/repository
+          !~/.m2/repository/io/avaje
+        key: robaho-${{ env.cache-name }}-${{ matrix.os }}-${{ matrix.java_version }}-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          robaho-${{ env.cache-name }}-${{ matrix.os }}-${{ matrix.java_version }}-
     - name: Build with Maven
       run: mvn clean test -Probaho
