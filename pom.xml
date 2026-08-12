@@ -49,9 +49,12 @@
     <module>avaje-jex-static-content</module>
     <module>avaje-jex-test</module>
     <module>avaje-jex-ssl</module>
+    <!--<module>avaje-jex-http2-jetty</module>-->
+    <!--<module>avaje-jex-http2-robaho</module>-->
+    <!--<module>avaje-jex-http3-flupke</module>-->
+    <!--<module>avaje-jex-http3-jetty</module>-->
     <module>avaje-jex-websockets</module>
-    <!-- <module>avaje-jex-http3-flupke</module>
-    <module>avaje-jex-grizzly-spi</module> -->
+    <!--<module>avaje-jex-grizzly-spi</module>-->
   </modules>
 
   <dependencyManagement>
