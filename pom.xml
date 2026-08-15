@@ -31,7 +31,7 @@
     <avaje.inject.version>12.6</avaje.inject.version>
     <avaje.jsonb.version>3.14</avaje.jsonb.version>
     <avaje.http.version>3.10</avaje.http.version>
-    <avaje.metrics.version>10.0</avaje.metrics.version>
+    <avaje.metrics.version>10.1</avaje.metrics.version>
     <avaje.validator.version>2.17</avaje.validator.version>
     <avaje.record.builder.version>1.4</avaje.record.builder.version>
     <avaje.spi.version>2.17</avaje.spi.version>
