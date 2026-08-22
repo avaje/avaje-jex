@@ -4,6 +4,7 @@ import static io.avaje.jex.core.Constants.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -99,7 +100,14 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
   }
 
   private void sendURL(Context ctx, String urlPath, URL path) {
-    try (var fis = path.openStream()) {
+    final URLConnection connection;
+    try {
+      connection = path.openConnection();
+    } catch (final IOException e) {
+      throw404(ctx.exchange());
+      return;
+    }
+    try (var fis = connection.getInputStream()) {
       ctx.header(CONTENT_TYPE, lookupMime(urlPath));
       ctx.headers(headers);
       applyContentDisposition(ctx, urlPath);
@@ -113,7 +121,12 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
         return;
       }
 
-      ctx.rangedWrite(fis);
+      final long totalBytes = connection.getContentLengthLong();
+      if (totalBytes < 0) {
+        ctx.rangedWrite(fis);
+      } else {
+        ctx.rangedWrite(fis, totalBytes);
+      }
     } catch (final IOException e) {
       throw404(ctx.exchange());
     }

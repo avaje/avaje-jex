@@ -111,7 +111,7 @@ final class StaticFileHandler extends AbstractStaticHandler {
         return;
       }
 
-      ctx.rangedWrite(fis);
+      ctx.rangedWrite(fis, Files.size(canonicalFile));
     } catch (NoSuchFileException e) {
       if (spaRoot != null) {
         final var path = spaRoot.toString();
