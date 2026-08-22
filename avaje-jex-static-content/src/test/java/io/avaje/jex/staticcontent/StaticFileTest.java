@@ -3,6 +3,7 @@ package io.avaje.jex.staticcontent;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 import org.junit.jupiter.api.AfterAll;
@@ -143,6 +144,34 @@ class StaticFileTest {
     HttpResponse<String> res = pair.request().path("indexWildFile/").GET().asString();
     assertThat(res.statusCode()).isEqualTo(200);
     assertThat(res.headers().firstValue("Content-Type").orElseThrow()).contains("html");
+  }
+
+  @Test
+  void contentLengthSetForFileLargerThanResponseBuffer() {
+    HttpResponse<String> res = pair.request().path("indexWildFile/bundle.css").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.headers().firstValue("Content-Length").orElseThrow())
+        .isEqualTo(String.valueOf(res.body().getBytes(StandardCharsets.UTF_8).length));
+  }
+
+  @Test
+  void contentLengthSetForClasspathResource() {
+    HttpResponse<String> res = pair.request().path("indexWild/bundle.css").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.headers().firstValue("Content-Length").orElseThrow())
+        .isEqualTo(String.valueOf(res.body().getBytes(StandardCharsets.UTF_8).length));
+  }
+
+  @Test
+  void compressionStillAppliedWhenContentLengthKnown() {
+    HttpResponse<String> res =
+        pair.request()
+            .path("indexWildFile/bundle.css")
+            .header("Accept-Encoding", "gzip")
+            .GET()
+            .asString();
+    assertThat(res.statusCode()).isEqualTo(200);
+    assertThat(res.headers().firstValue("Content-Encoding")).contains("gzip");
   }
 
   @Test
