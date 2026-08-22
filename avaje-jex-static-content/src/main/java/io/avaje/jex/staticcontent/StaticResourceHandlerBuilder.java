@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 import io.avaje.jex.Jex;
@@ -33,6 +34,7 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
   private final Map<String, String> mimeTypes = new HashMap<>();
   private final Map<String, String> headers = new HashMap<>();
   private Predicate<Context> skipFilePredicate = NO_OP_PREDICATE;
+  private BiFunction<Context, String, ContentDisposition> contentDisposition;
   private boolean isClasspath = true;
   private boolean precompress;
   private Role[] roles = {};
@@ -126,6 +128,13 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
   }
 
   @Override
+  public StaticResourceHandlerBuilder contentDisposition(
+      BiFunction<Context, String, ContentDisposition> contentDisposition) {
+    this.contentDisposition = contentDisposition;
+    return this;
+  }
+
+  @Override
   public StaticResourceHandlerBuilder skipFilePredicate(Predicate<Context> skipFilePredicate) {
     this.skipFilePredicate = skipFilePredicate;
     return this;
@@ -185,6 +194,7 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
         mimeTypes,
         headers,
         skipFilePredicate,
+        contentDisposition,
         dirIndex,
         spaRootFile,
         singleFile,
@@ -212,6 +222,7 @@ final class StaticResourceHandlerBuilder implements StaticContent.Builder, Stati
         mimeTypes,
         headers,
         skipFilePredicate,
+        contentDisposition,
         resourceLoader,
         dirIndex,
         spaRootUrl,

@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -26,6 +27,7 @@ final class StaticFileHandler extends AbstractStaticHandler {
       Map<String, String> mimeTypes,
       Map<String, String> headers,
       Predicate<Context> skipFilePredicate,
+      BiFunction<Context, String, ContentDisposition> contentDisposition,
       Path welcomeFile,
       Path spaRoot,
       Path singleFile, boolean precompress,
@@ -36,6 +38,7 @@ final class StaticFileHandler extends AbstractStaticHandler {
         mimeTypes,
         headers,
         skipFilePredicate,
+        contentDisposition,
         precompress,
         compressionConfig);
     this.indexFile = welcomeFile;
@@ -97,6 +100,7 @@ final class StaticFileHandler extends AbstractStaticHandler {
       String mimeType = lookupMime(urlPath);
       ctx.header(CONTENT_TYPE, mimeType);
       ctx.headers(headers);
+      applyContentDisposition(ctx, urlPath);
       if (precompress) {
         addCachedEntry(ctx, urlPath, fis);
         return;

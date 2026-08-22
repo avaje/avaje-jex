@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -33,6 +34,7 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
   protected final String urlPrefix;
   protected final Predicate<Context> skipFilePredicate;
   protected final Map<String, String> headers;
+  protected final BiFunction<Context, String, ContentDisposition> contentDisposition;
   protected final boolean precompress;
   protected final Map<String, CachedResource> compressedFiles = new ConcurrentHashMap<>();
   private static final FileNameMap MIME_MAP = URLConnection.getFileNameMap();
@@ -43,6 +45,7 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
       Map<String, String> mimeTypes,
       Map<String, String> headers,
       Predicate<Context> skipFilePredicate,
+      BiFunction<Context, String, ContentDisposition> contentDisposition,
       boolean precompress,
       CompressionConfig compressionConfig) {
     this.compressionConfig = compressionConfig;
@@ -50,6 +53,7 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
     this.urlPrefix = urlPrefix;
     this.skipFilePredicate = skipFilePredicate;
     this.headers = headers;
+    this.contentDisposition = contentDisposition;
     this.mimeTypes = mimeTypes;
     this.precompress = precompress;
   }
@@ -82,6 +86,22 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
           String ext = getExt(lower);
           return mimeTypes.getOrDefault(ext, "application/octet-stream");
         });
+  }
+
+  /** Set the Content-Disposition header when one has been configured. */
+  protected void applyContentDisposition(Context ctx, String path) {
+    if (contentDisposition == null) {
+      return;
+    }
+    var disposition = contentDisposition.apply(ctx, fileName(path));
+    if (disposition != null) {
+      ctx.header(Constants.CONTENT_DISPOSITION, List.of(disposition.headerValue()));
+    }
+  }
+
+  private static String fileName(String path) {
+    int separator = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+    return separator < 0 ? path : path.substring(separator + 1);
   }
 
   protected boolean isCached(final String path) {
@@ -122,6 +142,7 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
         return false;
       }
       ctx.headerMap(cached.headers());
+      applyContentDisposition(ctx, path);
       ctx.header(Constants.CONTENT_LENGTH, String.valueOf(bytes.length));
       if (isHead) {
         ctx.writeEmpty(200);
@@ -132,6 +153,7 @@ abstract sealed class AbstractStaticHandler implements ExchangeHandler
     }
 
     ctx.header(Constants.CONTENT_TYPE, cached.headers().get(Constants.CONTENT_TYPE));
+    applyContentDisposition(ctx, path);
     if (isHead) {
       writeHeadResponse(ctx, new ByteArrayInputStream(bytes));
       return true;

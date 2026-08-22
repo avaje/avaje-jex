@@ -12,6 +12,7 @@ public final class Constants {
   public static final String HOST = "Host";
   public static final String USER_AGENT = "User-agent";
   public static final String ACCEPT_ENCODING = "Accept-encoding";
+  public static final String CONTENT_DISPOSITION = "Content-disposition";
 
   public static final String TEXT_HTML = "text/html";
   public static final String TEXT_PLAIN = "text/plain";
