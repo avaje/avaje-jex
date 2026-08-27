@@ -110,7 +110,7 @@ final class ServiceManager {
   }
 
   void writeRange(Context ctx, InputStream is, long totalBytes) {
-    RangeWriter.write(ctx, is, totalBytes, rangeChunks);
+    RangeWriter.write(ctx, is, totalBytes, rangeChunks, compressionConfig);
   }
 
   void maybeClose(Object iterator) {

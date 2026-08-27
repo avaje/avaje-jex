@@ -1,6 +1,7 @@
 package io.avaje.jex.staticcontent;
 
 import java.net.URLConnection;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 import io.avaje.jex.http.Context;
@@ -10,22 +11,21 @@ import io.avaje.jex.spi.JexPlugin;
 
 /**
  * Static content resource handler.
+ *
  * <pre>{@code
+ * var staticContent = StaticContent.createFile("src/test/resources/public")
+ *    .directoryIndex("index.html")
+ *    .preCompress()
+ *    .build()
  *
- *  var staticContent = StaticContent.createFile("src/test/resources/public")
- *     .directoryIndex("index.html")
- *     .preCompress()
- *     .build()
- *
- *  Jex.create()
- *    .plugin(staticContent)
- *    .port(8080)
- *    .start();
+ * Jex.create()
+ *   .plugin(staticContent)
+ *   .port(8080)
+ *   .start();
  *
  * }</pre>
  */
-public sealed interface StaticContent extends JexPlugin
-  permits StaticResourceHandlerBuilder {
+public sealed interface StaticContent extends JexPlugin permits StaticResourceHandlerBuilder {
 
   /**
    * Create and return a new static content class path configuration.
@@ -37,8 +37,8 @@ public sealed interface StaticContent extends JexPlugin
   }
 
   /**
-   * Create and return a new static content class path configuration with the
-   * `/public` directory as the root.
+   * Create and return a new static content class path configuration with the `/public` directory as
+   * the root.
    */
   static Builder ofClassPath() {
     return StaticResourceHandlerBuilder.builder("/public/");
@@ -53,11 +53,8 @@ public sealed interface StaticContent extends JexPlugin
     return StaticResourceHandlerBuilder.builder(resourceRoot).file();
   }
 
-  /**
-   * Builder for StaticContent.
-   */
-  sealed interface Builder
-    permits StaticResourceHandlerBuilder {
+  /** Builder for StaticContent. */
+  sealed interface Builder permits StaticResourceHandlerBuilder {
 
     /**
      * Sets the HTTP route for the static resource handler.
@@ -77,7 +74,8 @@ public sealed interface StaticContent extends JexPlugin
     Builder directoryIndex(String directoryIndex);
 
     /**
-     * Redirects to index file when a static file cannot be found. This ensures the client side router handles the routing.
+     * Redirects to index file when a static file cannot be found. This ensures the client side
+     * router handles the routing.
      *
      * @param spaIndex the index file
      * @return the updated configuration
@@ -128,11 +126,50 @@ public sealed interface StaticContent extends JexPlugin
     /**
      * Adds a new response header to the configuration.
      *
-     * @param key   the header name
+     * @param key the header name
      * @param value the header value
      * @return the updated configuration
      */
     Builder putResponseHeader(String key, String value);
+
+    /**
+     * Sets the {@code Content-Disposition} type sent with every served resource, using the name of
+     * the served file as the filename.
+     *
+     * <pre>{@code
+     * StaticContent.ofFile("downloads")
+     *   .directoryIndex("index.html")
+     *   .contentDisposition(ContentDisposition.Type.ATTACHMENT)
+     *   .build();
+     *
+     * }</pre>
+     *
+     * @param type the disposition type
+     * @return the updated configuration
+     */
+    default Builder contentDisposition(ContentDisposition.Type type) {
+      return contentDisposition((ctx, filename) -> new ContentDisposition(type, filename));
+    }
+
+    /**
+     * Sets a function used to build the {@code Content-Disposition} header for each served
+     * resource. The function is given the request context and the name of the served file, and may
+     * return {@code null} to send no header.
+     *
+     * <pre>{@code
+     * StaticContent.ofFile("downloads")
+     *   .directoryIndex("index.html")
+     *   .contentDisposition((ctx, filename) -> filename.endsWith(".pdf")
+     *     ? ContentDisposition.inline(filename)
+     *     : ContentDisposition.attachment(filename))
+     *   .build();
+     *
+     * }</pre>
+     *
+     * @param contentDisposition the function building the disposition
+     * @return the updated configuration
+     */
+    Builder contentDisposition(BiFunction<Context, String, ContentDisposition> contentDisposition);
 
     /**
      * Sets a predicate to filter files based on the request context.
@@ -142,9 +179,7 @@ public sealed interface StaticContent extends JexPlugin
      */
     Builder skipFilePredicate(Predicate<Context> skipFilePredicate);
 
-    /**
-     * Build and return the StaticContent.
-     */
+    /** Build and return the StaticContent. */
     StaticContent build();
   }
 }

@@ -7,6 +7,7 @@ import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.List;
 
+import io.avaje.jex.compression.CompressionConfig;
 import io.avaje.jex.http.Context;
 import io.avaje.jex.http.HttpStatus;
 
@@ -14,11 +15,21 @@ final class RangeWriter {
 
   private static final int DEFAULT_BUFFER_SIZE = 16384;
 
-  static void write(Context ctx, InputStream inputStream, long totalBytes, long chunkSize) {
+  static void write(
+      Context ctx,
+      InputStream inputStream,
+      long totalBytes,
+      long chunkSize,
+      CompressionConfig compression) {
 
     ctx.header(Constants.ACCEPT_RANGES, "bytes");
     final String rangeHeader = ctx.header(Constants.RANGE);
     if (rangeHeader == null) {
+      if (totalBytes >= 0
+          && ctx.responseHeader(Constants.CONTENT_LENGTH) == null
+          && !maybeCompressed(ctx, compression)) {
+        ctx.contentLength(totalBytes);
+      }
       ctx.write(inputStream);
       return;
     }
@@ -70,6 +81,15 @@ final class RangeWriter {
       outputStream.write(buffer, 0, read);
       bytesLeft -= read;
     }
+  }
+
+  /** Return true unless we can be sure the body is written uncompressed. */
+  private static boolean maybeCompressed(Context ctx, CompressionConfig compression) {
+    return compression.compressionEnabled()
+        && compression.allowsForCompression(ctx.responseHeader(Constants.CONTENT_TYPE))
+        && compression
+            .findMatchingCompressor(ctx.headerValues(Constants.ACCEPT_ENCODING))
+            .isPresent();
   }
 
   private static boolean isAudioOrVideo(String contentType) {

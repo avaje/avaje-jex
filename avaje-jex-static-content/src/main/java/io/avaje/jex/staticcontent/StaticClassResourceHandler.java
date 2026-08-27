@@ -4,8 +4,10 @@ import static io.avaje.jex.core.Constants.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 import io.avaje.jex.compression.CompressionConfig;
@@ -25,6 +27,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
       Map<String, String> mimeTypes,
       Map<String, String> headers,
       Predicate<Context> skipFilePredicate,
+      BiFunction<Context, String, ContentDisposition> contentDisposition,
       ClassResourceLoader resourceLoader,
       URL indexFile,
       URL spaRoot,
@@ -37,6 +40,7 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
         mimeTypes,
         headers,
         skipFilePredicate,
+        contentDisposition,
         precompress,
         compressionConfig);
 
@@ -96,9 +100,17 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
   }
 
   private void sendURL(Context ctx, String urlPath, URL path) {
-    try (var fis = path.openStream()) {
+    final URLConnection connection;
+    try {
+      connection = path.openConnection();
+    } catch (final IOException e) {
+      throw404(ctx.exchange());
+      return;
+    }
+    try (var fis = connection.getInputStream()) {
       ctx.header(CONTENT_TYPE, lookupMime(urlPath));
       ctx.headers(headers);
+      applyContentDisposition(ctx, urlPath);
       if (precompress) {
         addCachedEntry(ctx, urlPath, fis);
         return;
@@ -109,7 +121,12 @@ final class StaticClassResourceHandler extends AbstractStaticHandler {
         return;
       }
 
-      ctx.rangedWrite(fis);
+      final long totalBytes = connection.getContentLengthLong();
+      if (totalBytes < 0) {
+        ctx.rangedWrite(fis);
+      } else {
+        ctx.rangedWrite(fis, totalBytes);
+      }
     } catch (final IOException e) {
       throw404(ctx.exchange());
     }

@@ -23,20 +23,20 @@
   <properties>
     <project.build.outputTimestamp>2026-07-10T01:18:55Z</project.build.outputTimestamp>
     <nexus.staging.autoReleaseAfterClose>true</nexus.staging.autoReleaseAfterClose>
-    <jackson.version>2.22.1</jackson.version>
+    <jackson.version>2.22.2</jackson.version>
     <surefire.useModulePath>false</surefire.useModulePath>
     <maven.compiler.release>21</maven.compiler.release>
     <maven.compiler.proc>full</maven.compiler.proc>
     <avaje.config.version>5.2</avaje.config.version>
     <avaje.inject.version>12.6</avaje.inject.version>
     <avaje.jsonb.version>3.14</avaje.jsonb.version>
-    <avaje.http.version>3.10</avaje.http.version>
-    <avaje.metrics.version>10.0</avaje.metrics.version>
+    <avaje.http.version>3.11</avaje.http.version>
+    <avaje.metrics.version>10.3</avaje.metrics.version>
     <avaje.validator.version>2.17</avaje.validator.version>
     <avaje.record.builder.version>1.4</avaje.record.builder.version>
     <avaje.spi.version>2.17</avaje.spi.version>
     <avaje.prisms.version>2.0</avaje.prisms.version>
-    <ebean.version>19.3.0</ebean.version>
+    <ebean.version>19.5.0</ebean.version>
   </properties>
 
   <modules>
@@ -298,7 +298,7 @@
         <plugin>
           <groupId>io.avaje</groupId>
           <artifactId>openapi-maven-plugin</artifactId>
-          <version>3.10</version>
+          <version>3.11</version>
           <executions>
             <execution>
               <id>main</id>
@@ -450,7 +450,7 @@
         <dependency>
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-http-spi</artifactId>
-          <version>12.1.11</version>
+          <version>12.1.12</version>
         </dependency>
       </dependencies>
     </profile>
