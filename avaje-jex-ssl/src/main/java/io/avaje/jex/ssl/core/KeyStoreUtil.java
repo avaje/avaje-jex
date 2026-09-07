@@ -1,12 +1,9 @@
 package io.avaje.jex.ssl.core;
 
-import static java.util.Base64.getDecoder;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyFactory;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -14,23 +11,12 @@ import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import io.avaje.jex.ssl.SslConfigException;
 
 final class KeyStoreUtil {
-  private static final Pattern CERT_PATTERN =
-      Pattern.compile("-----BEGIN CERTIFICATE-----(.+?)-----END CERTIFICATE-----", Pattern.DOTALL);
-
-  private static final Pattern PRIVATE_KEY_PATTERN =
-      Pattern.compile(
-          "-----BEGIN (?:RSA )?PRIVATE KEY-----(.+?)-----END (?:RSA )?PRIVATE KEY-----",
-          Pattern.DOTALL);
 
   static KeyStore loadKeyStore(InputStream inputStream, char[] password) {
     // Read all bytes first so we can try different formats
@@ -92,24 +78,7 @@ final class KeyStoreUtil {
   }
 
   static List<Certificate> parsePemCertificates(String content) {
-    List<Certificate> certs = new ArrayList<>();
-    CertificateFactory factory;
-    try {
-      factory = CertificateFactory.getInstance("X.509");
-
-      var matcher = CERT_PATTERN.matcher(content);
-      while (matcher.find()) {
-        var base64Cert = matcher.group(1).replaceAll("\\s", "");
-
-        var certBytes = Base64.getDecoder().decode(base64Cert);
-        try (var bis = new ByteArrayInputStream(certBytes)) {
-          var cert = factory.generateCertificate(bis);
-          certs.add(cert);
-        }
-      }
-    } catch (Exception e) {
-      throw new SslConfigException("Failed to parse PEM certificate", e);
-    }
+    var certs = PemAPISupport.certificates(content);
     if (certs.isEmpty()) {
       throw new SslConfigException("No valid certificate found in PEM content");
     }
@@ -117,32 +86,7 @@ final class KeyStoreUtil {
   }
 
   static PrivateKey parsePrivateKey(String privateKeyContent, char[] password) {
-    try {
-      var matcher = PRIVATE_KEY_PATTERN.matcher(privateKeyContent);
-      if (!matcher.find()) {
-        throw new IllegalArgumentException("No valid private key found in PEM content");
-      }
-
-      var base64Key = matcher.group(1).replaceAll("\\s+", "");
-      var keyBytes = getDecoder().decode(base64Key);
-
-      // Try different algorithms
-      String[] algorithms = {"RSA", "EC", "DSA"};
-      for (String algorithm : algorithms) {
-        try {
-          var keyFactory = KeyFactory.getInstance(algorithm);
-          var keySpec = new PKCS8EncodedKeySpec(keyBytes);
-          return keyFactory.generatePrivate(keySpec);
-        } catch (InvalidKeySpecException e) {
-          // Try next algorithm
-        }
-      }
-
-      throw new SslConfigException("Unable to parse private key with any supported algorithm");
-
-    } catch (NoSuchAlgorithmException e) {
-      throw new SslConfigException("Failed to parse private key", e);
-    }
+    return PemAPISupport.privateKey(privateKeyContent, password);
   }
 
   static List<Certificate> parseCertificates(InputStream inputStream) {
