@@ -11,7 +11,7 @@
   <name>avaje-jex-freemarker</name>
 
   <properties>
-    <freemarker.version>2.3.34</freemarker.version>
+    <freemarker.version>2.3.35</freemarker.version>
   </properties>
 
   <dependencies>
