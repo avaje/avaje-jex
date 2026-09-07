@@ -27,4 +27,52 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>jdk28Plus</id>
+      <activation>
+        <jdk>[28,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>compile-java-28</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+                <configuration>
+                  <release>28</release>
+                  <compileSourceRoots>
+                    <compileSourceRoot>
+                      ${project.basedir}/src/main/java28</compileSourceRoot>
+                  </compileSourceRoots>
+                  <multiReleaseOutput>true</multiReleaseOutput>
+                  <compilerArgs>
+                    <arg>-AbuildPlugin=false</arg>
+                  </compilerArgs>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+              <archive>
+                <manifestEntries>
+                  <Multi-Release>true</Multi-Release>
+                </manifestEntries>
+              </archive>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

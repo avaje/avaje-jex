@@ -92,7 +92,7 @@ final class DSslConfig implements SslConfig {
               certificateInputStream,
               keyContent,
               password != null ? password.toCharArray() : null));
-      this.identityPassword = identityPassword != null ? identityPassword : "";
+      this.identityPassword = password != null ? password : "";
 
     } catch (IOException e) {
       throw new SslConfigException("Failed to read PEM content from streams", e);
@@ -109,7 +109,7 @@ final class DSslConfig implements SslConfig {
       setKeyStore(
           KeyStoreUtil.loadIdentityFromPem(
               certContent, keyContent, password != null ? password.toCharArray() : null));
-      this.identityPassword = identityPassword != null ? identityPassword : "";
+      this.identityPassword = password != null ? password : "";
     } catch (IOException e) {
       throw new SslConfigException("Failed to read PEM files", e);
     }
@@ -122,7 +122,7 @@ final class DSslConfig implements SslConfig {
             new ByteArrayInputStream(certificateString.getBytes(StandardCharsets.UTF_8)),
             privateKeyString,
             password != null ? password.toCharArray() : null));
-    this.identityPassword = identityPassword != null ? identityPassword : "";
+    this.identityPassword = password != null ? password : "";
   }
 
   @Override
