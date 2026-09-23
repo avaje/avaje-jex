@@ -23,7 +23,13 @@ public final class RoutesBuilder {
       buildMap.computeIfAbsent(handler.getType(), h -> new RouteIndexBuild()).add(convert(handler));
     }
     buildMap.forEach((key, value) -> typeMap.put(key, value.build()));
-    filters = List.copyOf(routing.filters());
+    filters = routing.filters().stream().map(this::bind).toList();
+  }
+
+  private HttpFilter bind(HttpFilter filter) {
+    return filter instanceof PathFilter pathFilter
+        ? pathFilter.bind(contextPath, ignoreTrailingSlashes)
+        : filter;
   }
 
   private SpiRoutes.Entry convert(Routing.Entry handler) {

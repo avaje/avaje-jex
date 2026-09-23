@@ -18,6 +18,7 @@ class FilterTest {
   static final TestPair pair = init();
   static final AtomicReference<String> afterAll = new AtomicReference<>();
   static final AtomicReference<String> afterTwo = new AtomicReference<>();
+  static final AtomicReference<String> afterPathTwo = new AtomicReference<>();
 
   static TestPair init() {
     final Jex app =
@@ -30,6 +31,11 @@ class FilterTest {
                             "/noResponse",
                             ctx -> {
                               ctx.header("Content-Type", "");
+                            })
+                        .get(
+                            "/accepted",
+                            ctx -> {
+                              ctx.status(202);
                             })
                         .get("/one", ctx -> ctx.text("one"))
                         .get("/two", ctx -> ctx.text("two"))
@@ -50,6 +56,19 @@ class FilterTest {
                                 afterTwo.set("set");
                               }
                             })
+                        .before("/two/*", ctx -> ctx.header("before-path-two", "set"))
+                        .after("/two/{id}", ctx -> afterPathTwo.set(ctx.pathParam("id")))
+                        .filter(
+                            "/one",
+                            (ctx, chain) -> {
+                              ctx.header("filter-path-one", "set");
+                              chain.proceed();
+                            })
+                        .group(
+                            "/api",
+                            g ->
+                                g.before("/*", ctx -> ctx.header("before-api", "set"))
+                                    .get("/hello", ctx -> ctx.text("hello")))
                         .get("/dummy", ctx -> ctx.text("dummy")));
 
     return TestPair.create(app);
@@ -63,6 +82,7 @@ class FilterTest {
   void clearAfter() {
     afterAll.set(null);
     afterTwo.set(null);
+    afterPathTwo.set(null);
   }
 
   @Test
@@ -90,6 +110,38 @@ class FilterTest {
     assertThat(res.statusCode()).isEqualTo(204);
     assertHasBeforeAfterAll(res);
     assertNoBeforeAfterTwo(res);
+  }
+
+  @Test
+  void getNoResponse_explicitStatus() {
+    HttpResponse<String> res = pair.request().path("accepted").GET().asString();
+    assertThat(res.statusCode()).isEqualTo(202);
+    assertThat(res.body()).isEmpty();
+  }
+
+  @Test
+  void pathFilters() {
+    clearAfter();
+    HttpResponse<String> res = pair.request().path("one").GET().asString();
+    assertThat(res.headers().firstValue("filter-path-one")).get().isEqualTo("set");
+    assertThat(res.headers().firstValue("before-path-two")).isEmpty();
+    assertThat(res.headers().firstValue("before-api")).isEmpty();
+    assertThat(afterPathTwo.get()).isNull();
+
+    res = pair.request().path("two").GET().asString();
+    assertThat(res.headers().firstValue("filter-path-one")).isEmpty();
+    assertThat(res.headers().firstValue("before-path-two")).isEmpty();
+    assertThat(afterPathTwo.get()).isNull();
+
+    res = pair.request().path("two/42").GET().asString();
+    assertThat(res.headers().firstValue("filter-path-one")).isEmpty();
+    assertThat(res.headers().firstValue("before-path-two")).get().isEqualTo("set");
+    LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(2));
+    assertThat(afterPathTwo.get()).isEqualTo("42");
+
+    res = pair.request().path("api/hello").GET().asString();
+    assertThat(res.body()).isEqualTo("hello");
+    assertThat(res.headers().firstValue("before-api")).get().isEqualTo("set");
   }
 
   @Test

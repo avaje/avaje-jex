@@ -1,6 +1,5 @@
 package io.avaje.jex.core;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -48,7 +47,7 @@ final class RoutingHandler implements HttpHandler {
               try {
                 ctx.setMode(Mode.BEFORE);
                 new BaseFilterChain(filters.iterator(), route.handler(), ctx, mgr).proceed();
-                handleNoResponse(exchange);
+                handleNoResponse(ctx);
               } catch (Exception e) {
                 mgr.handleException(ctx, e);
               }
@@ -60,9 +59,10 @@ final class RoutingHandler implements HttpHandler {
     }
   }
 
-  private void handleNoResponse(HttpExchange exchange) throws IOException {
-    if (exchange.getResponseCode() < 1) {
-      exchange.sendResponseHeaders(204, -1);
+  private void handleNoResponse(JdkContext ctx) {
+    if (!ctx.responseSent()) {
+      final int status = ctx.status();
+      ctx.writeEmpty(status == 0 ? 204 : status);
     }
   }
 }
