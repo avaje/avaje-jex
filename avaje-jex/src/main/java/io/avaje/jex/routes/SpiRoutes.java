@@ -40,11 +40,6 @@ public sealed interface SpiRoutes permits Routes {
   void waitForIdle(long maxSeconds);
 
   /**
-   * Get filters
-   */
-  List<HttpFilter> filters();
-
-  /**
    * A route entry.
    */
   interface Entry {
@@ -101,6 +96,9 @@ public sealed interface SpiRoutes permits Routes {
 
     /** Return the authentication roles for the route. */
     Set<Role> roles();
+
+    /** Return the filters that apply to this route. */
+    List<HttpFilter> filters();
 
     /** Create and return a new Entry with multiple handlers. */
     Entry multiHandler(ExchangeHandler[] handlers);

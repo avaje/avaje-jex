@@ -27,6 +27,16 @@ public final class PathFilter implements HttpFilter {
         path, delegate, new PathParser(contextPath + path, ignoreTrailingSlashes));
   }
 
+  /** Return the delegate filter. */
+  HttpFilter delegate() {
+    return delegate;
+  }
+
+  /** Return true if the bound path expression matches the given path. */
+  boolean matches(String requestPath) {
+    return matcher.matches(requestPath);
+  }
+
   /** Return the path expression. */
   public String path() {
     return path;
