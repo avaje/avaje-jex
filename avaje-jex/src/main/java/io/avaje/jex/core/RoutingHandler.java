@@ -1,13 +1,10 @@
 package io.avaje.jex.core;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import io.avaje.jex.http.HttpFilter;
 import io.avaje.jex.http.NotFoundException;
 import io.avaje.jex.routes.SpiRoutes;
 
@@ -15,12 +12,10 @@ final class RoutingHandler implements HttpHandler {
 
   private final SpiRoutes routes;
   private final ServiceManager mgr;
-  private final List<HttpFilter> filters;
 
   RoutingHandler(SpiRoutes routes, ServiceManager mgr) {
     this.mgr = mgr;
     this.routes = routes;
-    this.filters = routes.filters();
   }
 
   void waitForIdle(long maxSeconds) {
@@ -47,8 +42,8 @@ final class RoutingHandler implements HttpHandler {
             () -> {
               try {
                 ctx.setMode(Mode.BEFORE);
-                new BaseFilterChain(filters.iterator(), route.handler(), ctx, mgr).proceed();
-                handleNoResponse(exchange);
+                new BaseFilterChain(route.filters().iterator(), route.handler(), ctx, mgr).proceed();
+                handleNoResponse(ctx);
               } catch (Exception e) {
                 mgr.handleException(ctx, e);
               }
@@ -60,9 +55,10 @@ final class RoutingHandler implements HttpHandler {
     }
   }
 
-  private void handleNoResponse(HttpExchange exchange) throws IOException {
-    if (exchange.getResponseCode() < 1) {
-      exchange.sendResponseHeaders(204, -1);
+  private void handleNoResponse(JdkContext ctx) {
+    if (!ctx.responseSent()) {
+      final int status = ctx.status();
+      ctx.writeEmpty(status == 0 ? 204 : status);
     }
   }
 }

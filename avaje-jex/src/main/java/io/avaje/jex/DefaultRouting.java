@@ -12,6 +12,7 @@ import java.util.Set;
 import io.avaje.jex.http.ExceptionHandler;
 import io.avaje.jex.http.ExchangeHandler;
 import io.avaje.jex.http.HttpFilter;
+import io.avaje.jex.routes.PathFilter;
 import io.avaje.jex.security.Role;
 
 final class DefaultRouting implements Routing {
@@ -149,6 +150,12 @@ final class DefaultRouting implements Routing {
   @Override
   public Routing filter(HttpFilter handler) {
     filters.add(handler);
+    return this;
+  }
+
+  @Override
+  public Routing filter(String path, HttpFilter handler) {
+    filters.add(new PathFilter(path(path), handler));
     return this;
   }
 

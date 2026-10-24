@@ -2,13 +2,11 @@ package io.avaje.jex.routes;
 
 import java.lang.System.Logger.Level;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.LockSupport;
 
 import io.avaje.applog.AppLog;
 import io.avaje.jex.Routing;
-import io.avaje.jex.http.HttpFilter;
 
 final class Routes implements SpiRoutes {
 
@@ -19,21 +17,15 @@ final class Routes implements SpiRoutes {
    */
   private final EnumMap<Routing.Type, RouteIndex> typeMap;
 
-  /**
-   * The filters.
-   */
-  private final List<HttpFilter> filters;
-
   private final LongAdder noRouteCounter = new LongAdder();
 
-  Routes(EnumMap<Routing.Type, RouteIndex> typeMap, List<HttpFilter> filters) {
+  Routes(EnumMap<Routing.Type, RouteIndex> typeMap) {
     this.typeMap = typeMap;
-    this.filters = filters;
   }
 
   @Override
   public String toString() {
-    return "Routes{" + typeMap + ", filters=" + filters + '}';
+    return "Routes{" + typeMap + '}';
   }
 
   @Override
@@ -81,10 +73,5 @@ final class Routes implements SpiRoutes {
   public Entry match(Routing.Type type, String pathInfo) {
     var routeIndex = typeMap.get(type);
     return routeIndex == null ? null : routeIndex.match(pathInfo);
-  }
-
-  @Override
-  public List<HttpFilter> filters() {
-    return filters;
   }
 }

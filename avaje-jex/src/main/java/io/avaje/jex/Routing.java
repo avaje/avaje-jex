@@ -49,7 +49,6 @@ public interface Routing {
    *
    * @param path the common path prefix
    * @param group the function to register the rout handlers
-   *
    */
   Routing group(String path, HttpService group);
 
@@ -151,22 +150,55 @@ public interface Routing {
     return filter(HttpFilter.fromJdkFilter(handler));
   }
 
+  /**
+   * Add a filter for matched requests whose path matches the given path expression.
+   *
+   * @param path the path expression to match against the request path
+   * @param handler the filter to invoke when the path matches
+   */
+  Routing filter(String path, HttpFilter handler);
+
+  /** Add a filter for matched requests whose path matches the given path expression. */
+  default Routing filter(String path, Filter handler) {
+    return filter(path, HttpFilter.fromJdkFilter(handler));
+  }
+
   /** Add a pre-processing filter for all matched requests. */
   default Routing before(Consumer<Context> handler) {
-    return filter(
-        (ctx, chain) -> {
-          handler.accept(ctx);
-          chain.proceed();
-        });
+    return filter(beforeFilter(handler));
+  }
+
+  /**
+   * Add a pre-processing filter for matched requests whose path matches the given path expression.
+   */
+  default Routing before(String path, Consumer<Context> handler) {
+    return filter(path, beforeFilter(handler));
   }
 
   /** Add a post-processing filter for all matched requests. */
   default Routing after(Consumer<Context> handler) {
-    return filter(
-        (ctx, chain) -> {
-          chain.proceed();
-          handler.accept(ctx);
-        });
+    return filter(afterFilter(handler));
+  }
+
+  /**
+   * Add a post-processing filter for matched requests whose path matches the given path expression.
+   */
+  default Routing after(String path, Consumer<Context> handler) {
+    return filter(path, afterFilter(handler));
+  }
+
+  private static HttpFilter beforeFilter(Consumer<Context> handler) {
+    return (ctx, chain) -> {
+      handler.accept(ctx);
+      chain.proceed();
+    };
+  }
+
+  private static HttpFilter afterFilter(Consumer<Context> handler) {
+    return (ctx, chain) -> {
+      chain.proceed();
+      handler.accept(ctx);
+    };
   }
 
   /**
@@ -245,5 +277,4 @@ public interface Routing {
       return MAP.get(method);
     }
   }
-
 }
