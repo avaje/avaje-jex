@@ -23,8 +23,7 @@ public final class PathFilter implements HttpFilter {
 
   /** Return a PathFilter bound to the given context path. */
   PathFilter bind(String contextPath, boolean ignoreTrailingSlashes) {
-    return new PathFilter(
-        path, delegate, new PathParser(contextPath + path, ignoreTrailingSlashes));
+    return new PathFilter(path, delegate, new PathParser(contextPath + path, ignoreTrailingSlashes));
   }
 
   /** Return the delegate filter. */

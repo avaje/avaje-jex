@@ -34,10 +34,8 @@ public final class RoutesBuilder {
   }
 
   private SpiRoutes.Entry convert(Routing.Entry handler) {
-    final PathParser pathParser =
-        new PathParser(contextPath + handler.getPath(), ignoreTrailingSlashes);
-    return new RouteEntry(
-        pathParser, handler.getHandler(), handler.getRoles(), routeFilters(pathParser.raw()));
+    final PathParser pathParser = new PathParser(contextPath + handler.getPath(), ignoreTrailingSlashes);
+    return new RouteEntry(pathParser, handler.getHandler(), handler.getRoles(), routeFilters(pathParser.raw()));
   }
 
   private List<HttpFilter> routeFilters(String routePath) {
