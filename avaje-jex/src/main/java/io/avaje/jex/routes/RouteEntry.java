@@ -1,10 +1,12 @@
 package io.avaje.jex.routes;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.LongAdder;
 
 import io.avaje.jex.http.ExchangeHandler;
+import io.avaje.jex.http.HttpFilter;
 import io.avaje.jex.security.Role;
 
 final class RouteEntry implements SpiRoutes.Entry {
@@ -13,17 +15,23 @@ final class RouteEntry implements SpiRoutes.Entry {
   private final PathParser path;
   private final ExchangeHandler handler;
   private final Set<Role> roles;
+  private final List<HttpFilter> filters;
 
   RouteEntry(PathParser path, ExchangeHandler handler, Set<Role> roles) {
+    this(path, handler, roles, List.of());
+  }
+
+  RouteEntry(PathParser path, ExchangeHandler handler, Set<Role> roles, List<HttpFilter> filters) {
     this.path = path;
     this.handler = handler;
     this.roles = roles;
+    this.filters = filters;
   }
 
   @Override
   public SpiRoutes.Entry multiHandler(ExchangeHandler[] handlers) {
     final var multi = new MultiHandler(handlers);
-    return new RouteEntry(path, multi, roles);
+    return new RouteEntry(path, multi, roles, filters);
   }
 
   @Override
@@ -79,6 +87,11 @@ final class RouteEntry implements SpiRoutes.Entry {
   @Override
   public Set<Role> roles() {
     return roles;
+  }
+
+  @Override
+  public List<HttpFilter> filters() {
+    return filters;
   }
 
   @Override

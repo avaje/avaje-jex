@@ -28,7 +28,6 @@ final class RouteIndex {
 
   @Override
   public String toString() {
-
     return "RouteIndex{"
         + Stream.concat(
                 Arrays.stream(entries)
