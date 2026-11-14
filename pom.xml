@@ -23,7 +23,7 @@
   <properties>
     <project.build.outputTimestamp>2026-10-26T21:21:48Z</project.build.outputTimestamp>
     <nexus.staging.autoReleaseAfterClose>true</nexus.staging.autoReleaseAfterClose>
-    <jackson.version>2.22.4</jackson.version>
+    <jackson.version>2.23.0</jackson.version>
     <surefire.useModulePath>false</surefire.useModulePath>
     <maven.compiler.release>21</maven.compiler.release>
     <maven.compiler.proc>full</maven.compiler.proc>
@@ -35,7 +35,7 @@
     <avaje.validator.version>2.18</avaje.validator.version>
     <avaje.record.builder.version>1.4</avaje.record.builder.version>
     <avaje.spi.version>2.17</avaje.spi.version>
-    <avaje.prisms.version>2.0</avaje.prisms.version>
+    <avaje.prisms.version>2.2</avaje.prisms.version>
     <ebean.version>19.6.0</ebean.version>
   </properties>
 
@@ -447,7 +447,7 @@
         <dependency>
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-http-spi</artifactId>
-          <version>12.1.14</version>
+          <version>12.1.15</version>
         </dependency>
       </dependencies>
     </profile>
